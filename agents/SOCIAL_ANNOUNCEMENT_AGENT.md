@@ -16,7 +16,7 @@ Every launch/profile description should make these points clear when space permi
 - the source is public under a non-commercial public-interest source-available license, not an OSI license.
 
 ## Channel policy
-Primary public channels are GitHub README/Releases/Issues and the GitHub Pages site. External social networks may be used only when an authenticated account is actually available and the account owner has authorized posting. If no authenticated external account exists, prepare the copy in `social/` and do not fabricate a post URL.
+Primary public channels are the project-owned public site, GitHub README/Releases/Issues and the GitHub Pages read-only fallback. The current interactive site is the Vercel-backed project domain documented in `qa/v0_8/verification.json`; do not advertise historical EdgeOne URLs as active public endpoints. External social networks may be used only when an authenticated account is actually available and the account owner has authorized posting. If no authenticated external account exists, prepare the copy in `social/` and do not fabricate a post URL.
 
 ## Tone
 Plain, factual, non-partisan, non-commercial. No hype such as “fully autonomous”, “official”, “guaranteed accurate”, or “production-grade” unless exact evidence supports it.

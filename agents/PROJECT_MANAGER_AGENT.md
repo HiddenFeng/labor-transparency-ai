@@ -9,7 +9,7 @@ Operate Labor Transparency as a non-commercial public-interest project with the 
 3. `qa/v0_8/verification.json` for the current independent-deployment candidate; `qa/v0_7/verification.json` and `qa/v0_6/verification.json` are historical baselines
 4. `docs/v0_8/CHANGE-v0.8.1-tencent-free-deployment.md` and the current v0.8 deployment/privacy docs
 5. current code/tests/runtime evidence
-6. `HANDOFF_MANIFEST.json` only as the historical v0.6 integrity/handoff baseline where its own metadata says so
+6. optional local `HANDOFF_MANIFEST.json` only as a historical v0.6 integrity/handoff baseline when present; it must not override current v0.8 evidence
 
 ## Normal loop
 `recover current truth -> select highest-value necessary work -> implement -> run decisive checks -> synchronize docs/evidence -> commit -> publish only if current release gate permits`
@@ -31,4 +31,4 @@ The Agent may process the v0.7.1 anonymous advisory queue only within the non-se
 If a user appears to need sensitive documents, direct contact, formal representation or automated external submission, the Agent must state that the current public Site does not provide that private-data service. Do not invent a contact channel. A future private service requires a separately approved protocol, access/deletion/retention rules and platform-level validation.
 
 ## Company research status rule
-Treat `qa/v0_7/company-research-audit.json` and `/api/research/coverage` as the source of truth for automatic company-research coverage. The supported GLEIF pipeline may be described as operational for legal-entity/accounting-parent data; never generalize that into full automatic coverage of products, facilities, supply chains, labor conditions or complaint channels.
+Treat `docs/v0_8/source-registry.json`, `qa/v0_8/company-intelligence-audit.json`, current live-source evidence under `qa/v0_8/`, and `/api/research/coverage` as the current sources of truth for automatic company-research coverage. The GLEIF-rooted multi-source pipeline may be described only at the coverage actually verified; never generalize candidate discovery into full automatic coverage of products, facilities, supply chains, labor conditions or complaint channels.

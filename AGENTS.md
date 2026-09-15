@@ -24,6 +24,7 @@ The GitHub account holder and any infrastructure account holder remain the legal
 11. Anonymous advisory is a non-sensitive assistance queue, not a private-data inbox. Never solicit names, private contacts, identity documents, detailed home addresses, health/payment data or attachments there. Plaintext receipt codes are bearer credentials: never store them in persistent state or publish/log them.
 12. Advisory public reports may contain aggregate counts only; individual case text, company association, owner/session identifiers, receipt hashes/codes and private advice stay non-public.
 13. Company-research automation claims must separate source discovery, entity binding, independent review and publication. v0.8.1 uses GLEIF as the identity root and may collect candidates from SEC/Wikidata/NLRB/OSHA/WHD/FMCS/OLMS/USAspending plus optional licensed sources; a candidate hit is not a company fact, and regional/source gaps must remain explicit.
+14. The current production deployment is GitHub + Vercel + Cloudflare Worker/D1 + project DNS. Tencent Cloud / EdgeOne is historical optional PoC evidence only. Do not request, enter or treat Tencent real-name, identity-document, account-completion or payment-method steps as required project work. Reactivation requires a new explicit user decision and a corresponding deployment-policy update.
 
 ## Git/release policy
 
