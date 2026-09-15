@@ -17,7 +17,7 @@
 - 新公开历史从隐私净化快照重新开始，不向新仓库推送旧公开历史、旧远端 refs 或旧作者身份。
 - 前端、后端、Cloudflare Worker/D1、EdgeOne/Vercel 部署适配、多源公司研究、测试和 Agent 合同均属于可公开源码范围。
 
-首次 HiddenFeng push 后必须重新执行 GitHub Actions；在新账号真实 CI 完成前只标记 `PENDING_FIRST_HIDDENFENG_CI`，不得把其他账号的 CI/风控状态复制到 HiddenFeng。
+HiddenFeng 首次隐私净化 push 已完成全量验证：GitHub Actions run `34980498310` 的 Python 3.9、Python 3.13、`web_candidate`、`cloudflare_backend` 四个 job 全部成功。新仓库随后已将 Pages source 切到 GitHub Actions；Pages run `34980498497` 重新执行后 `configure-pages`、artifact upload 与 deploy 均成功。
 
 ## Release
 
@@ -30,15 +30,11 @@
 
 ## Vercel
 
-当前目标是把生产前端控制权也切换到 HiddenFeng 的 Vercel 账号，再把公共入口迁到项目自定义域名。旧平台账号的内部元数据不应作为当前项目公开身份来源。
+生产前端控制权已经切换到 HiddenFeng 的 Vercel 账号。当前项目为 `workermanifestfellowship`，公开别名为 `https://workermanifestfellowship.vercel.app`；外部 Vercel Sandbox 已完成同源 `/api` → Cloudflare Worker → D1 的真实公司创建/评价/CSRF/HttpOnly Cookie E2E，测试数据随后从生产 D1 清零。项目域名 `workermanifestfellowship.dpdns.org` 已完成 Vercel 所有权 TXT、apex A 记录和 Vercel `Valid Configuration` 验证。当前运行环境直连 Vercel 网络仍超时，因此该域名不能据此被宣传为中国大陆稳定入口。
 
 迁移验证至少包含：
 
-- 新账号项目实际 deploy；
-- root / favicon / `/api/health` 200；
-- same-origin `/api/*` rewrite 到 Cloudflare Worker；
-- CSRF + HttpOnly Cookie + D1 E2E；
-- 公共页面不显示平台账号邮箱、旧 GitHub handle 或本机路径。
+以上五项均已完成并通过。
 
 ## EdgeOne / 中国大陆入口
 
@@ -48,7 +44,7 @@ EdgeOne/Tencent 账号已经完成注册并可通过 CLI 读取账号状态。�
 
 `workermanifestfellowship.dpdns.org`
 
-该子域将作为优先的 EdgeOne 自定义域候选。Agent 可以继续完成 EdgeOne 域名绑定、DigitalPlat DNS 记录、Cloudflare exact Origin allowlist 和最终无 preview token 的大陆 root/API/mutation/Chrome 验收。若 EdgeOne 对该域名/区域要求 ICP 或额外主体资格，则保留为明确的外部门槛，不伪造备案或主体信息。
+该域名已经完成 DigitalPlat 所有权记录并作为 HiddenFeng Vercel 项目域名验证。EdgeOne Global 项目在添加自定义域时要求腾讯云账号实名认证；为验证替代路线，另建 `labor-transparency-overseas`（overseas area）并部署同一静态包与 buffered `/api` relay。Overseas 项目接受了该域名并给出 `edgeonereclaim` TXT，TXT 已在 DigitalPlat 两个权威 DNS/公共解析可见；最终 Verify 阶段由腾讯云国际站 CAM 拦截，明确要求先补全账户信息并添加支付方式。此账户/支付步骤必须由账号持有人本人完成。完成后 Agent 再继续 EdgeOne ownership、最终 CNAME/DNS、HTTPS、exact Origin 与无 preview token QA。若后续选择包含中国大陆的 Global 区域，仍需按平台实际提示满足实名、ICP/服务商资格。
 
 ## 隐私边界
 

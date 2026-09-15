@@ -96,8 +96,8 @@ export LTP_EDGEONE_SITE=global
 
 ## 6. 当前已上线地址与仍需人工步骤
 
-- 全球前端：`https://labor-transparency-public.vercel.app`
+- 全球前端：`https://workermanifestfellowship.vercel.app`
 - 全球 API：`https://labor-transparency-api.labor-transparency-public.workers.dev`
 - EdgeOne 正式账号项目：`labor-transparency-public` 已部署；默认 `edgeone.cool` 域名不作为大陆稳定入口，因为大陆无预览授权时返回 401。
 
-Cloudflare、Vercel、EdgeOne 登录与部署均已完成。现在唯一必须由用户提供/授权的部署输入是一个**项目拥有的自定义域名或子域名**。Agent 得到域名后即可继续 EdgeOne 绑定、DNS 验证/CNAME 指引、Cloudflare exact Origin 更新与永久 URL 验收；如果选择包含中国大陆的加速区域，还必须按 EdgeOne 实际提示完成 ICP/服务商资格。
+Cloudflare、Vercel、EdgeOne 登录与部署均已完成，项目域名 `workermanifestfellowship.dpdns.org` 也已由 DigitalPlat 配置并通过 Vercel 验证。EdgeOne Global 项目添加自定义域要求账号实名认证；Overseas 项目已经部署并接受该域名，ownership TXT 也已生效，但最终 Verify 被腾讯云国际站“账户信息不完整”门槛拦截，要求账号持有人补全账户信息并添加支付方式。完成该账户步骤后，Agent 可继续 EdgeOne ownership、最终 CNAME/DNS、HTTPS/exact Origin 和无 preview token 验收；若最终选择包含中国大陆的加速区域，还必须满足平台实际要求的实名、ICP/服务商资格。

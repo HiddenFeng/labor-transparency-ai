@@ -1,10 +1,10 @@
 {
   "version": "0.8.1-rc.2",
   "date": "2026-09-15",
-  "status": "MIGRATION_TO_HIDDENFENG_PENDING_FIRST_PUBLIC_CI",
+  "status": "PASS_HIDDENFENG_GITHUB_PAGES_VERCEL_CUSTOM_DOMAIN_CONFIG_EDGEONE_ACCOUNT_COMPLETION_GATE",
   "github": {
     "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai",
-    "visibility": "TARGET_PUBLIC",
+    "visibility": "PUBLIC",
     "active_branch": "main",
     "fresh_privacy_sanitized_history": true,
     "active_author": "HiddenFeng",
@@ -12,16 +12,49 @@
     "previous_public_account_refs_in_new_source_or_history": false,
     "legacy_history_private_outside_repository": true,
     "workflows_present": true,
-    "actions": "PENDING_FIRST_HIDDENFENG_CI"
+    "actions": "PASS_RUN_34980498310",
+    "first_hiddenfeng_ci": {
+      "run_id": 34980498310,
+      "url": "https://github.com/HiddenFeng/labor-transparency-ai/actions/runs/34980498310",
+      "head_sha": "30999b501518f5e26aabce369e1eadf2bec393de",
+      "status": "PASS",
+      "jobs": {
+        "verify_3_9": "success",
+        "verify_3_13": "success",
+        "web_candidate": "success",
+        "cloudflare_backend": "success"
+      }
+    },
+    "pages": "PASS_RUN_34980498497_AFTER_ENABLE_GITHUB_ACTIONS_SOURCE",
+    "pages_run": {
+      "run_id": 34980498497,
+      "status": "PASS",
+      "configure_pages": "success",
+      "upload_pages_artifact": "success",
+      "deploy_pages": "success"
+    }
   },
   "release": {
     "tag": "v0.8.1-deployment-rc2",
-    "status": "PENDING_REPUBLISH_AFTER_HIDDENFENG_CI"
+    "status": "REPUBLISHED_TAG_v0.8.1-deployment-rc2_ON_CURRENT_SYNC_COMMIT"
   },
   "vercel": {
-    "public_frontend_current": "https://labor-transparency-public.vercel.app",
+    "public_frontend": "https://workermanifestfellowship.vercel.app",
     "target_account": "HiddenFeng",
-    "migration_status": "PENDING_CLI_REAUTH_AND_REDEPLOY"
+    "account_slug": "hiddenfeng",
+    "project": "workermanifestfellowship",
+    "migration_status": "PASS_PRODUCTION_DEPLOYED",
+    "e2e_status": "PASS_HIDDENFENG_VERCEL_CLOUDFLARE_D1_E2E",
+    "backend_version": "0.8.1-rc.2",
+    "csrf": true,
+    "cookie_http_only": true,
+    "root_http": 200,
+    "favicon_http": 200,
+    "qa_d1_cleanup_remaining": 0,
+    "project_owned_custom_domain": "https://workermanifestfellowship.dpdns.org",
+    "custom_domain_dns": "A_APEX_216.198.79.1_PLUS_VERCEL_OWNERSHIP_TXT",
+    "custom_domain_vercel_verify": "PASS_VALID_CONFIGURATION_AND_PROJECT_VERIFIED",
+    "custom_domain_current_runtime_network": "TIMEOUT_SAME_AS_CURRENT_VERCEL_NETWORK_LIMITATION_NOT_CLAIMED_AS_MAINLAND_ENTRY"
   },
   "edgeone": {
     "account_authenticated": true,
@@ -30,16 +63,27 @@
     "platform_domain": "https://labor-transparency-public.edgeone.cool",
     "mainland_default_domain_no_preview_token": "HTTP_401_EO_TIME_MISSING",
     "stable_custom_domain_required": true,
-    "custom_domain_candidate": "workermanifestfellowship.dpdns.org"
+    "custom_domain_candidate": "workermanifestfellowship.dpdns.org",
+    "custom_domain_add_status": "OVERSEAS_ACCEPTED_OWNERSHIP_TXT_LIVE_FINAL_VERIFY_BLOCKED_ACCOUNT_COMPLETION_PAYMENT_METHOD",
+    "console_message": "您的帐号尚未完成实名认证，立即认证可享受全球可用区的加速服务！",
+    "global_project_custom_domain_gate": "BLOCKED_ACCOUNT_REAL_NAME_VERIFICATION",
+    "overseas_project": {
+      "name": "labor-transparency-overseas",
+      "area": "overseas",
+      "deployment": "SUCCESS",
+      "preset_url": "https://labor-transparency-overseas.edgeone.dev",
+      "custom_domain_candidate": "workermanifestfellowship.dpdns.org",
+      "ownership_txt": "PRESENT_AND_PUBLICLY_RESOLVING",
+      "final_verify": "BLOCKED_TENCENT_CLOUD_INTL_ACCOUNT_INFORMATION_AND_PAYMENT_METHOD"
+    },
+    "human_gate": "Complete Tencent Cloud International account information and add payment method; Global area also requires real-name verification. Do not fabricate identity or payment data."
   },
   "verification": {
-    "python_3_9": "PASS_291",
-    "python_3_12": "PASS_291_FRESH_VENV",
-    "sites": "PASS_20",
-    "cloudflare_research": "PASS_2",
-    "legacy_node": "PASS_103",
-    "edgeone_proxy": "PASS",
-    "static_privacy_audit": "PASS"
+    "github_ci": "PASS_RUN_34980498310",
+    "vercel_hiddenfeng_e2e": "PASS",
+    "static_privacy_audit": "PASS",
+    "old_account_refs_in_current_source_or_history": false,
+    "d1_qa_cleanup": "PASS_ZERO"
   },
-  "boundary": "HiddenFeng is the only intended public GitHub identity for the new repository. First CI/release and Vercel account migration must be re-verified after the fresh public-history push. Stable Mainland service still requires successful custom-domain binding and any applicable provider/ICP eligibility."
+  "boundary": "HiddenFeng GitHub CI and Pages, HiddenFeng Vercel production, and the project-owned Vercel custom-domain DNS/ownership are verified. The current network still cannot reliably reach Vercel, so stable Mainland entry remains unclaimed. EdgeOne Global requires account real-name verification; the deployed Overseas project accepts the custom domain and has a live ownership TXT, but final verification is gated on Tencent Cloud International account completion/payment method. After the account owner completes that step, final EdgeOne DNS/HTTPS/no-token QA can continue."
 }

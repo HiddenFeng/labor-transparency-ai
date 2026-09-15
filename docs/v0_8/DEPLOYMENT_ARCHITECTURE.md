@@ -68,7 +68,7 @@ node deploy/frontend/build.mjs
 
 平台是否完整转发 `Set-Cookie` / `Origin` 仍必须在真实 Vercel preview 上复验；本地只证明前端与独立 Worker API 的跨进程通信成立。
 
-该复验现在已经完成：生产 `https://labor-transparency-public.vercel.app` 通过外部 Vercel Sandbox 实际得到首页、favicon 与 `/api/health` 200，并完成过公司创建、CSRF/HttpOnly 会话、research Agent、多源候选和 D1 清理。
+该复验现在已经完成：生产 `https://workermanifestfellowship.vercel.app` 通过外部 Vercel Sandbox 实际得到首页、favicon 与 `/api/health` 200，并完成过公司创建、CSRF/HttpOnly 会话、research Agent、多源候选和 D1 清理。
 
 ### 模式 B — 直接调用 API 子域
 

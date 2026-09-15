@@ -2,9 +2,9 @@
 
 **公开源码：** https://github.com/HiddenFeng/labor-transparency-ai
 
-**公开站点：** https://labor-transparency-public.vercel.app
+**公开站点：** https://workermanifestfellowship.vercel.app
 
-**全球交互前端：** https://labor-transparency-public.vercel.app
+**全球交互前端：** https://workermanifestfellowship.vercel.app
 
 **Cloudflare API：** https://labor-transparency-api.labor-transparency-public.workers.dev
 
@@ -42,7 +42,7 @@ LTP_PUBLIC_API_BASE=http://127.0.0.1:8790 node deploy/frontend/build.mjs
 node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 ```
 
-部署与中国大陆访问边界直接阅读 `docs/v0_8/DEPLOYMENT_ARCHITECTURE.md`、`docs/v0_8/MAINLAND_CHINA_ACCESS.md`、`docs/v0_8/DEPLOYMENT_RUNBOOK.md`。当前实测结论是：Vercel + Cloudflare 全球生产链已上线；EdgeOne 账号已完成注册和登录，项目 `labor-transparency-public` 已部署，并且此前临时预览已经跑通 `大陆访问者 -> EdgeOne -> Edge Function -> Cloudflare Worker -> D1`。但是当前大陆网络直连 `vercel.app` / `workers.dev` 不可靠，而 EdgeOne 默认 `edgeone.cool` 项目域名在大陆访问时要求平台预览授权。要形成无预览令牌的稳定大陆入口，还需要一个项目拥有的自定义域名，以及对应 DNS、ICP/服务商资格等实际前置条件。
+部署与中国大陆访问边界直接阅读 `docs/v0_8/DEPLOYMENT_ARCHITECTURE.md`、`docs/v0_8/MAINLAND_CHINA_ACCESS.md`、`docs/v0_8/DEPLOYMENT_RUNBOOK.md`。当前实测结论是：Vercel + Cloudflare 全球生产链已上线；EdgeOne 账号已完成注册和登录，项目 `labor-transparency-public` 已部署，并且此前临时预览已经跑通 `大陆访问者 -> EdgeOne -> Edge Function -> Cloudflare Worker -> D1`。但是当前大陆网络直连 `vercel.app` / `workers.dev` 不可靠，而 EdgeOne 默认 `edgeone.cool` 项目域名在大陆访问时要求平台预览授权。项目域名 `workermanifestfellowship.dpdns.org` 已提供并通过 HiddenFeng Vercel 的所有权/DNS 验证，但当前网络直连 Vercel 仍不可靠，因此它不是大陆稳定入口。EdgeOne Global 自定义域仍要求账号实名；Overseas 项目已接受该域名并完成 ownership TXT，最终 Verify 还要求账号持有人补全腾讯云国际站账户信息并添加支付方式。完成账号门槛后才能继续最终 EdgeOne CNAME/HTTPS/无令牌大陆验收。
 
 自动公司资料研究已经从单一 GLEIF 扩展为多源：法律主体/母公司以 GLEIF 为 identity root；美国公开申报可用 SEC EDGAR；业务/产品/总部上下文可由绑定后的 Wikidata 补充；美国劳动侧可采集 NLRB 案件、OSHA 检查、WHD 已结案合规行动、FMCS 集体谈判通知与停工记录、NLRB voluntary recognition、OLMS employer/consultant disclosure；USAspending 可提供具体联邦 award / 政府客户关系候选。**这仍不等于“全球所有公司所有数据已完整收集”**：不同国家、公司类型和栏目覆盖不同，Open Supply Hub / OpenCorporates 等来源仍受 token、订阅或许可前置条件约束。机器可读来源矩阵见 `docs/v0_8/source-registry.json`，确定性审计见 `qa/v0_8/company-intelligence-audit.json`，真实有限联网证据见 `qa/v0_8/live-company-sources.json`、`qa/v0_8/live-company-intelligence.json` 与 `qa/v0_8/cloudflare-live-research.json`。
 
@@ -67,7 +67,7 @@ node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 - `qa/v0_6/browser/result.json`：实际浏览器阻断记录。
 - `qa/v0_6/live-source.json`：实际GLEIF联网检查结果。
 
-v0.1—v0.7文档保留演进历史；账号隐私迁移后，旧 GitHub Pages 阶段镜像不再作为当前公开入口。当前公开交互服务以 v0.8.1 的 Vercel/Cloudflare 公网部署和 `qa/v0_8` 证据为准；EdgeOne 正式账号项目已部署，但中国大陆“稳定无预览令牌生产入口”仍等待自定义域名/DNS/适用的 ICP 门槛。
+v0.1—v0.7文档保留演进历史；账号隐私迁移后，旧 GitHub Pages 阶段镜像不再作为当前公开入口。当前公开交互服务以 v0.8.1 的 Vercel/Cloudflare 公网部署和 `qa/v0_8` 证据为准；项目域名已在 Vercel 配置验证，EdgeOne Global/Overseas 项目也均已部署或建立，但中国大陆“稳定无预览令牌生产入口”仍等待腾讯云账户补全/支付方式，以及最终选择区域所要求的实名、ICP/服务商资格与实测验收。
 
 ## 启动
 

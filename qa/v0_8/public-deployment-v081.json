@@ -1,7 +1,7 @@
 {
   "version": "0.8.1-rc.2",
   "date": "2026-09-15",
-  "status": "PUBLIC_GLOBAL_DEPLOYMENT_LIVE_EDGEONE_ACCOUNT_PROJECT_DEPLOYED_CUSTOM_DOMAIN_GATE_REMAINS",
+  "status": "PUBLIC_HIDDENFENG_GITHUB_PAGES_VERCEL_CUSTOM_DOMAIN_CONFIG_LIVE_EDGEONE_ACCOUNT_COMPLETION_GATE",
   "cloudflare": {
     "backend": "https://labor-transparency-api.labor-transparency-public.workers.dev",
     "worker_live": true,
@@ -16,7 +16,7 @@
     "note": "Public backend is externally reachable, but the current Mainland-China network cannot reliably connect directly to workers.dev."
   },
   "vercel": {
-    "frontend": "https://labor-transparency-public.vercel.app",
+    "frontend": "https://workermanifestfellowship.vercel.app",
     "production_live": true,
     "remote_external_probe": {
       "root": 200,
@@ -99,8 +99,18 @@
     "note": "Global production frontend is live. The current Mainland-China network times out to vercel.app, so this is not the Mainland path.",
     "team_name": "Labor Transparency AI",
     "team_slug": "labor-transparency-ai",
-    "production_git_author": "PENDING_HIDDENFENG_REDEPLOY",
-    "old_github_handle_in_current_team_or_deployment_git_metadata": "PENDING_REVERIFY"
+    "production_git_author": "HiddenFeng",
+    "old_github_handle_in_current_team_or_deployment_git_metadata": false,
+    "account": "HiddenFeng",
+    "account_slug": "hiddenfeng",
+    "project": "workermanifestfellowship",
+    "hiddenfeng_migration_e2e": "PASS_HIDDENFENG_VERCEL_CLOUDFLARE_D1_E2E",
+    "root_http": 200,
+    "favicon_http": 200,
+    "project_owned_custom_domain": "https://workermanifestfellowship.dpdns.org",
+    "custom_domain_dns": "A_APEX_216.198.79.1_PLUS_VERCEL_OWNERSHIP_TXT",
+    "custom_domain_vercel_verify": "PASS_VALID_CONFIGURATION_AND_PROJECT_VERIFIED",
+    "custom_domain_current_runtime_network": "TIMEOUT_NOT_A_MAINLAND_SUCCESS_CLAIM"
   },
   "edgeone": {
     "temporary_preview_status": "PASS_TEMPORARY_EDGEONE_MAINLAND_PREVIEW_RC2",
@@ -143,14 +153,29 @@
     "platform_domain": "https://labor-transparency-public.edgeone.cool",
     "platform_domain_status": "ACTIVE_BUT_MAINLAND_DEFAULT_DOMAIN_REQUIRES_PREVIEW_AUTH",
     "default_domain_mainland_anonymous_direct_access": "HTTP_401_EO_TIME_MISSING",
-    "custom_domain_required_for_stable_no_token_mainland_entry": true
+    "custom_domain_required_for_stable_no_token_mainland_entry": true,
+    "custom_domain_candidate": "workermanifestfellowship.dpdns.org",
+    "custom_domain_add_status": "OVERSEAS_ACCEPTED_OWNERSHIP_TXT_LIVE_FINAL_VERIFY_BLOCKED_ACCOUNT_COMPLETION_PAYMENT_METHOD",
+    "real_name_verification_required": true,
+    "real_name_console_message": "您的帐号尚未完成实名认证，立即认证可享受全球可用区的加速服务！",
+    "global_project_custom_domain_gate": "BLOCKED_ACCOUNT_REAL_NAME_VERIFICATION",
+    "overseas_project": {
+      "name": "labor-transparency-overseas",
+      "area": "overseas",
+      "deployment": "SUCCESS",
+      "preset_url": "https://labor-transparency-overseas.edgeone.dev",
+      "custom_domain_candidate": "workermanifestfellowship.dpdns.org",
+      "ownership_txt": "PRESENT_AND_PUBLICLY_RESOLVING",
+      "final_verify": "BLOCKED_TENCENT_CLOUD_INTL_ACCOUNT_INFORMATION_AND_PAYMENT_METHOD"
+    },
+    "human_gate": "Complete Tencent Cloud International account information and add payment method; Global area also requires real-name verification."
   },
   "github_pages": {
     "current_public_role": "OPTIONAL_STATIC_MIRROR",
-    "new_account_pages_live": false,
-    "reason": "Pending first HiddenFeng workflow/Pages verification after privacy-sanitized push."
+    "new_account_pages_live": true,
+    "reason": "PASS: HiddenFeng Pages source uses GitHub Actions and run 34980498497 succeeded through configure-pages, artifact upload and deploy."
   },
-  "production_d1_qa_cleanup": "PASS_ZERO_QA_RECORDS_AFTER_VERCEL_AND_EDGEONE_E2E",
+  "production_d1_qa_cleanup": "PASS_ZERO_QA_RECORDS_AFTER_HIDDENFENG_VERCEL_E2E",
   "developer_identity": {
     "public_ui_exposes_personal_email": false,
     "public_ui_exposes_real_name": false,
@@ -160,21 +185,34 @@
     "public_github_repository_new_account": true,
     "active_git_history_old_account_free": true,
     "vercel_team_generic": true,
-    "edgeone_project_generic": true
+    "edgeone_project_generic": true,
+    "vercel_hiddenfeng_account": true
   },
   "manual_remaining": [
-    "Provide or authorize a project-owned custom domain/subdomain for EdgeOne.",
-    "If Mainland/global-including-Mainland acceleration is required, satisfy the domain ICP/provider eligibility shown by EdgeOne.",
-    "After the custom domain is bound, run final no-preview-token Mainland public QA on that permanent domain."
+    "Complete Tencent Cloud International account information and payment method for Overseas EdgeOne final ownership verification.",
+    "If Mainland-inclusive Global EdgeOne acceleration is required, complete account-owner real-name verification and applicable ICP/provider eligibility.",
+    "After account gates, finish EdgeOne final DNS/HTTPS/exact-Origin and no-preview-token Mainland QA."
   ],
-  "boundary": "Global Vercel + Cloudflare production is live. EdgeOne account authentication and an account-owned production project are also established. Stable no-token Mainland-China service is not yet claimed because EdgeOne requires a user-owned custom domain (and ICP/provider eligibility when applicable); the default edgeone.cool project hostname requires preview authorization from Mainland.",
+  "boundary": "HiddenFeng GitHub/Pages and HiddenFeng Vercel production are live; the project-owned custom domain is DNS-configured and Vercel-verified, but this current network still cannot reach Vercel reliably. EdgeOne Overseas accepts the custom domain and its ownership TXT is live, but final verification is blocked until the Tencent Cloud International account owner completes account information/payment-method setup. Stable no-token Mainland service is therefore not yet claimed.",
   "github_repository": {
     "url": "https://github.com/HiddenFeng/labor-transparency-ai",
-    "visibility": "TARGET_PUBLIC",
+    "visibility": "PUBLIC",
     "privacy_sanitized_history": true,
     "active_author_identity": "HiddenFeng",
     "previous_public_account_references_in_new_history_or_source": false,
     "workflows_present": true,
-    "actions_status": "PENDING_FIRST_HIDDENFENG_CI"
+    "actions_status": "PASS_RUN_34980498310",
+    "ci": {
+      "run_id": 34980498310,
+      "url": "https://github.com/HiddenFeng/labor-transparency-ai/actions/runs/34980498310",
+      "head_sha": "30999b501518f5e26aabce369e1eadf2bec393de",
+      "status": "PASS",
+      "jobs": {
+        "verify_3_9": "success",
+        "verify_3_13": "success",
+        "web_candidate": "success",
+        "cloudflare_backend": "success"
+      }
+    }
   }
 }

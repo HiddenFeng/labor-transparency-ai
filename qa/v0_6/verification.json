@@ -150,7 +150,7 @@
     "production_server_live": false,
     "github_repo": "https://github.com/HiddenFeng/labor-transparency-ai",
     "github_pages_deployed": false,
-    "public_site_url": "https://labor-transparency-public.vercel.app/"
+    "public_site_url": "https://workermanifestfellowship.vercel.app/"
   },
   "implemented_or_fixed_this_round": [
     "project-level Git repository initialized on main and pushed to public GitHub repository",
@@ -158,5 +158,5 @@
     "GitHub Pages read-only public-interest site deployed and publicly reachable",
     "public site explicitly states AI-built/AI-managed purpose and evidence boundaries"
   ],
-  "account_migration_note": "Public copy sanitized after GitHub account migration; the former stage-specific Pages mirror is retired. Current public site: https://labor-transparency-public.vercel.app/"
+  "account_migration_note": "Public copy sanitized after GitHub account migration; the former stage-specific Pages mirror is retired. Current public site: https://workermanifestfellowship.vercel.app/"
 }

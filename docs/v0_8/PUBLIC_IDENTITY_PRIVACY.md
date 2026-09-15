@@ -10,9 +10,9 @@
 - Worker 的 5xx 错误统一为通用消息；不返回 JS 堆栈、本机路径或 Wrangler 内部错误。
 - Cloudflare/Vercel/EdgeOne secret 只能放在各平台 secret/env 系统或本地被忽略的受限文件。
 - `.dev.vars`、`.production.secrets`、`.wrangler/`、`.vercel/`、`.edgeone/`、静态 `dist/` 不进入 Git。
-- 目前公网入口使用项目化别名 `labor-transparency-public.vercel.app` 与 `labor-transparency-api.labor-transparency-public.workers.dev`；普通访问者不需要看到平台账号邮箱、账号内部 ID 或个人命名的 deployment URL。
+- 目前公网入口使用项目化别名 `workermanifestfellowship.vercel.app` 与 `labor-transparency-api.labor-transparency-public.workers.dev`；普通访问者不需要看到平台账号邮箱、账号内部 ID 或个人命名的 deployment URL。
 - 历史 EdgeOne anonymous preview 的 claim token、预览 token 和项目凭据只保留在被 Git 忽略的本地运行状态；anonymous project 已完成 claim，当前正式 EdgeOne 项目名为 `labor-transparency-public`。机器 QA 不记录预览 token 或账号内部凭据。
-- GitHub 公开仓库已迁移到 `HiddenFeng/labor-transparency-ai`，采用新的隐私净化历史；旧 GitHub 账号/仓库历史不再属于公开仓库 refs。Vercel 当前项目团队也已更名为 `Labor Transparency AI / labor-transparency-ai`，当前生产部署 Git 元数据使用 HiddenFeng。
+- GitHub 公开仓库已迁移到 `HiddenFeng/labor-transparency-ai`，采用新的隐私净化历史；旧 GitHub 账号/仓库历史不再属于公开仓库 refs。Vercel 当前生产项目已迁移到 HiddenFeng 账号下的 `workermanifestfellowship`，当前公开别名与部署均不再依赖此前账号；GitHub 当前公开历史只包含 HiddenFeng noreply 作者身份。
 
 ## 不能承诺的“匿名”
 
