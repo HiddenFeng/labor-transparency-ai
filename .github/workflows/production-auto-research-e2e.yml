@@ -1,0 +1,123 @@
+name: Manual production auto-research E2E
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-auto-research-e2e
+  cancel-in-progress: false
+
+jobs:
+  production-auto-research-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Create QA company and observe real scheduled research
+        env:
+          LTP_E2E_ORIGIN: https://workermanifestfellowship.dpdns.org
+          LTP_E2E_RUN_ID: ${{ github.run_id }}
+        run: |
+          node <<'NODE'
+          import assert from 'node:assert/strict';
+          import fs from 'node:fs/promises';
+
+          const origin=process.env.LTP_E2E_ORIGIN.replace(/\/$/,'');
+          const runId=process.env.LTP_E2E_RUN_ID;
+          const region=`US · production-auto-research-e2e-${runId}`;
+          const companyName='Starbucks Corporation';
+
+          const configResponse=await fetch(`${origin}/api/config`,{headers:{Origin:origin}});
+          assert.equal(configResponse.status,200,'production config must be reachable');
+          const config=await configResponse.json();
+          assert.equal(config.mode,'CLOUDFLARE_WORKER_D1');
+          assert.equal(config.capabilities?.automaticCompanyResearch,true);
+          assert.equal(config.capabilities?.scheduledCompanyResearch,true);
+          const cookie=(configResponse.headers.get('set-cookie')||'').split(';')[0];
+          assert.match(cookie,/^ltp_session=/);
+          assert.match(config.csrfToken,/^[a-f0-9]{64}$/);
+
+          const createResponse=await fetch(`${origin}/api/companies`,{
+            method:'POST',
+            headers:{Origin:origin,Accept:'application/json','Content-Type':'application/json','X-LTP-CSRF':config.csrfToken,Cookie:cookie},
+            body:JSON.stringify({name:companyName,region,website:'https://www.starbucks.com/',consent:true})
+          });
+          const created=await createResponse.json();
+          assert.equal(createResponse.status,200,JSON.stringify(created));
+          assert.equal(created.duplicate,false,'QA region must create an isolated company');
+          assert.equal(created.researchQueued,true);
+          assert.equal(created.research?.status,'QUEUED');
+          const companyId=created.company.id;
+          console.log(`CREATED_COMPANY_ID=${companyId}`);
+          console.log(`CREATED_COMPANY_REGION=${region}`);
+
+          let company=null;
+          for(let attempt=0;attempt<44;attempt++){
+            const response=await fetch(`${origin}/api/companies`,{headers:{Origin:origin,Cookie:cookie,Accept:'application/json'}});
+            assert.equal(response.status,200);
+            const data=await response.json();
+            company=data.items.find(x=>x.id===companyId)||null;
+            assert.ok(company,'created company must remain publicly visible during QA');
+            const status=company.research?.status||'MISSING';
+            console.log(`poll=${attempt} research=${status} candidates=${company.research?.candidateCount||0} sourceErrors=${company.research?.sourceErrorCount||0}`);
+            if(['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(status))break;
+            assert.ok(['QUEUED','COLLECTING'].includes(status),`unexpected lifecycle state ${status}`);
+            await new Promise(resolve=>setTimeout(resolve,15000));
+          }
+
+          assert.ok(company?.research,'research projection must exist');
+          assert.ok(['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(company.research.status),'real */5 Cron must finish the queued company within the acceptance window');
+          assert.ok(company.research.candidateCount>0,'Starbucks should produce at least one bounded source candidate');
+          assert.equal(company.research.reviewRequired,true);
+          assert.ok(Array.isArray(company.research.providers)&&company.research.providers.length>=10);
+          assert.ok(company.research.providers.some(x=>Array.isArray(x.previews)&&x.previews.length>0),'ordinary public projection must expose a safe candidate preview');
+          assert.match(company.research.boundary,/候选/);
+
+          const forbiddenKeys=new Set(['records','sampleRecord','case_number','reason_closed','raw','token']);
+          function scan(value,path='root'){
+            if(Array.isArray(value)){value.forEach((x,i)=>scan(x,`${path}[${i}]`));return;}
+            if(!value||typeof value!=='object')return;
+            for(const [key,val] of Object.entries(value)){
+              assert.equal(forbiddenKeys.has(key),false,`forbidden public research key ${path}.${key}`);
+              scan(val,`${path}.${key}`);
+            }
+          }
+          scan(company.research);
+
+          const result={
+            status:'PASS_PRODUCTION_USER_CREATE_TO_REAL_CRON_TO_SAFE_DISPLAY',
+            runId,
+            origin,
+            companyId,
+            companyName,
+            region,
+            researchStatus:company.research.status,
+            candidateCount:company.research.candidateCount,
+            sourceSuccessCount:company.research.sourceSuccessCount,
+            sourceErrorCount:company.research.sourceErrorCount,
+            publicProviderCount:company.research.providers.length,
+            hasSafePreview:company.research.providers.some(x=>x.previews?.length),
+            cleanupRequired:true,
+            evidenceBoundary:'Displayed records are source candidates only; this workflow does not bind, review, approve or publish them as company facts.'
+          };
+          await fs.writeFile('/tmp/production-auto-research-e2e.json',JSON.stringify(result,null,2)+'\n');
+          console.log(JSON.stringify(result));
+          NODE
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: production-auto-research-e2e-${{ github.run_id }}
+          path: /tmp/production-auto-research-e2e.json
+          retention-days: 7
+
+      - name: Cleanup boundary
+        run: |
+          echo 'This workflow intentionally has no Cloudflare credentials.'
+          echo 'The project operator must delete the QA company and companyResearch records from production D1 after capturing the artifact.'

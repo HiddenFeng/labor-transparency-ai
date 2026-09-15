@@ -97,6 +97,8 @@ export LTP_EDGEONE_SITE=global
 
 外部可达性由 `.github/workflows/public-smoke.yml` 独立验证。该 workflow 可手动运行，并每日从 GitHub-hosted runner 做**语义级**检查，而不是只看 HTTP 200：项目自有域名与 Vercel 回退必须返回劳动透明计划页面及安全响应头；两条同源 `/api` 路径和 Worker 直连必须返回 `cloudflare-d1` health/config 契约；Session Cookie 必须保持 `HttpOnly; Secure; SameSite=Strict`；项目域名和 Vercel origin 必须被 Worker 精确允许，未知 origin 与已经退出生产链的 EdgeOne origin 必须返回 403；GitHub Pages 继续验证为只读回退。它的 PASS 只证明所测外部网络上的全球公网路径及这些安全/语义契约成立，不等于中国大陆 SLA。
 
+自动公司研究的**生产计划任务验收**使用手动 workflow `.github/workflows/production-auto-research-e2e.yml`。它从项目自有域名创建一条唯一 QA 公司，要求创建响应立即为 `QUEUED`，然后只轮询普通公开公司 API，等待真实 `*/5` Cloudflare Cron 自行推进到 `REVIEW_REQUIRED*` 并出现安全候选预览。该 workflow 不持有 Cloudflare 凭据，也不手工调用 research-agent run，因此可以证明用户路径确实不依赖后台人工执行。每次验收完成后，项目运营 Agent 必须依据 workflow 输出的 company ID 从生产 D1 删除 QA `companies` / `companyResearch` 记录并复核无残留。
+
 ## 6. 当前已上线地址与仍需人工步骤
 
 - 主公开交互域名：`https://workermanifestfellowship.dpdns.org`
