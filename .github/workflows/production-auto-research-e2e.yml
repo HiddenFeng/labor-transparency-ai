@@ -35,7 +35,8 @@ jobs:
 
           const origin=process.env.LTP_E2E_ORIGIN.replace(/\/$/,'');
           const runId=process.env.LTP_E2E_RUN_ID;
-          const region=`US · production-auto-research-e2e-${runId}`;
+          const runCode=Number(runId).toString(36);
+          const region=`US · production-auto-research-e2e-${runCode}`;
           const companyName='Starbucks Corporation';
 
           const configResponse=await fetch(`${origin}/api/config`,{headers:{Origin:origin}});
