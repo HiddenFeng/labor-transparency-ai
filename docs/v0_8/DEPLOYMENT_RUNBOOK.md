@@ -94,7 +94,7 @@ export LTP_EDGEONE_SITE=global
 - 真实 production 静态包通过 privacy audit；
 - 中国大陆只有经过多地区实际探测后才报告可达性，不以“域名能解析”替代真实访问测试。
 
-外部可达性由 `.github/workflows/public-smoke.yml` 独立验证。该 workflow 可手动运行，并每日从 GitHub-hosted runner 检查项目自有域名、Vercel 平台回退、Cloudflare Worker health 与 GitHub Pages 只读回退。它的 PASS 只证明所测外部网络上的全球公网路径可达，不等于中国大陆 SLA。
+外部可达性由 `.github/workflows/public-smoke.yml` 独立验证。该 workflow 可手动运行，并每日从 GitHub-hosted runner 做**语义级**检查，而不是只看 HTTP 200：项目自有域名与 Vercel 回退必须返回劳动透明计划页面及安全响应头；两条同源 `/api` 路径和 Worker 直连必须返回 `cloudflare-d1` health/config 契约；Session Cookie 必须保持 `HttpOnly; Secure; SameSite=Strict`；项目域名和 Vercel origin 必须被 Worker 精确允许，未知 origin 与已经退出生产链的 EdgeOne origin 必须返回 403；GitHub Pages 继续验证为只读回退。它的 PASS 只证明所测外部网络上的全球公网路径及这些安全/语义契约成立，不等于中国大陆 SLA。
 
 ## 6. 当前已上线地址与仍需人工步骤
 

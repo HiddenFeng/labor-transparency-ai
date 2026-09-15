@@ -47,6 +47,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: node --test scripts/deployment/public_smoke.test.mjs
       - run: npm --prefix sites-app test
       - run: npm --prefix sites-app run build
       - run: LTP_PUBLIC_API_BASE=https://api.example.invalid LTP_DEPLOYMENT_LABEL=ci-static node deploy/frontend/build.mjs
