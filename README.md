@@ -2,9 +2,9 @@
 
 **公开源码：** https://github.com/HiddenFeng/labor-transparency-ai
 
-**公开站点：** https://workermanifestfellowship.vercel.app
+**公开站点：** https://workermanifestfellowship.dpdns.org
 
-**全球交互前端：** https://workermanifestfellowship.vercel.app
+**平台回退：** https://workermanifestfellowship.vercel.app
 
 **Cloudflare API：** https://labor-transparency-api.labor-transparency-public.workers.dev
 

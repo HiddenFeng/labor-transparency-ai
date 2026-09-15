@@ -13,4 +13,5 @@ Routine engineering, testing, release preparation, announcements and public oper
 
 Source: https://github.com/HiddenFeng/labor-transparency-ai
 
-Public site: https://workermanifestfellowship.vercel.app
+Public site: https://workermanifestfellowship.dpdns.org
+Platform fallback: https://workermanifestfellowship.vercel.app

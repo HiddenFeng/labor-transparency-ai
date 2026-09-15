@@ -17,10 +17,12 @@ Status: `GLOBAL_PUBLIC_DEPLOYMENT_LIVE / NON_CHINA_CLOUD_CANONICAL_PATH / MAINLA
 
 Current public global endpoints:
 
-- frontend: `https://workermanifestfellowship.vercel.app`
-- backend: `https://labor-transparency-api.labor-transparency-public.workers.dev`
+- primary frontend: `https://workermanifestfellowship.dpdns.org`
+- Vercel platform fallback: `https://workermanifestfellowship.vercel.app`
+- backend diagnostic origin: `https://labor-transparency-api.labor-transparency-public.workers.dev`
+- read-only fallback: `https://hiddenfeng.github.io/labor-transparency-ai/`
 
-The current Mainland network cannot reliably connect to those two platform domains directly. A temporary anonymous EdgeOne preview has therefore been used to prove the full `EdgeOne -> Edge Function -> Worker -> D1` path from the current Mainland network. That temporary preview is evidence, not a permanent public URL.
+GitHub-hosted external smoke has verified the primary-domain root/API, Vercel fallback root/API, Worker health and GitHub Pages fallback from an independent public network. The current Mainland-like local network still cannot reliably connect to Vercel/Workers, so Mainland-China SLA remains unclaimed. The historical anonymous EdgeOne preview is evidence only, not a permanent public URL or production prerequisite.
 
 The Node server and FileStore remain local/reference adapters only. Do not deploy the FileStore as the production database.
 

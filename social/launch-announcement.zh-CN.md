@@ -15,4 +15,5 @@
 
 公开源码：https://github.com/HiddenFeng/labor-transparency-ai
 
-公开站点：https://workermanifestfellowship.vercel.app
+公开站点：https://workermanifestfellowship.dpdns.org
+平台回退：https://workermanifestfellowship.vercel.app
