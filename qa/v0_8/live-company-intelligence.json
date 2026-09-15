@@ -1,0 +1,2013 @@
+{
+  "status": "DRAFT_READY",
+  "company": {
+    "name": "STARBUCKS CORPORATION",
+    "country": "US",
+    "lei": "OQSJ1DU9TAOC51A47K68"
+  },
+  "bindings": {
+    "WIKIDATA": "Q37158",
+    "NLRB_CASES": "Starbucks Corporation",
+    "OSHA_ENFORCEMENT": "STARBUCKS CORPORATION",
+    "DOL_WHD": "Starbucks Corporation",
+    "FMCS_F7": "Starbucks Corporation",
+    "OLMS_LM20": "Starbucks",
+    "USA_SPENDING": "STARBUCKS CORP"
+  },
+  "requests": 14,
+  "cache_hits": 0,
+  "candidate_count": 0,
+  "sections": {
+    "identity": {
+      "status": "PARTIAL",
+      "items": 6,
+      "gap": "只核对本条登记参考记录，不代表掌握所有用工主体。"
+    },
+    "business": {
+      "status": "PARTIAL",
+      "items": 17,
+      "gap": "当前只汇总已绑定来源可支持的公开业务/申报上下文，不等于完整产品目录、市场表现或公司全部经营事实。 SEC_EDGAR：本轮未取得可用记录（SOURCE_ACCESS_DENIED），不代表不存在。"
+    },
+    "ownership": {
+      "status": "PARTIAL",
+      "items": 1,
+      "gap": "直接会计合并母公司：接口本轮没有可用记录；未核对申报例外，不推断无母公司。 最终会计合并母公司：接口本轮没有可用记录；未核对申报例外，不推断无母公司。"
+    },
+    "facilities": {
+      "status": "PARTIAL",
+      "items": 33,
+      "gap": "当前只列已绑定公开来源返回的总部/检查涉及地点，不等于企业全部工厂、门店、办公室或实际用工地点。"
+    },
+    "supply_chain": {
+      "status": "PARTIAL",
+      "items": 15,
+      "gap": "Open Supply Hub已配置为可选token候选来源；未有明确OS ID绑定与贡献者/关系复核前不写入供应链事实。"
+    },
+    "work_conditions": {
+      "status": "PARTIAL",
+      "items": 50,
+      "gap": "当前只列已绑定来源中的案件/检查/执法记录与已审社区证据；记录本身须保留程序状态，不能外推为公司整体劳动条件。"
+    },
+    "channels": {
+      "status": "PARTIAL",
+      "items": 1,
+      "gap": "当前自动来源主要提供官网/公开入口；官网不等于正式劳动申诉渠道，具体受理渠道仍需按地区和机构核对。"
+    }
+  },
+  "packet_source_count": 8,
+  "providers_in_items": [
+    "DOL_WHD",
+    "FMCS_F7",
+    "GLEIF",
+    "NLRB_CASES",
+    "OLMS_LM20",
+    "OSHA_ENFORCEMENT",
+    "USA_SPENDING",
+    "WIKIDATA"
+  ],
+  "claim_boundary": "Live draft assembly only. Explicit bindings were supplied for QA; this run does not approve/publish facts and does not prove global completeness.",
+  "packet": {
+    "version": "0.5",
+    "company_id": "qa-live-company",
+    "synthetic": false,
+    "review": {
+      "status": "DRAFT",
+      "reviewer": null
+    },
+    "identity_status": "MATCHED",
+    "sources": [
+      {
+        "id": "gleif-914f116c6dcc",
+        "title": "GLEIF公开法律实体参考记录",
+        "url": "https://api.gleif.org/api/v1/lei-records/OQSJ1DU9TAOC51A47K68",
+        "publisher": "GLEIF",
+        "accessed_at": "2026-09-15T09:45:30.342324+00:00",
+        "reuse_status": "CC0-1.0",
+        "license_url": "https://www.gleif.org/en/about/open-data",
+        "content_sha256": "e93ca4cd4ec33bdaeb3829e278e36c0b30376d431ef4699aa9a9db6f7d0ee0ca",
+        "cached": false
+      },
+      {
+        "id": "wikidata-fb1eb0ed7f92d5",
+        "title": "Wikidata bound entity",
+        "url": "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=Q37158&props=labels%7Cdescriptions%7Cclaims&languages=en%7Czh&format=json&origin=%2A",
+        "publisher": "Wikidata",
+        "accessed_at": "2026-09-15T09:45:37.141174+00:00",
+        "reuse_status": "CC0-1.0",
+        "license_url": "https://www.wikidata.org/wiki/Wikidata:Licensing"
+      },
+      {
+        "id": "nlrb_cases-bac37391e4aa24",
+        "title": "LaborData mirror of bound NLRB case records",
+        "url": "https://labordata.bunkum.us/nlrb/-/query.json?sql=select+case_number%2Cname%2Ccase_type%2Curl%2Ccity%2Cstate%2Cdate_filed%2Cregion_assigned%2Cstatus%2Cdate_closed%2Creason_closed%2Ccertified_representative+from+filing+where+lower%28name%29%3Dlower%28%27Starbucks+Corporation%27%29+order+by+date_filed+desc+limit+12&_shape=array",
+        "publisher": "LaborData structured mirror",
+        "accessed_at": "2026-09-15T09:45:39.710718+00:00",
+        "reuse_status": "STRUCTURED-MIRROR-OF-US-GOV-PUBLIC-DATA",
+        "license_url": "https://github.com/labordata"
+      },
+      {
+        "id": "osha_enforcement-7bfed0b7ee1dac",
+        "title": "LaborData mirror of bound OSHA inspection/citation records",
+        "url": "https://labordata.bunkum.us/osha_enforcement/-/query.json?sql=select+i.activity_nr%2Ci.estab_name%2Ci.site_city%2Ci.site_state%2Ci.naics_code%2Ci.insp_type%2Ci.insp_scope%2Ci.open_date%2Ci.close_case_date%2Ccount%28v.citation_id%29+as+citation_count%2Ccoalesce%28sum%28case+when+coalesce%28v.delete_flag%2C%27%27%29+%21%3D+%27X%27+then+coalesce%28v.current_penalty%2C0%29+else+0+end%29%2C0%29+as+current_penalty+from+inspection+i+left+join+violation+v+on+v.activity_nr%3Di.activity_nr+where+lower%28i.estab_name%29%3Dlower%28%27STARBUCKS+CORPORATION%27%29+group+by+i.activity_nr%2Ci.estab_name%2Ci.site_city%2Ci.site_state%2Ci.naics_code%2Ci.insp_type%2Ci.insp_scope%2Ci.open_date%2Ci.close_case_date+order+by+i.open_date+desc+limit+10&_shape=array",
+        "publisher": "LaborData structured mirror",
+        "accessed_at": "2026-09-15T09:45:41.156563+00:00",
+        "reuse_status": "STRUCTURED-MIRROR-OF-US-GOV-PUBLIC-DATA",
+        "license_url": "https://github.com/labordata"
+      },
+      {
+        "id": "dol_whd-1420c6ad8a6b0e",
+        "title": "LaborData mirror of bound WHD concluded compliance actions",
+        "url": "https://labordata.bunkum.us/whisard/-/query.json?sql=select+case_id%2Ctrade_nm%2Clegal_name%2Ccty_nm%2Cst_cd%2Cnaic_cd%2Cnaics_code_description%2Ccase_violtn_cnt%2Ccmp_assd%2Cee_violtd_cnt%2Cbw_atp_amt%2Cee_atp_cnt%2Cfindings_start_date%2Cfindings_end_date%2Cflsa_repeat_violator+from+cases+where+lower%28legal_name%29%3Dlower%28%27Starbucks+Corporation%27%29+or+lower%28trade_nm%29%3Dlower%28%27Starbucks+Corporation%27%29+order+by+findings_end_date+desc+limit+12&_shape=array",
+        "publisher": "LaborData structured mirror",
+        "accessed_at": "2026-09-15T09:45:41.994840+00:00",
+        "reuse_status": "STRUCTURED-MIRROR-OF-US-GOV-PUBLIC-DATA",
+        "license_url": "https://github.com/labordata"
+      },
+      {
+        "id": "fmcs_f7-cc776eaf892052",
+        "title": "LaborData mirror of bound FMCS F-7 notices",
+        "url": "https://labordata.bunkum.us/f7/-/query.json?sql=select+notice_date%2Cinitiated_date%2Cemployer%2Cemployer_city%2Cemployer_state%2Cunion_name%2Caffected_location_city%2Caffected_location_state%2Cexpiration_date%2Cnaics%2Cindustry%2Cbargaining_unit_size%2Cestablishment_size%2Ccategory%2Chealthcare_related+from+f7+where+lower%28employer%29%3Dlower%28%27Starbucks+Corporation%27%29+order+by+notice_date+desc+limit+15&_shape=array",
+        "publisher": "LaborData structured mirror",
+        "accessed_at": "2026-09-15T09:45:43.723716+00:00",
+        "reuse_status": "STRUCTURED-MIRROR-OF-US-GOV-PUBLIC-DATA",
+        "license_url": "https://github.com/labordata"
+      },
+      {
+        "id": "olms_lm20-1982ff2a0167cf",
+        "title": "LaborData mirror of bound OLMS employer/consultant disclosure reports",
+        "url": "https://labordata.bunkum.us/lm20/-/query.json?sql=select+e.rptId%2Ce.empLabOrg%2Ce.empTrdName%2Ce.city%2Ce.state%2Ce.termDate%2Ce.amount%2Cfi.filing_url%2Cfi.formFiled%2Cfi.receiveDate%2C%28select+companyName+from+filer+fx+where+%27%2C%27%7C%7Creplace%28cast%28fx.srFilerId+as+varchar%29%2C%27+%27%2C%27%27%29%7C%7C%27%2C%27+like+%27%25%2C%27%7C%7Ccast%28fi.srFilerId+as+varchar%29%7C%7C%27%2C%25%27+limit+1%29+as+consultant+from+employer+e+join+filing+fi+on+fi.rptId%3De.rptId+where+lower%28e.empTrdName%29%3Dlower%28%27Starbucks%27%29+or+lower%28e.empLabOrg%29%3Dlower%28%27Starbucks%27%29+order+by+e.termDate+desc+limit+12&_shape=array",
+        "publisher": "LaborData structured mirror",
+        "accessed_at": "2026-09-15T09:45:47.400207+00:00",
+        "reuse_status": "STRUCTURED-MIRROR-OF-US-GOV-PUBLIC-DATA",
+        "license_url": "https://github.com/labordata"
+      },
+      {
+        "id": "usa_spending-fdce14d236c846",
+        "title": "USAspending federal contract awards",
+        "url": "https://api.usaspending.gov/api/v2/search/spending_by_award/",
+        "publisher": "USAspending.gov / U.S. Department of the Treasury",
+        "accessed_at": "2026-09-15T09:45:49.232116+00:00",
+        "reuse_status": "US-GOV-PUBLIC-RECORD",
+        "license_url": "https://api.usaspending.gov/docs/endpoints"
+      }
+    ],
+    "sections": {
+      "identity": {
+        "status": "PARTIAL",
+        "gap": "只核对本条登记参考记录，不代表掌握所有用工主体。",
+        "items": [
+          {
+            "text": "法律名称：STARBUCKS CORPORATION",
+            "source_ids": [
+              "gleif-914f116c6dcc"
+            ],
+            "as_of": "2026-06-16T20:25:21Z",
+            "basis": "GLEIF登记参考数据；记录更新时间不是公司劳动条件的核验时间。",
+            "locator": "/data/attributes/entity/legalName/name"
+          },
+          {
+            "text": "LEI：OQSJ1DU9TAOC51A47K68",
+            "source_ids": [
+              "gleif-914f116c6dcc"
+            ],
+            "as_of": "2026-06-16T20:25:21Z",
+            "basis": "GLEIF登记参考数据；记录更新时间不是公司劳动条件的核验时间。",
+            "locator": "/data/attributes/lei"
+          },
+          {
+            "text": "登记国家/地区：US",
+            "source_ids": [
+              "gleif-914f116c6dcc"
+            ],
+            "as_of": "2026-06-16T20:25:21Z",
+            "basis": "GLEIF登记参考数据；记录更新时间不是公司劳动条件的核验时间。",
+            "locator": "/data/attributes/entity/legalAddress/country"
+          },
+          {
+            "text": "法律辖区：US-WA",
+            "source_ids": [
+              "gleif-914f116c6dcc"
+            ],
+            "as_of": "2026-06-16T20:25:21Z",
+            "basis": "GLEIF登记参考数据；记录更新时间不是公司劳动条件的核验时间。",
+            "locator": "/data/attributes/entity/jurisdiction"
+          },
+          {
+            "text": "来源中的实体状态：ACTIVE",
+            "source_ids": [
+              "gleif-914f116c6dcc"
+            ],
+            "as_of": "2026-06-16T20:25:21Z",
+            "basis": "GLEIF登记参考数据；记录更新时间不是公司劳动条件的核验时间。",
+            "locator": "/data/attributes/entity/status"
+          },
+          {
+            "text": "LEI维护状态（不是企业合法性评级）：ISSUED",
+            "source_ids": [
+              "gleif-914f116c6dcc"
+            ],
+            "as_of": "2026-06-16T20:25:21Z",
+            "basis": "GLEIF登记参考数据；记录更新时间不是公司劳动条件的核验时间。",
+            "locator": "/data/attributes/registration/status"
+          }
+        ]
+      },
+      "business": {
+        "status": "PARTIAL",
+        "items": [
+          {
+            "text": "行业：coffee industry；产品/产出类别：coffee, Frappuccino；成立/起始日期：1971-03-30",
+            "source_ids": [
+              "wikidata-fb1eb0ed7f92d5"
+            ],
+            "as_of": "2026-09-15T09:45:37.141174+00:00",
+            "basis": "Wikidata社区维护知识图谱，仅作上下文参考；若与官方登记/申报冲突，以更高权威来源为准。",
+            "provider": "WIKIDATA",
+            "external_id": "Q37158"
+          },
+          {
+            "text": "WHD案件记录中的NAICS行业描述：Limited-Service Restaurants, Snack and Nonalcoholic Beverage Bars。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD执法案件中的行业分类，仅作涉案单位业务上下文；不等于完整业务或产品目录。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "联邦award公开描述：VERISMO 701 EXPRESSO MACHINE",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018917P1024"
+          },
+          {
+            "text": "联邦award公开描述：VERISMO EXPRESSO MACHINE",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018916P0564"
+          },
+          {
+            "text": "联邦award公开描述：ESPRESSO MACHINE",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018914P0205"
+          },
+          {
+            "text": "联邦award公开描述：STARBUCKS COFFEE MACHINES",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018921P0480"
+          },
+          {
+            "text": "联邦award公开描述：VERISMO 701 ESPRESSO MACHINE SKU",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "FA664810P0031"
+          },
+          {
+            "text": "联邦award公开描述：EXPRESSO MACHINE",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0024413P0128"
+          },
+          {
+            "text": "联邦award公开描述：ESPRESSO MACHINES",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0040619P0550"
+          },
+          {
+            "text": "联邦award公开描述：ESPRESSO MACHINE",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018913P0245"
+          },
+          {
+            "text": "联邦award公开描述：VERISMO EXPRESSO MACHINE",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018915P1188"
+          },
+          {
+            "text": "联邦award公开描述：VERISMO 701 ESPRESSO MACHINE QTY.2, CUNO WATER SOFTENER QTY. 2, VERISMO 701 SPARE PARTS KIT QTY. 2",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018918P0324"
+          },
+          {
+            "text": "联邦award公开描述：ESPRESSO MACHINES",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0024413P0906"
+          },
+          {
+            "text": "联邦award公开描述：ESPRESSO MACHINE",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0024414P0371"
+          },
+          {
+            "text": "联邦award公开描述：COFFEE ART PLUS TOUCH",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0024419P0379"
+          },
+          {
+            "text": "联邦award公开描述：NEXCOM - COFFEE ART TOUCH ESPRESSO",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018920P0367"
+          },
+          {
+            "text": "联邦award公开描述：COFFEE ART ESPRESSO MACHINES",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending award描述只说明该具体联邦交易的公开用途，不等于企业完整业务/产品目录。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018920P0034"
+          }
+        ],
+        "gap": "当前只汇总已绑定来源可支持的公开业务/申报上下文，不等于完整产品目录、市场表现或公司全部经营事实。 SEC_EDGAR：本轮未取得可用记录（SOURCE_ACCESS_DENIED），不代表不存在。"
+      },
+      "ownership": {
+        "status": "PARTIAL",
+        "items": [
+          {
+            "text": "子组织：Teavana, Tazo, Seattle's Best Coffee, Ethos Water",
+            "source_ids": [
+              "wikidata-fb1eb0ed7f92d5"
+            ],
+            "as_of": "2026-09-15T09:45:37.141174+00:00",
+            "basis": "Wikidata社区维护知识图谱，仅作上下文参考；若与官方登记/申报冲突，以更高权威来源为准。 关系字段不等于已核验的会计合并、股权比例或供应链责任。",
+            "provider": "WIKIDATA",
+            "external_id": "Q37158",
+            "relationship_type": "WIKIDATA_ORGANIZATION_RELATION"
+          }
+        ],
+        "gap": "直接会计合并母公司：接口本轮没有可用记录；未核对申报例外，不推断无母公司。 最终会计合并母公司：接口本轮没有可用记录；未核对申报例外，不推断无母公司。"
+      },
+      "facilities": {
+        "status": "PARTIAL",
+        "items": [
+          {
+            "text": "Wikidata总部地点：Seattle。",
+            "source_ids": [
+              "wikidata-fb1eb0ed7f92d5"
+            ],
+            "as_of": "2026-09-15T09:45:37.141174+00:00",
+            "basis": "Wikidata社区维护知识图谱，仅作上下文参考；若与官方登记/申报冲突，以更高权威来源为准。 这里只表示总部地点，不等于全部工厂/用工地点。",
+            "provider": "WIKIDATA",
+            "external_id": "Q37158",
+            "relationship_type": "HEADQUARTERS_REFERENCE"
+          },
+          {
+            "text": "OSHA检查记录涉及地点：MIDVALE, UT（establishment name: STARBUCKS CORPORATION）。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据的检查地点，仅证明该检查记录涉及的establishment，不等于公司全部工厂/办公地点。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "349076513",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录涉及地点：TULARE, CA（establishment name: STARBUCKS CORPORATION）。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据的检查地点，仅证明该检查记录涉及的establishment，不等于公司全部工厂/办公地点。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348890781",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录涉及地点：MERCED, CA（establishment name: STARBUCKS CORPORATION）。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据的检查地点，仅证明该检查记录涉及的establishment，不等于公司全部工厂/办公地点。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348828757",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录涉及地点：RICHMOND, VA（establishment name: STARBUCKS CORPORATION）。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据的检查地点，仅证明该检查记录涉及的establishment，不等于公司全部工厂/办公地点。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348659913",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录涉及地点：SAN LORENZO, CA（establishment name: STARBUCKS CORPORATION）。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据的检查地点，仅证明该检查记录涉及的establishment，不等于公司全部工厂/办公地点。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348435702",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录涉及地点：WEST SACRAMENTO, CA（establishment name: STARBUCKS CORPORATION）。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据的检查地点，仅证明该检查记录涉及的establishment，不等于公司全部工厂/办公地点。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348433376",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录涉及地点：WOODBRIDGE, VA（establishment name: STARBUCKS CORPORATION）。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据的检查地点，仅证明该检查记录涉及的establishment，不等于公司全部工厂/办公地点。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348366618",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录涉及地点：WEST MELBOURNE, FL（establishment name: STARBUCKS CORPORATION）。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据的检查地点，仅证明该检查记录涉及的establishment，不等于公司全部工厂/办公地点。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348192204",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录涉及地点：FREDERICKSBURG, VA（establishment name: STARBUCKS CORPORATION）。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据的检查地点，仅证明该检查记录涉及的establishment，不等于公司全部工厂/办公地点。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348144486",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录涉及地点：HUNTSVILLE, AL（establishment name: STARBUCKS CORPORATION）。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据的检查地点，仅证明该检查记录涉及的establishment，不等于公司全部工厂/办公地点。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "347982787",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "WHD已结案行动涉及地点：Bellevue, WA。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD涉案单位地点，仅证明该执法记录涉及的位置，不等于企业全部用工地点。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "ENFORCEMENT_CASE_LOCATION"
+          },
+          {
+            "text": "WHD已结案行动涉及地点：GREEN BAY, WI。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD涉案单位地点，仅证明该执法记录涉及的位置，不等于企业全部用工地点。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "ENFORCEMENT_CASE_LOCATION"
+          },
+          {
+            "text": "WHD已结案行动涉及地点：Houston, TX。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD涉案单位地点，仅证明该执法记录涉及的位置，不等于企业全部用工地点。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "ENFORCEMENT_CASE_LOCATION"
+          },
+          {
+            "text": "WHD已结案行动涉及地点：Melbourne, FL。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD涉案单位地点，仅证明该执法记录涉及的位置，不等于企业全部用工地点。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "ENFORCEMENT_CASE_LOCATION"
+          },
+          {
+            "text": "WHD已结案行动涉及地点：New York, NY。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD涉案单位地点，仅证明该执法记录涉及的位置，不等于企业全部用工地点。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "ENFORCEMENT_CASE_LOCATION"
+          },
+          {
+            "text": "WHD已结案行动涉及地点：OREM, UT。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD涉案单位地点，仅证明该执法记录涉及的位置，不等于企业全部用工地点。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "ENFORCEMENT_CASE_LOCATION"
+          },
+          {
+            "text": "WHD已结案行动涉及地点：Oregon City, OR。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD涉案单位地点，仅证明该执法记录涉及的位置，不等于企业全部用工地点。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "ENFORCEMENT_CASE_LOCATION"
+          },
+          {
+            "text": "WHD已结案行动涉及地点：Sacramento, CA。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD涉案单位地点，仅证明该执法记录涉及的位置，不等于企业全部用工地点。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "ENFORCEMENT_CASE_LOCATION"
+          },
+          {
+            "text": "WHD已结案行动涉及地点：Salt Lake City, UT。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD涉案单位地点，仅证明该执法记录涉及的位置，不等于企业全部用工地点。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "ENFORCEMENT_CASE_LOCATION"
+          },
+          {
+            "text": "WHD已结案行动涉及地点：Woodburn, OR。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "WHD涉案单位地点，仅证明该执法记录涉及的位置，不等于企业全部用工地点。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "ENFORCEMENT_CASE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Austin, TX。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Bakersfield, CA。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Bolingbrook, IL。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Chicago, IL。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Goodlettsville, TN。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Hillsboro, OR。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Inwood, WV。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Johnson City, TN。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Muscle Shoals, AL。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Norman, OK。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Pikesville, MD。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          },
+          {
+            "text": "FMCS F-7通知涉及用工/谈判地点：Roswell, GA。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "F-7通知涉及地点，不等于企业全部用工地点。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation",
+            "relationship_type": "BARGAINING_NOTICE_LOCATION"
+          }
+        ],
+        "gap": "当前只列已绑定公开来源返回的总部/检查涉及地点，不等于企业全部工厂、门店、办公室或实际用工地点。"
+      },
+      "supply_chain": {
+        "status": "PARTIAL",
+        "items": [
+          {
+            "text": "美国联邦合同/award N0018917P1024；授标机构：Department of Defense / Department of the Navy；金额：38000.0 USD；期间：2017-07-27 至 2017-08-15。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018917P1024",
+            "description": "VERISMO 701 EXPRESSO MACHINE",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0018916P0564；授标机构：Department of Defense / Department of the Navy；金额：35220.0 USD；期间：2016-05-06 至 2016-05-13。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018916P0564",
+            "description": "VERISMO EXPRESSO MACHINE",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0018914P0205；授标机构：Department of Defense / Department of the Navy；金额：33640.8 USD；期间：2014-01-24 至 2014-02-07。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018914P0205",
+            "description": "ESPRESSO MACHINE",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0018921P0480；授标机构：Department of Defense / Department of the Navy；金额：28659.0 USD；期间：2021-08-16 至 2021-08-31。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018921P0480",
+            "description": "STARBUCKS COFFEE MACHINES",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award FA664810P0031；授标机构：Department of Defense / Department of the Air Force；金额：24864.0 USD；期间：2010-07-19 至 2010-08-31。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "FA664810P0031",
+            "description": "VERISMO 701 ESPRESSO MACHINE SKU",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0024413P0128；授标机构：Department of Defense / Department of the Navy；金额：23775.2 USD；期间：2012-12-06 至 2013-01-15。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0024413P0128",
+            "description": "EXPRESSO MACHINE",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0040619P0550；授标机构：Department of Defense / Department of the Navy；金额：23502.2 USD；期间：2019-08-19 至 2019-09-06。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0040619P0550",
+            "description": "ESPRESSO MACHINES",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0018913P0245；授标机构：Department of Defense / Department of the Navy；金额：23489.68 USD；期间：2013-01-25 至 2013-02-28。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018913P0245",
+            "description": "ESPRESSO MACHINE",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0018915P1188；授标机构：Department of Defense / Department of the Navy；金额：23480.0 USD；期间：2015-08-12 至 2015-09-01。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018915P1188",
+            "description": "VERISMO EXPRESSO MACHINE",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0018918P0324；授标机构：Department of Defense / Department of the Navy；金额：23313.2 USD；期间：2018-02-07 至 2018-02-28。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018918P0324",
+            "description": "VERISMO 701 ESPRESSO MACHINE QTY.2, CUNO WATER SOFTENER QTY. 2, VERISMO 701 SPARE PARTS KIT QTY. 2",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0024413P0906；授标机构：Department of Defense / Department of the Navy；金额：23033.9 USD；期间：2013-09-23 至 2014-02-28。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0024413P0906",
+            "description": "ESPRESSO MACHINES",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0024414P0371；授标机构：Department of Defense / Department of the Navy；金额：22597.3 USD；期间：2014-06-23 至 2014-07-25。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0024414P0371",
+            "description": "ESPRESSO MACHINE",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0024419P0379；授标机构：Department of Defense / Department of the Navy；金额：19106.0 USD；期间：2019-08-08 至 2019-08-23。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0024419P0379",
+            "description": "COFFEE ART PLUS TOUCH",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0018920P0367；授标机构：Department of Defense / Department of the Navy；金额：19106.0 USD；期间：2020-05-14 至 2020-06-13。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018920P0367",
+            "description": "NEXCOM - COFFEE ART TOUCH ESPRESSO",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          },
+          {
+            "text": "美国联邦合同/award N0018920P0034；授标机构：Department of Defense / Department of the Navy；金额：19106.0 USD；期间：2019-11-14 至 2019-11-18。",
+            "source_ids": [
+              "usa_spending-fdce14d236c846"
+            ],
+            "as_of": "2026-09-15T09:45:49.232116+00:00",
+            "basis": "USAspending.gov公开联邦award记录，只支持该具体政府采购/award关系；不是企业完整客户、供应商或商业合作网络。",
+            "provider": "USA_SPENDING",
+            "external_id": "STARBUCKS CORP",
+            "award_id": "N0018920P0034",
+            "description": "COFFEE ART ESPRESSO MACHINES",
+            "relationship_type": "FEDERAL_AWARD_CUSTOMER_RELATION"
+          }
+        ],
+        "gap": "Open Supply Hub已配置为可选token候选来源；未有明确OS ID绑定与贡献者/关系复核前不写入供应链事实。"
+      },
+      "work_conditions": {
+        "status": "PARTIAL",
+        "items": [
+          {
+            "text": "NLRB案件 29-RC-394601；类型 RC；立案 2026-09-10；状态 Open；地点 Freeport, NY。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "29-RC-394601",
+            "official_url": "https://www.nlrb.gov/case/29-RC-394601"
+          },
+          {
+            "text": "NLRB案件 10-CA-394623；类型 CA；立案 2026-09-10；状态 Open；地点 Johnson City, TN。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "10-CA-394623",
+            "official_url": "https://www.nlrb.gov/case/10-CA-394623"
+          },
+          {
+            "text": "NLRB案件 19-CA-394493；类型 CA；立案 2026-09-09；状态 Open；地点 Seattle, WA。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "19-CA-394493",
+            "official_url": "https://www.nlrb.gov/case/19-CA-394493"
+          },
+          {
+            "text": "NLRB案件 14-RD-394287；类型 RD；立案 2026-09-04；状态 Open；地点 Wichita, KS。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "14-RD-394287",
+            "official_url": "https://www.nlrb.gov/case/14-RD-394287"
+          },
+          {
+            "text": "NLRB案件 21-CA-394118；类型 CA；立案 2026-09-02；状态 Open；地点 Encinitas, CA。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "21-CA-394118",
+            "official_url": "https://www.nlrb.gov/case/21-CA-394118"
+          },
+          {
+            "text": "NLRB案件 04-RC-393858；类型 RC；立案 2026-08-31；状态 Open；地点 Flourtown, PA。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "04-RC-393858",
+            "official_url": "https://www.nlrb.gov/case/04-RC-393858"
+          },
+          {
+            "text": "NLRB案件 10-CA-393921；类型 CA；立案 2026-08-31；状态 Open；地点 Johnson City, TN。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "10-CA-393921",
+            "official_url": "https://www.nlrb.gov/case/10-CA-393921"
+          },
+          {
+            "text": "NLRB案件 10-RC-393924；类型 RC；立案 2026-08-31；状态 Open；地点 Vidalia, GA。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "10-RC-393924",
+            "official_url": "https://www.nlrb.gov/case/10-RC-393924"
+          },
+          {
+            "text": "NLRB案件 19-RC-393932；类型 RC；立案 2026-08-31；状态 Open；地点 Portland, OR。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "19-RC-393932",
+            "official_url": "https://www.nlrb.gov/case/19-RC-393932"
+          },
+          {
+            "text": "NLRB案件 21-CA-393945；类型 CA；立案 2026-08-31；状态 Open；地点 Anaheim, CA。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "21-CA-393945",
+            "official_url": "https://www.nlrb.gov/case/21-CA-393945"
+          },
+          {
+            "text": "NLRB案件 29-CA-393866；类型 CA；立案 2026-08-31；状态 Open；地点 Queens, NY。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "29-CA-393866",
+            "official_url": "https://www.nlrb.gov/case/29-CA-393866"
+          },
+          {
+            "text": "NLRB案件 31-RC-393889；类型 RC；立案 2026-08-28；状态 Open；地点 Santa Monica, CA。",
+            "source_ids": [
+              "nlrb_cases-bac37391e4aa24"
+            ],
+            "as_of": "2026-09-15T09:45:39.710718+00:00",
+            "basis": "NLRB公开案件记录（由LaborData结构化镜像查询）。案件、charge或petition的存在不等于NLRB已认定雇主违法；必须按案件状态、决定和文书另行判断。",
+            "provider": "NLRB_CASES",
+            "external_id": "Starbucks Corporation",
+            "case_number": "31-RC-393889",
+            "official_url": "https://www.nlrb.gov/case/31-RC-393889"
+          },
+          {
+            "text": "OSHA检查记录 activity 349076513；检查开始 2026-07-27；类型 B；范围 B；当前数据中citation数量 0；当前罚款汇总 0 USD。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据结构化镜像。检查/引用/罚款只适用于该具体记录；删除、争议、和解、最终命令状态可能改变含义，不能外推为公司整体劳动条件。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "349076513",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录 activity 348890781；检查开始 2026-04-21；类型 B；范围 B；当前数据中citation数量 2；当前罚款汇总 560.0 USD。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据结构化镜像。检查/引用/罚款只适用于该具体记录；删除、争议、和解、最终命令状态可能改变含义，不能外推为公司整体劳动条件。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348890781",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录 activity 348828757；检查开始 2026-03-24；类型 B；范围 B；当前数据中citation数量 0；当前罚款汇总 0 USD。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据结构化镜像。检查/引用/罚款只适用于该具体记录；删除、争议、和解、最终命令状态可能改变含义，不能外推为公司整体劳动条件。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348828757",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录 activity 348659913；检查开始 2025-12-23；类型 B；范围 B；当前数据中citation数量 1；当前罚款汇总 0 USD。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据结构化镜像。检查/引用/罚款只适用于该具体记录；删除、争议、和解、最终命令状态可能改变含义，不能外推为公司整体劳动条件。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348659913",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录 activity 348435702；检查开始 2025-08-11；类型 B；范围 B；当前数据中citation数量 0；当前罚款汇总 0 USD。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据结构化镜像。检查/引用/罚款只适用于该具体记录；删除、争议、和解、最终命令状态可能改变含义，不能外推为公司整体劳动条件。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348435702",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录 activity 348433376；检查开始 2025-08-11；类型 B；范围 B；当前数据中citation数量 0；当前罚款汇总 0 USD。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据结构化镜像。检查/引用/罚款只适用于该具体记录；删除、争议、和解、最终命令状态可能改变含义，不能外推为公司整体劳动条件。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348433376",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录 activity 348366618；检查开始 2025-07-09；类型 B；范围 D；当前数据中citation数量 0；当前罚款汇总 0 USD。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据结构化镜像。检查/引用/罚款只适用于该具体记录；删除、争议、和解、最终命令状态可能改变含义，不能外推为公司整体劳动条件。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348366618",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录 activity 348192204；检查开始 2025-04-21；类型 D；范围 B；当前数据中citation数量 1；当前罚款汇总 2553.3 USD。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据结构化镜像。检查/引用/罚款只适用于该具体记录；删除、争议、和解、最终命令状态可能改变含义，不能外推为公司整体劳动条件。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348192204",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录 activity 348144486；检查开始 2025-03-28；类型 B；范围 B；当前数据中citation数量 0；当前罚款汇总 0 USD。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据结构化镜像。检查/引用/罚款只适用于该具体记录；删除、争议、和解、最终命令状态可能改变含义，不能外推为公司整体劳动条件。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "348144486",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "OSHA检查记录 activity 347982787；检查开始 2025-01-15；类型 B；范围 B；当前数据中citation数量 0；当前罚款汇总 0 USD。",
+            "source_ids": [
+              "osha_enforcement-7bfed0b7ee1dac"
+            ],
+            "as_of": "2026-09-15T09:45:41.156563+00:00",
+            "basis": "OSHA/DOL执法数据结构化镜像。检查/引用/罚款只适用于该具体记录；删除、争议、和解、最终命令状态可能改变含义，不能外推为公司整体劳动条件。",
+            "provider": "OSHA_ENFORCEMENT",
+            "external_id": "STARBUCKS CORPORATION",
+            "activity_nr": "347982787",
+            "relationship_type": "ENFORCEMENT_EVENT_LOCATION"
+          },
+          {
+            "text": "WHD已结案合规行动 1985880；调查/发现期间 2021-09-18 至 2023-09-17；记录的violations数量 2；受影响员工 1；同意支付欠薪 0 USD（员工 0）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1985880"
+          },
+          {
+            "text": "WHD已结案合规行动 1984022；调查/发现期间 2021-09-08 至 2023-09-07；记录的violations数量 1；受影响员工 0；同意支付欠薪 0 USD（员工 0）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1984022"
+          },
+          {
+            "text": "WHD已结案合规行动 1977540；调查/发现期间 2021-02-28 至 2023-02-27；记录的violations数量 1；受影响员工 0；同意支付欠薪 0 USD（员工 0）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1977540"
+          },
+          {
+            "text": "WHD已结案合规行动 1946442；调查/发现期间 2018-08-26 至 2021-08-25；记录的violations数量 0；受影响员工 0；同意支付欠薪 0 USD（员工 0）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1946442"
+          },
+          {
+            "text": "WHD已结案合规行动 1938952；调查/发现期间 2020-09-01 至 2021-05-14；记录的violations数量 0；受影响员工 1；同意支付欠薪 0 USD（员工 0）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1938952"
+          },
+          {
+            "text": "WHD已结案合规行动 1870167；调查/发现期间 2016-12-08 至 2018-12-07；记录的violations数量 0；受影响员工 0；同意支付欠薪 0 USD（员工 0）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1870167"
+          },
+          {
+            "text": "WHD已结案合规行动 1789382；调查/发现期间 2014-05-12 至 2016-05-09；记录的violations数量 0；受影响员工 0；同意支付欠薪 0 USD（员工 0）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1789382"
+          },
+          {
+            "text": "WHD已结案合规行动 1668700；调查/发现期间 2010-09-15 至 2012-09-13；记录的violations数量 0；受影响员工 0；同意支付欠薪 0 USD（员工 0）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1668700"
+          },
+          {
+            "text": "WHD已结案合规行动 1649486；调查/发现期间 2011-10-03 至 2011-10-30；记录的violations数量 1；受影响员工 1；同意支付欠薪 40.91 USD（员工 1）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1649486"
+          },
+          {
+            "text": "WHD已结案合规行动 1595336；调查/发现期间 2009-08-31 至 2011-09-01；记录的violations数量 2；受影响员工 1；同意支付欠薪 676.54 USD（员工 1）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1595336"
+          },
+          {
+            "text": "WHD已结案合规行动 1596322；调查/发现期间 2009-08-31 至 2011-09-01；记录的violations数量 1；受影响员工 1；同意支付欠薪 0 USD（员工 0）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1596322"
+          },
+          {
+            "text": "WHD已结案合规行动 1587331；调查/发现期间 2008-07-30 至 2010-07-29；记录的violations数量 0；受影响员工 0；同意支付欠薪 0 USD（员工 0）；民事罚款 0 USD。",
+            "source_ids": [
+              "dol_whd-1420c6ad8a6b0e"
+            ],
+            "as_of": "2026-09-15T09:45:41.994840+00:00",
+            "basis": "美国WHD已结案合规行动数据（由LaborData结构化镜像查询）。该记录可说明该具体案件/期间的执法结果，但不能外推为企业所有地点、所有时期或所有劳动实践。",
+            "provider": "DOL_WHD",
+            "external_id": "Starbucks Corporation",
+            "case_id": "1587331"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United；bargaining unit 9 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United；bargaining unit 17 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United a/w SEIU；bargaining unit 19 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Mid-Atlantic Regional Joint Board, Workers United；bargaining unit 21 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United a/w SEIU；bargaining unit 24 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United, affiliated with Service Employees International Union；bargaining unit 23 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United；bargaining unit 25 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United a/w Service Employees International Union；bargaining unit 24 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United；bargaining unit 21 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United；bargaining unit 25 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United；bargaining unit 19 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 WORKERS UNITED A/W SERVICE EMPLOYEES INTERNATIONAL UNION, AFL-CIO；bargaining unit 19 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United, affiliated with Service Employees International Union；bargaining unit 21 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 Workers United；bargaining unit 14 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "FMCS F-7 collective-bargaining notice：日期 2026-08-12；类别 Initial Contract；工会 WORKERS UNITED A/W SERVICE EMPLOYEES INTERNATIONAL UNION, AFL-CIO；bargaining unit 22 人；合同/到期日 未知。",
+            "source_ids": [
+              "fmcs_f7-cc776eaf892052"
+            ],
+            "as_of": "2026-09-15T09:45:43.723716+00:00",
+            "basis": "FMCS F-7通知用于记录集体谈判通知/关系及受影响单位；它不是劳动法违法认定。",
+            "provider": "FMCS_F7",
+            "external_id": "Starbucks Corporation"
+          },
+          {
+            "text": "OLMS报告 884648（LM-21）；雇主/交易名 Starbucks；顾问/申报方 RICHARD S MICHEL/RICHARD SCOTT MICHEL/RICHARDSCOTTMICHEL；活动/协议终止日 2023-07-22；金额 6000 USD；收件日 2024-03-23。",
+            "source_ids": [
+              "olms_lm20-1982ff2a0167cf"
+            ],
+            "as_of": "2026-09-15T09:45:47.400207+00:00",
+            "basis": "DOL OLMS LMRDA employer/consultant公开披露记录；报告说明法定披露/安排，具体含义取决于表单和报告内容，不能自动表述为不公平劳动行为认定。",
+            "provider": "OLMS_LM20",
+            "external_id": "Starbucks",
+            "report_id": "884648",
+            "official_url": "https://olmsapps.dol.gov/query/orgReport.do?rptId=884648&rptForm=LM21Form"
+          }
+        ],
+        "gap": "当前只列已绑定来源中的案件/检查/执法记录与已审社区证据；记录本身须保留程序状态，不能外推为公司整体劳动条件。"
+      },
+      "channels": {
+        "status": "PARTIAL",
+        "items": [
+          {
+            "text": "公开官网参考入口：https://www.starbucks.com/, https://www.starbucks.de/, https://starbucks.co.id/。",
+            "source_ids": [
+              "wikidata-fb1eb0ed7f92d5"
+            ],
+            "as_of": "2026-09-15T09:45:37.141174+00:00",
+            "basis": "Wikidata社区维护知识图谱，仅作上下文参考；若与官方登记/申报冲突，以更高权威来源为准。 这是官网入口，不表示专用劳动申诉渠道。",
+            "provider": "WIKIDATA",
+            "external_id": "Q37158"
+          }
+        ],
+        "gap": "当前自动来源主要提供官网/公开入口；官网不等于正式劳动申诉渠道，具体受理渠道仍需按地区和机构核对。"
+      }
+    },
+    "source_policy": {
+      "adapter": "multi-source-0.8.1",
+      "identity_root": "GLEIF",
+      "providers": [
+        "SEC_EDGAR",
+        "WIKIDATA",
+        "NLRB_CASES",
+        "OSHA_ENFORCEMENT",
+        "DOL_WHD",
+        "FMCS_F7",
+        "NLRB_VOLUNTARY_RECOGNITION",
+        "FMCS_WORK_STOPPAGES",
+        "OLMS_LM20",
+        "USA_SPENDING"
+      ],
+      "optional_providers": [
+        "OPENCORPORATES",
+        "OPEN_SUPPLY_HUB"
+      ],
+      "automatic_export": false,
+      "candidate_rule": "secondary name search requires explicit provider binding before facts"
+    },
+    "source_registry": {
+      "GLEIF": {
+        "label": "Global Legal Entity Identifier Foundation (GLEIF)",
+        "authority": "PRIMARY_REFERENCE_REGISTRY",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "CC0-1.0",
+        "license_url": "https://www.gleif.org/en/about/open-data",
+        "source_of_record": "GLEIF",
+        "regions": [
+          "GLOBAL"
+        ],
+        "sections": [
+          "identity",
+          "ownership"
+        ],
+        "fields": [
+          "legal_name",
+          "lei",
+          "country",
+          "jurisdiction",
+          "entity_status",
+          "registration_status",
+          "direct_parent",
+          "ultimate_parent"
+        ],
+        "state": "AUTOMATED_SUPPORTED",
+        "binding": "LEI_REQUIRED_AFTER_NAME_CANDIDATE_SEARCH",
+        "request_budget": 6
+      },
+      "SEC_EDGAR": {
+        "label": "U.S. SEC EDGAR",
+        "authority": "PRIMARY_GOVERNMENT_DISCLOSURE",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "US_GOV_PUBLIC_RECORD",
+        "license_url": "https://www.sec.gov/about/developer-resources",
+        "source_of_record": "U.S. Securities and Exchange Commission",
+        "regions": [
+          "US"
+        ],
+        "sections": [
+          "business"
+        ],
+        "fields": [
+          "cik",
+          "tickers",
+          "exchanges",
+          "sic",
+          "sic_description",
+          "entity_type",
+          "fiscal_year_end",
+          "recent_filings",
+          "xbrl_selected_facts"
+        ],
+        "state": "AUTOMATED_PARTIAL",
+        "binding": "CIK_EXPLICIT_BINDING_REQUIRED",
+        "request_budget": 3,
+        "note": "SEC endpoint may rate-limit shared/cloud egress; access failure must not erase other source results."
+      },
+      "WIKIDATA": {
+        "label": "Wikidata",
+        "authority": "OPEN_CONTEXTUAL_KNOWLEDGE_GRAPH",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "CC0-1.0",
+        "license_url": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+        "source_of_record": "Wikidata community graph",
+        "regions": [
+          "GLOBAL"
+        ],
+        "sections": [
+          "business",
+          "ownership",
+          "facilities",
+          "channels"
+        ],
+        "fields": [
+          "industry",
+          "products",
+          "brands",
+          "inception",
+          "headquarters_location",
+          "parent_organization",
+          "subsidiary",
+          "official_website"
+        ],
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "binding": "QID_EXPLICIT_BINDING_REQUIRED",
+        "request_budget": 3,
+        "note": "Contextual source only; must not override an official registry or transform community assertions into legal findings."
+      },
+      "NLRB_CASES": {
+        "label": "NLRB case records via LaborData structured mirror",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_RECORD",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+        "license_url": "https://www.nlrb.gov/advanced-search",
+        "source_of_record": "National Labor Relations Board",
+        "mirror": "https://labordata.bunkum.us/nlrb",
+        "regions": [
+          "US"
+        ],
+        "sections": [
+          "work_conditions"
+        ],
+        "fields": [
+          "case_number",
+          "case_type",
+          "date_filed",
+          "status",
+          "date_closed",
+          "reason_closed",
+          "city",
+          "state",
+          "certified_representative"
+        ],
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "binding": "EXACT_CASE_NAME_BINDING_REQUIRED",
+        "request_budget": 2,
+        "semantic_boundary": "A charge/petition/case filing is a proceeding record, not a finding that an employer violated law."
+      },
+      "OSHA_ENFORCEMENT": {
+        "label": "OSHA enforcement records via LaborData structured mirror",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_DATA",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+        "license_url": "https://www.osha.gov/data",
+        "source_of_record": "U.S. Department of Labor / OSHA Enforcement Data Catalog",
+        "mirror": "https://labordata.bunkum.us/osha_enforcement",
+        "regions": [
+          "US"
+        ],
+        "sections": [
+          "facilities",
+          "work_conditions"
+        ],
+        "fields": [
+          "activity_nr",
+          "establishment_name",
+          "site_city",
+          "site_state",
+          "naics",
+          "inspection_type",
+          "inspection_scope",
+          "open_date",
+          "close_case_date",
+          "citation_count",
+          "current_penalty"
+        ],
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "binding": "EXACT_ESTABLISHMENT_NAME_BINDING_REQUIRED",
+        "request_budget": 3,
+        "semantic_boundary": "An inspection or citation applies to the recorded establishment/event and must not be generalized to the whole company."
+      },
+      "DOL_WHD": {
+        "label": "U.S. DOL Wage and Hour Division compliance actions via LaborData structured mirror",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_ENFORCEMENT_DATASET",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "US_PUBLIC_DOMAIN_WITH_MIRROR_PROVENANCE",
+        "license_url": "https://catalog.data.gov/dataset/wage-and-hour-division-compliance-action-data",
+        "source_of_record": "U.S. Department of Labor / Wage and Hour Division",
+        "mirror": "https://labordata.bunkum.us/whisard",
+        "regions": [
+          "US"
+        ],
+        "sections": [
+          "work_conditions",
+          "business",
+          "facilities"
+        ],
+        "fields": [
+          "case_id",
+          "legal_name",
+          "trade_name",
+          "industry",
+          "city",
+          "state",
+          "violations",
+          "back_wages",
+          "employees_due_back_wages",
+          "civil_money_penalties",
+          "findings_dates"
+        ],
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "binding": "EXACT_EMPLOYER_NAME_BINDING_REQUIRED",
+        "request_budget": 2,
+        "semantic_boundary": "WHD compliance actions are case-specific agency enforcement findings; they must not be generalized to every facility, period, or practice of the company."
+      },
+      "USA_SPENDING": {
+        "label": "USAspending.gov federal awards",
+        "authority": "PRIMARY_US_GOVERNMENT_SPENDING_API",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "US_GOV_PUBLIC_RECORD",
+        "license_url": "https://api.usaspending.gov/docs/",
+        "source_of_record": "U.S. Department of the Treasury / USAspending.gov",
+        "regions": [
+          "US"
+        ],
+        "sections": [
+          "business",
+          "supply_chain"
+        ],
+        "fields": [
+          "recipient_name",
+          "uei",
+          "award_id",
+          "award_amount",
+          "awarding_agency",
+          "awarding_subagency",
+          "description",
+          "start_date",
+          "end_date"
+        ],
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "binding": "EXACT_RECIPIENT_NAME_OR_UEI_BINDING_REQUIRED",
+        "request_budget": 2,
+        "semantic_boundary": "Federal award records prove a specific public award relationship; they do not describe the company complete customer, supplier, or commercial network."
+      },
+      "FMCS_F7": {
+        "label": "FMCS Collective Bargaining Notice (F-7) data via LaborData",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_FEDERAL_NOTICE_DATA",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+        "license_url": "https://www.fmcs.gov/resources/documents-and-data/",
+        "source_of_record": "Federal Mediation and Conciliation Service",
+        "mirror": "https://labordata.bunkum.us/f7",
+        "regions": [
+          "US"
+        ],
+        "sections": [
+          "work_conditions",
+          "facilities",
+          "business"
+        ],
+        "fields": [
+          "notice_date",
+          "employer",
+          "union_name",
+          "affected_location",
+          "expiration_date",
+          "naics",
+          "industry",
+          "bargaining_unit_size",
+          "establishment_size",
+          "category"
+        ],
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "binding": "EXACT_EMPLOYER_NAME_BINDING_REQUIRED",
+        "request_budget": 2,
+        "semantic_boundary": "An F-7 notice documents a collective-bargaining notice/relationship and affected unit; it is not evidence of a labor-law violation."
+      },
+      "NLRB_VOLUNTARY_RECOGNITION": {
+        "label": "NLRB voluntary-recognition notices via LaborData",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_NLRB_NOTICE_DATA",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+        "license_url": "https://www.nlrb.gov/about-nlrb/rights-we-protect/the-law/voluntary-recognition-and-neutrality-agreements",
+        "source_of_record": "National Labor Relations Board",
+        "mirror": "https://labordata.bunkum.us/voluntary_recognitions",
+        "regions": [
+          "US"
+        ],
+        "sections": [
+          "work_conditions",
+          "facilities"
+        ],
+        "fields": [
+          "vr_case_number",
+          "employer",
+          "union",
+          "unit_city",
+          "unit_state",
+          "request_date",
+          "recognition_date",
+          "number_of_employees",
+          "unit_description"
+        ],
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "binding": "EXACT_EMPLOYER_NAME_BINDING_REQUIRED",
+        "request_budget": 2,
+        "semantic_boundary": "A voluntary-recognition notice records a representation event; it does not imply wrongdoing."
+      },
+      "FMCS_WORK_STOPPAGES": {
+        "label": "FMCS work stoppages via LaborData",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_FEDERAL_LABOR_EVENT_DATA",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+        "license_url": "https://www.fmcs.gov/resources/documents-and-data/",
+        "source_of_record": "Federal Mediation and Conciliation Service",
+        "mirror": "https://labordata.bunkum.us/work_stoppages",
+        "regions": [
+          "US"
+        ],
+        "sections": [
+          "work_conditions",
+          "facilities",
+          "business"
+        ],
+        "fields": [
+          "employer",
+          "union",
+          "union_local",
+          "case_number",
+          "bargaining_unit",
+          "naics",
+          "industry",
+          "city_state",
+          "idled",
+          "start_date",
+          "end_date",
+          "duration"
+        ],
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "binding": "EXACT_EMPLOYER_NAME_BINDING_REQUIRED",
+        "request_budget": 2,
+        "semantic_boundary": "A work stoppage record documents an event; causes and responsibility require separate evidence."
+      },
+      "OLMS_LM20": {
+        "label": "OLMS employer/consultant disclosure reports via LaborData LM-20/LM-21 records",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_DOL_DISCLOSURE_REPORTS",
+        "access": "KEYLESS_PUBLIC_API",
+        "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+        "license_url": "https://www.dol.gov/agencies/olms/public-disclosure-room",
+        "source_of_record": "U.S. Department of Labor / Office of Labor-Management Standards",
+        "mirror": "https://labordata.bunkum.us/lm20",
+        "regions": [
+          "US"
+        ],
+        "sections": [
+          "work_conditions",
+          "business"
+        ],
+        "fields": [
+          "report_id",
+          "employer_or_trade_name",
+          "consultant",
+          "termination_date",
+          "amount",
+          "filing_url",
+          "form_filed",
+          "receive_date"
+        ],
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "binding": "EXACT_EMPLOYER_OR_TRADE_NAME_BINDING_REQUIRED",
+        "request_budget": 2,
+        "semantic_boundary": "A filed LM report documents a statutory disclosure/arrangement; scope depends on the form and report and must not be paraphrased as an unfair-labor-practice finding."
+      },
+      "OPENCORPORATES": {
+        "label": "OpenCorporates",
+        "authority": "AGGREGATED_CORPORATE_REGISTRY",
+        "access": "OPTIONAL_API_TOKEN",
+        "license": "ODBL_SHARE_ALIKE_OR_COMMERCIAL_TERMS",
+        "license_url": "https://api.opencorporates.com/documentation/API-Reference",
+        "source_of_record": "OpenCorporates with underlying registry provenance",
+        "regions": [
+          "GLOBAL"
+        ],
+        "sections": [
+          "identity",
+          "ownership",
+          "business"
+        ],
+        "fields": [
+          "company_number",
+          "jurisdiction",
+          "status",
+          "incorporation",
+          "registered_address",
+          "officers",
+          "network"
+        ],
+        "state": "OPTIONAL_TOKEN_LICENSE_REVIEW_REQUIRED",
+        "binding": "JURISDICTION_AND_COMPANY_NUMBER_REQUIRED",
+        "request_budget": 2,
+        "note": "Disabled by default because API terms/share-alike requirements must be reviewed against this project license."
+      },
+      "OPEN_SUPPLY_HUB": {
+        "label": "Open Supply Hub",
+        "authority": "CONTRIBUTED_SUPPLY_CHAIN_FACILITY_GRAPH",
+        "access": "OPTIONAL_TOKEN_SUBSCRIPTION",
+        "license": "SERVICE_TERMS_AND_CONTRIBUTOR_PROVENANCE",
+        "license_url": "https://info.opensupplyhub.org/resources/api-documentation",
+        "source_of_record": "Open Supply Hub contributors",
+        "regions": [
+          "GLOBAL"
+        ],
+        "sections": [
+          "facilities",
+          "supply_chain"
+        ],
+        "fields": [
+          "facility_id",
+          "facility_name",
+          "country",
+          "sector",
+          "product_type",
+          "facility_type",
+          "processing_type",
+          "parent_company",
+          "workers",
+          "contributors"
+        ],
+        "state": "OPTIONAL_TOKEN_CANDIDATE_ONLY",
+        "binding": "OS_ID_EXPLICIT_BINDING_REQUIRED",
+        "request_budget": 2,
+        "note": "A facility/contributor match is a supply-chain candidate until provenance and relationship scope are reviewed."
+      }
+    }
+  }
+}

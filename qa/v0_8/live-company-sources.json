@@ -1,0 +1,591 @@
+{
+  "status": "FINITE_LIVE_CANDIDATE_CHECK",
+  "name": "Starbucks Corporation",
+  "country": "US",
+  "results": {
+    "GLEIF": {
+      "status": "PASS",
+      "candidate_count": 1,
+      "sample": [
+        {
+          "lei": "OQSJ1DU9TAOC51A47K68",
+          "name": "STARBUCKS CORPORATION",
+          "country": "US",
+          "jurisdiction": "US-WA",
+          "entity_status": "ACTIVE",
+          "registration_status": "ISSUED",
+          "last_update": "2026-06-16T20:25:21Z",
+          "next_renewal": "2027-07-05T22:15:38Z"
+        }
+      ]
+    },
+    "SEC_EDGAR": {
+      "status": "SOURCE_ERROR",
+      "code": "SOURCE_ACCESS_DENIED",
+      "retryable": false
+    },
+    "WIKIDATA": {
+      "status": "PASS",
+      "candidate_count": 1,
+      "sample": [
+        {
+          "provider": "WIKIDATA",
+          "external_id": "Q37158",
+          "label": "Starbucks",
+          "region": "GLOBAL",
+          "description": "American multinational coffee company",
+          "match_basis": "Wikidata name search; explicit QID binding required"
+        }
+      ]
+    },
+    "NLRB_CASES": {
+      "status": "PASS",
+      "candidate_count": 1,
+      "sample": [
+        {
+          "provider": "NLRB_CASES",
+          "external_id": "Starbucks Corporation",
+          "label": "Starbucks Corporation",
+          "region": "TN",
+          "sample_case": "10-CA-394623",
+          "sample_url": "https://www.nlrb.gov/case/10-CA-394623",
+          "match_basis": "NLRB case-name search via structured mirror; exact case-name binding required",
+          "matches": 30
+        }
+      ]
+    },
+    "OSHA_ENFORCEMENT": {
+      "status": "PASS",
+      "candidate_count": 5,
+      "sample": [
+        {
+          "provider": "OSHA_ENFORCEMENT",
+          "external_id": "STARBUCKS CORPORATION",
+          "label": "STARBUCKS CORPORATION",
+          "region": "UT",
+          "sample_activity": "349076513",
+          "match_basis": "OSHA establishment-name search via DOL-data mirror; exact establishment binding required",
+          "matches": 26
+        },
+        {
+          "provider": "OSHA_ENFORCEMENT",
+          "external_id": "160118 - STARBUCKS CORPORATION",
+          "label": "160118 - STARBUCKS CORPORATION",
+          "region": "NC",
+          "sample_activity": "348620683",
+          "match_basis": "OSHA establishment-name search via DOL-data mirror; exact establishment binding required",
+          "matches": 1
+        },
+        {
+          "provider": "OSHA_ENFORCEMENT",
+          "external_id": "STARBUCKS CORPORATION - #53806",
+          "label": "STARBUCKS CORPORATION - #53806",
+          "region": "AZ",
+          "sample_activity": "346605249",
+          "match_basis": "OSHA establishment-name search via DOL-data mirror; exact establishment binding required",
+          "matches": 1
+        }
+      ]
+    },
+    "DOL_WHD": {
+      "status": "PASS",
+      "candidate_count": 1,
+      "sample": [
+        {
+          "provider": "DOL_WHD",
+          "external_id": "Starbucks Corporation",
+          "label": "Starbucks Corporation",
+          "region": "WI",
+          "sample_case": "1985880",
+          "industry": "Snack and Nonalcoholic Beverage Bars",
+          "match_basis": "WHD concluded-compliance-action employer-name search via structured mirror; exact employer-name binding required",
+          "matches": 14
+        }
+      ]
+    },
+    "FMCS_F7": {
+      "status": "PASS",
+      "candidate_count": 1,
+      "sample": [
+        {
+          "provider": "FMCS_F7",
+          "external_id": "Starbucks Corporation",
+          "label": "Starbucks Corporation",
+          "region": "CO",
+          "sample_record": "2026-08-12",
+          "match_basis": "FMCS F-7 employer-name search; exact employer binding required",
+          "matches": 30
+        }
+      ]
+    },
+    "NLRB_VOLUNTARY_RECOGNITION": {
+      "status": "PASS",
+      "candidate_count": 0,
+      "sample": []
+    },
+    "FMCS_WORK_STOPPAGES": {
+      "status": "PASS",
+      "candidate_count": 0,
+      "sample": []
+    },
+    "OLMS_LM20": {
+      "status": "PASS",
+      "candidate_count": 1,
+      "sample": [
+        {
+          "provider": "OLMS_LM20",
+          "external_id": "Starbucks",
+          "label": "Starbucks",
+          "region": "PA",
+          "sample_report": "884648",
+          "match_basis": "OLMS employer/consultant disclosure name search; exact employer/trade-name binding required",
+          "matches": 1
+        }
+      ]
+    },
+    "USA_SPENDING": {
+      "status": "PASS",
+      "candidate_count": 10,
+      "sample": [
+        {
+          "provider": "USA_SPENDING",
+          "external_id": "STARBUCKS CORP",
+          "label": "STARBUCKS CORP",
+          "region": "US",
+          "uei": "",
+          "match_basis": "USAspending recipient autocomplete; explicit recipient binding required"
+        },
+        {
+          "provider": "USA_SPENDING",
+          "external_id": "AUNTIE ANNE' / CINNABON / STARBUCKS",
+          "label": "AUNTIE ANNE' / CINNABON / STARBUCKS",
+          "region": "US",
+          "uei": "",
+          "match_basis": "USAspending recipient autocomplete; explicit recipient binding required"
+        },
+        {
+          "provider": "USA_SPENDING",
+          "external_id": "HOLY STAR STARBUCKS",
+          "label": "HOLY STAR STARBUCKS",
+          "region": "US",
+          "uei": "",
+          "match_basis": "USAspending recipient autocomplete; explicit recipient binding required"
+        }
+      ]
+    }
+  },
+  "requests": {
+    "GLEIF": 1,
+    "SEC_EDGAR": 1,
+    "WIKIDATA": 1,
+    "LABORDATA_TOTAL": 7,
+    "USA_SPENDING": 1
+  },
+  "claim_boundary": "Search reachability/candidates only. This run does not prove entity match, labor violations, full coverage, or publication readiness.",
+  "source_registry": {
+    "GLEIF": {
+      "label": "Global Legal Entity Identifier Foundation (GLEIF)",
+      "authority": "PRIMARY_REFERENCE_REGISTRY",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "CC0-1.0",
+      "license_url": "https://www.gleif.org/en/about/open-data",
+      "source_of_record": "GLEIF",
+      "regions": [
+        "GLOBAL"
+      ],
+      "sections": [
+        "identity",
+        "ownership"
+      ],
+      "fields": [
+        "legal_name",
+        "lei",
+        "country",
+        "jurisdiction",
+        "entity_status",
+        "registration_status",
+        "direct_parent",
+        "ultimate_parent"
+      ],
+      "state": "AUTOMATED_SUPPORTED",
+      "binding": "LEI_REQUIRED_AFTER_NAME_CANDIDATE_SEARCH",
+      "request_budget": 6
+    },
+    "SEC_EDGAR": {
+      "label": "U.S. SEC EDGAR",
+      "authority": "PRIMARY_GOVERNMENT_DISCLOSURE",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "US_GOV_PUBLIC_RECORD",
+      "license_url": "https://www.sec.gov/about/developer-resources",
+      "source_of_record": "U.S. Securities and Exchange Commission",
+      "regions": [
+        "US"
+      ],
+      "sections": [
+        "business"
+      ],
+      "fields": [
+        "cik",
+        "tickers",
+        "exchanges",
+        "sic",
+        "sic_description",
+        "entity_type",
+        "fiscal_year_end",
+        "recent_filings",
+        "xbrl_selected_facts"
+      ],
+      "state": "AUTOMATED_PARTIAL",
+      "binding": "CIK_EXPLICIT_BINDING_REQUIRED",
+      "request_budget": 3,
+      "note": "SEC endpoint may rate-limit shared/cloud egress; access failure must not erase other source results."
+    },
+    "WIKIDATA": {
+      "label": "Wikidata",
+      "authority": "OPEN_CONTEXTUAL_KNOWLEDGE_GRAPH",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "CC0-1.0",
+      "license_url": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+      "source_of_record": "Wikidata community graph",
+      "regions": [
+        "GLOBAL"
+      ],
+      "sections": [
+        "business",
+        "ownership",
+        "facilities",
+        "channels"
+      ],
+      "fields": [
+        "industry",
+        "products",
+        "brands",
+        "inception",
+        "headquarters_location",
+        "parent_organization",
+        "subsidiary",
+        "official_website"
+      ],
+      "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+      "binding": "QID_EXPLICIT_BINDING_REQUIRED",
+      "request_budget": 3,
+      "note": "Contextual source only; must not override an official registry or transform community assertions into legal findings."
+    },
+    "NLRB_CASES": {
+      "label": "NLRB case records via LaborData structured mirror",
+      "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_RECORD",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+      "license_url": "https://www.nlrb.gov/advanced-search",
+      "source_of_record": "National Labor Relations Board",
+      "mirror": "https://labordata.bunkum.us/nlrb",
+      "regions": [
+        "US"
+      ],
+      "sections": [
+        "work_conditions"
+      ],
+      "fields": [
+        "case_number",
+        "case_type",
+        "date_filed",
+        "status",
+        "date_closed",
+        "reason_closed",
+        "city",
+        "state",
+        "certified_representative"
+      ],
+      "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+      "binding": "EXACT_CASE_NAME_BINDING_REQUIRED",
+      "request_budget": 2,
+      "semantic_boundary": "A charge/petition/case filing is a proceeding record, not a finding that an employer violated law."
+    },
+    "OSHA_ENFORCEMENT": {
+      "label": "OSHA enforcement records via LaborData structured mirror",
+      "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_DATA",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+      "license_url": "https://www.osha.gov/data",
+      "source_of_record": "U.S. Department of Labor / OSHA Enforcement Data Catalog",
+      "mirror": "https://labordata.bunkum.us/osha_enforcement",
+      "regions": [
+        "US"
+      ],
+      "sections": [
+        "facilities",
+        "work_conditions"
+      ],
+      "fields": [
+        "activity_nr",
+        "establishment_name",
+        "site_city",
+        "site_state",
+        "naics",
+        "inspection_type",
+        "inspection_scope",
+        "open_date",
+        "close_case_date",
+        "citation_count",
+        "current_penalty"
+      ],
+      "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+      "binding": "EXACT_ESTABLISHMENT_NAME_BINDING_REQUIRED",
+      "request_budget": 3,
+      "semantic_boundary": "An inspection or citation applies to the recorded establishment/event and must not be generalized to the whole company."
+    },
+    "DOL_WHD": {
+      "label": "U.S. DOL Wage and Hour Division compliance actions via LaborData structured mirror",
+      "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_ENFORCEMENT_DATASET",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "US_PUBLIC_DOMAIN_WITH_MIRROR_PROVENANCE",
+      "license_url": "https://catalog.data.gov/dataset/wage-and-hour-division-compliance-action-data",
+      "source_of_record": "U.S. Department of Labor / Wage and Hour Division",
+      "mirror": "https://labordata.bunkum.us/whisard",
+      "regions": [
+        "US"
+      ],
+      "sections": [
+        "work_conditions",
+        "business",
+        "facilities"
+      ],
+      "fields": [
+        "case_id",
+        "legal_name",
+        "trade_name",
+        "industry",
+        "city",
+        "state",
+        "violations",
+        "back_wages",
+        "employees_due_back_wages",
+        "civil_money_penalties",
+        "findings_dates"
+      ],
+      "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+      "binding": "EXACT_EMPLOYER_NAME_BINDING_REQUIRED",
+      "request_budget": 2,
+      "semantic_boundary": "WHD compliance actions are case-specific agency enforcement findings; they must not be generalized to every facility, period, or practice of the company."
+    },
+    "USA_SPENDING": {
+      "label": "USAspending.gov federal awards",
+      "authority": "PRIMARY_US_GOVERNMENT_SPENDING_API",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "US_GOV_PUBLIC_RECORD",
+      "license_url": "https://api.usaspending.gov/docs/",
+      "source_of_record": "U.S. Department of the Treasury / USAspending.gov",
+      "regions": [
+        "US"
+      ],
+      "sections": [
+        "business",
+        "supply_chain"
+      ],
+      "fields": [
+        "recipient_name",
+        "uei",
+        "award_id",
+        "award_amount",
+        "awarding_agency",
+        "awarding_subagency",
+        "description",
+        "start_date",
+        "end_date"
+      ],
+      "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+      "binding": "EXACT_RECIPIENT_NAME_OR_UEI_BINDING_REQUIRED",
+      "request_budget": 2,
+      "semantic_boundary": "Federal award records prove a specific public award relationship; they do not describe the company complete customer, supplier, or commercial network."
+    },
+    "FMCS_F7": {
+      "label": "FMCS Collective Bargaining Notice (F-7) data via LaborData",
+      "authority": "STRUCTURED_MIRROR_OF_PRIMARY_FEDERAL_NOTICE_DATA",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+      "license_url": "https://www.fmcs.gov/resources/documents-and-data/",
+      "source_of_record": "Federal Mediation and Conciliation Service",
+      "mirror": "https://labordata.bunkum.us/f7",
+      "regions": [
+        "US"
+      ],
+      "sections": [
+        "work_conditions",
+        "facilities",
+        "business"
+      ],
+      "fields": [
+        "notice_date",
+        "employer",
+        "union_name",
+        "affected_location",
+        "expiration_date",
+        "naics",
+        "industry",
+        "bargaining_unit_size",
+        "establishment_size",
+        "category"
+      ],
+      "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+      "binding": "EXACT_EMPLOYER_NAME_BINDING_REQUIRED",
+      "request_budget": 2,
+      "semantic_boundary": "An F-7 notice documents a collective-bargaining notice/relationship and affected unit; it is not evidence of a labor-law violation."
+    },
+    "NLRB_VOLUNTARY_RECOGNITION": {
+      "label": "NLRB voluntary-recognition notices via LaborData",
+      "authority": "STRUCTURED_MIRROR_OF_PRIMARY_NLRB_NOTICE_DATA",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+      "license_url": "https://www.nlrb.gov/about-nlrb/rights-we-protect/the-law/voluntary-recognition-and-neutrality-agreements",
+      "source_of_record": "National Labor Relations Board",
+      "mirror": "https://labordata.bunkum.us/voluntary_recognitions",
+      "regions": [
+        "US"
+      ],
+      "sections": [
+        "work_conditions",
+        "facilities"
+      ],
+      "fields": [
+        "vr_case_number",
+        "employer",
+        "union",
+        "unit_city",
+        "unit_state",
+        "request_date",
+        "recognition_date",
+        "number_of_employees",
+        "unit_description"
+      ],
+      "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+      "binding": "EXACT_EMPLOYER_NAME_BINDING_REQUIRED",
+      "request_budget": 2,
+      "semantic_boundary": "A voluntary-recognition notice records a representation event; it does not imply wrongdoing."
+    },
+    "FMCS_WORK_STOPPAGES": {
+      "label": "FMCS work stoppages via LaborData",
+      "authority": "STRUCTURED_MIRROR_OF_PRIMARY_FEDERAL_LABOR_EVENT_DATA",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+      "license_url": "https://www.fmcs.gov/resources/documents-and-data/",
+      "source_of_record": "Federal Mediation and Conciliation Service",
+      "mirror": "https://labordata.bunkum.us/work_stoppages",
+      "regions": [
+        "US"
+      ],
+      "sections": [
+        "work_conditions",
+        "facilities",
+        "business"
+      ],
+      "fields": [
+        "employer",
+        "union",
+        "union_local",
+        "case_number",
+        "bargaining_unit",
+        "naics",
+        "industry",
+        "city_state",
+        "idled",
+        "start_date",
+        "end_date",
+        "duration"
+      ],
+      "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+      "binding": "EXACT_EMPLOYER_NAME_BINDING_REQUIRED",
+      "request_budget": 2,
+      "semantic_boundary": "A work stoppage record documents an event; causes and responsibility require separate evidence."
+    },
+    "OLMS_LM20": {
+      "label": "OLMS employer/consultant disclosure reports via LaborData LM-20/LM-21 records",
+      "authority": "STRUCTURED_MIRROR_OF_PRIMARY_DOL_DISCLOSURE_REPORTS",
+      "access": "KEYLESS_PUBLIC_API",
+      "license": "US_GOV_PUBLIC_RECORD_WITH_MIRROR_PROVENANCE",
+      "license_url": "https://www.dol.gov/agencies/olms/public-disclosure-room",
+      "source_of_record": "U.S. Department of Labor / Office of Labor-Management Standards",
+      "mirror": "https://labordata.bunkum.us/lm20",
+      "regions": [
+        "US"
+      ],
+      "sections": [
+        "work_conditions",
+        "business"
+      ],
+      "fields": [
+        "report_id",
+        "employer_or_trade_name",
+        "consultant",
+        "termination_date",
+        "amount",
+        "filing_url",
+        "form_filed",
+        "receive_date"
+      ],
+      "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+      "binding": "EXACT_EMPLOYER_OR_TRADE_NAME_BINDING_REQUIRED",
+      "request_budget": 2,
+      "semantic_boundary": "A filed LM report documents a statutory disclosure/arrangement; scope depends on the form and report and must not be paraphrased as an unfair-labor-practice finding."
+    },
+    "OPENCORPORATES": {
+      "label": "OpenCorporates",
+      "authority": "AGGREGATED_CORPORATE_REGISTRY",
+      "access": "OPTIONAL_API_TOKEN",
+      "license": "ODBL_SHARE_ALIKE_OR_COMMERCIAL_TERMS",
+      "license_url": "https://api.opencorporates.com/documentation/API-Reference",
+      "source_of_record": "OpenCorporates with underlying registry provenance",
+      "regions": [
+        "GLOBAL"
+      ],
+      "sections": [
+        "identity",
+        "ownership",
+        "business"
+      ],
+      "fields": [
+        "company_number",
+        "jurisdiction",
+        "status",
+        "incorporation",
+        "registered_address",
+        "officers",
+        "network"
+      ],
+      "state": "OPTIONAL_TOKEN_LICENSE_REVIEW_REQUIRED",
+      "binding": "JURISDICTION_AND_COMPANY_NUMBER_REQUIRED",
+      "request_budget": 2,
+      "note": "Disabled by default because API terms/share-alike requirements must be reviewed against this project license."
+    },
+    "OPEN_SUPPLY_HUB": {
+      "label": "Open Supply Hub",
+      "authority": "CONTRIBUTED_SUPPLY_CHAIN_FACILITY_GRAPH",
+      "access": "OPTIONAL_TOKEN_SUBSCRIPTION",
+      "license": "SERVICE_TERMS_AND_CONTRIBUTOR_PROVENANCE",
+      "license_url": "https://info.opensupplyhub.org/resources/api-documentation",
+      "source_of_record": "Open Supply Hub contributors",
+      "regions": [
+        "GLOBAL"
+      ],
+      "sections": [
+        "facilities",
+        "supply_chain"
+      ],
+      "fields": [
+        "facility_id",
+        "facility_name",
+        "country",
+        "sector",
+        "product_type",
+        "facility_type",
+        "processing_type",
+        "parent_company",
+        "workers",
+        "contributors"
+      ],
+      "state": "OPTIONAL_TOKEN_CANDIDATE_ONLY",
+      "binding": "OS_ID_EXPLICIT_BINDING_REQUIRED",
+      "request_budget": 2,
+      "note": "A facility/contributor match is a supply-chain candidate until provenance and relationship scope are reviewed."
+    }
+  }
+}

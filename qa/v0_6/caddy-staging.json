@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "scope": "real Homebrew Caddy binary; loopback-only; synthetic data only",
+  "backend_port": 8931,
+  "proxy_port": 8932,
+  "public_listener_created": false,
+  "caddy_binary": "/opt/homebrew/bin/caddy",
+  "caddy_version": "v2.11.4 h1:XKxkMTgNSizEvKG6QHue6cAsFOteU2qA61w2tKkCWi0=",
+  "caddy_config_validate": "PASS",
+  "tls_client_verified_private_ca": true,
+  "health_http_status": 200,
+  "health": {
+    "status": "ok",
+    "version": "0.6",
+    "security_profile": "production",
+    "database": "ok",
+    "scheduler_active": false,
+    "attachment_uploads_enabled": false
+  },
+  "secure_cookie_observed": true,
+  "hsts_observed": true,
+  "csp_observed": true,
+  "missing_csrf_mutation_http_status": 403,
+  "valid_csrf_mutation_http_status": 200,
+  "wrong_host_application_http_status": 403,
+  "admin_network_denied_http_status": 403,
+  "admin_network_gate_observed_before_admin_auth": true,
+  "wrong_tls_name_curl_exit": 60,
+  "production_attachment_uploads_enabled": false,
+  "elapsed_seconds": 2.08,
+  "claim_boundary": "RUNTIME_VERIFIED for a real Caddy 2.x binary terminating TLS and proxying the production ASGI app on loopback with a private test CA. Public DNS, public CA issuance/renewal and firewall remain unverified.",
+  "cleanup": {
+    "backend_port_closed": true,
+    "proxy_port_closed": true,
+    "persistent_caddy_service_started": false,
+    "temporary_directory_removed": true
+  }
+}

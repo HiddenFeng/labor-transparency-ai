@@ -1,0 +1,111 @@
+{
+  "date": "2026-09-14",
+  "status": "ROUND4_MILESTONE_COMPLETE_WITH_TARGET_ENVIRONMENT_GATES_REMAINING",
+  "project_status": "LOCAL_CANDIDATE_NOT_PRODUCTION",
+  "fresh_round4": {
+    "python_3_9_6": {
+      "passed": 285,
+      "status": "PASS"
+    },
+    "python_3_12_14": {
+      "passed": 285,
+      "status": "PASS"
+    },
+    "node_ui_logic": {
+      "passed": 103,
+      "status": "PASS"
+    },
+    "loopback_http": {
+      "passed": 106,
+      "status": "PASS",
+      "breakdown": {
+        "legacy": 26,
+        "research": 27,
+        "community": 43,
+        "static": 10
+      }
+    },
+    "production_admin_network": {
+      "status": "PASS",
+      "exact_ip_required": true,
+      "wildcard_cidr_hostname_rejected": true,
+      "ipv6_normalized": true
+    },
+    "real_caddy": {
+      "status": "PASS",
+      "version": "v2.11.4 h1:XKxkMTgNSizEvKG6QHue6cAsFOteU2qA61w2tKkCWi0=",
+      "health": 200,
+      "wrong_host": 403,
+      "missing_csrf": 403,
+      "valid_csrf": 200,
+      "admin_network_denied": 403,
+      "cleanup": {
+        "backend_port_closed": true,
+        "proxy_port_closed": true,
+        "persistent_caddy_service_started": false,
+        "temporary_directory_removed": true
+      }
+    },
+    "macos_launchd_supervision": {
+      "status": "PASS",
+      "pid_changed": true,
+      "restart_recovered_seconds": 1.236,
+      "cleanup": {
+        "launchd_bootout_attempted": true,
+        "backend_port_closed": true,
+        "proxy_port_closed": true,
+        "temporary_directory_removed": true
+      }
+    },
+    "real_clamav": {
+      "status": "PASS",
+      "version": "ClamAV 1.5.4/28123/Mon Sep 14 14:24:19 2026",
+      "signature_version": 28123,
+      "clean": "CLEAN",
+      "eicar": "INFECTED",
+      "api_clean_upload": 200,
+      "api_infected_rejected": true
+    }
+  },
+  "retained_prior_evidence": {
+    "real_chrome_desktop_and_narrow": "PASS_PRIOR_ACCEPTED_NOT_RERUN_ROUND4",
+    "live_gleif_single_bounded_probe": "PASS_PRIOR_ACCEPTED_NOT_RERUN_ROUND4",
+    "runtime_backup_restore_drill": "PASS_PRIOR_ACCEPTED"
+  },
+  "release_inventory": {
+    "update_manifest_entries_excluding_itself": 127,
+    "missing": [],
+    "extra": [],
+    "hash_mismatches": [],
+    "baseline_archive_suite_previous_passed": 48,
+    "baseline_archive_suite_rerun_round4": false
+  },
+  "source_candidate": {
+    "status": "PACKAGED_NOT_PUSHED",
+    "path": "/tmp/labor_transparency_v0_6-round4-final-20260914.zip",
+    "source_files": 128,
+    "zip_entries": 129,
+    "forbidden_runtime_files": [],
+    "source_manifest_mismatches": [],
+    "sha256": "404d40a9b3e43e1618b76ae6ccf00d844cab65ea4d79c02550392043d8d9233f"
+  },
+  "bounded_failures_and_unknowns": [
+    "Direct launchd execution from the Downloads project was denied by macOS privacy controls; a private temporary runtime copy was used without weakening permissions.",
+    "FreshClam produced a real current daily signature database, but explicit main-database update attempts remained running beyond connector calls and were terminated; full main/bytecode lifecycle is not verified.",
+    "No public CA, DNS, firewall or target production server deployment was attempted."
+  ],
+  "external_gates_remaining": [
+    "public/formal CA certificate issuance and renewal, DNS and firewall",
+    "target production server systemd/container service account, filesystem permissions and restart recovery",
+    "protected secret manager plus independent administrator identity/MFA",
+    "long-run FreshClam schedule/mirror reliability and scan capacity",
+    "external monitoring/alerting/security-log retention",
+    "off-machine encrypted backup, retention/destruction policy, RPO/RTO and capacity",
+    "broader PII/copyright review, multi-source long-run reliability and controlled real complaint submission"
+  ],
+  "publication": {
+    "github_pushed": false,
+    "public_deployment": false
+  },
+  "next_gate": "target-environment operations closure before project Git/GitHub/public deployment"
+}

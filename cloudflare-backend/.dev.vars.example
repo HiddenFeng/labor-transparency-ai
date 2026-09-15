@@ -1,0 +1,6 @@
+# Copy to .dev.vars for local development only. Never commit real secrets.
+LTP_SESSION_SECRET=replace-with-64-plus-random-characters
+LTP_REVIEW_TOKEN=review-local-only
+LTP_EXPORT_TOKEN=export-local-only
+LTP_ADVISORY_AGENT_TOKEN=advisory-local-only
+LTP_RESEARCH_AGENT_TOKEN=research-local-only

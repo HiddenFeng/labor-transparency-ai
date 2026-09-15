@@ -1,0 +1,10 @@
+# Builds ONLY the prebuilt read-only artifact, not the unaccepted public write backend.
+# Resolve and pin the image digest during real release. Container was not built in this environment.
+FROM node:22-alpine
+WORKDIR /srv
+COPY public-site /srv/public-site
+COPY deploy/static_server.mjs /srv/static_server.mjs
+USER node
+ENV HOST=0.0.0.0 PORT=8080 SITE_DIR=/srv/public-site
+EXPOSE 8080
+CMD ["node", "/srv/static_server.mjs"]

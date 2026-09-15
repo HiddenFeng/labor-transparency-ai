@@ -1,0 +1,14 @@
+.git
+.env*
+*.sqlite*
+*.db
+*.key
+*.pem
+local-data
+__pycache__
+.venv
+node_modules
+private
+uploads
+backups
+qa

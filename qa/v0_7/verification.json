@@ -1,0 +1,98 @@
+{
+  "version": "0.7.2-rc.1",
+  "date": "2026-09-15",
+  "status": "SITES_READY_LOCAL_VERIFIED_NOT_DEPLOYED",
+  "git": {
+    "branch": "feat/v0.7.2-public-ui",
+    "base_release": "v0.7.1-sites-rc1",
+    "remote_ci": "PASS_RUN_34927990347"
+  },
+  "product_positioning": {
+    "public_experience": "worker-facing public service + public-interest editorial + warmth and strength",
+    "primary_paths": ["anonymous advisory", "company/community records", "public contribution"],
+    "operator_review_hidden_from_primary_navigation": true
+  },
+  "ui_content": {
+    "issue_guides": 6,
+    "public_cases": 4,
+    "external_resource_entries": 11,
+    "external_resources_are_partnerships": false,
+    "case_items_are_project_evidence_records": false,
+    "plain_language_evidence_labels": true,
+    "company_search": true,
+    "responsive_css": true,
+    "reduced_motion": true,
+    "focus_visible": true
+  },
+  "tests": {
+    "sites_node": {"status": "PASS", "passed": 20, "failed": 0},
+    "sites_build": {"status": "PASS", "version": "0.7.2-rc.1", "manifest": "sites-app/dist/BUILD_MANIFEST.json"},
+    "browser": {
+      "status": "PUBLIC_WORKER_FACING_UI_PASS_LOCAL_CHROME",
+      "artifact": "qa/v0_7/sites-browser-v072.json",
+      "final_console_errors": 0,
+      "final_network_errors": 0,
+      "final_page_errors": 0,
+      "home_issue_to_rights": "PASS",
+      "rights_to_resources": "PASS",
+      "company_search": "PASS",
+      "anonymous_advisory_submit": "PASS",
+      "private_advice_after_agent_processing": "PASS",
+      "real_narrow_viewport": "PASS_485x757_EXPLICIT_LOCAL_HEADLESS_CHROME"
+    },
+    "legacy_baseline_from_v071": {
+      "python_3_9": "PASS_286",
+      "python_3_12": "PASS_286",
+      "legacy_node_ui_logic": "PASS_103",
+      "legacy_loopback_http": "PASS_106",
+      "research_unit": "PASS_67",
+      "note": "Repository regression reran on GitHub Actions run 34927990347 for the v0.7.2 commit: verify(3.9), verify(3.13), and sites_candidate all completed successfully."
+    }
+  },
+  "content_sources": {
+    "cases": [
+      "https://www.dol.gov/newsroom/releases/whd/whd20260810",
+      "https://www.dol.gov/newsroom/releases/whd/whd20260623",
+      "https://www.workersrights.org/our-work/factory-investigations/golden-refit/",
+      "https://www.workersrights.org/our-work/factory-investigations/wah-sun-hk-factory-cambodia/"
+    ],
+    "resource_hosts": [
+      "www.ilo.org", "www.workersrights.org", "www.ituc-csi.org", "workersunited.org",
+      "www.dol.gov", "www.osha.gov", "www.nlrb.gov", "www.acas.org.uk",
+      "www.fairwork.gov.au", "www.ombudsman.europa.eu"
+    ],
+    "source_contract": "External links are public navigation only; listing does not mean partnership, endorsement, authorization, or referral. Public case cards are educational and do not automatically become evidence records."
+  },
+  "semantics_preserved": [
+    "community popularity and evidence grade remain independent",
+    "company, product and labor-practice evidence scopes remain separate",
+    "users cannot self-assign evidence/status/export approval",
+    "editing resets evidence to E0 and revokes redistribution approval",
+    "open corrections pause high-evidence display and redistribution",
+    "anonymous advisory remains non-sensitive and private advice is not public",
+    "company automatic-research source coverage remains honestly partial"
+  ],
+  "company_research": {
+    "audit": "qa/v0_7/company-research-audit.json",
+    "live_source": "qa/v0_7/live-source.json",
+    "pipeline": "SUPPORTED_SOURCE_PIPELINE_PASS",
+    "coverage": "PARTIAL"
+  },
+  "sites_handoff": {
+    "source": "sites-app/",
+    "instructions": "sites-app/SITES_HANDOFF.md",
+    "design": "docs/v0_7/SITES交互版设计与边界.md",
+    "change_record": "docs/v0_7/CHANGE-v0.7.2-public-ui.md",
+    "acceptance": "docs/v0_7/交付与验收.md",
+    "package_status": "GENERATE_AFTER_FINAL_QA_WITH_scripts/package_sites_v072.py"
+  },
+  "not_verified": [
+    "actual ChatGPT Sites deployment",
+    "target Sites database/storage implementation and transaction semantics",
+    "Sign in with ChatGPT availability for the user's Site/workspace",
+    "Sites owner/operator authorization mapping",
+    "target Sites concurrent write behavior",
+    "target Sites data retention/deletion settings"
+  ],
+  "strongest_claim": "v0.7.2-rc.1 is locally runtime-verified and GitHub-CI-verified as a substantially redesigned worker-facing Sites candidate with supportive public-service UI, sourced public labor cases, curated official/union resource navigation, preserved evidence/privacy semantics, working advisory/company paths, and desktop+narrow real-Chrome validation. It is ready for ChatGPT Sites platform-specific import/testing, but is not yet a deployed Site."
+}

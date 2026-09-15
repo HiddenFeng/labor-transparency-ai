@@ -1,0 +1,15 @@
+{
+  "categories": {
+    "company_fact": [],
+    "labour_claim": [],
+    "product": [],
+    "product_claim": [],
+    "relationship": []
+  },
+  "generated_at": "2026-09-14T08:07:55.727266+00:00",
+  "license": "LicenseRef-LTP-Public-Interest-1.0",
+  "purpose": "仅限非商业公益用途",
+  "record_count": 0,
+  "schema_version": "0.4",
+  "withdrawal_notice": "撤回从后续快照排除，已下载副本不能保证回收。"
+}

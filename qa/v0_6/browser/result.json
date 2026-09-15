@@ -1,0 +1,38 @@
+{
+  "status": "PASSED",
+  "executed_at": "2026-09-14T10:51:00Z",
+  "url": "http://127.0.0.1:8878",
+  "scope": "real Chrome/CDP against the current local synthetic-data app; no real personal data",
+  "desktop": {
+    "viewport": {"width": 1642, "height": 873},
+    "checks": [
+      "current company/product discovery renders without console, network or page errors",
+      "community-positive, community-negative and evidence-positive lanes remain separate",
+      "private-help flow creates a synthetic private case",
+      "current private case exposes statement/material export entries",
+      "local attachment form remains available after the production attachment fail-closed changes"
+    ],
+    "screenshot_artifacts": [
+      "6d9c295b9803d652942bd3724632fb41",
+      "a3ce226f468a833a86f0e4d4139417a2",
+      "006dd8cedfa57868a6bed68923ca3524",
+      "fdeeebade79f5363ebad14ff3a289d44"
+    ]
+  },
+  "narrow_viewport": {
+    "viewport": {"width": 485, "height": 757},
+    "checks": [
+      "responsive navigation collapses to a menu button",
+      "discovery lanes, search controls, company/product cards and provenance notes remain readable",
+      "captured document width equals viewport width; no horizontal page overflow observed",
+      "no console, network or page errors"
+    ],
+    "screenshot_artifact": "eef1815a47b47a1dc648bdf93636e8e7"
+  },
+  "errors": [],
+  "notes": [
+    "All company, product, contribution and case content used for click QA was explicitly synthetic.",
+    "Authenticated browser-admin mutation is not claimed; browser secret injection was not used. Admin behavior is covered by loopback HTTP automation.",
+    "Production HTTPS behavior is recorded separately in qa/v0_6/production-security.json."
+  ]
+}

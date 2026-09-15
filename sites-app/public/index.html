@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="劳动透明计划：面向普通劳动者的非商业公益信息与支持入口。匿名整理情况、查看公司记录、了解权益资源，并把社区声音与证据强度分开。">
+  <meta name="theme-color" content="#fffaf7">
+  <title>劳动透明计划 · 把工作里的事说清楚</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/runtime-config.js"></script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<header class="topbar">
+  <a class="brand" href="#home" data-tab="home" aria-label="劳动透明计划首页">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 48 48" role="img"><path d="M24 42C12 35 5 27 5 17.5A10.5 10.5 0 0 1 24 11a10.5 10.5 0 0 1 19 6.5C43 27 36 35 24 42Z" fill="currentColor" opacity=".16"/><path d="M24 39C14 33 8 26.4 8 18.4A7.8 7.8 0 0 1 22.6 14l1.4 2 1.4-2A7.8 7.8 0 0 1 40 18.4C40 26.4 34 33 24 39Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 23.5l4.2 4.2L31 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span>劳动透明计划<small>Labor Transparency</small></span>
+  </a>
+  <nav aria-label="主导航">
+    <button data-tab="home" class="nav-active">首页</button>
+    <button data-tab="discover">公司与记录</button>
+    <button data-tab="advisory">匿名求助</button>
+    <button data-tab="rights">权益指南</button>
+    <button data-tab="resources">资源与帮助</button>
+    <button data-tab="contribute">提交线索</button>
+  </nav>
+  <button class="menu-quiet" data-tab="mine">我的提交</button>
+</header>
+
+<main id="main">
+  <section class="tab-panel home-panel" data-panel="home">
+    <section class="hero-public">
+      <div class="hero-copy reveal">
+        <p class="hero-note">你不需要先懂法律，也不需要一次把所有事情说清楚。</p>
+        <h1>工作里的委屈，<br><em>不该只剩一句“算了”。</em></h1>
+        <p class="hero-lede">我们帮你把发生了什么、能证明什么、下一步去哪里，慢慢理清楚。你可以先匿名整理情况，也可以查看公司公开记录、真实案例和正式权益资源。</p>
+        <div class="hero-actions">
+          <button class="primary warm" data-tab="advisory">先匿名说说我的情况</button>
+          <button class="secondary" data-tab="discover">查看公司与公开记录</button>
+          <button class="text-action" data-tab="contribute">我想补充一条公开线索 →</button>
+        </div>
+        <div class="trust-line" aria-label="本站承诺">
+          <span>不要求实名</span><span>社区意见 ≠ 事实</span><span>个案正文不公开</span><span>不替代正式机构</span>
+        </div>
+      </div>
+      <aside class="hero-support reveal delay-1" aria-label="给劳动者的一句话">
+        <div class="sun-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p class="support-hand">先把事情说清楚，<br>再决定下一步。</p>
+        <div class="support-list">
+          <div><strong>如果你很乱</strong><span>先从时间线开始，我们帮你拆问题。</span></div>
+          <div><strong>如果你很害怕</strong><span>先匿名整理，不需要立刻公开身份。</span></div>
+          <div><strong>如果你不知道找谁</strong><span>我们把工会、官方机构和国际资源放到一起。</span></div>
+        </div>
+        <p class="support-foot">如果存在即时人身危险或紧迫法定时限，请优先联系当地紧急服务、工会、律师或正式监管机构。</p>
+      </aside>
+    </section>
+
+    <section class="home-band pain-band reveal" aria-labelledby="pain-title">
+      <div class="section-intro">
+        <p class="section-kicker">从你正在经历的事开始</p>
+        <h2 id="pain-title">你现在最难受的，是哪一种？</h2>
+        <p>不用先判断“这算不算违法”。先选一个最接近的问题，我们会告诉你：先记录什么、暂时别急着做什么、可以去哪里找正式帮助。</p>
+      </div>
+      <div id="issue-grid" class="issue-grid"></div>
+    </section>
+
+    <section class="home-band steps-band reveal" aria-labelledby="steps-title">
+      <div class="section-intro narrow">
+        <p class="section-kicker">先做三件有用的小事</p>
+        <h2 id="steps-title">别急着“赢”，先让事实站得住。</h2>
+      </div>
+      <ol class="three-steps">
+        <li><span>1</span><div><h3>记时间</h3><p>日期、班次、通知、变化、谁说了什么。连续的时间线，比“我记得大概是……”更有用。</p></div></li>
+        <li><span>2</span><div><h3>留材料</h3><p>保留你合法持有的工资单、合同、排班、公开文件和沟通记录。不要把敏感文件上传到本站匿名辅导。</p></div></li>
+        <li><span>3</span><div><h3>查时限与渠道</h3><p>不同地区规则差异很大。越接近签字、解约、申诉时限或安全风险，越应该尽快去正式机构或专业人士那里确认。</p></div></li>
+      </ol>
+      <button class="primary ghost-warm" data-tab="advisory">我想让系统帮我整理 →</button>
+    </section>
+
+    <section class="home-band stories-band reveal" aria-labelledby="stories-title">
+      <div class="section-head editorial-head">
+        <div><p class="section-kicker">真实世界里的劳动事件</p><h2 id="stories-title">有些问题，不是“只有你太敏感”。</h2><p>我们选公开来源里的案例，不为了制造愤怒，而是帮你看见：类似问题通常需要记录什么、可以争取什么补救。</p></div>
+        <button class="secondary" data-tab="rights">看完整权益指南</button>
+      </div>
+      <div id="home-cases" class="story-rail"></div>
+      <p id="case-source-note" class="source-note"></p>
+    </section>
+
+    <section class="home-band help-band reveal" aria-labelledby="help-title">
+      <div class="help-split">
+        <div class="section-intro">
+          <p class="section-kicker">别一个人找入口</p>
+          <h2 id="help-title">你需要的是“下一步”，不是更多术语。</h2>
+          <p>劳动透明计划不是律师、法院、工会或监管机构。我们的作用，是帮你把问题整理清楚，并把真正有权限、有经验或有公共价值的外部资源放在一起。</p>
+          <div class="help-actions"><button class="primary" data-tab="resources">打开外部权益资源</button><button class="secondary" data-tab="advisory">先匿名整理我的情况</button></div>
+        </div>
+        <div class="help-quote"><blockquote>“当你不知道该从哪里开始时，先让事实变得有顺序，先知道有哪些门可以敲。”</blockquote><p>— 劳动透明计划的产品原则</p></div>
+      </div>
+      <div id="home-resource-strip" class="resource-strip"></div>
+      <p class="resource-disclaimer" id="resource-disclaimer-home"></p>
+    </section>
+
+    <section class="home-band community-band reveal" aria-labelledby="community-title">
+      <div class="section-head editorial-head">
+        <div><p class="section-kicker">公开透明社区</p><h2 id="community-title">公司评价可以有情绪，事实判断必须有证据。</h2><p>“大家很不满意”和“某项劳动实践已被证实”是两件不同的事。我们把它们分开显示，也允许公开纠错。</p></div>
+        <button class="secondary" data-tab="discover">进入公司与记录</button>
+      </div>
+      <div class="evidence-explainer">
+        <div><span class="signal opinion">社区声音</span><strong>大家怎么感受</strong><p>去重的正向/负向评价，只表示社区反馈，不自动变成事实。</p></div>
+        <div class="divider-arrow" aria-hidden="true">≠</div>
+        <div><span class="signal evidence">证据强度</span><strong>一条具体主张能证明到哪里</strong><p>来源、时间、范围与复核决定它能支持什么，不支持什么。</p></div>
+      </div>
+      <div id="home-community-preview" class="cards soft-cards"></div>
+    </section>
+
+    <section class="home-band daily-band reveal" aria-labelledby="daily-title">
+      <div class="daily-card">
+        <div><p class="section-kicker">匿名辅导公开日报</p><h2 id="daily-title">个案不公开，但项目会公开“我们收到了多少求助”。</h2><p>每日只发布聚合数量和小样本合并后的类别，不公开个案正文、公司关联、回执码或个人标识。</p></div>
+        <div id="home-daily-report" class="daily-metric"><strong>暂无日报</strong><span>有新记录后会在这里显示聚合状态。</span></div>
+      </div>
+    </section>
+  </section>
+
+  <section class="tab-panel hidden" data-panel="discover">
+    <div class="page-hero small-page-hero">
+      <div><p class="section-kicker">公司与公开记录</p><h1>先看大家怎么说，再看证据能说到哪里。</h1><p>没有记录不代表一家公司“好”或“坏”；公司空间只是一个讨论与资料容器。</p></div>
+      <button class="primary" data-tab="contribute">补充一条公开线索</button>
+    </div>
+    <div class="company-search-bar"><label for="company-search">搜索公司或地区</label><input id="company-search" type="search" placeholder="输入公司名称、地区或产品关键词"><button id="refresh-discover" class="secondary">刷新</button></div>
+    <div class="lane-tabs" role="group" aria-label="展示分区">
+      <button data-lane="community_positive" class="lane-active">大家的正向反馈</button>
+      <button data-lane="community_negative">大家的负向反馈</button>
+      <button data-lane="evidence_positive">有较强证据的正向实践</button>
+    </div>
+    <p class="method-note" id="lane-method"></p>
+    <div id="showcase" class="cards feature-cards" aria-live="polite"></div>
+    <div class="section-head compact"><div><h2>全部公司空间</h2><p>你可以留下社区评价；它不会改变任何资料的证据等级。</p></div></div>
+    <div id="companies" class="cards company-cards"></div>
+  </section>
+
+  <section class="tab-panel hidden" data-panel="advisory">
+    <div class="page-hero advisory-hero">
+      <div><p class="section-kicker">匿名求助</p><h1>你可以先不实名，<br>把事情慢慢说清楚。</h1><p>这里只接收去身份化、非敏感的情况摘要。我们帮你整理事实、下一步和可用资源；不会替你向外部机构自动提交，也不会把个案正文公开。</p></div>
+      <div class="privacy-promise"><strong>我们现在不收：</strong><span>真实姓名 · 私人联系方式 · 身份证件 · 家庭住址 · 健康/支付信息 · 敏感附件</span></div>
+    </div>
+    <div class="advisory-layout">
+      <form id="advisory-form" class="panel form-grid human-form">
+        <div class="form-title span-2"><div><p class="form-step">把问题说成一条清晰的时间线</p><h2>发生了什么？</h2></div></div>
+        <label>最接近的问题<select name="category" required><option value="pay">工资 / 薪酬</option><option value="hours_rest">工时 / 休息</option><option value="contract">合同 / 用工关系</option><option value="termination">离职 / 解除</option><option value="safety">工作安全</option><option value="respect">尊重 / 不当对待</option><option value="representation">代表权 / 集体沟通</option><option value="other">其他</option></select></label>
+        <label>关联公司（可选）<select name="companyId" id="advisory-company-select"><option value="">不关联 / 暂不明确</option></select></label>
+        <label>地区范围（可选）<input name="region" maxlength="80" placeholder="国家 / 省州 / 城市级，不写详细住址"></label>
+        <label>你目前的工作关系<select name="employmentStatus"><option value="current">在职</option><option value="former">已离职</option><option value="applicant">求职 / 应聘</option><option value="contractor">合同 / 外包</option><option value="other">其他 / 不明确</option></select></label>
+        <label class="span-2">按时间说说发生了什么<textarea name="summary" required minlength="12" maxlength="2200" placeholder="例如：什么时候开始变化、公司怎么通知、实际发生了什么。不要写姓名、电话、邮箱、证件号、详细住址、健康/支付信息或附件内容。"></textarea></label>
+        <label class="span-2">你最想解决的是什么？<textarea name="desiredOutcome" required minlength="4" maxlength="800" placeholder="例如：想把证据整理好、确认下一步、知道应该找哪个正式机构。"></textarea></label>
+        <label class="span-2">你已经尝试过什么？（可选）<textarea name="tried" maxlength="1200" placeholder="例如：问过主管、查过工资单、联系过工会。"></textarea></label>
+        <label>你觉得有多急？<select name="urgency"><option value="routine">普通，可以先整理</option><option value="soon">希望尽快处理</option><option value="urgent">紧急 / 可能有时限或安全风险</option></select></label>
+        <div class="privacy-box span-2"><strong>先保护好自己。</strong><p>当前不提供私密信息服务。不要提交真实姓名、私人联系方式、身份证/护照、家庭住址、健康记录、银行卡/支付信息或附件。若未来需要全自动持续跟进，需要与项目方另行建立专门联系渠道；当前站点不收集联系方式，也未配置自动外部联系或正式机构代提交。</p></div>
+        <label class="check span-2"><input type="checkbox" name="privacyConfirmed" required> 我确认已经移除身份、联系方式、住址、健康、支付与附件信息。</label>
+        <label class="check span-2"><input type="checkbox" name="consent" required> 我理解这是匿名整理与行动建议，不是法律意见，也不表示任何正式机构已受理。</label>
+        <button class="primary warm span-2" type="submit">提交并生成匿名回执</button>
+        <div id="advisory-receipt" class="receipt-box span-2 hidden"></div>
+      </form>
+      <div class="stack advisory-side">
+        <div class="panel reassuring-panel"><p class="section-kicker">你会得到什么</p><h3>不是一句“建议咨询专业人士”，而是一份能继续往下走的整理。</h3><ul><li>把你描述的情况拆成更清楚的事实点</li><li>给出 3—5 个下一步行动</li><li>提醒可能的时限、安全与隐私风险</li><li>指向适合的正式外部资源</li></ul></div>
+        <form id="advisory-access-form" class="panel form-grid">
+          <h3 class="span-2">用匿名回执码回来查看</h3>
+          <label class="span-2">回执码<input name="receiptCode" autocomplete="off" placeholder="ADV-..."></label>
+          <button class="secondary span-2" type="submit">查询我的建议</button>
+          <p class="meta span-2">回执码只在提交成功时显示一次；后台仅保存哈希。请自行安全保存，不要公开分享。</p>
+        </form>
+      </div>
+    </div>
+    <div id="advisory-access-result" class="cards feature-cards"></div>
+    <div class="section-head compact"><div><h2>本浏览器的匿名辅导</h2><p>同一浏览器可以直接查看；更换设备或清理 Cookie 后，请使用匿名回执码。</p></div><button id="refresh-advisory" class="secondary">刷新</button></div>
+    <div id="advisory-mine" class="cards feature-cards"></div>
+    <div class="section-head compact"><div><h2>最近公开日报</h2><p>只显示聚合数量，小样本类别会合并，不公开个案正文。</p></div></div>
+    <div id="advisory-reports" class="cards compact-cards"></div>
+  </section>
+
+  <section class="tab-panel hidden" data-panel="rights">
+    <div class="page-hero rights-hero"><div><p class="section-kicker">权益指南</p><h1>先知道自己在面对什么，<br>再决定该往哪里走。</h1><p>这里不是法律意见库，而是把常见问题翻译成“先记录什么、先问什么、什么时候应该尽快去正式渠道”。</p></div></div>
+    <div id="rights-primer" class="principles public-principles"></div>
+    <div class="section-head compact"><div><h2>按问题找下一步</h2><p>每一类都只给最基础的整理方向；具体规则必须回到你所在地区。</p></div></div>
+    <div id="rights-guide-list" class="rights-guide-list"></div>
+    <div class="urgent-callout"><strong>如果有即时人身危险、严重安全风险、迫近的法定时限或要求你立即签署重要文件：</strong><p>不要等待本站 Agent 日报或匿名建议，优先联系当地紧急服务、工会、律师、劳动监察、安全监管或其他有权限的正式机构。</p></div>
+  </section>
+
+  <section class="tab-panel hidden" data-panel="resources">
+    <div class="page-hero resource-hero"><div><p class="section-kicker">资源与帮助</p><h1>真正有权限的门，<br>应该更容易找到。</h1><p>我们整理公开、相关性质的国际组织、工会和官方申诉资源。这里的收录只是导航，不代表任何合作、授权或转介关系。</p></div></div>
+    <div id="resource-filter" class="resource-filter" role="group" aria-label="资源地区筛选"></div>
+    <p id="resource-disclaimer" class="resource-disclaimer"></p>
+    <div id="resource-directory" class="resource-directory"></div>
+  </section>
+
+  <section class="tab-panel hidden" data-panel="contribute">
+    <div class="page-hero small-page-hero"><div><p class="section-kicker">提交公开线索</p><h1>你提供的是“线索”，不是一句未经核实就会被当成事实的话。</h1><p>公开贡献可以从 E0（未独立核实）开始，不要求你上传敏感附件。后续证据等级由独立复核决定。</p></div></div>
+    <div class="two-col">
+      <form id="company-form" class="panel form-grid human-form compact-form">
+        <h2 class="span-2">先创建一个公司讨论空间</h2>
+        <label>公司名称<input name="name" required minlength="2" maxlength="120"></label>
+        <label>地区<input name="region" required maxlength="120"></label>
+        <label class="span-2">公开官网（可选，仅 HTTPS）<input name="website" type="url" placeholder="https://example.org"></label>
+        <label class="check span-2"><input type="checkbox" name="consent" required> 我理解：创建公司空间只是方便讨论和归档，不等于对公司作出事实评级。</label>
+        <button class="primary span-2" type="submit">创建公司空间</button>
+      </form>
+      <form id="contribution-form" class="panel form-grid human-form">
+        <div class="form-title span-2"><div><p class="form-step">公开线索</p><h2 id="contribution-title">补充一条可以被核对的信息</h2></div><button type="button" class="text-button hidden" id="cancel-edit">取消编辑</button></div>
+        <label>公司<select name="companyId" id="company-select" required></select></label>
+        <label>这条信息是什么<select name="kind" required><option value="product">产品</option><option value="company_fact">公司资料</option><option value="relationship">公司 / 产品关系</option><option value="labour_claim">具体劳动实践</option><option value="product_claim">产品体验主张</option></select></label>
+        <label class="span-2">给它一个清楚的标题<input name="title" required minlength="2" maxlength="120"></label>
+        <label class="span-2">具体说明<textarea name="description" required minlength="2" maxlength="2000"></textarea></label>
+        <label>方向<select name="direction"><option value="neutral">中性 / 不适用</option><option value="positive">正向</option><option value="negative">负向</option></select></label>
+        <label>劳动领域<select name="dimension"><option value="other">其他</option><option value="pay">薪酬</option><option value="rest">休息</option><option value="hours">工时</option><option value="safety">安全</option><option value="contract">合同</option><option value="respect">尊重</option><option value="representation">代表权</option></select></label>
+        <label class="span-2">这条信息适用于哪里 / 谁<input name="scope" maxlength="300" placeholder="例如：某厂区、某岗位、某业务线"></label>
+        <label>起始日期<input name="periodStart" type="date"></label><label>结束日期<input name="periodEnd" type="date"></label>
+        <label>产品 ID（仅产品体验需要）<input name="productId" maxlength="80"></label>
+        <label>关系 / 类别（可选）<input name="relation" maxlength="80"></label>
+        <fieldset class="span-2 source-box"><legend>支持来源（未核实线索可不填）</legend>
+          <label>公开 URL<input name="sourceUrl" type="url" placeholder="https://..."></label>
+          <label>来源标题<input name="sourceTitle" maxlength="200"></label>
+          <label>类型<select name="sourceType"><option value="other">其他</option><option value="first_person">第一人称</option><option value="company_disclosure">公司披露</option><option value="public_record">公共记录</option><option value="official_decision">正式决定</option></select></label>
+          <label class="span-2">它具体支持什么<input name="sourceSupports" maxlength="1000"></label>
+        </fieldset>
+        <label>权利状态<select name="rights"><option value="reference_only">仅供参考，不授权再分发</option><option value="own_summary">本人原创摘要</option><option value="permission">已获许可</option><option value="public_domain">公共领域</option></select></label>
+        <label>公开署名（可选）<input name="creditName" maxlength="40" placeholder="默认匿名贡献者"></label>
+        <label class="span-2">授权说明（选择“已获许可”时必填）<input name="rightsNote" maxlength="500"></label>
+        <label class="check span-2"><input type="checkbox" name="shareConsent"> 我另行同意在通过独立隐私/权利复核后，以公益许可再分发这条结构化摘要。</label>
+        <label class="check span-2"><input type="checkbox" name="consent" required> 我确认这是公开贡献，并已移除私人联系方式、身份证明和敏感附件信息。</label>
+        <button class="primary span-2" type="submit">保存为未核实公开线索</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="tab-panel hidden" data-panel="mine">
+    <div class="page-hero small-page-hero"><div><p class="section-kicker">我的提交</p><h1>你可以修改、纠错或撤回。</h1><p>修改后会自动回到“未核实”状态，旧的再分发批准会失效。</p></div><button id="refresh-mine" class="secondary">刷新</button></div>
+    <div id="mine-list" class="cards feature-cards"></div>
+  </section>
+
+  <section class="tab-panel hidden" data-panel="method">
+    <div class="page-hero small-page-hero"><div><p class="section-kicker">我们怎么判断信息</p><h1>不让“很多人都这么说”冒充证据，<br>也不让 AI 冒充裁决者。</h1><p>项目的可信度来自边界：什么只是社区感受，什么是公开线索，什么经过复核，什么仍然未知。</p></div></div>
+    <div class="principles public-principles">
+      <article><span>01</span><h3>社区声音不是事实</h3><p>正向或负向评价只表达社区反馈，不改变证据等级。</p></article>
+      <article><span>02</span><h3>证据只支持具体主张</h3><p>来源、时间和适用范围决定它能说到哪里。公司劳动实践不会自动变成产品质量认证。</p></article>
+      <article><span>03</span><h3>AI 管理不是 AI 裁决</h3><p>AI Agent 可以整理、提醒、辅助审核与公告，但不能凭模型判断把未核实线索升级成事实。</p></article>
+      <article><span>04</span><h3>匿名辅导不是私密材料服务</h3><p>本站只收去身份化的非敏感摘要。真实姓名、联系方式、身份证明、付款/健康数据和敏感附件不在当前版本范围。</p></article>
+    </div>
+    <div class="panel method-panel"><h2>自动公司资料研究覆盖</h2><p class="meta">系统会明确区分“找到了来源”“匹配到了候选”“经过主体绑定”“可以支持具体事实”四件不同的事。当前已接入多类公开来源，但不同国家、公司类型和数据栏目覆盖并不相同。</p><div id="research-coverage"></div></div>
+  </section>
+
+  <section class="tab-panel hidden" data-panel="review">
+    <div class="page-hero small-page-hero"><div><p class="section-kicker">运营入口</p><h1>证据审核与公益再分发</h1><p>这是受限运营工作区，不是普通访客功能。Sites 中应映射到受限的 owner/operator 权限。</p></div></div>
+    <form id="review-auth" class="panel inline-form"><label>审核令牌<input name="reviewToken" type="password" autocomplete="off"></label><label>再分发复核令牌<input name="exportToken" type="password" autocomplete="off"></label><button class="secondary" type="submit">载入审核队列</button></form>
+    <div id="review-list" class="cards feature-cards"></div>
+  </section>
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<footer class="site-footer">
+  <div><strong>劳动透明计划</strong><p>非商业公益用途 · AI 制作 / AI Agent 管理 · 不替代工会、律师、法院或监管机构。</p></div>
+  <div class="footer-links"><button data-tab="method">我们怎么判断信息</button><button data-tab="resources">外部权益资源</button><button data-tab="mine">我的提交</button><button data-tab="review">运营入口</button></div>
+  <p class="footer-version"><span id="runtime-status">正在连接服务…</span><br>当前 v0.8.1 为独立前后端 + 多源公司资料自动收集候选。</p>
+</footer>
+</body>
+</html>

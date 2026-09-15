@@ -1,0 +1,89 @@
+{
+  "status": "PRODUCTION_ENTRYPOINT_AND_LOCAL_STAGING_RUNTIME_PASSED_NOT_DEPLOYED",
+  "date": "2026-09-14",
+  "automated_security_tests": {
+    "security_tests": 14,
+    "malware_attachment_tests": 10,
+    "backup_tests": 9,
+    "combined_security_attachment_backup_tests": 33
+  },
+  "production_request_baseline": {
+    "exact_host": true,
+    "https_required": true,
+    "exact_origin": true,
+    "session_bound_csrf": true,
+    "secure_cookie": true,
+    "persistent_rate_limit": true,
+    "minimal_hashed_audit": true,
+    "admin_exact_ip_allowlist_required": true,
+    "admin_wildcard_cidr_hostname_rejected": true,
+    "admin_ipv6_normalized": true,
+    "admin_network_denial_before_admin_auth": true
+  },
+  "real_caddy_staging": {
+    "status": "PASS",
+    "artifact": "qa/v0_6/caddy-staging.json",
+    "version": "v2.11.4 h1:XKxkMTgNSizEvKG6QHue6cAsFOteU2qA61w2tKkCWi0=",
+    "config_validate": "PASS",
+    "private_ca_client_verified": true,
+    "health_http_status": 200,
+    "wrong_host_http_status": 403,
+    "missing_csrf_mutation_http_status": 403,
+    "valid_csrf_mutation_http_status": 200,
+    "admin_network_denied_http_status": 403,
+    "admin_network_gate_observed_before_admin_auth": true,
+    "persistent_service_started": false,
+    "public_listener_created": false,
+    "cleanup": {
+      "backend_port_closed": true,
+      "proxy_port_closed": true,
+      "persistent_caddy_service_started": false,
+      "temporary_directory_removed": true
+    }
+  },
+  "real_macos_process_supervision": {
+    "status": "PASS",
+    "artifact": "qa/v0_6/launchd-supervision.json",
+    "mechanism": "macOS user launchd KeepAlive",
+    "pid_replaced": true,
+    "health_recovered": true,
+    "restart_recovered_seconds": 1.236,
+    "cleanup": {
+      "launchd_bootout_attempted": true,
+      "backend_port_closed": true,
+      "proxy_port_closed": true,
+      "temporary_directory_removed": true
+    },
+    "scope": "current Mac user-level launchd staging only; target Linux/systemd/container unverified"
+  },
+  "real_clamav_attachment_gate": {
+    "status": "PASS",
+    "artifact": "qa/v0_6/clamav-real.json",
+    "version": "ClamAV 1.5.4/28123/Mon Sep 14 14:24:19 2026",
+    "signature_version": 28123,
+    "database_files": [
+      {
+        "name": "daily.cvd",
+        "size": 23432664
+      }
+    ],
+    "clean_status": "CLEAN",
+    "eicar_status": "INFECTED",
+    "production_clean_upload_http_status": 200,
+    "production_infected_upload_rejected": true,
+    "stored_scan_engine": "clamav",
+    "public_listener_created": false
+  },
+  "production_attachment_default": "disabled",
+  "failed_or_bounded_routes": [
+    "FreshClam daily signature database was obtained, but repeated explicit main-database update attempts outlived the tool call and were terminated; main/bytecode full lifecycle is not claimed.",
+    "macOS LaunchAgent could not read the Downloads project virtualenv due OS privacy controls; the drill used a private temporary copy instead of weakening permissions."
+  ],
+  "limits": [
+    "No public DNS, public/formal CA issuance or renewal, or production firewall was configured or verified.",
+    "macOS launchd evidence does not verify the target production server systemd/container lifecycle.",
+    "Long-run FreshClam scheduling, mirror reliability, full main/bytecode database lifecycle and scan load performance remain unverified.",
+    "Protected secret-manager rollout, independent administrator identity/MFA, external monitoring/alerting, off-machine disaster recovery and capacity gates remain incomplete.",
+    "This does not make the service production-ready or authorize GitHub/public deployment."
+  ]
+}

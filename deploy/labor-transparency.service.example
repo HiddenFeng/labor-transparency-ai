@@ -1,0 +1,26 @@
+# Example systemd unit only. Do not install verbatim: create the service account,
+# directories, virtualenv and protected EnvironmentFile first.
+[Unit]
+Description=Labor Transparency public-interest service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=ltp
+Group=ltp
+WorkingDirectory=/opt/labor-transparency/current
+EnvironmentFile=/etc/labor-transparency/production.env
+ExecStart=/opt/labor-transparency/venv/bin/uvicorn app.production:app --host 127.0.0.1 --port 8080 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/labor-transparency
+
+[Install]
+WantedBy=multi-user.target

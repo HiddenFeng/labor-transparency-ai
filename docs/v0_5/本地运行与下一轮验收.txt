@@ -1,0 +1,61 @@
+# 本地运行与下一轮验收
+
+版本v0.5。任务边界：只在用户明确项目目录或本包独立副本工作；不覆盖已有改动；不读取其他项目、私钥或账户资料。完成生产验收前不执行GitHub发布、公开部署或域名绑定。
+
+## 两种启动模式
+
+普通体验（仅虚构资料）：
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+python scripts/run_local.py --phase assistance
+```
+
+实际企业公开资料测试（仍只监听本机，不收真实申诉材料）：
+
+```sh
+python scripts/run_local.py --db local-data/public-reference.sqlite3 --phase assistance --public-research --research-network
+```
+
+浏览器打开本机8765端口；启动输出的临时管理凭据仅用于本机运营页，不要分享。进入`/#manage`后访问`/#research`。开启网络能力仍不自动查询，需要运营确认每个有限批次。不要在真实参考库运行seed-demo或seed-community-demo；界面演示另用独立数据库。
+
+真实企业表单勾选“加入公开目录”和“实际企业公开资料”。有LEI时可以使用`LEI:20位标识`；没有时按名称产生候选。手动核对来源后绑定，重新查询，核对草稿并批准。公开公司页面只能看已发布版本和进度，不能看内部草稿、私密需求和令牌。
+
+## 独立来源探测
+
+```sh
+python scripts/check_live_source.py --allow-network --name 'Apple Inc.' --country US --out /tmp/ltp-live-check.json
+```
+
+这是一次公开企业检索，不是劳动评级或申诉。默认最多1个实际请求、无数据库或发布副作用。失败退出码2；没有授权不联网。成功也只证明检索和字段解析，不等于实体匹配和完整链路验收。
+
+## 有限批次入口，不自动安装定时任务
+
+```sh
+python scripts/research_cycle.py --db local-data/public-reference.sqlite3 --allow-network --max-jobs 5 --daily-budget 120
+python scripts/research_cycle.py --db local-data/public-reference.sqlite3 --release-only
+```
+
+默认查询已结束自然日及历史积压；手动即查测试可加`--include-current`。有限命令结束后退出，不承诺以后自行继续；后续服务管理器可调用它，但当前未安装任何任务。由于审阅必须单独完成，查询命令不保证同一周期中直接产生公开资料。重试/最终失败导致退出码2，需要运营观察；未到期或等待人工的任务仍保留。
+
+## 本机升级
+
+从独立v0.5包运行，不要先覆盖原目录：
+
+```sh
+python scripts/apply_to_local.py <local-home>/Downloads/labor_transparency_v0_2 --from-version v0.2
+```
+
+参数应取目标目录实际基线版本，不由目录名字推断。支持v0.2、v0.3、v0.4。默认只预检；内容冲突停止。确认旧服务停止并完成备份后，实际应用才加`--apply --service-stopped`。更新脚本对默认本地数据库做一致性备份、另存证据密钥，不自动启动服务器、调用模型或写入GitHub。存在自定义外部数据库时先人工核对备份。混合多个版本或本地已开发的分支不得强行覆盖，应逐文件合并。
+
+## 下一轮执行优先级与验收证据
+
+1. 恢复可调用且在线的本地连接，核对真实项目路径、基线和本地改动，执行预检。当前会话未修改Mac。
+2. 在正常允许的网络下跑一次来源检查，再用两家真实公开法人核对名称、标识、可选母公司及无结果情况。验证真实接口JSON与适配器契约；遇权限拒绝停止，不换代理绕过。未通接口前不扩大全网来源。
+3. 浏览器完成桌面、手机视口和真实点击：登记、无资料公司、共建、展示、私密帮助、运营研究/复核/发布、登录及阶段关闭。保留运行截图、控制台和路径记录。环境拒绝就记阻塞，不用静态HTML或概念图替代。
+4. 正常网络和浏览器基线通过后，再安装经过授权的定时运行及健康监控，验证跨日、超时、停机恢复和漏跑补齐。不得将本轮模拟时钟测试冒充连续24小时运行。
+5. 接续原待完成项：真实渠道/申诉Agent、生产认证及反滥用、公开文件扫描与脱敏、密钥/备份恢复/容量、运营责任与法律隐私审阅。全部发布门满足后，才创建GitHub发布和实际Sites接管、服务器与域名绑定。
+
+不重新开始全部规划，不把全局未完成等同已有功能不存在。以这条链路的真实运行证据作为下一次接受依据；禁止仅增加测试数量代替真实来源和用户体验验收。

@@ -1,0 +1,45 @@
+{
+  "version": "0.8.1-rc.2",
+  "date": "2026-09-15",
+  "status": "MIGRATION_TO_HIDDENFENG_PENDING_FIRST_PUBLIC_CI",
+  "github": {
+    "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai",
+    "visibility": "TARGET_PUBLIC",
+    "active_branch": "main",
+    "fresh_privacy_sanitized_history": true,
+    "active_author": "HiddenFeng",
+    "author_email": "282881322+HiddenFeng@users.noreply.github.com",
+    "previous_public_account_refs_in_new_source_or_history": false,
+    "legacy_history_private_outside_repository": true,
+    "workflows_present": true,
+    "actions": "PENDING_FIRST_HIDDENFENG_CI"
+  },
+  "release": {
+    "tag": "v0.8.1-deployment-rc2",
+    "status": "PENDING_REPUBLISH_AFTER_HIDDENFENG_CI"
+  },
+  "vercel": {
+    "public_frontend_current": "https://labor-transparency-public.vercel.app",
+    "target_account": "HiddenFeng",
+    "migration_status": "PENDING_CLI_REAUTH_AND_REDEPLOY"
+  },
+  "edgeone": {
+    "account_authenticated": true,
+    "account_project": "labor-transparency-public",
+    "project_deployment_status": "SUCCESS",
+    "platform_domain": "https://labor-transparency-public.edgeone.cool",
+    "mainland_default_domain_no_preview_token": "HTTP_401_EO_TIME_MISSING",
+    "stable_custom_domain_required": true,
+    "custom_domain_candidate": "workermanifestfellowship.dpdns.org"
+  },
+  "verification": {
+    "python_3_9": "PASS_291",
+    "python_3_12": "PASS_291_FRESH_VENV",
+    "sites": "PASS_20",
+    "cloudflare_research": "PASS_2",
+    "legacy_node": "PASS_103",
+    "edgeone_proxy": "PASS",
+    "static_privacy_audit": "PASS"
+  },
+  "boundary": "HiddenFeng is the only intended public GitHub identity for the new repository. First CI/release and Vercel account migration must be re-verified after the fresh public-history push. Stable Mainland service still requires successful custom-domain binding and any applicable provider/ICP eligibility."
+}

@@ -1,0 +1,10 @@
+# Example only. Replace the hostname and keep the application bound to loopback.
+# Caddy terminates TLS and sends a trusted X-Forwarded-Proto to uvicorn.
+labor.example.org {
+    encode zstd gzip
+    reverse_proxy 127.0.0.1:8080 {
+        header_up Host {host}
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-For {remote_host}
+    }
+}

@@ -1,0 +1,162 @@
+{
+  "version": "0.6",
+  "date": "2026-09-14",
+  "status": "PUBLIC_SOURCE_AND_READONLY_SITE_LIVE_BACKEND_NOT_PRODUCTION",
+  "workspace": "<project-root>",
+  "project_git_boundary": true,
+  "tests": {
+    "python": {
+      "status": "PASS",
+      "passed": 285,
+      "python_3_9_6": "PASS_FULL_285",
+      "python_3_12_14": "PASS_FULL_285",
+      "artifacts": [
+        "qa/v0_6/python-tests.txt",
+        "qa/v0_6/python-tests-py312.txt"
+      ],
+      "fresh_round4": true,
+      "current_test_count": 286,
+      "github_actions_python_3_9": "PASS_FULL_286",
+      "github_actions_python_3_13": "PASS_FULL_286",
+      "github_actions_run": "34863018111",
+      "local_python_3_9_6_prior_full": "PASS_FULL_285_PLUS_TARGETED_PUBLICATION_FIX",
+      "local_python_3_12_14_prior_full": "PASS_FULL_285",
+      "note": "Current full 286-test regression is verified in GitHub Actions on Python 3.9 and 3.13; local prior full runs remain historical evidence."
+    },
+    "node_ui_logic": {
+      "status": "PASS",
+      "passed": 103,
+      "breakdown": {
+        "ui": 32,
+        "research_ui": 21,
+        "community_ui": 36,
+        "offline": 14
+      },
+      "artifact": "qa/v0_6/ui-tests.txt",
+      "fresh_round4": true
+    },
+    "loopback_http": {
+      "status": "PASS",
+      "passed": 106,
+      "breakdown": {
+        "legacy": 26,
+        "research": 27,
+        "community": 43,
+        "static": 10
+      },
+      "artifacts": [
+        "qa/v0_6/legacy-http.json",
+        "qa/v0_6/research-http.json",
+        "qa/v0_6/community-http.json",
+        "qa/v0_6/static-http.txt"
+      ],
+      "fresh_round4": true,
+      "research_upstream": "MOCK_TRANSPORT_EXPLICIT_NOT_LIVE_SOURCE"
+    },
+    "browser": {
+      "status": "PASS_PRIOR_ACCEPTED",
+      "desktop_real_chrome": true,
+      "narrow_viewport_real_chrome": true,
+      "narrow_viewport_css": "485x757",
+      "artifact": "qa/v0_6/browser/result.json",
+      "rerun_round4": false
+    },
+    "live_gleif": {
+      "status": "PASS_PRIOR_ACCEPTED",
+      "fixture_used": false,
+      "requests": 1,
+      "candidate_count": 5,
+      "artifact": "qa/v0_6/live-source.json",
+      "rerun_round4": false
+    },
+    "runtime_backup_restore": {
+      "status": "PASS_PRIOR_ACCEPTED",
+      "unit_tests": 9,
+      "cli_drill": "DRILL_PASSED",
+      "artifact": "qa/v0_6/backup-drill.json"
+    },
+    "production_security": {
+      "status": "LOCAL_STAGING_RUNTIME_PASS_NOT_DEPLOYED",
+      "security_unit_tests": 14,
+      "attachment_safety_tests": 10,
+      "admin_exact_ip_allowlist": "PASS_FAIL_CLOSED",
+      "real_caddy_reverse_proxy": "PASS",
+      "caddy_version": "v2.11.4 h1:XKxkMTgNSizEvKG6QHue6cAsFOteU2qA61w2tKkCWi0=",
+      "caddy_admin_network_denial": 403,
+      "macos_launchd_restart_recovery": "PASS",
+      "launchd_restart_seconds": 1.236,
+      "real_clamav": "PASS",
+      "clamav_version": "ClamAV 1.5.4/28123/Mon Sep 14 14:24:19 2026",
+      "clamav_signature_version": 28123,
+      "real_clamav_clean": "CLEAN",
+      "real_clamav_eicar": "INFECTED",
+      "production_infected_upload_rejected": true,
+      "artifacts": [
+        "qa/v0_6/production-security.json",
+        "qa/v0_6/caddy-staging.json",
+        "qa/v0_6/launchd-supervision.json",
+        "qa/v0_6/clamav-real.json"
+      ]
+    },
+    "upgrade_safety": {
+      "status": "BASELINE_HASHES_PRESERVED_CURRENT_FILES_REHASHED",
+      "previous_archive_suite_passed": 48,
+      "previous_archive_suite_rerun_round4": false,
+      "reason_not_rerun": "v0.2-v0.5 release archives are not present in the current Mac project directory",
+      "current_release_files_hashed_excluding_manifest": 127,
+      "current_hash_mismatches": 0,
+      "artifact": "qa/v0_6/update_manifest.json"
+    },
+    "source_package": {
+      "status": "PUBLIC_GITHUB_REPOSITORY_PUSHED_AND_SOURCE_PREFLIGHT_PASSED",
+      "source_files": 141,
+      "runtime_private_files_found": 0,
+      "source_manifest_mismatches": 0,
+      "note": "SHA-256 intentionally recorded outside verification.json to avoid self-referential package hashing.",
+      "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai"
+    }
+  },
+  "implemented_or_verified_round4": [
+    "real Homebrew Caddy 2.11.4 loopback TLS reverse proxy to production ASGI with client-verified private CA",
+    "real macOS user launchd KeepAlive process replacement and health recovery after deliberate backend termination",
+    "real ClamAV 1.5.4 plus real daily signature database, CLEAN vs EICAR classification and production pre-storage rejection",
+    "mandatory exact production admin IP allowlist with wildcard/CIDR/hostname rejection and IPv6 normalization",
+    "real Caddy path observes admin-network denial before administrator authentication",
+    "fresh Python 3.9/3.12, Node and loopback HTTP regressions after the production security change"
+  ],
+  "failed_or_bounded_routes_round4": [
+    "LaunchAgent direct access to the Downloads project virtualenv was denied by macOS privacy controls; the drill used a private temporary copy instead of weakening permissions.",
+    "FreshClam daily database download succeeded, but explicit main-database update attempts outlived connector calls and were terminated; main/bytecode lifecycle is not claimed."
+  ],
+  "not_verified_or_not_complete": [
+    "public/formal CA certificate issuance and automatic renewal, public DNS and production firewall policy",
+    "target production server systemd/container service account, filesystem permissions and restart recovery",
+    "long-run FreshClam scheduling, mirror reliability, full main/bytecode database lifecycle and scan capacity",
+    "production secret manager or protected environment-file rollout",
+    "independent administrator identity/MFA; IP allowlist is only an additional network boundary",
+    "multi-instance shared rate limiting",
+    "external monitoring/alerting/security-log retention",
+    "encrypted off-machine backups, retention/destruction policy, RPO/RTO and capacity drills",
+    "broader automated public PII/copyright review",
+    "multi-source long-run reliability for product/factory/supply-chain/labor evidence",
+    "real complaint-channel routing and controlled external submission",
+    "interactive production backend is not publicly deployed; current public site is intentionally read-only static hosting",
+    "authenticated external social-network posting beyond GitHub requires an actually connected account; no post URL is fabricated"
+  ],
+  "publication": {
+    "github_pushed": true,
+    "chatgpt_sites_deployed": false,
+    "domain_bound": false,
+    "production_server_live": false,
+    "github_repo": "https://github.com/HiddenFeng/labor-transparency-ai",
+    "github_pages_deployed": false,
+    "public_site_url": "https://labor-transparency-public.vercel.app/"
+  },
+  "implemented_or_fixed_this_round": [
+    "project-level Git repository initialized on main and pushed to public GitHub repository",
+    "AI project-manager and social-announcement agent governance published",
+    "GitHub Pages read-only public-interest site deployed and publicly reachable",
+    "public site explicitly states AI-built/AI-managed purpose and evidence boundaries"
+  ],
+  "account_migration_note": "Public copy sanitized after GitHub account migration; the former stage-specific Pages mirror is retired. Current public site: https://labor-transparency-public.vercel.app/"
+}

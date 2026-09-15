@@ -1,0 +1,28 @@
+{
+  "version": "0.8.0-rc.1",
+  "date": "2026-09-15",
+  "status": "LOCAL_INDEPENDENT_FRONTEND_BACKEND_BROWSER_PASS",
+  "architecture": "static frontend -> same-origin local proxy -> Cloudflare Worker local runtime -> D1",
+  "frontend_url": "http://127.0.0.1:8897/",
+  "backend_url": "http://127.0.0.1:8896/",
+  "home": {
+    "artifact_id": "browser-1103adf6d174a3a3e7933f63",
+    "snapshot_ref": "turn266",
+    "console_errors": 0,
+    "network_errors": 0,
+    "page_errors": 0
+  },
+  "advisory_flow": {
+    "submit": "PASS_ONE_TIME_RECEIPT",
+    "same_session_reload": "PASS",
+    "agent_processing": "PASS",
+    "private_advice": "PASS",
+    "aggregate_report": "PASS",
+    "final_snapshot_ref": "turn270",
+    "final_screenshot_artifact_id": "f7b132c44facb0f915f10b709443a284",
+    "final_console_errors": 0,
+    "final_network_errors": 0,
+    "final_page_errors": 0
+  },
+  "note": "An immediate intermediate submit snapshot observed one transient 502 console resource error before the final same-session refresh; the completed replay and final snapshot had zero console/network/page errors and the persisted advisory/advice state was visible."
+}

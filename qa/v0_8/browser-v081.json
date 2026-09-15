@@ -1,0 +1,30 @@
+{
+  "version": "0.8.1-rc.1",
+  "date": "2026-09-15",
+  "status": "PASS_REAL_CHROME_LOCAL_SPLIT",
+  "runtime": {
+    "frontend": "static frontend dev server with same-origin /api proxy",
+    "backend": "real local Wrangler Worker + D1",
+    "frontend_port": 8917,
+    "backend_port": 8916,
+    "cleaned": true
+  },
+  "method_page": {
+    "console_errors": 0,
+    "network_errors": 0,
+    "page_errors": 0,
+    "coverage_cards_visible": true,
+    "multi_source_boundary_visible": true,
+    "screenshot_sha256": "a69c265c0ed068e155aa614315126f2e0918c19ea45479b7ff05482531c66a43"
+  },
+  "company_page": {
+    "console_errors": 0,
+    "network_errors": 0,
+    "page_errors": 0,
+    "real_company_created": "浏览器自动研究测试公司",
+    "unresearched_state_copy_visible": true,
+    "copy": "公开资料自动收集尚未完成首轮。公司空间可以先使用，系统会在后台按批次补齐来源候选。",
+    "screenshot_sha256": "6de562087747275d40c46c820ca5d8170f22f3906bc0c7a16b6d8d8d35525c8e"
+  },
+  "claim_boundary": "Browser QA proves v0.8.1 frontend/backend rendering and multi-source coverage explanations on the local split stack. It does not prove public hosting or Mainland-China reachability."
+}

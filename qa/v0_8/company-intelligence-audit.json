@@ -1,0 +1,372 @@
+{
+  "status": "PASS_MULTI_SOURCE_PIPELINE_SOURCE_COVERAGE_PARTIAL",
+  "synthetic_fixture": true,
+  "network_used": false,
+  "company_id": "co_ac1dddf8068049a993ba",
+  "candidate_providers": [
+    "DOL_WHD",
+    "FMCS_F7",
+    "FMCS_WORK_STOPPAGES",
+    "NLRB_CASES",
+    "NLRB_VOLUNTARY_RECOGNITION",
+    "OLMS_LM20",
+    "OSHA_ENFORCEMENT",
+    "SEC_EDGAR",
+    "USA_SPENDING",
+    "WIKIDATA"
+  ],
+  "bound_providers": [
+    {
+      "provider": "DOL_WHD",
+      "external_id": "Acme Public Corp"
+    },
+    {
+      "provider": "FMCS_F7",
+      "external_id": "Acme Public Corp"
+    },
+    {
+      "provider": "FMCS_WORK_STOPPAGES",
+      "external_id": "Acme Public Corp"
+    },
+    {
+      "provider": "NLRB_CASES",
+      "external_id": "Acme Public Corp"
+    },
+    {
+      "provider": "NLRB_VOLUNTARY_RECOGNITION",
+      "external_id": "Acme Public Corp"
+    },
+    {
+      "provider": "OLMS_LM20",
+      "external_id": "Acme Public Corp"
+    },
+    {
+      "provider": "OSHA_ENFORCEMENT",
+      "external_id": "Acme Public Corp"
+    },
+    {
+      "provider": "SEC_EDGAR",
+      "external_id": "0000123456"
+    },
+    {
+      "provider": "USA_SPENDING",
+      "external_id": "ACME PUBLIC CORP"
+    },
+    {
+      "provider": "WIKIDATA",
+      "external_id": "Q123"
+    }
+  ],
+  "item_providers": [
+    "DOL_WHD",
+    "FMCS_F7",
+    "FMCS_WORK_STOPPAGES",
+    "GLEIF",
+    "NLRB_CASES",
+    "NLRB_VOLUNTARY_RECOGNITION",
+    "OLMS_LM20",
+    "OSHA_ENFORCEMENT",
+    "SEC_EDGAR",
+    "USA_SPENDING",
+    "WIKIDATA"
+  ],
+  "sections": {
+    "business": {
+      "status": "PARTIAL",
+      "items": 8,
+      "gap": "当前只汇总已绑定来源可支持的公开业务/申报上下文，不等于完整产品目录、市场表现或公司全部经营事实。"
+    },
+    "channels": {
+      "status": "PARTIAL",
+      "items": 1,
+      "gap": "当前自动来源主要提供官网/公开入口；官网不等于正式劳动申诉渠道，具体受理渠道仍需按地区和机构核对。"
+    },
+    "facilities": {
+      "status": "PARTIAL",
+      "items": 6,
+      "gap": "当前只列已绑定公开来源返回的总部/检查涉及地点，不等于企业全部工厂、门店、办公室或实际用工地点。"
+    },
+    "identity": {
+      "status": "PARTIAL",
+      "items": 6,
+      "gap": "只核对本条登记参考记录，不代表掌握所有用工主体。"
+    },
+    "ownership": {
+      "status": "PARTIAL",
+      "items": 2,
+      "gap": "最终会计合并母公司：接口本轮没有可用记录；未核对申报例外，不推断无母公司。"
+    },
+    "supply_chain": {
+      "status": "PARTIAL",
+      "items": 1,
+      "gap": "Open Supply Hub已配置为可选token候选来源；未有明确OS ID绑定与贡献者/关系复核前不写入供应链事实。"
+    },
+    "work_conditions": {
+      "status": "PARTIAL",
+      "items": 7,
+      "gap": "当前只列已绑定来源中的案件/检查/执法记录与已审社区证据；记录本身须保留程序状态，不能外推为公司整体劳动条件。"
+    }
+  },
+  "source_count": 13,
+  "review_digest": "7861dcc00244442c303f3994c1d876648f6cb0f9248f614b76482d59b38a0bad",
+  "released": 1,
+  "restart_persistence": true,
+  "registry_source_count": 13,
+  "registry_sections": {
+    "identity": [
+      {
+        "provider": "GLEIF",
+        "state": "AUTOMATED_SUPPORTED",
+        "authority": "PRIMARY_REFERENCE_REGISTRY",
+        "regions": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "provider": "OPENCORPORATES",
+        "state": "OPTIONAL_TOKEN_LICENSE_REVIEW_REQUIRED",
+        "authority": "AGGREGATED_CORPORATE_REGISTRY",
+        "regions": [
+          "GLOBAL"
+        ]
+      }
+    ],
+    "business": [
+      {
+        "provider": "SEC_EDGAR",
+        "state": "AUTOMATED_PARTIAL",
+        "authority": "PRIMARY_GOVERNMENT_DISCLOSURE",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "WIKIDATA",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "OPEN_CONTEXTUAL_KNOWLEDGE_GRAPH",
+        "regions": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "provider": "DOL_WHD",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_ENFORCEMENT_DATASET",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "USA_SPENDING",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "PRIMARY_US_GOVERNMENT_SPENDING_API",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "FMCS_F7",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_FEDERAL_NOTICE_DATA",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "FMCS_WORK_STOPPAGES",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_FEDERAL_LABOR_EVENT_DATA",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "OLMS_LM20",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_DOL_DISCLOSURE_REPORTS",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "OPENCORPORATES",
+        "state": "OPTIONAL_TOKEN_LICENSE_REVIEW_REQUIRED",
+        "authority": "AGGREGATED_CORPORATE_REGISTRY",
+        "regions": [
+          "GLOBAL"
+        ]
+      }
+    ],
+    "ownership": [
+      {
+        "provider": "GLEIF",
+        "state": "AUTOMATED_SUPPORTED",
+        "authority": "PRIMARY_REFERENCE_REGISTRY",
+        "regions": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "provider": "WIKIDATA",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "OPEN_CONTEXTUAL_KNOWLEDGE_GRAPH",
+        "regions": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "provider": "OPENCORPORATES",
+        "state": "OPTIONAL_TOKEN_LICENSE_REVIEW_REQUIRED",
+        "authority": "AGGREGATED_CORPORATE_REGISTRY",
+        "regions": [
+          "GLOBAL"
+        ]
+      }
+    ],
+    "facilities": [
+      {
+        "provider": "WIKIDATA",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "OPEN_CONTEXTUAL_KNOWLEDGE_GRAPH",
+        "regions": [
+          "GLOBAL"
+        ]
+      },
+      {
+        "provider": "OSHA_ENFORCEMENT",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_DATA",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "DOL_WHD",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_ENFORCEMENT_DATASET",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "FMCS_F7",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_FEDERAL_NOTICE_DATA",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "NLRB_VOLUNTARY_RECOGNITION",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_NLRB_NOTICE_DATA",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "FMCS_WORK_STOPPAGES",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_FEDERAL_LABOR_EVENT_DATA",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "OPEN_SUPPLY_HUB",
+        "state": "OPTIONAL_TOKEN_CANDIDATE_ONLY",
+        "authority": "CONTRIBUTED_SUPPLY_CHAIN_FACILITY_GRAPH",
+        "regions": [
+          "GLOBAL"
+        ]
+      }
+    ],
+    "supply_chain": [
+      {
+        "provider": "USA_SPENDING",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "PRIMARY_US_GOVERNMENT_SPENDING_API",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "OPEN_SUPPLY_HUB",
+        "state": "OPTIONAL_TOKEN_CANDIDATE_ONLY",
+        "authority": "CONTRIBUTED_SUPPLY_CHAIN_FACILITY_GRAPH",
+        "regions": [
+          "GLOBAL"
+        ]
+      }
+    ],
+    "work_conditions": [
+      {
+        "provider": "NLRB_CASES",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_RECORD",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "OSHA_ENFORCEMENT",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_DATA",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "DOL_WHD",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_GOVERNMENT_ENFORCEMENT_DATASET",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "FMCS_F7",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_FEDERAL_NOTICE_DATA",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "NLRB_VOLUNTARY_RECOGNITION",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_NLRB_NOTICE_DATA",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "FMCS_WORK_STOPPAGES",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_FEDERAL_LABOR_EVENT_DATA",
+        "regions": [
+          "US"
+        ]
+      },
+      {
+        "provider": "OLMS_LM20",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "STRUCTURED_MIRROR_OF_PRIMARY_DOL_DISCLOSURE_REPORTS",
+        "regions": [
+          "US"
+        ]
+      }
+    ],
+    "channels": [
+      {
+        "provider": "WIKIDATA",
+        "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
+        "authority": "OPEN_CONTEXTUAL_KNOWLEDGE_GRAPH",
+        "regions": [
+          "GLOBAL"
+        ]
+      }
+    ]
+  },
+  "claim_boundary": "This audit proves deterministic multi-source candidate→binding→draft→independent review→release orchestration. It does not prove live provider uptime, global data completeness, or correctness for an arbitrary real company."
+}

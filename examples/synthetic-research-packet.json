@@ -1,0 +1,105 @@
+{
+  "version": "0.2",
+  "company_id": "REPLACE_WITH_YOUR_SYNTHETIC_COMPANY_ID",
+  "synthetic": true,
+  "review": {
+    "status": "APPROVED",
+    "reviewer": "SYNTHETIC_FIXTURE_NOT_REAL_REVIEW"
+  },
+  "identity_status": "MATCHED",
+  "sources": [
+    {
+      "id": "demo-s1",
+      "title": "虚构公司演示资料（非真实来源）",
+      "url": "https://example.invalid/synthetic-company-disclosure",
+      "publisher": "本地合成测试夹具",
+      "accessed_at": "2026-09-14T05:41:51.753902+00:00",
+      "reuse_status": "SYNTHETIC_FIXTURE_ONLY"
+    }
+  ],
+  "sections": {
+    "identity": {
+      "status": "PARTIAL",
+      "items": [
+        {
+          "text": "演示主体：示例测试企业（虚构）。此信息为合成数据，不代表现实企业。",
+          "source_ids": [
+            "demo-s1"
+          ],
+          "as_of": "2025（合成演示期间）",
+          "basis": "合成演示，不是核实结论"
+        }
+      ],
+      "gap": "演示只有有限条目，不声称完整覆盖。"
+    },
+    "business": {
+      "status": "PARTIAL",
+      "items": [
+        {
+          "text": "业务示例：轻型设备零部件；产品示例：连接器、金属外壳。",
+          "source_ids": [
+            "demo-s1"
+          ],
+          "as_of": "2025（合成演示期间）",
+          "basis": "合成演示，不是核实结论"
+        }
+      ],
+      "gap": "演示只有有限条目，不声称完整覆盖。"
+    },
+    "ownership": {
+      "status": "PARTIAL",
+      "items": [
+        {
+          "text": "示例青禾制造集团（虚构）为母公司；仅演示有来源的关系结构。",
+          "source_ids": [
+            "demo-s1"
+          ],
+          "as_of": "2025（合成演示期间）",
+          "basis": "合成演示，不是核实结论",
+          "relationship_type": "PARENT_DISCLOSED"
+        }
+      ],
+      "gap": "演示只有有限条目，不声称完整覆盖。"
+    },
+    "facilities": {
+      "status": "PARTIAL",
+      "items": [
+        {
+          "text": "示例工厂A（虚构）为生产地点，不等同独立法定用工主体。",
+          "source_ids": [
+            "demo-s1"
+          ],
+          "as_of": "2025（合成演示期间）",
+          "basis": "合成演示，不是核实结论",
+          "relationship_type": "OPERATES_SITE"
+        }
+      ],
+      "gap": "演示只有有限条目，不声称完整覆盖。"
+    },
+    "supply_chain": {
+      "status": "PARTIAL",
+      "items": [
+        {
+          "text": "示例品牌B（虚构）曾在2025年演示供应商名单中列出本公司；当前关系未知。",
+          "source_ids": [
+            "demo-s1"
+          ],
+          "as_of": "2025（合成演示期间）",
+          "basis": "合成演示，不是核实结论",
+          "relationship_type": "HISTORICAL_SUPPLIER_DISCLOSURE"
+        }
+      ],
+      "gap": "演示只有有限条目，不声称完整覆盖。"
+    },
+    "work_conditions": {
+      "status": "NO_DATA",
+      "items": [],
+      "gap": "未接入真实劳动信息；讨论不会因本栏空白而被阻塞。"
+    },
+    "channels": {
+      "status": "NO_DATA",
+      "items": [],
+      "gap": "未确定首发法域和经核验渠道；不得据此自动提交申诉。"
+    }
+  }
+}

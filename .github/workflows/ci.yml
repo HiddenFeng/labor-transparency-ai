@@ -1,0 +1,77 @@
+name: Validate release candidate (no deployment)
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m unittest discover -s tests -v
+      - run: |
+          python scripts/make_ui_fixture.py /tmp/ui.json
+          node tests/test_ui_render.cjs /tmp/ui.json
+          node tests/test_research_ui.cjs /tmp/ui.json
+          python scripts/make_community_fixture.py /tmp/community-ui.json
+          node tests/test_community_ui.cjs /tmp/community-ui.json
+          node tests/test_offline.cjs
+      - run: python scripts/smoke_community_http.py --out /tmp/http-tests.json
+      - run: python scripts/smoke_research_http.py --out /tmp/research-http.json
+      - if: matrix.python-version == '3.13'
+        run: python scripts/audit_company_research.py --out /tmp/company-research-audit.json
+      - run: python scripts/check_static_http.py
+      - run: python scripts/build_public_site.py --out /tmp/public-site
+      - uses: actions/upload-artifact@v4
+        with:
+          name: read-only-site-candidate-NOT-deployed
+          path: /tmp/public-site
+
+  web_candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm --prefix sites-app test
+      - run: npm --prefix sites-app run build
+      - run: LTP_PUBLIC_API_BASE=https://api.example.invalid LTP_DEPLOYMENT_LABEL=ci-static node deploy/frontend/build.mjs
+      - run: node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
+      - run: |
+          rm -rf deploy/frontend/dist
+          LTP_PROXY_API_ORIGIN=https://api.example.invalid LTP_DEPLOYMENT_LABEL=ci-vercel-proxy node deploy/frontend/build.mjs
+          node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
+      - run: |
+          LTP_EDGEONE_UPSTREAM=https://api.example.invalid LTP_DEPLOYMENT_LABEL=ci-edgeone-proxy node deploy/edgeone/build.mjs
+          node deploy/edgeone/test-proxy.mjs
+          node scripts/deployment/privacy_audit.mjs deploy/edgeone/dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: independent-web-v0.8-candidate-NOT-deployed
+          path: deploy/frontend/dist
+
+  cloudflare_backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm --prefix cloudflare-backend test
+      - run: ./scripts/deployment/verify_cloudflare_local.sh
+# Visual/browser, security, legal/operations, and real integrations remain separate gates.
+# This workflow has no production credentials and does not deploy Cloudflare/Vercel/EdgeOne resources.

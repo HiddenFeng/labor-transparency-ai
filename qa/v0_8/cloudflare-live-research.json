@@ -1,0 +1,73 @@
+{
+  "status": "PASS_LIVE_CLOUDFLARE_RESEARCH_CANDIDATE_COLLECTION",
+  "version": "0.8.1-rc.1",
+  "company": {
+    "id": "co_a7aa5977e0c20f417d",
+    "name": "Starbucks Corporation",
+    "region": "US"
+  },
+  "processedCompanies": 1,
+  "candidateCount": 10,
+  "sourceErrors": 3,
+  "providers": {
+    "GLEIF": {
+      "status": "OK",
+      "candidateCount": 1,
+      "error": null
+    },
+    "WIKIDATA": {
+      "status": "ERROR",
+      "candidateCount": 0,
+      "error": "SOURCE_NETWORK_OR_RUNTIME_ERROR"
+    },
+    "SEC_EDGAR": {
+      "status": "ERROR",
+      "candidateCount": 0,
+      "error": "SOURCE_ACCESS_DENIED"
+    },
+    "NLRB_CASES": {
+      "status": "OK",
+      "candidateCount": 1,
+      "error": null
+    },
+    "OSHA_ENFORCEMENT": {
+      "status": "OK",
+      "candidateCount": 5,
+      "error": null
+    },
+    "DOL_WHD": {
+      "status": "OK",
+      "candidateCount": 1,
+      "error": null
+    },
+    "FMCS_F7": {
+      "status": "OK",
+      "candidateCount": 1,
+      "error": null
+    },
+    "NLRB_VOLUNTARY_RECOGNITION": {
+      "status": "OK",
+      "candidateCount": 0,
+      "error": null
+    },
+    "FMCS_WORK_STOPPAGES": {
+      "status": "OK",
+      "candidateCount": 0,
+      "error": null
+    },
+    "OLMS_LM20": {
+      "status": "OK",
+      "candidateCount": 1,
+      "error": null
+    },
+    "USA_SPENDING": {
+      "status": "ERROR",
+      "candidateCount": 0,
+      "error": "SOURCE_NETWORK_OR_RUNTIME_ERROR"
+    }
+  },
+  "publicProjectionSafe": true,
+  "reviewRequired": true,
+  "boundary": "Live Worker collection stores source candidates only. No candidate was auto-bound, approved or published as a company fact.",
+  "restartPersistence": true
+}

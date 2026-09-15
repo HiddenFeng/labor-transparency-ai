@@ -1,0 +1,484 @@
+{
+  "version": "0.8.1-rc.2",
+  "date": "2026-09-15",
+  "status": "PUBLIC_GLOBAL_DEPLOYMENT_LIVE_MULTI_SOURCE_RESEARCH_VERIFIED_EDGEONE_PROJECT_DEPLOYED_CUSTOM_DOMAIN_PENDING",
+  "git": {
+    "branch": "main",
+    "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai",
+    "privacy_sanitized_fresh_history": true,
+    "active_authors": [
+      "HiddenFeng"
+    ],
+    "previous_public_account_references_in_new_history_or_source": false,
+    "legacy_history_retained_private_outside_repo": true,
+    "github_actions": "PENDING_FIRST_HIDDENFENG_CI",
+    "workflow_files_present": true
+  },
+  "public_deployment": {
+    "version": "0.8.1-rc.2",
+    "date": "2026-09-15",
+    "status": "PUBLIC_GLOBAL_DEPLOYMENT_LIVE_EDGEONE_ACCOUNT_PROJECT_DEPLOYED_CUSTOM_DOMAIN_GATE_REMAINS",
+    "cloudflare": {
+      "backend": "https://labor-transparency-api.labor-transparency-public.workers.dev",
+      "worker_live": true,
+      "d1_live": true,
+      "cron_live": true,
+      "current_mainland_direct_probe": {
+        "curl_exit": 28,
+        "http": 0,
+        "connect_seconds": 0.0,
+        "total_seconds": 8.109733
+      },
+      "note": "Public backend is externally reachable, but the current Mainland-China network cannot reliably connect directly to workers.dev."
+    },
+    "vercel": {
+      "frontend": "https://labor-transparency-public.vercel.app",
+      "production_live": true,
+      "remote_external_probe": {
+        "root": 200,
+        "favicon": 200,
+        "api_health": 200
+      },
+      "remote_e2e_status": "PASS_PUBLIC_VERCEL_TO_CLOUDFLARE_D1_RESEARCH_E2E",
+      "remote_backend_version": "0.8.1-rc.2",
+      "remote_research": {
+        "candidateCount": 11,
+        "sourceSuccessCount": 9,
+        "sourceErrorCount": 2,
+        "providers": {
+          "GLEIF": {
+            "status": "OK",
+            "candidateCount": 1,
+            "error": null
+          },
+          "WIKIDATA": {
+            "status": "OK",
+            "candidateCount": 1,
+            "error": null
+          },
+          "SEC_EDGAR": {
+            "status": "ERROR",
+            "candidateCount": 0,
+            "error": "SOURCE_ACCESS_DENIED"
+          },
+          "NLRB_CASES": {
+            "status": "OK",
+            "candidateCount": 1,
+            "error": null
+          },
+          "OSHA_ENFORCEMENT": {
+            "status": "OK",
+            "candidateCount": 5,
+            "error": null
+          },
+          "DOL_WHD": {
+            "status": "OK",
+            "candidateCount": 1,
+            "error": null
+          },
+          "FMCS_F7": {
+            "status": "OK",
+            "candidateCount": 1,
+            "error": null
+          },
+          "NLRB_VOLUNTARY_RECOGNITION": {
+            "status": "OK",
+            "candidateCount": 0,
+            "error": null
+          },
+          "FMCS_WORK_STOPPAGES": {
+            "status": "OK",
+            "candidateCount": 0,
+            "error": null
+          },
+          "OLMS_LM20": {
+            "status": "OK",
+            "candidateCount": 1,
+            "error": null
+          },
+          "USA_SPENDING": {
+            "status": "ERROR",
+            "candidateCount": 0,
+            "error": "SOURCE_UNAVAILABLE"
+          }
+        }
+      },
+      "public_projection_safe": true,
+      "csrf_pass": true,
+      "http_only_cookie": true,
+      "current_mainland_direct_probe": {
+        "curl_exit": 35,
+        "http": 0,
+        "connect_seconds": 0.107113,
+        "total_seconds": 0.133257
+      },
+      "note": "Global production frontend is live. The current Mainland-China network times out to vercel.app, so this is not the Mainland path.",
+      "team_name": "Labor Transparency AI",
+      "team_slug": "labor-transparency-ai",
+      "production_git_author": "PENDING_HIDDENFENG_REDEPLOY",
+      "old_github_handle_in_current_team_or_deployment_git_metadata": "PENDING_REVERIFY"
+    },
+    "edgeone": {
+      "temporary_preview_status": "PASS_TEMPORARY_EDGEONE_MAINLAND_PREVIEW_RC2",
+      "temporary": true,
+      "expires_at": "2026-09-15T11:52:08.000Z",
+      "mainland_root": {
+        "http": 200,
+        "connect_seconds": 0.194184,
+        "total_seconds": 0.704184,
+        "remote_ip_family": "IPv4"
+      },
+      "mainland_api_health": {
+        "http": 200,
+        "connect_seconds": 0.201193,
+        "total_seconds": 0.980286,
+        "remote_ip_family": "IPv4"
+      },
+      "public_mutation": "PASS_COMPANY_CREATE_AND_BALLOT_THROUGH_EDGEONE_PROXY_THEN_D1_QA_ROWS_CLEANED",
+      "browser": {
+        "home": "PASS",
+        "method": "PASS",
+        "console_errors": 0,
+        "network_errors": 0,
+        "page_errors": 0,
+        "runtime_version": "0.8.1-rc.2",
+        "favicon_404": false,
+        "incomplete_chunked_encoding": false
+      },
+      "proxy": {
+        "buffered_upstream_response": true,
+        "hop_by_hop_headers_stripped": true,
+        "body_limit_bytes": 98304,
+        "generic_502": true,
+        "unit_test": "PASS"
+      },
+      "note": "The EdgeOne account is authenticated and an account-owned labor-transparency-public project is deployed. The default edgeone.cool hostname is active but Mainland direct access without EdgeOne preview authorization returns 401 by platform design. Stable no-token Mainland service therefore requires a user-owned custom domain plus DNS/ICP/provider eligibility where applicable.",
+      "account_authenticated": true,
+      "account_project_deployed": true,
+      "project_name": "labor-transparency-public",
+      "platform_domain": "https://labor-transparency-public.edgeone.cool",
+      "platform_domain_status": "ACTIVE_BUT_MAINLAND_DEFAULT_DOMAIN_REQUIRES_PREVIEW_AUTH",
+      "default_domain_mainland_anonymous_direct_access": "HTTP_401_EO_TIME_MISSING",
+      "custom_domain_required_for_stable_no_token_mainland_entry": true
+    },
+    "github_pages": {
+      "current_public_role": "OPTIONAL_STATIC_MIRROR",
+      "new_account_pages_live": false,
+      "reason": "Pending first HiddenFeng workflow/Pages verification after privacy-sanitized push."
+    },
+    "production_d1_qa_cleanup": "PASS_ZERO_QA_RECORDS_AFTER_VERCEL_AND_EDGEONE_E2E",
+    "developer_identity": {
+      "public_ui_exposes_personal_email": false,
+      "public_ui_exposes_real_name": false,
+      "frontend_primary_alias_generic": true,
+      "worker_subdomain_generic": true,
+      "edgeone_preview_tokens_in_git": false,
+      "public_github_repository_new_account": true,
+      "active_git_history_old_account_free": true,
+      "vercel_team_generic": true,
+      "edgeone_project_generic": true
+    },
+    "manual_remaining": [
+      "Provide or authorize a project-owned custom domain/subdomain for EdgeOne.",
+      "If Mainland/global-including-Mainland acceleration is required, satisfy the domain ICP/provider eligibility shown by EdgeOne.",
+      "After the custom domain is bound, run final no-preview-token Mainland public QA on that permanent domain."
+    ],
+    "boundary": "Global Vercel + Cloudflare production is live. EdgeOne account authentication and an account-owned production project are also established. Stable no-token Mainland-China service is not yet claimed because EdgeOne requires a user-owned custom domain (and ICP/provider eligibility when applicable); the default edgeone.cool project hostname requires preview authorization from Mainland.",
+    "github_repository": {
+      "url": "https://github.com/HiddenFeng/labor-transparency-ai",
+      "visibility": "TARGET_PUBLIC",
+      "privacy_sanitized_history": true,
+      "active_author_identity": "HiddenFeng",
+      "previous_public_account_references_in_new_history_or_source": false,
+      "workflows_present": true,
+      "actions_status": "PENDING_FIRST_HIDDENFENG_CI"
+    }
+  },
+  "architecture": {
+    "global_frontend": "Vercel static production with same-origin /api rewrite",
+    "backend": "Cloudflare Worker",
+    "storage": "Cloudflare D1",
+    "mainland_preview": "EdgeOne account-owned project + buffered Edge Function /api relay; default platform hostname still requires preview authorization from Mainland until custom domain binding",
+    "same_origin_proxy_supported": true,
+    "scheduled_advisory": true,
+    "scheduled_company_research": true,
+    "company_research_publication_rule": "SOURCE_CANDIDATES_NEVER_AUTO_BECOME_COMPANY_FACTS"
+  },
+  "company_research": {
+    "identity_root": "GLEIF",
+    "pipeline": "candidate search -> provider-specific binding -> draft -> independent review -> scheduled release",
+    "worker_pipeline": "bounded candidate collection -> D1 private candidate storage -> public aggregate status only",
+    "providers": {
+      "GLEIF": {
+        "status": "PASS",
+        "candidate_count": 1,
+        "error": null
+      },
+      "SEC_EDGAR": {
+        "status": "SOURCE_ERROR",
+        "candidate_count": null,
+        "error": "SOURCE_ACCESS_DENIED"
+      },
+      "WIKIDATA": {
+        "status": "PASS",
+        "candidate_count": 1,
+        "error": null
+      },
+      "NLRB_CASES": {
+        "status": "PASS",
+        "candidate_count": 1,
+        "error": null
+      },
+      "OSHA_ENFORCEMENT": {
+        "status": "PASS",
+        "candidate_count": 5,
+        "error": null
+      },
+      "DOL_WHD": {
+        "status": "PASS",
+        "candidate_count": 1,
+        "error": null
+      },
+      "FMCS_F7": {
+        "status": "PASS",
+        "candidate_count": 1,
+        "error": null
+      },
+      "NLRB_VOLUNTARY_RECOGNITION": {
+        "status": "PASS",
+        "candidate_count": 0,
+        "error": null
+      },
+      "FMCS_WORK_STOPPAGES": {
+        "status": "PASS",
+        "candidate_count": 0,
+        "error": null
+      },
+      "OLMS_LM20": {
+        "status": "PASS",
+        "candidate_count": 1,
+        "error": null
+      },
+      "USA_SPENDING": {
+        "status": "PASS",
+        "candidate_count": 10,
+        "error": null
+      }
+    },
+    "optional_fail_closed": [
+      "OPENCORPORATES_TOKEN_LICENSE_REVIEW_REQUIRED",
+      "OPEN_SUPPLY_HUB_TOKEN_SUBSCRIPTION_AND_PROVENANCE_REVIEW_REQUIRED"
+    ],
+    "deterministic_audit": {
+      "status": "PASS_MULTI_SOURCE_PIPELINE_SOURCE_COVERAGE_PARTIAL",
+      "candidate_providers": [
+        "DOL_WHD",
+        "FMCS_F7",
+        "FMCS_WORK_STOPPAGES",
+        "NLRB_CASES",
+        "NLRB_VOLUNTARY_RECOGNITION",
+        "OLMS_LM20",
+        "OSHA_ENFORCEMENT",
+        "SEC_EDGAR",
+        "USA_SPENDING",
+        "WIKIDATA"
+      ],
+      "item_providers": [
+        "DOL_WHD",
+        "FMCS_F7",
+        "FMCS_WORK_STOPPAGES",
+        "GLEIF",
+        "NLRB_CASES",
+        "NLRB_VOLUNTARY_RECOGNITION",
+        "OLMS_LM20",
+        "OSHA_ENFORCEMENT",
+        "SEC_EDGAR",
+        "USA_SPENDING",
+        "WIKIDATA"
+      ],
+      "source_count": 13,
+      "released": 1,
+      "restart_persistence": true
+    },
+    "live_explicitly_bound_draft": {
+      "status": "DRAFT_READY",
+      "requests": 14,
+      "providers_in_items": [
+        "DOL_WHD",
+        "FMCS_F7",
+        "GLEIF",
+        "NLRB_CASES",
+        "OLMS_LM20",
+        "OSHA_ENFORCEMENT",
+        "USA_SPENDING",
+        "WIKIDATA"
+      ],
+      "section_item_counts": {
+        "identity": 6,
+        "business": 17,
+        "ownership": 1,
+        "facilities": 33,
+        "supply_chain": 15,
+        "work_conditions": 50,
+        "channels": 1
+      },
+      "approved_or_published": false
+    },
+    "cloudflare_local_live_candidate_collection": {
+      "status": "PASS_LIVE_CLOUDFLARE_RESEARCH_CANDIDATE_COLLECTION",
+      "candidate_count": 10,
+      "source_errors": 3,
+      "restart_persistence": true,
+      "public_projection_safe": true,
+      "review_required": true
+    },
+    "production_vercel_cloudflare_e2e": {
+      "candidateCount": 11,
+      "sourceSuccessCount": 9,
+      "sourceErrorCount": 2,
+      "providers": {
+        "GLEIF": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "WIKIDATA": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "SEC_EDGAR": {
+          "status": "ERROR",
+          "candidateCount": 0,
+          "error": "SOURCE_ACCESS_DENIED"
+        },
+        "NLRB_CASES": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "OSHA_ENFORCEMENT": {
+          "status": "OK",
+          "candidateCount": 5,
+          "error": null
+        },
+        "DOL_WHD": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "FMCS_F7": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "NLRB_VOLUNTARY_RECOGNITION": {
+          "status": "OK",
+          "candidateCount": 0,
+          "error": null
+        },
+        "FMCS_WORK_STOPPAGES": {
+          "status": "OK",
+          "candidateCount": 0,
+          "error": null
+        },
+        "OLMS_LM20": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "USA_SPENDING": {
+          "status": "ERROR",
+          "candidateCount": 0,
+          "error": "SOURCE_UNAVAILABLE"
+        }
+      }
+    },
+    "coverage_complete": false,
+    "coverage_boundary": "No lawful/free source provides complete global company identity, litigation, products, facilities, supply chain, labor enforcement and complaint-channel coverage. Regional and source gaps remain explicit."
+  },
+  "tests": {
+    "python_3_9": "PASS_291",
+    "python_3_12_14": "PASS_291",
+    "legacy_node_ui_logic": "PASS_103_UI32_RESEARCH21_COMMUNITY36_OFFLINE14",
+    "sites_node": "PASS_20",
+    "cloudflare_backend_node": "PASS_2",
+    "loopback_http": "PASS_106_LEGACY26_COMMUNITY43_RESEARCH27_STATIC10",
+    "cloudflare_local_full_flow": "PASS_RC2",
+    "cloudflare_concurrent_writes": "PASS_4",
+    "cloudflare_restart_persistence": "PASS",
+    "same_origin_proxy": "PASS",
+    "frontend_build": "PASS",
+    "static_privacy_audit": "PASS",
+    "edgeone_buffered_proxy_unit": "PASS",
+    "edgeone_mainland_preview_runtime": "PASS_RC2",
+    "edgeone_browser": "PASS_0_CONSOLE_0_NETWORK_0_PAGE_ERRORS",
+    "vercel_remote_root_favicon_api": "PASS_RC2",
+    "live_source_probe": "PASS_WITH_EXPLICIT_PER_SOURCE_GAPS",
+    "github_actions_rc1": "PASS_RUN_34955251048",
+    "github_actions_rc2": "REQUIRED_EXTERNAL_EVIDENCE_USE_GITHUB_ACTIONS_RELEASE_METADATA",
+    "github_actions_new_account": "PENDING_FIRST_HIDDENFENG_CI",
+    "post_account_migration_python_3_9": "PASS_291",
+    "post_account_migration_python_3_12": "PASS_291_FRESH_VENV",
+    "post_account_migration_sites": "PASS_20",
+    "post_account_migration_cloudflare": "PASS_2",
+    "post_account_migration_legacy_node": "PASS_103"
+  },
+  "privacy_security": {
+    "research_agent_token_separate": true,
+    "public_company_api_raw_research_candidates": false,
+    "public_research_status_aggregate_only": true,
+    "anonymous_advisory_sensitive_private_data_disabled": true,
+    "static_bundle_research_secret_assignment_leak": false,
+    "edgeone_tokens_ignored_from_git": true,
+    "origin_csrf_cookie_controls": "PASS_LOCAL_AND_PUBLIC_E2E",
+    "public_repo_old_github_identity_absent": true,
+    "legacy_history_not_in_public_repo": true,
+    "vercel_team_old_handle_absent": true,
+    "edgeone_project_name_generic": true,
+    "public_repo_previous_github_identity_absent": true
+  },
+  "mainland_china": {
+    "stable_guarantee": false,
+    "vercel_direct_current_probe": {
+      "curl_exit": 35,
+      "http": 0,
+      "connect_seconds": 0.107113,
+      "total_seconds": 0.133257
+    },
+    "workers_direct_current_probe": {
+      "curl_exit": 28,
+      "http": 0,
+      "connect_seconds": 0.0,
+      "total_seconds": 8.109733
+    },
+    "edgeone_temporary_preview": {
+      "root": {
+        "http": 200,
+        "connect_seconds": 0.194184,
+        "total_seconds": 0.704184,
+        "remote_ip_family": "IPv4"
+      },
+      "api_health": {
+        "http": 200,
+        "connect_seconds": 0.201193,
+        "total_seconds": 0.980286,
+        "remote_ip_family": "IPv4"
+      }
+    },
+    "edgeone_dynamic_proxy": "PASS_ACCOUNT_OWNED_PROJECT_DEPLOYMENT_AND_PRIOR_MAINLAND_PREVIEW_E2E",
+    "stable_gate": "USER_OWNED_CUSTOM_DOMAIN_PLUS_DNS_PLUS_ICP_PROVIDER_ELIGIBILITY_WHERE_APPLICABLE_PLUS_FINAL_NO_TOKEN_MAINLAND_QA",
+    "edgeone_account_authenticated": true,
+    "edgeone_account_project_deployed": true,
+    "edgeone_project_name": "labor-transparency-public",
+    "edgeone_platform_domain": "https://labor-transparency-public.edgeone.cool",
+    "edgeone_default_domain_mainland_no_preview_token": "HTTP_401_EO_TIME_MISSING"
+  },
+  "remaining_human_only": [
+    "provide or authorize one project-owned custom domain/subdomain for EdgeOne",
+    "complete DNS ownership/CNAME changes if the domain registrar/DNS provider cannot be automated",
+    "satisfy ICP/provider eligibility if stable Mainland/global-including-Mainland acceleration is selected"
+  ],
+  "next_gate": "Push the privacy-sanitized HiddenFeng root history, run fresh GitHub Actions, re-authenticate Vercel CLI to HiddenFeng, redeploy, bind workermanifestfellowship.dpdns.org to EdgeOne, update Cloudflare exact Origin allowlist, and run no-preview-token Mainland QA.",
+  "strongest_claim": "v0.8.1-rc.2 has previously verified global Vercel + Cloudflare/D1 runtime and EdgeOne relay capability. The public repository identity is being re-established under HiddenFeng with a fresh privacy-sanitized history; first HiddenFeng CI/release and HiddenFeng Vercel redeployment are pending current-run verification. Stable Mainland entry remains gated on the provided custom-domain binding and any applicable provider/ICP eligibility."
+}

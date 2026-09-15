@@ -1,0 +1,22 @@
+{
+  "files": {
+    "README.txt": "ebb722efd3748f6612c9929ccb1c35e76ea6b71a26d473a90bb3624d394f0563",
+    "changes.json": "a6bf69f49614904e1066c5ff5cc4b838af4375bec64b5741e23fb3b4a69387b0",
+    "company_fact.csv": "1d2a98b92d21db54a9984af7390d07b100ef21bbf53b0cde82ecd8d3d61dbee3",
+    "company_fact.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "contributions.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "dataset.json": "5c3dac098f80b8ddeb889a57b3d9313ed90ff7a4d0805b877589a1e4d2750f4e",
+    "labour_claim.csv": "1d2a98b92d21db54a9984af7390d07b100ef21bbf53b0cde82ecd8d3d61dbee3",
+    "labour_claim.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "product.csv": "1d2a98b92d21db54a9984af7390d07b100ef21bbf53b0cde82ecd8d3d61dbee3",
+    "product.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "product_claim.csv": "1d2a98b92d21db54a9984af7390d07b100ef21bbf53b0cde82ecd8d3d61dbee3",
+    "product_claim.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "relationship.csv": "1d2a98b92d21db54a9984af7390d07b100ef21bbf53b0cde82ecd8d3d61dbee3",
+    "relationship.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  "license": "LicenseRef-LTP-Public-Interest-1.0",
+  "record_count": 0,
+  "schema_version": "0.4",
+  "source_generated_at": "2026-09-14T08:07:55.727266+00:00"
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "scope": "real local ClamAV binary and real installed signature DB; synthetic files only",
+  "clamscan_path": "/opt/homebrew/Cellar/clamav/1.5.4/bin/clamscan",
+  "freshclam_path": "/opt/homebrew/Cellar/clamav/1.5.4/bin/freshclam",
+  "version": "ClamAV 1.5.4/28123/Mon Sep 14 14:24:19 2026",
+  "signature_version": 28123,
+  "database_directory": "/opt/homebrew/var/lib/clamav",
+  "database_files": [
+    {
+      "name": "daily.cvd",
+      "size": 23432664
+    }
+  ],
+  "direct_adapter": {
+    "clean_status": "CLEAN",
+    "eicar_status": "INFECTED"
+  },
+  "production_config": {
+    "attachment_mode": "clamav",
+    "real_executable_accepted": true
+  },
+  "production_api": {
+    "attachment_uploads_enabled": true,
+    "clean_upload_http_status": 200,
+    "clean_scan_status": "CLEAN",
+    "infected_upload_rejected": true,
+    "stored_evidence_count_after_infected_attempt": 1,
+    "stored_scan_engine": "clamav"
+  },
+  "freshclam_update_observed": true,
+  "public_listener_created": false,
+  "claim_boundary": "RUNTIME_VERIFIED for the locally installed ClamAV engine/signature database and the production attachment gate. Long-run FreshClam scheduling, mirror availability, signature retention policy and scan performance under load remain separate operations gates."
+}

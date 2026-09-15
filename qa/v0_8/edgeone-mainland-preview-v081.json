@@ -1,0 +1,43 @@
+{
+  "version": "0.8.1-rc.2",
+  "date": "2026-09-15",
+  "status": "PASS_TEMPORARY_EDGEONE_MAINLAND_PREVIEW_RC2",
+  "frontend": "EdgeOne anonymous direct-upload preview",
+  "base_origin": "https://labor-transparency-v0-6-2zxtvuph.edgeone.dev",
+  "temporary": true,
+  "expires_at": "2026-09-15T11:52:08.000Z",
+  "backend": "Cloudflare Worker + D1 behind buffered EdgeOne Edge Function /api proxy",
+  "local_mainland_probe": {
+    "root": {
+      "http": 200,
+      "connect_seconds": 0.194184,
+      "total_seconds": 0.704184,
+      "remote_ip_family": "IPv4"
+    },
+    "api_health": {
+      "http": 200,
+      "connect_seconds": 0.201193,
+      "total_seconds": 0.980286,
+      "remote_ip_family": "IPv4"
+    }
+  },
+  "public_mutation": "PASS_COMPANY_CREATE_AND_BALLOT_THROUGH_EDGEONE_PROXY_THEN_D1_QA_ROWS_CLEANED",
+  "browser": {
+    "home": "PASS",
+    "method": "PASS",
+    "console_errors": 0,
+    "network_errors": 0,
+    "page_errors": 0,
+    "runtime_version": "0.8.1-rc.2",
+    "favicon_404": false,
+    "incomplete_chunked_encoding": false
+  },
+  "proxy": {
+    "buffered_upstream_response": true,
+    "hop_by_hop_headers_stripped": true,
+    "body_limit_bytes": 98304,
+    "generic_502": true,
+    "unit_test": "PASS"
+  },
+  "boundary": "This proves a temporary EdgeOne preview can relay public frontend/API traffic from the current Mainland-China network to the Cloudflare Worker/D1 backend. It is not a stable production China URL; anonymous preview access expires and a stable Mainland service still requires an owned EdgeOne account/project plus custom-domain/ICP/provider prerequisites where applicable."
+}

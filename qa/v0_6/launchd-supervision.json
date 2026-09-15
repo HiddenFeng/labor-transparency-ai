@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "scope": "macOS user launchd; loopback-only; synthetic data only",
+  "backend_port": 8921,
+  "proxy_port": 8922,
+  "public_listener_created": false,
+  "staged_runtime_copy": true,
+  "staged_runtime_reason": "macOS LaunchAgent privacy keeps the Downloads project directory out of the managed process; no permission boundary was weakened",
+  "launchd_domain": "gui/501",
+  "keepalive": true,
+  "first_pid_observed": true,
+  "replacement_pid_observed": true,
+  "pid_changed": true,
+  "initial_health": {
+    "status": "ok",
+    "version": "0.6",
+    "security_profile": "production",
+    "database": "ok",
+    "scheduler_active": false,
+    "attachment_uploads_enabled": false
+  },
+  "recovered_health": {
+    "status": "ok",
+    "version": "0.6",
+    "security_profile": "production",
+    "database": "ok",
+    "scheduler_active": false,
+    "attachment_uploads_enabled": false
+  },
+  "restart_recovered_seconds": 1.236,
+  "production_attachment_uploads_enabled": false,
+  "tls_client_verified_private_ca": true,
+  "elapsed_seconds": 7.761,
+  "claim_boundary": "RUNTIME_VERIFIED for macOS user-level launchd recovery in this loopback staging drill only; Linux systemd/container supervision and public production recovery remain unverified.",
+  "cleanup": {
+    "launchd_bootout_attempted": true,
+    "backend_port_closed": true,
+    "proxy_port_closed": true,
+    "temporary_directory_removed": true
+  }
+}

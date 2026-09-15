@@ -1,0 +1,79 @@
+{
+  "at": "2026-09-14T10:12:51.076601+00:00",
+  "provider": "GLEIF",
+  "mode": "LIVE_GLEIF",
+  "fixture_used": false,
+  "max_requests": 1,
+  "company_query": "Apple Inc.",
+  "country_query": "US",
+  "published": false,
+  "scheduler_installed": false,
+  "labor_claim_verified": false,
+  "status": "CONNECTIVITY_AND_SEARCH_SCHEMA_PASSED",
+  "candidate_count": 5,
+  "projections": [
+    {
+      "lei": "HWUPKR0MPOU8FGXBT394",
+      "name": "Apple Inc.",
+      "country": "US",
+      "jurisdiction": "US-CA",
+      "entity_status": "ACTIVE",
+      "registration_status": "ISSUED",
+      "last_update": "2026-03-03T16:34:33Z",
+      "next_renewal": "2027-03-08T17:27:20Z"
+    },
+    {
+      "lei": "254900KZR24L5GN8TE52",
+      "name": "Apple Ford, Inc.",
+      "country": "US",
+      "jurisdiction": "US-DE",
+      "entity_status": "ACTIVE",
+      "registration_status": "LAPSED",
+      "last_update": "2022-03-15T11:45:58Z",
+      "next_renewal": "2021-04-08T19:09:41Z"
+    },
+    {
+      "lei": "549300OFQZDF71H5ZN34",
+      "name": "APPLE QUEST, INC.",
+      "country": "US",
+      "jurisdiction": "US-MI",
+      "entity_status": "ACTIVE",
+      "registration_status": "LAPSED",
+      "last_update": "2023-10-27T13:30:03Z",
+      "next_renewal": "2023-10-26T19:15:00Z"
+    },
+    {
+      "lei": "5493005L9LZDI71S5Y95",
+      "name": "Apple Gold, Inc.",
+      "country": "US",
+      "jurisdiction": "US-NC",
+      "entity_status": "ACTIVE",
+      "registration_status": "LAPSED",
+      "last_update": "2023-08-04T15:50:25Z",
+      "next_renewal": "2017-05-17T13:22:00Z"
+    },
+    {
+      "lei": "549300CU34HQ0IZ6S698",
+      "name": "New Apple, Inc.",
+      "country": "US",
+      "jurisdiction": "US-NC",
+      "entity_status": "ACTIVE",
+      "registration_status": "LAPSED",
+      "last_update": "2025-07-11T18:45:26Z",
+      "next_renewal": "2017-05-17T13:34:00Z"
+    }
+  ],
+  "source": {
+    "id": "gleif-1a8300a0a14b",
+    "title": "GLEIF公开法律实体参考记录",
+    "url": "https://api.gleif.org/api/v1/lei-records?filter%5Bentity.legalName%5D=Apple+Inc.&page%5Bsize%5D=5&filter%5Bentity.legalAddress.country%5D=US",
+    "publisher": "GLEIF",
+    "accessed_at": "2026-09-14T10:12:54.770445+00:00",
+    "reuse_status": "CC0-1.0",
+    "license_url": "https://www.gleif.org/en/about/open-data",
+    "content_sha256": "bdbe61720c3912b4886e2b56499aaa34fa4625d7357748badba1caff8b696d7c",
+    "cached": false
+  },
+  "note": "检索成功不代表主体已匹配、关系已核验或用户链路已完成。",
+  "requests": 1
+}

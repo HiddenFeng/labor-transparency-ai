@@ -1,0 +1,51 @@
+{
+  "version": "0.7.2-rc.1",
+  "date": "2026-09-15",
+  "status": "PUBLIC_WORKER_FACING_UI_PASS_LOCAL_CHROME",
+  "runtime": "real local Node HTTP server + AgentDock Chrome/CDP",
+  "final_home": {
+    "url": "http://127.0.0.1:62389/",
+    "title": "劳动透明计划 · 把工作里的事说清楚",
+    "console_errors": 0,
+    "network_errors": 0,
+    "page_errors": 0,
+    "artifact_id": "272ef5706020bf5c55c894f6c66601f4",
+    "verified_content": [
+      "worker-facing hero with anonymous help/company/public-tip primary actions",
+      "six pain-point cards",
+      "three immediate action steps",
+      "four sourced public labor cases",
+      "external official/union resource strip",
+      "community-vs-evidence explanation",
+      "public advisory daily-report placeholder/summary"
+    ]
+  },
+  "interactive_paths": {
+    "home_issue_to_rights_guide": "PASS",
+    "rights_guide_to_filtered_external_resources": "PASS",
+    "company_search_filter": "PASS",
+    "anonymous_advisory_submit_and_one_time_receipt": "PASS",
+    "same_session_advisory_reload": "PASS_AFTER_REFRESH",
+    "restricted_advisory_agent_processing_then_private_advice": "PASS",
+    "aggregate_daily_report_render": "PASS"
+  },
+  "errors_and_interpretation": {
+    "transient_connection_refused": "Observed only after a bounded local test server session timed out; not reproduced on the final restarted server snapshot.",
+    "final_restarted_server_errors": 0
+  },
+  "responsive": {
+    "css_breakpoints_present": true,
+    "reduced_motion_present": true,
+    "focus_visible_present": true,
+    "real_narrow_viewport_verified": true,
+    "viewport_css_px": {"width": 485, "height": 757},
+    "artifact_id": "6e32dba4d8264199f613f60348f2d37a",
+    "reason": "A dedicated local headless Chrome/CDP process was launched with a narrow window and attached explicitly; the final snapshot reported a 485px viewport with zero console/network/page errors."
+  },
+  "content_boundary": {
+    "external_resources_are_navigation_not_partnerships": true,
+    "public_cases_are_educational_not_evidence_records": true,
+    "anonymous_advisory_sensitive_private_data_remains_disabled": true
+  },
+  "strongest_claim": "The final v0.7.2 worker-facing desktop public experience and key navigation/advisory flows are real-browser verified locally with zero final console/network/page errors. Narrow viewport remains a CSS/test-backed, not real-browser-verified, claim."
+}

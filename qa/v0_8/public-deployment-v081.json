@@ -1,0 +1,180 @@
+{
+  "version": "0.8.1-rc.2",
+  "date": "2026-09-15",
+  "status": "PUBLIC_GLOBAL_DEPLOYMENT_LIVE_EDGEONE_ACCOUNT_PROJECT_DEPLOYED_CUSTOM_DOMAIN_GATE_REMAINS",
+  "cloudflare": {
+    "backend": "https://labor-transparency-api.labor-transparency-public.workers.dev",
+    "worker_live": true,
+    "d1_live": true,
+    "cron_live": true,
+    "current_mainland_direct_probe": {
+      "curl_exit": 28,
+      "http": 0,
+      "connect_seconds": 0.0,
+      "total_seconds": 8.109733
+    },
+    "note": "Public backend is externally reachable, but the current Mainland-China network cannot reliably connect directly to workers.dev."
+  },
+  "vercel": {
+    "frontend": "https://labor-transparency-public.vercel.app",
+    "production_live": true,
+    "remote_external_probe": {
+      "root": 200,
+      "favicon": 200,
+      "api_health": 200
+    },
+    "remote_e2e_status": "PASS_PUBLIC_VERCEL_TO_CLOUDFLARE_D1_RESEARCH_E2E",
+    "remote_backend_version": "0.8.1-rc.2",
+    "remote_research": {
+      "candidateCount": 11,
+      "sourceSuccessCount": 9,
+      "sourceErrorCount": 2,
+      "providers": {
+        "GLEIF": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "WIKIDATA": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "SEC_EDGAR": {
+          "status": "ERROR",
+          "candidateCount": 0,
+          "error": "SOURCE_ACCESS_DENIED"
+        },
+        "NLRB_CASES": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "OSHA_ENFORCEMENT": {
+          "status": "OK",
+          "candidateCount": 5,
+          "error": null
+        },
+        "DOL_WHD": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "FMCS_F7": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "NLRB_VOLUNTARY_RECOGNITION": {
+          "status": "OK",
+          "candidateCount": 0,
+          "error": null
+        },
+        "FMCS_WORK_STOPPAGES": {
+          "status": "OK",
+          "candidateCount": 0,
+          "error": null
+        },
+        "OLMS_LM20": {
+          "status": "OK",
+          "candidateCount": 1,
+          "error": null
+        },
+        "USA_SPENDING": {
+          "status": "ERROR",
+          "candidateCount": 0,
+          "error": "SOURCE_UNAVAILABLE"
+        }
+      }
+    },
+    "public_projection_safe": true,
+    "csrf_pass": true,
+    "http_only_cookie": true,
+    "current_mainland_direct_probe": {
+      "curl_exit": 35,
+      "http": 0,
+      "connect_seconds": 0.107113,
+      "total_seconds": 0.133257
+    },
+    "note": "Global production frontend is live. The current Mainland-China network times out to vercel.app, so this is not the Mainland path.",
+    "team_name": "Labor Transparency AI",
+    "team_slug": "labor-transparency-ai",
+    "production_git_author": "PENDING_HIDDENFENG_REDEPLOY",
+    "old_github_handle_in_current_team_or_deployment_git_metadata": "PENDING_REVERIFY"
+  },
+  "edgeone": {
+    "temporary_preview_status": "PASS_TEMPORARY_EDGEONE_MAINLAND_PREVIEW_RC2",
+    "temporary": true,
+    "expires_at": "2026-09-15T11:52:08.000Z",
+    "mainland_root": {
+      "http": 200,
+      "connect_seconds": 0.194184,
+      "total_seconds": 0.704184,
+      "remote_ip_family": "IPv4"
+    },
+    "mainland_api_health": {
+      "http": 200,
+      "connect_seconds": 0.201193,
+      "total_seconds": 0.980286,
+      "remote_ip_family": "IPv4"
+    },
+    "public_mutation": "PASS_COMPANY_CREATE_AND_BALLOT_THROUGH_EDGEONE_PROXY_THEN_D1_QA_ROWS_CLEANED",
+    "browser": {
+      "home": "PASS",
+      "method": "PASS",
+      "console_errors": 0,
+      "network_errors": 0,
+      "page_errors": 0,
+      "runtime_version": "0.8.1-rc.2",
+      "favicon_404": false,
+      "incomplete_chunked_encoding": false
+    },
+    "proxy": {
+      "buffered_upstream_response": true,
+      "hop_by_hop_headers_stripped": true,
+      "body_limit_bytes": 98304,
+      "generic_502": true,
+      "unit_test": "PASS"
+    },
+    "note": "The EdgeOne account is authenticated and an account-owned labor-transparency-public project is deployed. The default edgeone.cool hostname is active but Mainland direct access without EdgeOne preview authorization returns 401 by platform design. Stable no-token Mainland service therefore requires a user-owned custom domain plus DNS/ICP/provider eligibility where applicable.",
+    "account_authenticated": true,
+    "account_project_deployed": true,
+    "project_name": "labor-transparency-public",
+    "platform_domain": "https://labor-transparency-public.edgeone.cool",
+    "platform_domain_status": "ACTIVE_BUT_MAINLAND_DEFAULT_DOMAIN_REQUIRES_PREVIEW_AUTH",
+    "default_domain_mainland_anonymous_direct_access": "HTTP_401_EO_TIME_MISSING",
+    "custom_domain_required_for_stable_no_token_mainland_entry": true
+  },
+  "github_pages": {
+    "current_public_role": "OPTIONAL_STATIC_MIRROR",
+    "new_account_pages_live": false,
+    "reason": "Pending first HiddenFeng workflow/Pages verification after privacy-sanitized push."
+  },
+  "production_d1_qa_cleanup": "PASS_ZERO_QA_RECORDS_AFTER_VERCEL_AND_EDGEONE_E2E",
+  "developer_identity": {
+    "public_ui_exposes_personal_email": false,
+    "public_ui_exposes_real_name": false,
+    "frontend_primary_alias_generic": true,
+    "worker_subdomain_generic": true,
+    "edgeone_preview_tokens_in_git": false,
+    "public_github_repository_new_account": true,
+    "active_git_history_old_account_free": true,
+    "vercel_team_generic": true,
+    "edgeone_project_generic": true
+  },
+  "manual_remaining": [
+    "Provide or authorize a project-owned custom domain/subdomain for EdgeOne.",
+    "If Mainland/global-including-Mainland acceleration is required, satisfy the domain ICP/provider eligibility shown by EdgeOne.",
+    "After the custom domain is bound, run final no-preview-token Mainland public QA on that permanent domain."
+  ],
+  "boundary": "Global Vercel + Cloudflare production is live. EdgeOne account authentication and an account-owned production project are also established. Stable no-token Mainland-China service is not yet claimed because EdgeOne requires a user-owned custom domain (and ICP/provider eligibility when applicable); the default edgeone.cool project hostname requires preview authorization from Mainland.",
+  "github_repository": {
+    "url": "https://github.com/HiddenFeng/labor-transparency-ai",
+    "visibility": "TARGET_PUBLIC",
+    "privacy_sanitized_history": true,
+    "active_author_identity": "HiddenFeng",
+    "previous_public_account_references_in_new_history_or_source": false,
+    "workflows_present": true,
+    "actions_status": "PENDING_FIRST_HIDDENFENG_CI"
+  }
+}

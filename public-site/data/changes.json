@@ -1,0 +1,7 @@
+{
+  "added": [],
+  "note": "停止再分发仅标记该记录不在当前安全快照中，不公开撤回原因或原文。",
+  "schema_version": "0.4",
+  "stop_redistributing": [],
+  "updated": []
+}

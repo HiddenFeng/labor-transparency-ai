@@ -1,0 +1,58 @@
+{
+  "status": "SUPPORTED_SOURCE_PIPELINE_PASS_SOURCE_COVERAGE_PARTIAL",
+  "mode": "INJECTED_TEST_TRANSPORT_NOT_LIVE_SOURCE_EVIDENCE",
+  "queue_created": true,
+  "bounded_collection": "PASS",
+  "identity_disambiguation_contract": "PASS",
+  "independent_review": "PASS",
+  "release_after_due": "PASS",
+  "restart_persistence": "PASS",
+  "published_status": "PUBLISHED_PARTIAL",
+  "coverage": [
+    {
+      "section": "identity",
+      "status": "AUTOMATED_SUPPORTED",
+      "source": "GLEIF"
+    },
+    {
+      "section": "ownership",
+      "status": "AUTOMATED_PARTIAL",
+      "source": "GLEIF"
+    },
+    {
+      "section": "business",
+      "status": "NO_APPROVED_AUTOMATED_SOURCE",
+      "source": null
+    },
+    {
+      "section": "facilities",
+      "status": "NO_APPROVED_AUTOMATED_SOURCE",
+      "source": null
+    },
+    {
+      "section": "supply_chain",
+      "status": "NO_APPROVED_AUTOMATED_SOURCE",
+      "source": null
+    },
+    {
+      "section": "work_conditions",
+      "status": "COMMUNITY_EVIDENCE_ONLY",
+      "source": null
+    },
+    {
+      "section": "channels",
+      "status": "NO_APPROVED_AUTOMATED_SOURCE",
+      "source": null
+    }
+  ],
+  "coverage_complete": false,
+  "strongest_claim": "队列→有限采集→草稿→独立复核→到期发布→重启持久化流程对当前GLEIF支持范围是闭环的；公司各类信息的自动来源覆盖并未完成。",
+  "not_automatic": [
+    "业务/产品",
+    "厂区/地点",
+    "完整供应链",
+    "劳动条件",
+    "官方沟通/申诉渠道"
+  ],
+  "live_connectivity_note": "v0.6 已有单次真实 GLEIF 联网证据；本审计未重新联网。"
+}

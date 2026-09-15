@@ -1,0 +1,7 @@
+{
+  "name":"labor-transparency-public-frontend",
+  "version":"0.8.1-rc.2",
+  "private":true,
+  "type":"module",
+  "scripts":{"build":"node build.mjs"}
+}

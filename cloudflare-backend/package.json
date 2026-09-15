@@ -1,0 +1,14 @@
+{
+  "name": "labor-transparency-cloudflare-backend",
+  "version": "0.8.1-rc.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "migrate:local": "npx wrangler d1 migrations apply DB --local --persist-to .wrangler/state",
+    "dev": "npx wrangler dev --local --persist-to .wrangler/state --test-scheduled --port 8790 --var LTP_ENV:development --var LTP_ALLOWED_ORIGINS:http://127.0.0.1:8791 --var LTP_COOKIE_SECURE:false --var LTP_SEED:true --var LTP_RESEARCH_SCHEDULED:false --var LTP_RESEARCH_MAX_COMPANIES_PER_RUN:1",
+    "test": "node --test tests/*.test.mjs",
+    "deploy": "npx wrangler deploy",
+    "db:create": "npx wrangler d1 create labor-transparency"
+  },
+  "engines": {"node": ">=20"}
+}
