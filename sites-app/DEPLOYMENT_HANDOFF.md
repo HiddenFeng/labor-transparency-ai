@@ -1,6 +1,6 @@
 # v0.8.1 Independent deployment handoff
 
-Status: `GLOBAL_PUBLIC_DEPLOYMENT_LIVE / MAINLAND_STABLE_EDGEONE_ACCOUNT_DOMAIN_PENDING`.
+Status: `GLOBAL_PUBLIC_DEPLOYMENT_LIVE / NON_CHINA_CLOUD_CANONICAL_PATH / MAINLAND_SLA_UNCLAIMED`.
 
 ## Production shape
 
@@ -13,7 +13,7 @@ Status: `GLOBAL_PUBLIC_DEPLOYMENT_LIVE / MAINLAND_STABLE_EDGEONE_ACCOUNT_DOMAIN_
 - Frontend build: `deploy/frontend/build.mjs`
 - EdgeOne build + buffered same-origin API relay: `deploy/edgeone/build.mjs` + `deploy/edgeone/proxy-template.mjs`
 - Preferred Vercel mode: same-origin `/api/*` rewrite to the Cloudflare API
-- Alternate static hosts: EdgeOne or any HTTPS static host using a same-site API domain or an approved proxy
+- Alternate static hosts: any HTTPS static host using a same-site API domain or an approved proxy; EdgeOne is historical/optional only
 
 Current public global endpoints:
 
@@ -46,9 +46,9 @@ For direct browser calls, use an exact HTTPS frontend origin and preferably sibl
 
 ## Manual platform prerequisites still remaining
 
-Cloudflare, Vercel and EdgeOne account authentication are complete. The EdgeOne anonymous project was claimed, and an account-owned global project named `labor-transparency-public` has been deployed successfully. The project-owned domain `workermanifestfellowship.dpdns.org` is now configured and verified on HiddenFeng Vercel. A second `labor-transparency-overseas` EdgeOne project was deployed to test the non-Mainland area; it accepted the domain and its ownership TXT is live, but final verification is gated by Tencent Cloud International account completion/payment-method requirements. The default `edgeone.cool` project hostname is still not a permanent Mainland public entry.
+There is **no Tencent Cloud / EdgeOne account-completion prerequisite** for the canonical release path. The production path is GitHub + Vercel + Cloudflare Worker/D1 + DigitalPlat DNS. Historical EdgeOne projects and preview results remain evidence only and must not be treated as a blocker.
 
-After the account owner completes the Tencent Cloud account-information/payment-method gate (and real-name/ICP requirements if a Mainland-inclusive area is selected), the Agent can resume the already-created EdgeOne domain flow, finish ownership/CNAME DNS changes where supported, verify HTTPS/exact Cloudflare Origin allowlists, and repeat no-preview-token public QA. A stable Mainland-China claim additionally remains gated by actual ICP/provider eligibility and measured reachability.
+Mainland-China stable access is deliberately unclaimed. If the account owner later chooses a Mainland-local or China-cloud acceleration provider, that becomes a new privacy/compliance decision and must not be inferred from this handoff.
 
 Never paste platform passwords or DNS credentials into project files or chat. OAuth/browser login and provider-native authorization are preferred.
 
@@ -60,4 +60,4 @@ Replay at minimum:
 
 Additionally verify wrong Origin and missing CSRF are 403, cookies are `HttpOnly; Secure`, privileged tokens are absent from the frontend, static privacy audit passes, and actual Mainland-China reachability is measured rather than inferred from DNS.
 
-Global Vercel/Cloudflare acceptance has been exercised. The temporary EdgeOne preview also passed homepage/API/mutation and Chrome checks with zero final console/network/page errors. Final acceptance still needs one replay on the permanent EdgeOne/custom-domain URL after the account/domain step above.
+Global Vercel/Cloudflare acceptance has been exercised. The historical temporary EdgeOne preview also passed homepage/API/mutation and Chrome checks with zero final console/network/page errors, but no permanent EdgeOne replay is required for release acceptance.

@@ -1,4 +1,4 @@
-# v0.8.1 GitHub / Vercel / EdgeOne 公开身份迁移
+# v0.8.1 GitHub / Vercel 公开身份迁移与非中国云部署决策
 
 日期：2026-09-15
 
@@ -38,17 +38,19 @@ HiddenFeng 首次隐私净化 push 已完成全量验证：GitHub Actions run `3
 
 ## EdgeOne / 中国大陆入口
 
-EdgeOne/Tencent 账号已经完成注册并可通过 CLI 读取账号状态。账号下 `labor-transparency-public` 项目已经部署过 buffered Edge Function `/api/*` relay；默认 `edgeone.cool` 平台域名在大陆匿名访问仍受平台预览授权限制，因此不作为最终公开入口。
+EdgeOne 的历史项目、临时预览和同源 relay 测试继续保留为**历史工程证据**：它证明过一条 `EdgeOne -> Edge Function -> Cloudflare Worker -> D1` 路径在当时测试网络可工作。该证据不等于当前生产依赖，也不等于中国大陆稳定服务。
 
-用户已经提供项目可用子域：
+2026-09-15 的账号迁移后续明确采用新的隐私决策：**不要求账号持有人为了本项目向腾讯云/EdgeOne 提交实名、身份材料或支付方式。** 因此 Global 自定义域实名认证门槛和 Overseas 账户信息/支付方式门槛均被归类为 `OPTIONAL_PROVIDER_GATE_NOT_REQUIRED`，不再属于 release blocker、human gate 或 NEXT_GATE。
 
-`workermanifestfellowship.dpdns.org`
+当前 canonical production path 为：
 
-该域名已经完成 DigitalPlat 所有权记录并作为 HiddenFeng Vercel 项目域名验证。EdgeOne Global 项目在添加自定义域时要求腾讯云账号实名认证；为验证替代路线，另建 `labor-transparency-overseas`（overseas area）并部署同一静态包与 buffered `/api` relay。Overseas 项目接受了该域名并给出 `edgeonereclaim` TXT，TXT 已在 DigitalPlat 两个权威 DNS/公共解析可见；最终 Verify 阶段由腾讯云国际站 CAM 拦截，明确要求先补全账户信息并添加支付方式。此账户/支付步骤必须由账号持有人本人完成。完成后 Agent 再继续 EdgeOne ownership、最终 CNAME/DNS、HTTPS、exact Origin 与无 preview token QA。若后续选择包含中国大陆的 Global 区域，仍需按平台实际提示满足实名、ICP/服务商资格。
+`HiddenFeng GitHub -> Vercel static frontend/custom domain -> same-origin /api rewrite -> Cloudflare Worker -> D1`
+
+DigitalPlat 仅负责项目域名 DNS。若未来用户主动重新选择中国大陆本地加速或其他中国云服务，必须作为新的独立决策重新评估隐私、实名、ICP、支付和监管边界；不得把历史 EdgeOne 项目自动恢复成必需项。
 
 ## 隐私边界
 
-- 不在公共仓库、网页或 API 中记录私人账号密码、OAuth token、平台 token、EdgeOne preview token 或 DNS 登录凭据。
+- 不在公共仓库、网页或 API 中记录私人账号密码、OAuth token、平台 token、历史 EdgeOne preview token 或 DNS 登录凭据。
 - 不要求普通访问者知道代码托管/部署平台账号持有人的邮箱或真实姓名。
 - GitHub noreply 地址属于公开提交身份的一部分；本项目当前使用 HiddenFeng 的 noreply 地址，不再使用其他公开账号作者身份。
 - 第三方平台和域名服务商依法仍可能掌握账号持有人真实信息；“公开隐私”不等于规避平台身份或监管要求。

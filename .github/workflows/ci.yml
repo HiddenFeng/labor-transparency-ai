@@ -55,10 +55,6 @@ jobs:
           rm -rf deploy/frontend/dist
           LTP_PROXY_API_ORIGIN=https://api.example.invalid LTP_DEPLOYMENT_LABEL=ci-vercel-proxy node deploy/frontend/build.mjs
           node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
-      - run: |
-          LTP_EDGEONE_UPSTREAM=https://api.example.invalid LTP_DEPLOYMENT_LABEL=ci-edgeone-proxy node deploy/edgeone/build.mjs
-          node deploy/edgeone/test-proxy.mjs
-          node scripts/deployment/privacy_audit.mjs deploy/edgeone/dist
       - uses: actions/upload-artifact@v4
         with:
           name: independent-web-v0.8-candidate-NOT-deployed
@@ -74,4 +70,5 @@ jobs:
       - run: npm --prefix cloudflare-backend test
       - run: ./scripts/deployment/verify_cloudflare_local.sh
 # Visual/browser, security, legal/operations, and real integrations remain separate gates.
-# This workflow has no production credentials and does not deploy Cloudflare/Vercel/EdgeOne resources.
+# This workflow has no production credentials and does not deploy Cloudflare/Vercel resources.
+# The retired EdgeOne PoC is intentionally not part of the default release-candidate gate.

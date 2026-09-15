@@ -2,6 +2,12 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 OUT="$ROOT/deploy/edgeone/dist"
+
+if [[ "${LTP_ENABLE_LEGACY_EDGEONE:-false}" != "true" ]]; then
+  echo "EdgeOne deployment is retired by the current Tencent-free privacy policy. Set LTP_ENABLE_LEGACY_EDGEONE=true only after a new explicit user approval." >&2
+  exit 2
+fi
+
 : "${LTP_EDGEONE_UPSTREAM:?Set LTP_EDGEONE_UPSTREAM to the public HTTPS Cloudflare Worker origin}"
 
 LTP_EDGEONE_UPSTREAM="$LTP_EDGEONE_UPSTREAM" \

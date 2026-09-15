@@ -1,0 +1,52 @@
+name: Public non-Tencent deployment smoke
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  public-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check public endpoints from an external network
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          check_url() {
+            local name="$1"
+            local url="$2"
+            echo "== $name =="
+            curl \
+              --fail \
+              --silent \
+              --show-error \
+              --location \
+              --retry 2 \
+              --retry-all-errors \
+              --connect-timeout 10 \
+              --max-time 30 \
+              --output /tmp/ltp-smoke-body \
+              --write-out 'http=%{http_code} remote=%{remote_ip} total=%{time_total}\n' \
+              "$url"
+            test -s /tmp/ltp-smoke-body
+          }
+
+          check_url 'custom-domain root' 'https://workermanifestfellowship.dpdns.org/'
+          check_url 'custom-domain API' 'https://workermanifestfellowship.dpdns.org/api/health'
+          check_url 'Vercel fallback root' 'https://workermanifestfellowship.vercel.app/'
+          check_url 'Vercel fallback API' 'https://workermanifestfellowship.vercel.app/api/health'
+          check_url 'Cloudflare Worker health' 'https://labor-transparency-api.labor-transparency-public.workers.dev/api/health'
+          check_url 'GitHub Pages read-only fallback' 'https://hiddenfeng.github.io/labor-transparency-ai/'
+
+      - name: State deployment boundary
+        run: |
+          echo 'PASS means the non-Tencent global public path is reachable from this GitHub-hosted runner.'
+          echo 'It does not establish a Mainland-China SLA.'

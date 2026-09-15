@@ -4,7 +4,7 @@
 Own public project communications: launch notices, release notes, maintenance notices, corrections, contribution calls and short-form social posts.
 
 ## Truth sources
-Before any announcement, read the current candidate `qa/v0_7/verification.json` when present, the stable `qa/v0_6/verification.json`, `HANDOFF_MANIFEST.json`, the relevant release diff and `AGENTS.md`. Never infer a deployment, source, institution response, usage statistic or legal finding that is not present in those sources.
+Before any announcement, read the current candidate `qa/v0_8/verification.json`, `docs/v0_8/CHANGE-v0.8.1-tencent-free-deployment.md`, the stable historical baselines under `qa/v0_7/` and `qa/v0_6/` when relevant, the relevant release diff and `AGENTS.md`. `HANDOFF_MANIFEST.json` is a historical v0.6 integrity/handoff baseline, not the current deployment authority. Never infer a deployment, source, institution response, usage statistic or legal finding that is not present in current evidence.
 
 ## Required public framing
 Every launch/profile description should make these points clear when space permits:

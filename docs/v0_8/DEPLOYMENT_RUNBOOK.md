@@ -47,7 +47,7 @@ export LTP_PROXY_API_ORIGIN='https://api.example.org'
 
 首个 Vercel 部署完成后，把真实前端 origin 加入 Cloudflare `LTP_ALLOWED_ORIGINS` 再重新部署后端。如果使用 preview URL，也必须精确加入测试 origin，不能用 `*`。
 
-## 4. EdgeOne 大陆入口候选（同源 Edge Function relay）
+## 4. EdgeOne 历史/可选实验（非当前生产依赖）
 
 ```sh
 export LTP_EDGEONE_UPSTREAM='https://labor-transparency-api.example.workers.dev'
@@ -73,9 +73,9 @@ export LTP_EDGEONE_SITE=global
 ./scripts/deployment/deploy_edgeone.sh
 ```
 
-匿名 preview 有时效，只能作为网络/架构证据，不得作为稳定公开 URL。EdgeOne 账号注册/登录与 project claim 已完成，账号下正式项目 `labor-transparency-public` 已部署。当前正式项目默认域名 `labor-transparency-public.edgeone.cool` 在大陆无平台预览授权时返回 401，因此中国大陆/全球含大陆的稳定入口仍需绑定项目拥有的自定义域名，并按实际地域满足 DNS、ICP、域名与服务商资格要求。
+历史 anonymous preview 有时效，只能作为网络/架构证据，不得作为稳定公开 URL。历史账号项目与默认 `edgeone.cool` 域名的 401/preview 限制继续记录，但当前生产路线不再要求继续绑定 EdgeOne 自定义域或满足其账号门槛。
 
-当前实测：匿名 EdgeOne preview 已从当前大陆网络完成首页 200、API 200、真实公司创建/评价 mutation，以及 Chrome 0 console/network/page errors；正式账号项目部署也已成功。机器证据见 `qa/v0_8/edgeone-mainland-preview-v081.json`、`qa/v0_8/public-deployment-v081.json` 与 `qa/v0_8/account-migration-v081.json`。
+历史实测：匿名 EdgeOne preview 曾完成首页 200、API 200、真实公司创建/评价 mutation，以及 Chrome 0 console/network/page errors；机器证据继续保留。根据当前隐私决策，不再要求完成腾讯云账户、实名、支付方式、自定义域或最终 EdgeOne 验收。
 
 ## 5. 发布前公网验收
 
@@ -94,10 +94,14 @@ export LTP_EDGEONE_SITE=global
 - 真实 production 静态包通过 privacy audit；
 - 中国大陆只有经过多地区实际探测后才报告可达性，不以“域名能解析”替代真实访问测试。
 
+外部可达性由 `.github/workflows/public-smoke.yml` 独立验证。该 workflow 可手动运行，并每日从 GitHub-hosted runner 检查项目自有域名、Vercel 平台回退、Cloudflare Worker health 与 GitHub Pages 只读回退。它的 PASS 只证明所测外部网络上的全球公网路径可达，不等于中国大陆 SLA。
+
 ## 6. 当前已上线地址与仍需人工步骤
 
-- 全球前端：`https://workermanifestfellowship.vercel.app`
-- 全球 API：`https://labor-transparency-api.labor-transparency-public.workers.dev`
-- EdgeOne 正式账号项目：`labor-transparency-public` 已部署；默认 `edgeone.cool` 域名不作为大陆稳定入口，因为大陆无预览授权时返回 401。
+- 主公开交互域名：`https://workermanifestfellowship.dpdns.org`
+- Vercel 平台回退：`https://workermanifestfellowship.vercel.app`
+- 全球 API/诊断 origin：`https://labor-transparency-api.labor-transparency-public.workers.dev`
+- GitHub Pages 只读回退：`https://hiddenfeng.github.io/labor-transparency-ai/`
+- EdgeOne：历史项目/PoC 证据保留，但不属于当前 production dependency 或 release gate。
 
-Cloudflare、Vercel、EdgeOne 登录与部署均已完成，项目域名 `workermanifestfellowship.dpdns.org` 也已由 DigitalPlat 配置并通过 Vercel 验证。EdgeOne Global 项目添加自定义域要求账号实名认证；Overseas 项目已经部署并接受该域名，ownership TXT 也已生效，但最终 Verify 被腾讯云国际站“账户信息不完整”门槛拦截，要求账号持有人补全账户信息并添加支付方式。完成该账户步骤后，Agent 可继续 EdgeOne ownership、最终 CNAME/DNS、HTTPS/exact Origin 和无 preview token 验收；若最终选择包含中国大陆的加速区域，还必须满足平台实际要求的实名、ICP/服务商资格。
+Cloudflare、Vercel 与 DigitalPlat 已构成当前完整生产路径。项目域名 `workermanifestfellowship.dpdns.org` 已由 DigitalPlat 配置并通过 Vercel 验证。腾讯云/EdgeOne 的实名认证、账户补全和支付方式不再是人工待办；不得为了当前发布要求账号持有人提交这些资料。

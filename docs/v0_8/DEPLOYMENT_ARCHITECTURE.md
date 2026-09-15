@@ -76,7 +76,7 @@ node deploy/frontend/build.mjs
 
 生产 Cookie 默认：`HttpOnly; Secure; SameSite=Strict`。因此不推荐用 `*.vercel.app` 直接请求 `*.workers.dev` 作为长期身份模式；二者跨站，浏览器 Cookie 行为并不稳定。使用自定义同站域名或同源代理。
 
-### 模式 C — EdgeOne 同源 Edge Function relay（大陆路径）
+### 模式 C — EdgeOne 同源 Edge Function relay（历史 PoC / 当前非生产依赖）
 
 在当前大陆网络，`vercel.app` / `workers.dev` 直连失败，而 EdgeOne 可达。因此 v0.8.1 增加：
 
@@ -98,7 +98,7 @@ node deploy/edgeone/test-proxy.mjs
 
 Edge Function 对非 GET/HEAD body 限制为 96 KiB；向上游发请求时不透传 `Host` / `Content-Length` / `Connection`，向浏览器返回时先完整缓冲 upstream body，并移除 `Content-Length / Transfer-Encoding / Content-Encoding / Connection / Keep-Alive`，再由 EdgeOne 重新编码响应。这样可以避免早期实测出现的 `ERR_INCOMPLETE_CHUNKED_ENCODING`。
 
-本轮匿名 preview 已真实从当前大陆网络跑通首页、API、mutation 和 Chrome；但匿名 preview 有时效，稳定生产仍需正式 EdgeOne 项目和自定义域名。
+历史匿名 preview 曾从测试网络跑通首页、API、mutation 和 Chrome；该结果只保留为架构证据。当前生产路径不再要求正式 EdgeOne 项目、自定义域、实名认证或支付信息。
 
 ## 安全边界
 
@@ -133,4 +133,4 @@ Edge Function 对非 GET/HEAD body 限制为 96 KiB；向上游发请求时不�
 - Wrangler 进程停止/重启后的 D1 持久化；
 - 独立静态前端 `8791` → Worker `8790` 的真实 Chrome 交互。
 
-Cloudflare Worker + D1 与 Vercel 全球前端现已公网生产部署；EdgeOne 账号注册/登录和 anonymous project claim 已完成，新的账号下正式项目 `labor-transparency-public` 也已成功部署。此前临时 preview 的大陆动态链已经真实验证。当前剩余问题不是应用工程，而是 EdgeOne 默认 `edgeone.cool` 项目域名在大陆无预览授权时返回 401；因此最终稳定大陆入口需要绑定项目拥有的自定义域名，并根据实际区域完成 DNS、ICP/服务商资格与最终无预览令牌验收。
+Cloudflare Worker + D1 与 Vercel 全球前端现已公网生产部署。历史 EdgeOne 项目和临时 preview 的大陆动态链保留为已验证工程实验，但已从 canonical production path 移除。当前不把 EdgeOne 自定义域、实名、支付资料或大陆入口作为 release gate；中国大陆稳定访问保持未声明状态。原 EdgeOne 路线若未来重新启用，必须作为新的隐私/合规决策重新评估，并重新完成相应 DNS、ICP/服务商资格与真实网络验收。

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Build the source-only v0.8.1 RC2 public-deployment + EdgeOne follow-up candidate."""
+"""Build the source-only v0.8.1 RC2 public deployment candidate for the Tencent-free canonical path."""
 from __future__ import annotations
 import argparse, hashlib, json, zipfile
 from pathlib import Path
@@ -15,8 +15,8 @@ def main():
     files=release_files(ROOT)
     manifest={
         'version':'0.8.1-rc.2',
-        'purpose':'global public Vercel + Cloudflare deployment, bounded multi-source company research, and EdgeOne Mainland relay candidate',
-        'status':'PUBLIC_GLOBAL_DEPLOYMENT_LIVE_MAINLAND_STABLE_DOMAIN_PENDING',
+        'purpose':'global public Vercel + Cloudflare deployment, bounded multi-source company research, and Tencent-free canonical deployment governance; historical EdgeOne evidence is non-blocking',
+        'status':'PUBLIC_GLOBAL_DEPLOYMENT_LIVE_TENCENT_FREE_MAINLAND_SLA_UNCLAIMED',
         'files':{}
     }
     for src in files:

@@ -16,7 +16,7 @@
 
 ## v0.8.1 独立前后端 + 自动公司情报
 
-当前 `main` / GitHub Pages 继续保持 **v0.6.1 只读稳定版**；`feat/v0.8.1-company-intelligence` 在 v0.8 独立部署架构上增加自动公司资料研究：公共前端是可移植静态站，后端是 Cloudflare Worker + D1，二者通过受控 HTTP API 通信；Worker 可按批次自动收集公开来源候选并持久化，Python back office 则负责更完整的候选绑定、证据化草稿、独立复核与发布。Vercel 全球前端与 Cloudflare 后端已经公网运行；EdgeOne 路径已经在当前中国大陆网络以临时预览完成真实 PoC。
+当前 `main` / GitHub Pages 继续保持 **v0.6.1 只读稳定版**；`feat/v0.8.1-company-intelligence` 在 v0.8 独立部署架构上增加自动公司资料研究：公共前端是可移植静态站，后端是 Cloudflare Worker + D1，二者通过受控 HTTP API 通信；Worker 可按批次自动收集公开来源候选并持久化，Python back office 则负责更完整的候选绑定、证据化草稿、独立复核与发布。Vercel 全球前端与 Cloudflare 后端已经公网运行。历史 EdgeOne 临时预览仅保留为网络可行性 PoC 证据，不属于当前生产依赖。
 
 - 公司讨论空间与去重正/负社区评价；
 - 产品、公司资料、关系、劳动实践和产品体验的公开贡献；
@@ -42,7 +42,7 @@ LTP_PUBLIC_API_BASE=http://127.0.0.1:8790 node deploy/frontend/build.mjs
 node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 ```
 
-部署与中国大陆访问边界直接阅读 `docs/v0_8/DEPLOYMENT_ARCHITECTURE.md`、`docs/v0_8/MAINLAND_CHINA_ACCESS.md`、`docs/v0_8/DEPLOYMENT_RUNBOOK.md`。当前实测结论是：Vercel + Cloudflare 全球生产链已上线；EdgeOne 账号已完成注册和登录，项目 `labor-transparency-public` 已部署，并且此前临时预览已经跑通 `大陆访问者 -> EdgeOne -> Edge Function -> Cloudflare Worker -> D1`。但是当前大陆网络直连 `vercel.app` / `workers.dev` 不可靠，而 EdgeOne 默认 `edgeone.cool` 项目域名在大陆访问时要求平台预览授权。项目域名 `workermanifestfellowship.dpdns.org` 已提供并通过 HiddenFeng Vercel 的所有权/DNS 验证，但当前网络直连 Vercel 仍不可靠，因此它不是大陆稳定入口。EdgeOne Global 自定义域仍要求账号实名；Overseas 项目已接受该域名并完成 ownership TXT，最终 Verify 还要求账号持有人补全腾讯云国际站账户信息并添加支付方式。完成账号门槛后才能继续最终 EdgeOne CNAME/HTTPS/无令牌大陆验收。
+部署与中国大陆访问边界直接阅读 `docs/v0_8/DEPLOYMENT_ARCHITECTURE.md`、`docs/v0_8/MAINLAND_CHINA_ACCESS.md`、`docs/v0_8/DEPLOYMENT_RUNBOOK.md`。当前生产主链固定为 **GitHub + Vercel + Cloudflare Worker/D1 + DigitalPlat DNS**。项目域名 `workermanifestfellowship.dpdns.org` 已完成 HiddenFeng Vercel 的所有权/DNS 验证。当前网络对 Vercel/Workers 的中国大陆直连仍不可靠，因此项目不承诺中国大陆 SLA。历史 EdgeOne PoC 继续作为证据保留，但根据隐私决策，腾讯云/EdgeOne 已从必需部署链和 NEXT_GATE 移除；项目不会为了大陆加速要求账号持有人向腾讯云提交实名、身份或支付信息。
 
 自动公司资料研究已经从单一 GLEIF 扩展为多源：法律主体/母公司以 GLEIF 为 identity root；美国公开申报可用 SEC EDGAR；业务/产品/总部上下文可由绑定后的 Wikidata 补充；美国劳动侧可采集 NLRB 案件、OSHA 检查、WHD 已结案合规行动、FMCS 集体谈判通知与停工记录、NLRB voluntary recognition、OLMS employer/consultant disclosure；USAspending 可提供具体联邦 award / 政府客户关系候选。**这仍不等于“全球所有公司所有数据已完整收集”**：不同国家、公司类型和栏目覆盖不同，Open Supply Hub / OpenCorporates 等来源仍受 token、订阅或许可前置条件约束。机器可读来源矩阵见 `docs/v0_8/source-registry.json`，确定性审计见 `qa/v0_8/company-intelligence-audit.json`，真实有限联网证据见 `qa/v0_8/live-company-sources.json`、`qa/v0_8/live-company-intelligence.json` 与 `qa/v0_8/cloudflare-live-research.json`。
 
@@ -55,10 +55,10 @@ node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 ## 先读
 
 - `docs/v0_8/DEPLOYMENT_ARCHITECTURE.md`：v0.8 独立前后端架构与安全边界。
-- `docs/v0_8/MAINLAND_CHINA_ACCESS.md`：中国大陆访问、ICP 与 Cloudflare/EdgeOne/Vercel 的真实能力边界。
+- `docs/v0_8/MAINLAND_CHINA_ACCESS.md`：中国大陆访问边界，以及不依赖中国云实名/支付信息的当前策略。
 - `docs/v0_8/PUBLIC_IDENTITY_PRIVACY.md`：公网开发者身份与部署隐私策略。
-- `docs/v0_8/ACCOUNT_MIGRATION_AND_PUBLICATION.md`：HiddenFeng GitHub 迁移、公开仓库净化历史、Vercel/EdgeOne 身份治理与当前外部门槛。
-- `docs/v0_8/DEPLOYMENT_RUNBOOK.md`：Cloudflare / Vercel / EdgeOne 部署步骤。
+- `docs/v0_8/ACCOUNT_MIGRATION_AND_PUBLICATION.md`：HiddenFeng GitHub/Vercel 迁移、公开仓库净化历史与部署隐私决策。
+- `docs/v0_8/DEPLOYMENT_RUNBOOK.md`：Cloudflare / Vercel / DigitalPlat 当前生产部署步骤；EdgeOne 仅保留历史可选实验说明。
 - `docs/v0_8/COMPANY_DATA_AUTOMATION.md`：自动公司资料的数据类别、来源层级、复核规则和仍未覆盖的边界。
 - `docs/v0_7/交付与验收.md`、`qa/v0_7/verification.json`：上一阶段 v0.7.2 的 UI/业务基线证据。
 - `docs/v0_6/交付与验收.md`：v0.6.1 稳定版的历史运行与安全验收。
@@ -67,7 +67,7 @@ node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 - `qa/v0_6/browser/result.json`：实际浏览器阻断记录。
 - `qa/v0_6/live-source.json`：实际GLEIF联网检查结果。
 
-v0.1—v0.7文档保留演进历史；账号隐私迁移后，旧 GitHub Pages 阶段镜像不再作为当前公开入口。当前公开交互服务以 v0.8.1 的 Vercel/Cloudflare 公网部署和 `qa/v0_8` 证据为准；项目域名已在 Vercel 配置验证，EdgeOne Global/Overseas 项目也均已部署或建立，但中国大陆“稳定无预览令牌生产入口”仍等待腾讯云账户补全/支付方式，以及最终选择区域所要求的实名、ICP/服务商资格与实测验收。
+v0.1—v0.7文档保留演进历史；账号隐私迁移后，旧 GitHub Pages 阶段镜像不再作为当前公开入口。当前公开交互服务以 v0.8.1 的 Vercel/Cloudflare 公网部署和 `qa/v0_8` 证据为准；项目域名已在 Vercel 配置验证。中国大陆稳定访问仍未建立，也不再以腾讯云账户补全、实名、支付方式或 EdgeOne 接入作为项目完成条件；若未来重新选择中国大陆本地/加速服务，将作为单独的隐私与合规决策重新评估。
 
 ## 启动
 

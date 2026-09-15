@@ -1,7 +1,7 @@
 {
   "version": "0.8.1-rc.2",
   "date": "2026-09-15",
-  "status": "PUBLIC_HIDDENFENG_GITHUB_PAGES_VERCEL_CUSTOM_DOMAIN_CONFIG_LIVE_EDGEONE_ACCOUNT_COMPLETION_GATE",
+  "status": "PUBLIC_HIDDENFENG_GITHUB_PAGES_VERCEL_CUSTOM_DOMAIN_CONFIG_LIVE_NON_CHINA_CLOUD_CANONICAL",
   "cloudflare": {
     "backend": "https://labor-transparency-api.labor-transparency-public.workers.dev",
     "worker_live": true,
@@ -166,9 +166,10 @@
       "preset_url": "https://labor-transparency-overseas.edgeone.dev",
       "custom_domain_candidate": "workermanifestfellowship.dpdns.org",
       "ownership_txt": "PRESENT_AND_PUBLICLY_RESOLVING",
-      "final_verify": "BLOCKED_TENCENT_CLOUD_INTL_ACCOUNT_INFORMATION_AND_PAYMENT_METHOD"
+      "final_verify": "OPTIONAL_PROVIDER_GATE_NOT_REQUIRED_BY_CANONICAL_PATH"
     },
-    "human_gate": "Complete Tencent Cloud International account information and add payment method; Global area also requires real-name verification."
+    "human_gate": "NONE_TENCENT_IDENTITY_PAYMENT_NOT_REQUIRED",
+    "role": "HISTORICAL_OPTIONAL_POC_NOT_PRODUCTION_DEPENDENCY"
   },
   "github_pages": {
     "current_public_role": "OPTIONAL_STATIC_MIRROR",
@@ -188,12 +189,8 @@
     "edgeone_project_generic": true,
     "vercel_hiddenfeng_account": true
   },
-  "manual_remaining": [
-    "Complete Tencent Cloud International account information and payment method for Overseas EdgeOne final ownership verification.",
-    "If Mainland-inclusive Global EdgeOne acceleration is required, complete account-owner real-name verification and applicable ICP/provider eligibility.",
-    "After account gates, finish EdgeOne final DNS/HTTPS/exact-Origin and no-preview-token Mainland QA."
-  ],
-  "boundary": "HiddenFeng GitHub/Pages and HiddenFeng Vercel production are live; the project-owned custom domain is DNS-configured and Vercel-verified, but this current network still cannot reach Vercel reliably. EdgeOne Overseas accepts the custom domain and its ownership TXT is live, but final verification is blocked until the Tencent Cloud International account owner completes account information/payment-method setup. Stable no-token Mainland service is therefore not yet claimed.",
+  "manual_remaining": [],
+  "boundary": "HiddenFeng GitHub/Pages, HiddenFeng Vercel production, project-owned custom domain, and Cloudflare Worker/D1 are live/configured as the canonical non-China-cloud path. Historical EdgeOne evidence is retained but not required. Stable Mainland-China service is not claimed.",
   "github_repository": {
     "url": "https://github.com/HiddenFeng/labor-transparency-ai",
     "visibility": "PUBLIC",
@@ -214,5 +211,31 @@
         "cloudflare_backend": "success"
       }
     }
+  },
+  "non_china_cloud_revalidation": {
+    "timestamp_local": "2026-09-15T23:39:00+08:00",
+    "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
+    "python_unittest": "PASS_291",
+    "sites_app_node_tests": "PASS_20",
+    "frontend_build": "PASS_8_FILES",
+    "static_privacy_audit": "PASS_0_FORBIDDEN_MATCHES",
+    "historical_edgeone_proxy_unit": "PASS_BUFFERED_HEADERS_COOKIE_BODY_PATH",
+    "dns": {
+      "dns1.digitalplat.org": "216.198.79.1",
+      "dns2.digitalplat.org": "216.198.79.1",
+      "1.1.1.1": "216.198.79.1",
+      "8.8.8.8": "216.198.79.1"
+    },
+    "vercel_project": "FOUND_HIDDENFENG_WORKERMANIFESTFELLOWSHIP",
+    "vercel_production_deployment": "READY",
+    "vercel_custom_domain": "PASS_VALID_CONFIGURATION_PROJECT_VERIFIED",
+    "current_runtime_https": {
+      "vercel_app": "TIMEOUT",
+      "custom_domain": "TIMEOUT",
+      "workers_dev": "TIMEOUT",
+      "github": "HTTP_200"
+    },
+    "network_boundary": "Current local network cannot directly reach Vercel or workers.dev even though Vercel control-plane verification and project deployment are Ready. This is recorded as a path limitation, not evidence that production is down.",
+    "tencent_edgeone_required": false
   }
 }

@@ -6,15 +6,18 @@ Operate Labor Transparency as a non-commercial public-interest project with the 
 ## Inputs of record
 1. `AGENTS.md`
 2. current user/project requirements
-3. `qa/v0_7/verification.json` for the current Sites candidate; `qa/v0_6/verification.json` for the stable baseline
-4. `HANDOFF_MANIFEST.json`
+3. `qa/v0_8/verification.json` for the current independent-deployment candidate; `qa/v0_7/verification.json` and `qa/v0_6/verification.json` are historical baselines
+4. `docs/v0_8/CHANGE-v0.8.1-tencent-free-deployment.md` and the current v0.8 deployment/privacy docs
 5. current code/tests/runtime evidence
-6. accepted current docs under `docs/v0_7/` plus stable history under `docs/v0_6/`
+6. `HANDOFF_MANIFEST.json` only as the historical v0.6 integrity/handoff baseline where its own metadata says so
 
 ## Normal loop
 `recover current truth -> select highest-value necessary work -> implement -> run decisive checks -> synchronize docs/evidence -> commit -> publish only if current release gate permits`
 
 Do not create busywork. Non-essential hardening, speculative architecture and duplicate governance are deferred unless a concrete failure or public-safety boundary requires them.
+
+## Deployment privacy rule
+The canonical production path is GitHub + Vercel + Cloudflare Worker/D1 + project DNS. Tencent Cloud / EdgeOne is historical optional PoC evidence only. Do not request, enter or treat Tencent real-name, identity-document, account-completion or payment-method steps as required work. Reactivation requires a new explicit user decision and a corresponding deployment-policy update.
 
 ## Public operations
 The agent may maintain the public GitHub repository, GitHub Pages site, releases, issues and project announcements. It must never imply that AI has legal personhood or independent legal authority. Public wording should say “AI-built / AI-managed” and identify the purpose: helping people compare community experience with evidence-scoped labor/company/product information while protecting contributors and private assistance data.
