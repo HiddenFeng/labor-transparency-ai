@@ -1,7 +1,7 @@
 {
   "version": "0.8.1-rc.2",
   "date": "2026-09-15",
-  "status": "PUBLIC_HIDDENFENG_GITHUB_PAGES_VERCEL_CUSTOM_DOMAIN_CONFIG_MULTI_SOURCE_VERIFIED_NON_CHINA_CLOUD_CANONICAL",
+  "status": "PUBLIC_HIDDENFENG_MULTI_SOURCE_NON_CHINA_CLOUD_CANONICAL_SEMANTIC_SMOKE_HARDENED",
   "git": {
     "branch": "main",
     "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai",
@@ -520,7 +520,7 @@
   },
   "remaining_human_only": [],
   "next_gate": "Routine non-China-cloud production verification, security/regression testing, and product development. Mainland-local acceleration is a separate future privacy/compliance decision only if explicitly re-authorized.",
-  "strongest_claim": "v0.8.1-rc.2 has a privacy-sanitized HiddenFeng GitHub repository with CI/Pages pass, HiddenFeng-owned Vercel production with real Vercel->Cloudflare Worker->D1 E2E evidence, a project-owned custom domain with Vercel Valid Configuration, live Cloudflare Worker+D1/Cron, and bounded multi-source company research. Tencent Cloud/EdgeOne is not required for release; historical EdgeOne PoC evidence is retained only. Stable Mainland-China service is not claimed.",
+  "strongest_claim": "v0.8.1-rc.2 has a privacy-sanitized HiddenFeng GitHub repository, live Vercel/custom-domain frontend, Cloudflare Worker+D1/Cron, bounded multi-source research, and a Tencent-free canonical deployment. Semantic external smoke now verifies product/API semantics, security headers, secure cookies, exact canonical CORS origins, rejection of retired EdgeOne origins, and fallback availability. Stable Mainland-China service remains unclaimed.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -547,15 +547,61 @@
     "network_boundary": "Current local network cannot directly reach Vercel or workers.dev even though Vercel control-plane verification and project deployment are Ready. This is recorded as a path limitation, not evidence that production is down.",
     "tencent_edgeone_required": false,
     "github_external_public_smoke": {
-      "run_id": 34990314561,
+      "run_id": 34993519201,
+      "run_attempt": 2,
       "status": "PASS",
-      "commit": "4fcec03"
+      "commit": "eacf6ab"
     },
     "github_release_candidate_ci": {
-      "run_id": 34990314526,
+      "run_id": 34993519215,
       "status": "PASS",
-      "commit": "4fcec03"
+      "commit": "eacf6ab"
     },
-    "strongest_reachability_claim": "GitHub-hosted external smoke passed the custom-domain root/API, Vercel fallback root/API, Cloudflare Worker health, and GitHub Pages fallback on commit 4fcec03. This supports global public reachability from that external network; it does not establish a Mainland-China SLA."
+    "strongest_reachability_claim": "GitHub-hosted semantic smoke passed project-domain and Vercel HTML/security checks, same-origin API health/config, direct Worker health/config, secure session cookie checks, exact canonical Origin allowlist, rejection of unknown and retired EdgeOne origins, and the GitHub Pages read-only fallback on eacf6ab. This supports the tested global public path; it does not establish a Mainland-China SLA."
+  },
+  "semantic_smoke_hardening": {
+    "timestamp_local": "2026-09-16T00:17:01+08:00",
+    "commit": "eacf6ab886892a20ad286c887aec28bdbc27233c",
+    "release_candidate_ci": {
+      "run_id": 34993519215,
+      "status": "PASS"
+    },
+    "external_semantic_smoke": {
+      "run_id": 34993519201,
+      "attempt_1": {
+        "status": "FAIL_EXPECTED_GUARD_CAUGHT_REAL_STALE_PERMISSION",
+        "finding": "RETIRED_EDGEONE_ORIGIN_PREFLIGHT_RETURNED_204_EXPECTED_403",
+        "retired_origin": "https://labor-transparency-public.edgeone.cool"
+      },
+      "remediation": "PRODUCTION_LTP_ALLOWED_ORIGINS_REDUCED_TO_PROJECT_CUSTOM_DOMAIN_AND_VERCEL_FALLBACK_ONLY",
+      "allowed_origins": [
+        "https://workermanifestfellowship.dpdns.org",
+        "https://workermanifestfellowship.vercel.app"
+      ],
+      "attempt_2": {
+        "status": "PASS"
+      },
+      "verified_contracts": [
+        "PRIMARY_HTML_PRODUCT_MARKER_AND_SECURITY_HEADERS",
+        "PRIMARY_SAME_ORIGIN_HEALTH_AND_CONFIG_CLOUDFLARE_D1",
+        "VERCEL_FALLBACK_HTML_AND_SAME_ORIGIN_API",
+        "WORKER_DIRECT_HEALTH_AND_CONFIG",
+        "HTTPONLY_SECURE_SAMESITE_STRICT_SESSION_COOKIE",
+        "PRIMARY_AND_VERCEL_ORIGINS_EXACTLY_ALLOWED",
+        "UNKNOWN_ORIGIN_REJECTED_403",
+        "RETIRED_EDGEONE_ORIGINS_REJECTED_403",
+        "GITHUB_PAGES_READ_ONLY_FALLBACK"
+      ]
+    },
+    "local_regression": {
+      "python_unittest": "PASS_291",
+      "sites_app_node": "PASS_20",
+      "cloudflare_backend_node": "PASS_2",
+      "public_smoke_contract": "PASS_4",
+      "frontend_privacy_audit": "PASS_0_FORBIDDEN_MATCHES",
+      "cloudflare_worker_d1_local_integration": "PASS_CORS_CSRF_D1_RESTART_PERSISTENCE_CONCURRENT_WRITES_4",
+      "release_package": "PASS_238_SOURCE_FILES_PLUS_MANIFEST"
+    },
+    "mainland_boundary": "External PASS proves the tested global public path and security contracts from GitHub-hosted infrastructure; it does not establish a Mainland-China SLA."
   }
 }
