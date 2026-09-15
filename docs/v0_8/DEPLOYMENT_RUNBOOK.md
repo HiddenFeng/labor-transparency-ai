@@ -28,7 +28,7 @@ cp cloudflare-backend/wrangler.production.example.jsonc cloudflare-backend/wrang
 
 ```sh
 export LTP_FRONTEND_ORIGINS='https://www.example.org'
-# 每次 Cron 最多刷新的公司数；默认 2，先小规模运行再按容量调大
+# 每次自动研究 tick 最多处理的公司数；默认 2。新公司由 */5 Cron 优先消费，日更任务做刷新兜底
 export LTP_RESEARCH_MAX_COMPANIES_PER_RUN=2
 # 可选：直接绑定 Worker custom domain
 export LTP_API_DOMAIN='api.example.org'
@@ -86,8 +86,9 @@ export LTP_EDGEONE_SITE=global
 - Cookie 为 HttpOnly/Secure；
 - 允许 Origin 的 CORS 正常；错误 Origin / 缺 CSRF mutation 为 403；
 - 匿名辅导提交 -> Agent -> 私有建议 -> 聚合日报；
-- `/api/research/status` 仅公开聚合状态；`/api/research-agent/*` 必须使用独立 research token；
-- 自动公司研究产生候选后，普通公司 API 不得泄露 raw candidate、案件详情或研究 token；
+- `/api/research/status` 仅公开 queued/collecting/failed/completed 等聚合状态；`/api/research-agent/*` 必须使用独立 research token；
+- 用户新建真实公司后必须立即看到 `QUEUED`，无需后台人工 enqueue；`*/5` Cron 自动消费队列；
+- 自动公司研究产生候选后，普通公司 API 只能返回字段白名单的来源状态/官方链接/候选预览，不得泄露 raw candidate records、案件正文或研究 token；
 - Cron 公司研究出现单一来源 403/429/网络错误时应保留其他来源结果并显式记录来源错误，不能把任务整体伪装成完整成功；
 - D1 重启/新 Worker 版本后数据仍在；
 - 管理 token 不出现在前端包或网络响应；

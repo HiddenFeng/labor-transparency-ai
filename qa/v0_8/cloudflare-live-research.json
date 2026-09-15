@@ -1,11 +1,13 @@
 {
-  "status": "PASS_LIVE_CLOUDFLARE_RESEARCH_CANDIDATE_COLLECTION",
-  "version": "0.8.1-rc.1",
+  "status": "PASS_LIVE_AUTOMATIC_SCHEDULED_COMPANY_RESEARCH_AND_SAFE_DISPLAY_PROJECTION",
+  "version": "0.8.1-rc.2",
   "company": {
-    "id": "co_a7aa5977e0c20f417d",
+    "id": "co_c0a6c5a0c469553faa",
     "name": "Starbucks Corporation",
     "region": "US"
   },
+  "trigger": "USER_CREATE_QUEUED_THEN_5_MIN_CRON_CONSUMER",
+  "researchStatus": "REVIEW_REQUIRED_WITH_SOURCE_GAPS",
   "processedCompanies": 1,
   "candidateCount": 10,
   "sourceErrors": 3,
@@ -18,7 +20,7 @@
     "WIKIDATA": {
       "status": "ERROR",
       "candidateCount": 0,
-      "error": "SOURCE_NETWORK_OR_RUNTIME_ERROR"
+      "error": "SOURCE_TIMEOUT"
     },
     "SEC_EDGAR": {
       "status": "ERROR",
@@ -67,7 +69,8 @@
     }
   },
   "publicProjectionSafe": true,
+  "publicProviderCount": 11,
   "reviewRequired": true,
-  "boundary": "Live Worker collection stores source candidates only. No candidate was auto-bound, approved or published as a company fact.",
+  "boundary": "Live Worker scheduled collection stores and publicly previews bounded source candidates only. No candidate was auto-bound, approved or published as a company fact.",
   "restartPersistence": true
 }

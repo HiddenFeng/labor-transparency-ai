@@ -3,6 +3,8 @@ import {ISSUE_GUIDES, RIGHTS_PRIMER, PUBLIC_CASES, RESOURCE_GROUPS, RESOURCE_DIS
 const runtimeConfig=globalThis.__LTP_CONFIG__||{};
 const API_BASE=String(runtimeConfig.apiBase||'').replace(/\/$/,'');
 const state={csrf:'',companies:[],mine:[],advisory:[],lane:'community_positive',editId:'',reviewToken:'',exportToken:'',resourceGroup:'all',focusIssue:''};
+let researchPollTimer=null;
+let researchPollRemaining=0;
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
@@ -31,6 +33,12 @@ function evidenceLabel(value){
 }
 function statusLabel(value){
   return ({PENDING:'等待复核',REVIEWED:'已复核',VERIFIED:'已验证',REJECTED:'未通过',DISPUTED:'有争议',WITHDRAWN:'已撤回',ADVISED:'已给出建议',RECEIVED:'已收到'})[value]||value;
+}
+function researchStatusLabel(value){
+  return ({QUEUED:'已进入自动采集队列',COLLECTING:'正在自动采集公开来源',REVIEW_REQUIRED:'已采集 · 等待主体绑定/复核',REVIEW_REQUIRED_WITH_SOURCE_GAPS:'已采集 · 部分来源暂不可用',COLLECTION_FAILED:'本轮自动采集失败 · 将自动重试'})[value]||value;
+}
+function researchErrorLabel(value){
+  return ({SOURCE_ACCESS_DENIED:'来源拒绝当前自动访问',SOURCE_RATE_LIMITED:'来源暂时限流',SOURCE_UNAVAILABLE:'来源暂时不可用',SOURCE_NETWORK_OR_RUNTIME_ERROR:'来源网络暂时异常',SOURCE_TIMEOUT:'来源响应超时',SOURCE_CONTENT_TYPE:'来源响应格式变化',SOURCE_JSON_INVALID:'来源数据格式异常',SOURCE_TOO_LARGE:'来源响应超出安全上限'})[value]||'来源暂时不可用';
 }
 function badge(label,kind=''){return text('span',label,`badge ${kind}`)}
 function cardBase(title,subtitle=''){const c=document.createElement('article');c.className='card';c.append(text('h3',title));if(subtitle)c.append(text('small',subtitle));return c}
@@ -143,8 +151,20 @@ async function loadHomeLive(){
   }catch(e){/* home remains useful as static public guide even when API is unavailable */}
 }
 
-async function loadCompanies(){
+function hasActiveCompanyResearch(){return state.companies.some(x=>!x.synthetic&&['QUEUED','COLLECTING'].includes(x.research?.status))}
+function armResearchPolling({reset=false}={}){
+  if(reset)researchPollRemaining=36;
+  if(!hasActiveCompanyResearch()||researchPollRemaining<=0||researchPollTimer)return;
+  researchPollTimer=setTimeout(async()=>{
+    researchPollTimer=null;researchPollRemaining--;
+    try{await loadCompanies({fromPoll:true})}catch{/* normal page actions remain usable when one poll fails */}
+    armResearchPolling();
+  },10000);
+}
+async function loadCompanies({fromPoll=false}={}){
   const d=await api('/api/companies');state.companies=d.items;renderCompanySelect();renderAdvisoryCompanySelect();renderCompanies();
+  if(!fromPoll&&hasActiveCompanyResearch()&&researchPollRemaining===0)researchPollRemaining=36;
+  armResearchPolling();
 }
 function renderCompanySelect(){
   const select=$('#company-select');if(!select)return;select.replaceChildren();
@@ -156,12 +176,58 @@ function renderAdvisoryCompanySelect(){
   for(const co of state.companies){const o=document.createElement('option');o.value=co.id;o.textContent=`${co.name} · ${co.region}`;select.append(o)}
   if([...select.options].some(x=>x.value===current))select.value=current;
 }
+function researchPreviewMeta(preview){
+  const parts=[];
+  if(preview.match==='EXACT_NAME')parts.push('名称完全匹配候选');else parts.push('待核对候选');
+  if(preview.region)parts.push(preview.region);
+  if(preview.ticker)parts.push(`Ticker ${preview.ticker}`);
+  if(preview.jurisdiction)parts.push(`辖区 ${preview.jurisdiction}`);
+  if(preview.entityStatus)parts.push(`实体状态 ${preview.entityStatus}`);
+  if(preview.matches)parts.push(`命中 ${preview.matches} 条公开记录`);
+  if(preview.reference)parts.push(`参考标识 ${preview.reference}`);
+  return parts.join(' · ');
+}
+function researchBlock(co){
+  const r=co.research;
+  if(!r)return text('p','自动公开资料采集尚未进入首轮结果。公司空间可以先使用；生产系统会自动把新公司加入研究队列。','research-summary');
+  const wrap=document.createElement('div');wrap.className='research-block';
+  const head=document.createElement('div');head.className='research-summary';
+  head.append(badge(researchStatusLabel(r.status),['QUEUED','COLLECTING'].includes(r.status)?'pending':'evidence'));
+  if(['QUEUED','COLLECTING'].includes(r.status))head.append(text('span',' 系统会自动处理，无需用户或管理员再次入队。'));
+  else if(r.status==='COLLECTION_FAILED')head.append(text('span',' 公司空间不受影响；失败任务会按重试窗口再次进入自动队列。'));
+  else head.append(text('span',` 本轮 ${r.sourceSuccessCount} 个来源可用 · ${r.candidateCount} 条待核对候选${r.sourceErrorCount?` · ${r.sourceErrorCount} 个来源存在缺口`:''}。候选不会自动变成公司事实。`));
+  wrap.append(head);
+  if(r.providers?.length){
+    const details=document.createElement('details');details.className='research-details';
+    const summary=document.createElement('summary');summary.textContent='查看自动收集的公开来源候选';details.append(summary);
+    const sourceList=document.createElement('div');sourceList.className='research-source-list';
+    for(const provider of r.providers){
+      const row=document.createElement('section');row.className='research-source';
+      const title=document.createElement('div');title.className='research-source-title';
+      title.append(text('strong',provider.source?.sourceOfRecord||provider.provider));
+      title.append(badge(provider.status==='ERROR'?researchErrorLabel(provider.errorCode):`候选 ${provider.candidateCount}`,provider.status==='ERROR'?'negative':''));
+      row.append(title);
+      if(provider.source?.official)row.append(link('打开官方来源',provider.source.official,'research-source-link'));
+      if(provider.previews?.length){
+        const list=document.createElement('ul');list.className='research-preview-list';
+        for(const preview of provider.previews){
+          const li=document.createElement('li');li.append(text('strong',preview.label||'未命名候选'),text('small',researchPreviewMeta(preview)));
+          if(preview.description)li.append(text('span',preview.description));
+          list.append(li);
+        }
+        row.append(list);
+      }else if(provider.status==='OK')row.append(text('p','本轮未找到可展示的名称候选。','meta'));
+      sourceList.append(row);
+    }
+    details.append(sourceList,text('p',r.boundary,'method-note'));wrap.append(details);
+  }
+  return wrap;
+}
 function companyCard(co,{actions=true}={}){
   const c=document.createElement('article');c.className='card company-card';
   const title=document.createElement('div');title.className='company-title-row';title.append(text('strong',co.name),text('small',co.region+(co.synthetic?' · 演示数据':'')));c.append(title);
   const b=document.createElement('div');b.className='badges';b.append(badge(`正向 ${co.positive}`),badge(`负向 ${co.negative}`,'negative'),badge(`参与 ${co.participants}`));c.append(b);
-  if(co.research)c.append(text('p',`公开资料自动收集：${co.research.sourceSuccessCount} 个来源本轮可用 · ${co.research.candidateCount} 条主体/事件候选待复核${co.research.sourceErrorCount?` · ${co.research.sourceErrorCount} 个来源暂时不可用`:''}。这些候选不会自动变成公司事实。`,'research-summary'));
-  else if(!co.synthetic)c.append(text('p','公开资料自动收集尚未完成首轮。公司空间可以先使用，系统会在后台按批次补齐来源候选。','research-summary'));
+  if(!co.synthetic)c.append(researchBlock(co));
   if(co.products.length)c.append(text('p',`公开产品线索：${co.products.map(x=>`${x.title}（${evidenceLabel(x.evidence)}）`).join('、')}`,'company-products'));
   else c.append(text('p','目前没有公开产品线索。没有记录不代表不存在。','company-products'));
   if(actions){const a=document.createElement('div');a.className='card-actions';for(const [dir,label] of [['positive','留下正向反馈'],['negative','留下负向反馈'],[null,'撤回我的反馈']]){const btn=document.createElement('button');btn.className='secondary';btn.textContent=label;btn.dataset.ballot=dir||'';btn.dataset.company=co.id;a.append(btn)}c.append(a)}
@@ -169,12 +235,12 @@ function companyCard(co,{actions=true}={}){
 }
 function renderCompanies(){
   const root=$('#companies');if(!root)return;root.replaceChildren();const q=($('#company-search')?.value||'').trim().toLowerCase();
-  const rows=state.companies.filter(co=>!q||[co.name,co.region,...co.products.map(x=>x.title)].join(' ').toLowerCase().includes(q));
+  const rows=state.companies.filter(co=>!q||[co.name,co.region,...co.products.map(x=>x.title),...(co.research?.providers||[]).flatMap(x=>(x.previews||[]).map(p=>p.label))].join(' ').toLowerCase().includes(q));
   if(!rows.length){root.append(text('p',q?'没有匹配的公司空间。可以尝试换一个名称或地区。':'当前还没有公司空间。创建空间不等于对公司作出好坏判断。','meta'));return}
   rows.forEach(co=>root.append(companyCard(co)));
 }
 async function loadDiscover(){
-  try{await loadCompanies();const d=await api(`/api/showcase?lane=${encodeURIComponent(state.lane)}`);$('#lane-method').textContent=d.method.replace('社区正负','社区正向/负向反馈').replace('E3+具体正向劳动主张','已核对范围与来源的具体正向劳动主张');const root=$('#showcase');root.replaceChildren();if(!d.items.length){root.append(text('p','当前这个分区还没有符合条件的公司。没有记录不代表某家公司好或坏。','meta'));return}for(const x of d.items){const c=companyCard({...x.company,positive:x.positive,negative:x.negative,participants:x.participants,products:x.products},{actions:false});for(const claim of x.verifiedPositiveClaims)c.append(text('p',`有较强证据的正向实践：${claim.title} · ${evidenceLabel(claim.evidence)}`));root.append(c)}}catch(e){toast(e.message,true)}
+  try{await loadCompanies();const d=await api(`/api/showcase?lane=${encodeURIComponent(state.lane)}`);$('#lane-method').textContent=d.method.replace('社区正负','社区正向/负向反馈').replace('E3+具体正向劳动主张','已核对范围与来源的具体正向劳动主张');const root=$('#showcase');root.replaceChildren();if(!d.items.length){root.append(text('p','当前这个分区还没有符合条件的公司。没有记录不代表某家公司好或坏。','meta'));return}for(const x of d.items){const live=state.companies.find(co=>co.id===x.company.id);const c=companyCard({...x.company,positive:x.positive,negative:x.negative,participants:x.participants,products:x.products,research:live?.research||null},{actions:false});for(const claim of x.verifiedPositiveClaims)c.append(text('p',`有较强证据的正向实践：${claim.title} · ${evidenceLabel(claim.evidence)}`));root.append(c)}}catch(e){toast(e.message,true)}
 }
 
 const coverageStatusLabel={
@@ -243,7 +309,7 @@ document.addEventListener('click',async e=>{
 });
 
 $('#company-search')?.addEventListener('input',renderCompanies);
-$('#company-form')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget;const f=new FormData(form);try{const d=await api('/api/companies',{method:'POST',body:{name:String(f.get('name')||''),region:String(f.get('region')||''),website:String(f.get('website')||''),consent:f.get('consent')==='on'}});toast(d.duplicate?'这个公司空间已经存在':'公司空间已创建；这只是讨论与资料容器。');form.reset();await loadCompanies()}catch(err){toast(err.message,true)}});
+$('#company-form')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget;const f=new FormData(form);try{const d=await api('/api/companies',{method:'POST',body:{name:String(f.get('name')||''),region:String(f.get('region')||''),website:String(f.get('website')||''),consent:f.get('consent')==='on'}});const autoQueued=d.researchQueued===true||['QUEUED','COLLECTING'].includes(d.research?.status);toast(d.duplicate?'这个公司空间已经存在；已有研究状态会继续保留。':autoQueued?'公司空间已创建，并已自动进入公开资料采集队列。':'公司空间已创建；当前运行模式未声明自动研究队列。');form.reset();if(autoQueued)researchPollRemaining=36;await loadCompanies();if(autoQueued)armResearchPolling({reset:true})}catch(err){toast(err.message,true)}});
 $('#contribution-form')?.addEventListener('submit',async e=>{e.preventDefault();try{const body=contributionPayload(e.currentTarget);if(state.editId)await api(`/api/contributions/${state.editId}`,{method:'PATCH',body});else await api('/api/contributions',{method:'POST',body});toast(state.editId?'已修改；这条信息重新回到未核实状态':'已作为未核实公开线索保存，后续可进入独立复核。');resetContributionForm();switchTab('mine')}catch(err){toast(err.message,true)}});
 $('#advisory-form')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget;try{const d=await api('/api/advisory',{method:'POST',body:advisoryPayload(form)});showReceipt(d.receiptCode);toast('已经记录。请保存回执码；你的个案正文不会进入公开日报。');form.reset();renderAdvisoryCompanySelect();await loadAdvisory()}catch(err){toast(err.message,true)}});
 $('#advisory-access-form')?.addEventListener('submit',async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const root=$('#advisory-access-result');root.replaceChildren();try{const d=await api('/api/advisory/access',{method:'POST',body:{receiptCode:String(f.get('receiptCode')||'').trim()}});root.append(adviceBlock(d.item));toast('已找到这条匿名辅导')}catch(err){toast(err.message,true)}});

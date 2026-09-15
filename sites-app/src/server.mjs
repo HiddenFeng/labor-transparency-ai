@@ -10,7 +10,7 @@ import {
   advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase
 } from './domain.mjs';
 import {FileStore} from './storage.mjs';
-import {companyResearchCoverage} from './research-status.mjs';
+import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus} from './research-status.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.resolve(__dirname,'../public');
@@ -59,6 +59,7 @@ function sameOrigin(req){
   try { return new URL(origin).host === req.headers.host; } catch { return false; }
 }
 function publicCompanyList(state){
+  const researchByCompany=new Map((state.companyResearch||[]).map(x=>[x.companyId,x]));
   return state.companies.map(company=>{
     const ballots=state.ballots.filter(x=>x.companyId===company.id);
     const products=state.contributions.filter(x=>x.companyId===company.id&&x.kind==='product'&&x.public&&x.status!=='WITHDRAWN'&&x.status!=='REJECTED');
@@ -66,6 +67,7 @@ function publicCompanyList(state){
       positive:ballots.filter(x=>x.direction==='positive').length,
       negative:ballots.filter(x=>x.direction==='negative').length,
       participants:ballots.length,
+      research:publicCompanyResearch(researchByCompany.get(company.id)),
       products:products.map(x=>({id:x.id,title:x.title,evidence:x.evidence,status:x.status,description:x.description}))};
   });
 }
@@ -103,10 +105,11 @@ export async function createAppServer(options={}){
         }
       }
 
-      if (req.method==='GET' && url.pathname==='/api/config') return json(res,200,{version:VERSION,mode:'SITES_READY_LOCAL',csrfToken:csrf,cookieSecure:runtime.secureCookie,capabilities:{companies:true,ballots:true,contributions:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导仅接收非敏感结构化问题；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
+      if (req.method==='GET' && url.pathname==='/api/config') return json(res,200,{version:VERSION,mode:'SITES_READY_LOCAL',csrfToken:csrf,cookieSecure:runtime.secureCookie,capabilities:{companies:true,ballots:true,contributions:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,automaticCompanyResearch:false,scheduledCompanyResearch:false,attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导仅接收非敏感结构化问题；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
       if (req.method==='GET' && url.pathname==='/api/health') return json(res,200,{status:'ok',version:VERSION,storage:'local-file-adapter',attachments:false,anonymousAdvisory:true});
       if (req.method==='GET' && url.pathname==='/api/companies') return json(res,200,{items:publicCompanyList(runtime.store.read())});
       if (req.method==='GET' && url.pathname==='/api/research/coverage') return json(res,200,companyResearchCoverage());
+      if (req.method==='GET' && url.pathname==='/api/research/status') return json(res,200,publicResearchStatus(runtime.store.read()));
       if (req.method==='POST' && url.pathname==='/api/companies') {
         const input=await bodyJson(req); const out=await runtime.store.transaction(s=>addCompany(s,input,owner)); return json(res,200,out);
       }

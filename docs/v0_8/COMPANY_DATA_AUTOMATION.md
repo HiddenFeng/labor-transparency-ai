@@ -1,7 +1,7 @@
 # v0.8.1 自动公司资料研究：来源、流程与边界
 
-日期：2026-09-15
-状态：`MULTI_SOURCE_CANDIDATE_COLLECTION_IMPLEMENTED / GLOBAL_COVERAGE_PARTIAL`
+日期：2026-09-16
+状态：`USER_CREATE_AUTO_QUEUE_AND_SAFE_PUBLIC_PREVIEW_IMPLEMENTED / GLOBAL_COVERAGE_PARTIAL`
 
 ## 1. 目标不是“爬到越多越好”
 
@@ -12,7 +12,7 @@
 3. **独立复核**：核对来源、时间、适用范围、程序状态、许可和隐私；
 4. **发布**：只有经过复核的具体事实才进入研究快照。候选本身不进入公开事实层。
 
-因此，“没查到”仍然是未知，不写成“不存在”；“查到案件”也不自动写成“公司违法”。Cloudflare Worker 的自动任务默认只把候选保存在受限后台，公众只看到“本轮可用来源数 / 候选数 / 来源错误数 / 是否待复核”等聚合状态。
+因此，“没查到”仍然是未知，不写成“不存在”；“查到案件”也不自动写成“公司违法”。Cloudflare Worker 会把完整 raw candidate 保存在受限 `companyResearch` 记录中；普通公众只看到研究生命周期、来源可用/失败状态、候选数量、官方来源链接，以及每个来源最多 3 条经过字段白名单裁剪的“待核对候选”预览。案件正文、raw `records` 和后台复核材料不进入普通公司 API。
 
 ## 2. 当前来源矩阵
 
@@ -94,15 +94,18 @@ Wikidata 的官网字段只用于公开入口。正式劳动申诉渠道高度�
 
 ### Cloudflare Worker：线上自动候选收集
 
-生产候选新增独立 `LTP_RESEARCH_AGENT_TOKEN`。Worker/Cron 可以按批次选择最久未更新的真实公司空间，查询允许的公开来源，并把 `companyResearch` 候选状态存进 D1。网络请求在 D1 写锁之外进行，最终一次事务合并结果，避免长时间持有全局写锁。
+用户通过 `POST /api/companies` 新建真实公司空间时，Worker 会在同一个 D1 事务中创建 `QUEUED` 研究记录；不要求管理员再次入队。独立的 `*/5 * * * *` Cron 优先消费 `QUEUED` / 未研究公司，日更 Cron 保留为刷新兜底。消费时状态进入 `COLLECTING`，完成后为 `REVIEW_REQUIRED` 或 `REVIEW_REQUIRED_WITH_SOURCE_GAPS`；意外运行时失败记为 `COLLECTION_FAILED`。网络请求始终在 D1 写锁之外进行。
 
 默认约束：
 
 - 每次最多 `LTP_RESEARCH_MAX_COMPANIES_PER_RUN` 个公司，默认 2；
 - synthetic demo 不进入研究；
-- 原始候选仅在 research-agent 受限接口可见；
-- `/api/research/status` 和普通公司列表只公开聚合状态；
-- `LTP_RESEARCH_SCHEDULED=true` 时 Cron 才执行公司候选收集；
+- 原始候选与 raw source records 仅在 research-agent 受限接口可见；
+- 普通公司列表只公开安全研究投影：生命周期、来源状态/数量、官方来源链接和每来源最多 3 条字段白名单候选预览；
+- `/api/research/status` 公开 queued / collecting / failed / completed 等聚合状态；
+- `LTP_RESEARCH_SCHEDULED=true` 时 `*/5` Cron 自动消费新队列，`0 1 * * *` 日更任务继续承担兜底刷新；
+- 完成记录默认 24 小时后才重新进入刷新候选；失败记录 30 分钟后可重试，`COLLECTING` 超过 15 分钟视为陈旧 lease；
+- 每个外部来源请求有 8 秒硬超时，来源串行执行以减少对公共 API 的突发压力；单来源超时/403/429 不丢弃其他来源结果；
 - 研究 Agent token 与 advisory/review/export token 完全分离；
 - 来源错误统一成有限错误码，不能把第三方内部 reference、网络异常正文或凭据回给公众。
 
@@ -112,7 +115,7 @@ Wikidata 的官网字段只用于公开入口。正式劳动申诉渠道高度�
 
 `qa/v0_8/live-company-intelligence.json`：在 QA 中显式指定 Starbucks 的 GLEIF/Wikidata/NLRB/OSHA/WHD/F-7/OLMS/USAspending 绑定后生成 `DRAFT_READY` 多源草稿。该动作没有批准或发布草稿。
 
-`qa/v0_8/cloudflare-live-research.json`：真实本地 Wrangler Worker + D1 + 真实外网候选收集；验证了受限 Agent、D1 持久化、服务重启恢复和公开聚合投影。个别来源在本地 Miniflare 出站路径可出现运行时错误，系统按单来源失败处理，不把整个公司研究任务伪装成成功或丢弃其他来源结果。
+`qa/v0_8/cloudflare-live-research.json`：真实本地 Wrangler Worker + D1 + 真实外网自动链验证；流程为“用户创建 Starbucks Corporation -> `QUEUED` -> 模拟生产 `*/5` Cron -> 多源采集 -> 普通 `/api/companies` 安全候选预览 -> Worker 重启恢复”。真实网络中的超时、403/429 等按单来源缺口记录，不把整个公司研究任务伪装成完整成功，也不丢弃已经成功的来源。
 
 `qa/v0_8/company-intelligence-audit.json`：确定性 fixture 对所有主要 provider 完成 `candidate -> explicit binding -> draft -> independent review -> release -> reopen persistence` 审计。
 

@@ -13,5 +13,5 @@
     "LTP_RESEARCH_SCHEDULED": "true",
     "LTP_RESEARCH_MAX_COMPANIES_PER_RUN": "2"
   },
-  "triggers": {"crons": ["0 1 * * *"]}
+  "triggers": {"crons": ["*/5 * * * *", "0 1 * * *"]}
 }

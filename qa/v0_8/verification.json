@@ -1,7 +1,7 @@
 {
   "version": "0.8.1-rc.2",
   "date": "2026-09-15",
-  "status": "PUBLIC_HIDDENFENG_MULTI_SOURCE_NON_CHINA_CLOUD_CANONICAL_SEMANTIC_SMOKE_HARDENED",
+  "status": "PUBLIC_HIDDENFENG_MULTI_SOURCE_NON_CHINA_CLOUD_CANONICAL_AUTO_RESEARCH_CANDIDATE_VERIFIED",
   "git": {
     "branch": "main",
     "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai",
@@ -519,8 +519,8 @@
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
   "remaining_human_only": [],
-  "next_gate": "Routine non-China-cloud production verification, security/regression testing, and product development. Mainland-local acceleration is a separate future privacy/compliance decision only if explicitly re-authorized.",
-  "strongest_claim": "v0.8.1-rc.2 has a privacy-sanitized HiddenFeng GitHub repository, live Vercel/custom-domain frontend, Cloudflare Worker+D1/Cron, bounded multi-source research, and a Tencent-free canonical deployment. Semantic external smoke now verifies product/API semantics, security headers, secure cookies, exact canonical CORS origins, rejection of retired EdgeOne origins, and fallback availability. Stable Mainland-China service remains unclaimed.",
+  "next_gate": "Deploy the user-added-company automatic research build to the canonical Cloudflare/Vercel production path, then verify a real public company create -> QUEUED -> scheduled collection -> safe public display cycle and remove QA records.",
+  "strongest_claim": "v0.8.1-rc.2 retains the verified non-China-cloud public deployment and now has a locally/prod-like verified user-company automatic research loop: public company creation durably queues research, a bounded 5-minute scheduled consumer collects independent source candidates with per-source failure isolation/timeouts, D1 persists lifecycle/results, and the ordinary company API/UI exposes only allowlisted candidate previews. Production deployment of this new capability is the remaining gate; candidates are not auto-published as facts.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -603,5 +603,73 @@
       "release_package": "PASS_238_SOURCE_FILES_PLUS_MANIFEST"
     },
     "mainland_boundary": "External PASS proves the tested global public path and security contracts from GitHub-hosted infrastructure; it does not establish a Mainland-China SLA."
+  },
+  "user_added_company_auto_research": {
+    "status": "IMPLEMENTED_LOCAL_AND_PRODUCTION_LIKE_VERIFIED_PRODUCTION_DEPLOYMENT_PENDING",
+    "change_record": "docs/v0_8/CHANGE-v0.8.1-user-company-auto-research.md",
+    "lifecycle": [
+      "QUEUED",
+      "COLLECTING",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED_WITH_SOURCE_GAPS",
+      "COLLECTION_FAILED"
+    ],
+    "trigger": "POST /api/companies atomically creates QUEUED for new non-synthetic companies; */5 Worker cron consumes queued work; daily cron remains refresh fallback",
+    "refresh_retry": {
+      "completed_refresh_hours": 24,
+      "failed_retry_minutes": 30,
+      "stale_collecting_minutes": 15,
+      "source_timeout_seconds": 8,
+      "provider_execution": "SERIAL_BOUNDED"
+    },
+    "safe_public_projection": {
+      "max_previews_per_provider": 3,
+      "includes": [
+        "lifecycle",
+        "aggregate counts",
+        "provider status",
+        "safe source error code",
+        "official source link",
+        "allowlisted candidate preview fields"
+      ],
+      "excludes": [
+        "raw provider records",
+        "case detail objects",
+        "private research-agent queue material",
+        "research token",
+        "automatic fact claims"
+      ]
+    },
+    "deterministic_tests": {
+      "cloudflare_research_and_lifecycle": "PASS_7",
+      "sites_app_full": "PASS_21",
+      "python_full": "PASS_291"
+    },
+    "worker_d1_http_integration": {
+      "status": "PASS",
+      "automaticResearchQueue": true,
+      "queuedCompanies": 5,
+      "concurrentCompanyWrites": 4,
+      "restartPersistence": true
+    },
+    "bounded_live_scheduled_test": {
+      "status": "PASS_LIVE_AUTOMATIC_SCHEDULED_COMPANY_RESEARCH_AND_SAFE_DISPLAY_PROJECTION",
+      "trigger": "USER_CREATE_QUEUED_THEN_5_MIN_CRON_CONSUMER",
+      "company_name": "Starbucks Corporation",
+      "research_status": "REVIEW_REQUIRED_WITH_SOURCE_GAPS",
+      "candidate_count": 10,
+      "source_success_count": 8,
+      "source_error_count": 3,
+      "source_errors": {
+        "WIKIDATA": "SOURCE_TIMEOUT",
+        "SEC_EDGAR": "SOURCE_ACCESS_DENIED",
+        "USA_SPENDING": "SOURCE_NETWORK_OR_RUNTIME_ERROR"
+      },
+      "public_projection_safe": true,
+      "public_provider_count": 11,
+      "restart_persistence": true
+    },
+    "evidence_boundary": "Source search results remain candidates. Entity binding and independent review are still required before a candidate can support a published company fact.",
+    "production_gate": "PENDING_CANONICAL_CLOUDFLARE_VERCEL_DEPLOY_AND_REAL_PUBLIC_CREATE_CRON_DISPLAY_QA"
   }
 }

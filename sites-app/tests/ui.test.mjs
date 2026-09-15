@@ -29,6 +29,20 @@ test('responsive/reduced-motion CSS is present for public-facing interactions',a
   assert.match(css,/\.story-rail/);
 });
 
+test('company UI exposes automatic research lifecycle and safe candidate-detail presentation',async()=>{
+  const js=await fs.readFile(new URL('../public/app.js',import.meta.url),'utf8');
+  const css=await fs.readFile(new URL('../public/styles.css',import.meta.url),'utf8');
+  assert.match(js,/已进入自动采集队列/);
+  assert.match(js,/正在自动采集公开来源/);
+  assert.match(js,/查看自动收集的公开来源候选/);
+  assert.match(js,/候选不会自动变成公司事实/);
+  assert.match(js,/researchPollRemaining=36/);
+  assert.match(js,/公司空间已创建，并已自动进入公开资料采集队列/);
+  assert.doesNotMatch(js,/\.records\b/);
+  assert.match(css,/\.research-details/);
+  assert.match(css,/\.research-preview-list/);
+});
+
 test('system demo records never enter the operational review queue',()=>{
   const state=seedState();
   assert.equal(state.contributions.length,1);

@@ -1,0 +1,98 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import {emptyState} from '../../sites-app/src/domain.mjs';
+import {publicCompanyResearch,publicResearchStatus} from '../../sites-app/src/research-status.mjs';
+import {createCompanyWithAutoResearch,runResearchBatch} from '../src/worker.mjs';
+import {selectResearchCompanies} from '../src/company-research.mjs';
+import {mockResearchFetch,makeResearchFetch} from './research-fixture.mjs';
+
+class MemoryStore{
+  constructor(state=emptyState()){this.state=structuredClone(state);}
+  async read(){return structuredClone(this.state);}
+  async transaction(mutator){const draft=structuredClone(this.state);const out=await mutator(draft);this.state=draft;return out;}
+}
+const COMPANY={name:'ACME CORPORATION',region:'US',website:'https://example.com',consent:true};
+
+test('new public company is durably queued then automatically collected and safely projected',async()=>{
+  const store=new MemoryStore();
+  const created=await createCompanyWithAutoResearch(store,COMPANY,'owner-fixture',{now:new Date('2026-09-16T00:00:00Z')});
+  assert.equal(created.duplicate,false);
+  assert.equal(created.researchQueued,true);
+  assert.equal(created.research.status,'QUEUED');
+  let state=await store.read();
+  assert.equal(state.companyResearch.length,1);
+  assert.equal(state.companyResearch[0].status,'QUEUED');
+  assert.equal(selectResearchCompanies(state,2,{now:new Date('2026-09-16T00:01:00Z')})[0].id,created.company.id);
+
+  const result=await runResearchBatch(store,{LTP_RESEARCH_MAX_COMPANIES_PER_RUN:'2'},{fetchImpl:mockResearchFetch,now:new Date('2026-09-16T00:01:00Z')});
+  assert.equal(result.attemptedCompanies,1);
+  assert.equal(result.processedCompanies,1);
+  assert.equal(result.failedCompanies,0);
+  state=await store.read();
+  const record=state.companyResearch[0];
+  assert.equal(record.status,'REVIEW_REQUIRED');
+  assert.ok(record.candidateCount>=11);
+  assert.equal(record.sourceErrorCount,0);
+
+  const projection=publicCompanyResearch(record);
+  assert.equal(projection.status,'REVIEW_REQUIRED');
+  assert.ok(projection.providers.some(x=>x.provider==='GLEIF'&&x.previews.some(p=>p.label==='ACME CORPORATION')));
+  assert.ok(projection.providers.some(x=>x.provider==='NLRB_CASES'&&x.previews.some(p=>p.label==='Acme Corporation')));
+  const serialized=JSON.stringify(projection);
+  assert.equal(serialized.includes('case_number'),false);
+  assert.equal(serialized.includes('records'),false);
+  assert.equal(serialized.includes('reason_closed'),false);
+  assert.match(projection.boundary,/候选/);
+  assert.equal(publicResearchStatus(state).completed,1);
+});
+
+test('duplicate company creation is idempotent and does not fan out a second queue record',async()=>{
+  const store=new MemoryStore();
+  const first=await createCompanyWithAutoResearch(store,COMPANY,'owner-a',{now:new Date('2026-09-16T00:00:00Z')});
+  const second=await createCompanyWithAutoResearch(store,COMPANY,'owner-b',{now:new Date('2026-09-16T00:02:00Z')});
+  assert.equal(first.company.id,second.company.id);
+  assert.equal(second.duplicate,true);
+  assert.equal(second.researchQueued,false);
+  const state=await store.read();
+  assert.equal(state.companies.length,1);
+  assert.equal(state.companyResearch.length,1);
+  assert.equal(state.companyResearch[0].status,'QUEUED');
+});
+
+test('one provider failure survives as an explicit source gap while other results remain displayable',async()=>{
+  const store=new MemoryStore();
+  await createCompanyWithAutoResearch(store,COMPANY,'owner',{now:new Date('2026-09-16T01:00:00Z')});
+  const result=await runResearchBatch(store,{LTP_RESEARCH_MAX_COMPANIES_PER_RUN:'1'},{fetchImpl:makeResearchFetch({failProviders:['OSHA_ENFORCEMENT']}),now:new Date('2026-09-16T01:01:00Z')});
+  assert.equal(result.processedCompanies,1);
+  assert.equal(result.sourceErrors,1);
+  const record=(await store.read()).companyResearch[0];
+  assert.equal(record.status,'REVIEW_REQUIRED_WITH_SOURCE_GAPS');
+  assert.equal(record.providers.find(x=>x.provider==='OSHA_ENFORCEMENT').status,'ERROR');
+  assert.equal(record.providers.find(x=>x.provider==='GLEIF').status,'OK');
+  const projection=publicCompanyResearch(record);
+  assert.equal(projection.providers.find(x=>x.provider==='OSHA_ENFORCEMENT').errorCode,'SOURCE_UNAVAILABLE');
+  assert.ok(projection.providers.find(x=>x.provider==='GLEIF').previews.length>0);
+});
+
+test('scheduler prioritizes queued work, skips fresh completed work, and recovers stale collecting leases',()=>{
+  const now=new Date('2026-09-16T02:00:00Z');
+  const state={companies:[
+    {id:'queued',name:'Queued',synthetic:false,createdAt:'2026-09-16T01:50:00Z'},
+    {id:'fresh',name:'Fresh',synthetic:false,createdAt:'2026-09-15T00:00:00Z'},
+    {id:'stale',name:'Stale',synthetic:false,createdAt:'2026-09-15T00:00:00Z'}
+  ],companyResearch:[
+    {id:'research_queued',companyId:'queued',status:'QUEUED',queuedAt:'2026-09-16T01:50:00Z'},
+    {id:'research_fresh',companyId:'fresh',status:'REVIEW_REQUIRED',collectedAt:'2026-09-16T01:00:00Z'},
+    {id:'research_stale',companyId:'stale',status:'COLLECTING',startedAt:'2026-09-16T01:30:00Z',queuedAt:'2026-09-16T01:20:00Z'}
+  ]};
+  const selected=selectResearchCompanies(state,3,{now});
+  assert.deepEqual(selected.map(x=>x.id),['queued','stale']);
+});
+
+test('production config includes a frequent bounded research consumer and the daily fallback cron',async()=>{
+  const text=await fs.readFile(new URL('../wrangler.production.example.jsonc',import.meta.url),'utf8');
+  assert.match(text,/\*\/5 \* \* \* \*/);
+  assert.match(text,/0 1 \* \* \*/);
+  assert.match(text,/LTP_RESEARCH_MAX_COMPANIES_PER_RUN/);
+});

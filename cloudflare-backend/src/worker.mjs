@@ -5,9 +5,9 @@ import {
   reviewQueue, createReceiptCode, hashReceiptCode, addAdvisoryCase, listOwnAdvisory, accessAdvisoryByReceipt,
   advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase
 } from '../../sites-app/src/domain.mjs';
-import {companyResearchCoverage} from '../../sites-app/src/research-status.mjs';
+import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus} from '../../sites-app/src/research-status.mjs';
 import {D1StateStore} from './d1-store.mjs';
-import {collectCompanyResearch,selectResearchCompanies,mergeCompanyResearch,publicResearchStatus} from './company-research.mjs';
+import {collectCompanyResearch,selectResearchCompanies,mergeCompanyResearch,queueCompanyResearch,markCompanyResearchStarted,markCompanyResearchFailed} from './company-research.mjs';
 
 const BACKEND_VERSION='0.8.1-rc.2';
 const COOKIE='ltp_session';
@@ -73,7 +73,7 @@ function publicCompanyList(state){
       positive:ballots.filter(x=>x.direction==='positive').length,
       negative:ballots.filter(x=>x.direction==='negative').length,
       participants:ballots.length,
-      research:research?{status:research.status,collectedAt:research.collectedAt,candidateCount:research.candidateCount||0,sourceSuccessCount:research.sourceSuccessCount||0,sourceErrorCount:research.sourceErrorCount||0,reviewRequired:Boolean(research.reviewRequired)}:null,
+      research:publicCompanyResearch(research),
       products:products.map(x=>({id:x.id,title:x.title,evidence:x.evidence,status:x.status,description:x.description}))};
   });
 }
@@ -106,14 +106,48 @@ function mutationAuthorized(request,url,env,ctx){
 }
 function storeFor(env){return new D1StateStore(env.DB,{seed:String(env.LTP_SEED||'false')==='true'});}
 
-async function runResearchBatch(store,env,{maxCompanies,fetchImpl=fetch}={}){
+export async function createCompanyWithAutoResearch(store,input,owner,{now=new Date()}={}){
+  return store.transaction(state=>{
+    const out=addCompany(state,input,owner);
+    const queued=queueCompanyResearch(state,out.company,{now});
+    return {...out,researchQueued:queued.queued,research:publicCompanyResearch(queued.record)};
+  });
+}
+
+export async function runResearchForCompany(store,companyId,{fetchImpl=fetch,now=new Date()}={}){
+  const claim=await store.transaction(state=>{
+    const company=(state.companies||[]).find(x=>x.id===companyId&&!x.synthetic);
+    if(!company)return {started:false,reason:'COMPANY_NOT_FOUND'};
+    const lifecycle=markCompanyResearchStarted(state,company,{now});
+    if(!lifecycle)return {started:false,reason:'ALREADY_COLLECTING'};
+    return {started:true,company:structuredClone(company),queuedAt:lifecycle.queuedAt,startedAt:lifecycle.startedAt};
+  });
+  if(!claim.started)return {processed:false,companyId,reason:claim.reason};
+  try{
+    const record=await collectCompanyResearch(claim.company,{fetchImpl,now});
+    record.queuedAt=claim.queuedAt;record.startedAt=claim.startedAt;
+    await store.transaction(state=>mergeCompanyResearch(state,[record]));
+    return {processed:true,companyId,candidateCount:record.candidateCount||0,sourceErrors:record.sourceErrorCount||0,status:record.status};
+  }catch(err){
+    await store.transaction(state=>markCompanyResearchFailed(state,companyId,{now,error:'COLLECTION_RUNTIME_FAILED'}));
+    return {processed:false,companyId,failed:true,reason:'COLLECTION_RUNTIME_FAILED'};
+  }
+}
+
+export async function runResearchBatch(store,env,{maxCompanies,fetchImpl=fetch,now=new Date()}={}){
   const before=await store.read();
   const max=Math.max(1,Math.min(10,Number(maxCompanies||env.LTP_RESEARCH_MAX_COMPANIES_PER_RUN||2)));
-  const companies=selectResearchCompanies(before,max);
-  const records=[];
-  for(const company of companies)records.push(await collectCompanyResearch(company,{fetchImpl}));
-  if(records.length)await store.transaction(state=>mergeCompanyResearch(state,records));
-  return {processedCompanies:records.length,companyIds:records.map(x=>x.companyId),candidateCount:records.reduce((n,x)=>n+(x.candidateCount||0),0),sourceErrors:records.reduce((n,x)=>n+(x.sourceErrorCount||0),0)};
+  const companies=selectResearchCompanies(before,max,{now});
+  const results=[];
+  for(const company of companies)results.push(await runResearchForCompany(store,company.id,{fetchImpl,now}));
+  return {
+    attemptedCompanies:companies.length,
+    processedCompanies:results.filter(x=>x.processed).length,
+    failedCompanies:results.filter(x=>x.failed).length,
+    companyIds:results.filter(x=>x.processed).map(x=>x.companyId),
+    candidateCount:results.reduce((n,x)=>n+(x.candidateCount||0),0),
+    sourceErrors:results.reduce((n,x)=>n+(x.sourceErrors||0),0)
+  };
 }
 
 async function handleApi(request,env){
@@ -132,7 +166,7 @@ async function handleApi(request,env){
   else if(request.method==='GET'&&url.pathname==='/api/companies') response=json(request,env,200,{items:publicCompanyList(await store.read())});
   else if(request.method==='GET'&&url.pathname==='/api/research/coverage') response=json(request,env,200,companyResearchCoverage());
   else if(request.method==='GET'&&url.pathname==='/api/research/status') response=json(request,env,200,publicResearchStatus(await store.read()));
-  else if(request.method==='POST'&&url.pathname==='/api/companies'){const input=await bodyJson(request);response=json(request,env,200,await store.transaction(s=>addCompany(s,input,ctx.owner)));}
+  else if(request.method==='POST'&&url.pathname==='/api/companies'){const input=await bodyJson(request);response=json(request,env,200,await createCompanyWithAutoResearch(store,input,ctx.owner));}
   else {
     const ballot=url.pathname.match(/^\/api\/companies\/([^/]+)\/ballot$/);
     const contribution=url.pathname.match(/^\/api\/contributions\/([^/]+)$/);
@@ -212,12 +246,20 @@ export default {
     ctx.waitUntil((async()=>{
       try{
         const store=await storeFor(env).init();
+        const cron=String(controller.cron||'');
+        if(cron==='*/5 * * * *'){
+          if(String(env.LTP_RESEARCH_SCHEDULED||'false')==='true'){
+            const research=await runResearchBatch(store,env);
+            console.log(JSON.stringify({event:'company_research_queue_tick_complete',attemptedCompanies:research.attemptedCompanies,processedCompanies:research.processedCompanies,failedCompanies:research.failedCompanies,candidateCount:research.candidateCount,sourceErrors:research.sourceErrors}));
+          }
+          return;
+        }
         const day=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(controller.scheduledTime));
         const out=await store.transaction(s=>runAdvisoryAgent(s,{day,timeZone:'Asia/Shanghai',agent:'cloudflare-daily-advisory-agent'}));
         console.log(JSON.stringify({event:'advisory_daily_complete',day,processedCount:out.processedCount,receivedCount:out.report.receivedCount,advisedCount:out.report.advisedCount,pendingCount:out.report.pendingCount}));
         if(String(env.LTP_RESEARCH_SCHEDULED||'false')==='true'){
           const research=await runResearchBatch(store,env);
-          console.log(JSON.stringify({event:'company_research_daily_complete',processedCompanies:research.processedCompanies,candidateCount:research.candidateCount,sourceErrors:research.sourceErrors}));
+          console.log(JSON.stringify({event:'company_research_daily_fallback_complete',attemptedCompanies:research.attemptedCompanies,processedCompanies:research.processedCompanies,failedCompanies:research.failedCompanies,candidateCount:research.candidateCount,sourceErrors:research.sourceErrors}));
         }
       }catch(err){console.error(JSON.stringify({event:'scheduled_processing_failed',error:'scheduled_processing_failed'}));throw err;}
     })());

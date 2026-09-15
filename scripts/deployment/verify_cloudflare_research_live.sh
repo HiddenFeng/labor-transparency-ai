@@ -29,7 +29,7 @@ start(){
   npx wrangler dev --local --persist-to "$STATE" --test-scheduled --port "$PORT" \
     --env-file "$ENVFILE" --log-level warn \
     --var LTP_ENV:development --var "LTP_ALLOWED_ORIGINS:$ORIGIN" --var LTP_COOKIE_SECURE:false --var LTP_SEED:false \
-    --var LTP_RESEARCH_SCHEDULED:false --var LTP_RESEARCH_MAX_COMPANIES_PER_RUN:1 \
+    --var LTP_RESEARCH_SCHEDULED:true --var LTP_RESEARCH_MAX_COMPANIES_PER_RUN:1 \
     >"$LOG" 2>&1 &
   PID=$!
   for _ in $(seq 1 120); do
@@ -51,14 +51,20 @@ async function req(path,{method='GET',body,token,originHeader=origin}={}){
  const r=await fetch(base+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)});const set=r.headers.get('set-cookie');if(set)cookie=set.split(';')[0];return {status:r.status,data:await r.json()};
 }
 const cfg=await req('/api/config');assert.equal(cfg.status,200);assert.equal(cfg.data.version,'0.8.1-rc.2');csrf=cfg.data.csrfToken;
-const created=await req('/api/companies',{method:'POST',body:{name:'Starbucks Corporation',region:'US',website:'https://www.starbucks.com/',consent:true}});assert.equal(created.status,200);const companyId=created.data.company.id;
-const run=await req('/api/research-agent/run',{method:'POST',token:'research-live-local-only',originHeader:'',body:{maxCompanies:1}});assert.equal(run.status,200,JSON.stringify(run.data));assert.equal(run.data.processedCompanies,1);assert.ok(run.data.candidateCount>0);
-const queue=await req('/api/research-agent/queue',{token:'research-live-local-only'});assert.equal(queue.status,200);assert.equal(queue.data.items.length,1);const record=queue.data.items[0];assert.equal(record.companyId,companyId);assert.equal(record.status,'REVIEW_REQUIRED');
+const created=await req('/api/companies',{method:'POST',body:{name:'Starbucks Corporation',region:'US',website:'https://www.starbucks.com/',consent:true}});assert.equal(created.status,200);assert.equal(created.data.researchQueued,true);assert.equal(created.data.research.status,'QUEUED');const companyId=created.data.company.id;
+const scheduled=await fetch(base+'/__scheduled?cron='+encodeURIComponent('*/5 * * * *'));assert.equal(scheduled.status,200);
+let queue,record;
+for(let i=0;i<120;i++){
+  queue=await req('/api/research-agent/queue',{token:'research-live-local-only'});assert.equal(queue.status,200);assert.equal(queue.data.items.length,1);record=queue.data.items[0];
+  if(!['QUEUED','COLLECTING'].includes(record.status))break;
+  await new Promise(resolve=>setTimeout(resolve,250));
+}
+assert.equal(record.companyId,companyId);assert.ok(['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(record.status),record.status);assert.ok(record.candidateCount>0);
 const providers=Object.fromEntries(record.providers.map(x=>[x.provider,{status:x.status,candidateCount:x.candidateCount,error:x.error||null}]));
 for(const p of ['GLEIF','WIKIDATA','NLRB_CASES','OSHA_ENFORCEMENT','DOL_WHD','FMCS_F7','NLRB_VOLUNTARY_RECOGNITION','FMCS_WORK_STOPPAGES','OLMS_LM20','USA_SPENDING'])assert.ok(providers[p],p);
 const publicStatus=await req('/api/research/status');assert.equal(publicStatus.status,200);assert.equal(publicStatus.data.companiesTracked,1);assert.equal(publicStatus.data.pendingReview,1);
-const companies=await req('/api/companies');const publicCompany=companies.data.items.find(x=>x.id===companyId);assert.ok(publicCompany?.research);assert.equal(publicCompany.research.reviewRequired,true);const publicJson=JSON.stringify(publicCompany);assert.equal(publicJson.includes('sampleRecord'),false);assert.equal(publicJson.includes('externalId'),false);assert.equal(publicJson.includes('case_number'),false);
-const result={status:'PASS_LIVE_CLOUDFLARE_RESEARCH_CANDIDATE_COLLECTION',version:cfg.data.version,company:{id:companyId,name:'Starbucks Corporation',region:'US'},processedCompanies:run.data.processedCompanies,candidateCount:run.data.candidateCount,sourceErrors:run.data.sourceErrors,providers,publicProjectionSafe:true,reviewRequired:true,boundary:'Live Worker collection stores source candidates only. No candidate was auto-bound, approved or published as a company fact.'};
+const companies=await req('/api/companies');const publicCompany=companies.data.items.find(x=>x.id===companyId);assert.ok(publicCompany?.research);assert.equal(publicCompany.research.reviewRequired,true);assert.ok(publicCompany.research.providers.length>=10);assert.ok(publicCompany.research.providers.some(x=>x.previews?.length));const publicJson=JSON.stringify(publicCompany);assert.equal(publicJson.includes('sampleRecord'),false);assert.equal(publicJson.includes('externalId'),false);assert.equal(publicJson.includes('case_number'),false);assert.equal(publicJson.includes('records'),false);
+const result={status:'PASS_LIVE_AUTOMATIC_SCHEDULED_COMPANY_RESEARCH_AND_SAFE_DISPLAY_PROJECTION',version:cfg.data.version,company:{id:companyId,name:'Starbucks Corporation',region:'US'},trigger:'USER_CREATE_QUEUED_THEN_5_MIN_CRON_CONSUMER',researchStatus:record.status,processedCompanies:1,candidateCount:record.candidateCount,sourceErrors:record.sourceErrorCount,providers,publicProjectionSafe:true,publicProviderCount:publicCompany.research.providers.length,reviewRequired:true,boundary:'Live Worker scheduled collection stores and publicly previews bounded source candidates only. No candidate was auto-bound, approved or published as a company fact.'};
 await fs.writeFile(out,JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
 NODE
 BEFORE="$(cat "$OUT")"

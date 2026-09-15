@@ -30,3 +30,60 @@ export const COMPANY_RESEARCH_COVERAGE = Object.freeze({
 });
 
 export function companyResearchCoverage(){return structuredClone(COMPANY_RESEARCH_COVERAGE);}
+
+const PUBLIC_CANDIDATE_LIMIT=3;
+const PUBLIC_RESEARCH_BOUNDARY='自动采集结果只作为待核对来源候选展示；未完成主体绑定和独立复核前不会自动升级成公司事实。';
+
+function bounded(value,max){return String(value??'').slice(0,max);}
+function publicCandidatePreview(provider,candidate){
+  const base={
+    label:bounded(candidate?.label,180),
+    region:bounded(candidate?.region,80),
+    match:candidate?.match==='EXACT_NAME'?'EXACT_NAME':'CANDIDATE'
+  };
+  if(provider==='GLEIF')return {...base,reference:bounded(candidate?.externalId,40),jurisdiction:bounded(candidate?.jurisdiction,40),entityStatus:bounded(candidate?.entityStatus,30),registrationStatus:bounded(candidate?.registrationStatus,30)};
+  if(provider==='WIKIDATA')return {...base,reference:bounded(candidate?.externalId,40),description:bounded(candidate?.description,220)};
+  if(provider==='SEC_EDGAR')return {...base,reference:bounded(candidate?.externalId,20),ticker:bounded(candidate?.ticker,24)};
+  return {...base,matches:Number(candidate?.matches||0)||undefined,context:bounded(candidate?.matchBasis,220)};
+}
+
+export function publicCompanyResearch(record){
+  if(!record)return null;
+  return {
+    status:bounded(record.status||'QUEUED',48),
+    queuedAt:record.queuedAt||null,
+    startedAt:record.startedAt||null,
+    collectedAt:record.collectedAt||null,
+    failedAt:record.failedAt||null,
+    candidateCount:Number(record.candidateCount||0),
+    exactNameCandidateCount:Number(record.exactNameCandidateCount||0),
+    sourceSuccessCount:Number(record.sourceSuccessCount||0),
+    sourceErrorCount:Number(record.sourceErrorCount||0),
+    reviewRequired:record.reviewRequired!==false,
+    providers:(record.providers||[]).map(provider=>({
+      provider:bounded(provider.provider,64),
+      status:provider.status==='ERROR'?'ERROR':'OK',
+      candidateCount:Number(provider.candidateCount||0),
+      errorCode:provider.status==='ERROR'?bounded(provider.error||'SOURCE_UNAVAILABLE',80):null,
+      source:provider.source?{sourceOfRecord:bounded(provider.source.sourceOfRecord,120),official:bounded(provider.source.official,300)}:null,
+      previews:(provider.candidates||[]).slice(0,PUBLIC_CANDIDATE_LIMIT).map(candidate=>publicCandidatePreview(provider.provider,candidate))
+    })),
+    boundary:PUBLIC_RESEARCH_BOUNDARY
+  };
+}
+
+export function publicResearchStatus(state){
+  const records=Array.isArray(state?.companyResearch)?state.companyResearch:[];
+  const completed=records.filter(x=>['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(x.status));
+  return {
+    companiesTracked:records.length,
+    queued:records.filter(x=>x.status==='QUEUED').length,
+    collecting:records.filter(x=>x.status==='COLLECTING').length,
+    failed:records.filter(x=>x.status==='COLLECTION_FAILED').length,
+    completed:completed.length,
+    lastCollectedAt:completed.map(x=>x.collectedAt).filter(Boolean).sort().at(-1)||null,
+    pendingReview:completed.filter(x=>x.reviewRequired).length,
+    sourceErrors:completed.reduce((n,x)=>n+Number(x.sourceErrorCount||0),0),
+    boundary:PUBLIC_RESEARCH_BOUNDARY
+  };
+}
