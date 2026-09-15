@@ -545,6 +545,17 @@
       "github": "HTTP_200"
     },
     "network_boundary": "Current local network cannot directly reach Vercel or workers.dev even though Vercel control-plane verification and project deployment are Ready. This is recorded as a path limitation, not evidence that production is down.",
-    "tencent_edgeone_required": false
+    "tencent_edgeone_required": false,
+    "github_external_public_smoke": {
+      "run_id": 34990314561,
+      "status": "PASS",
+      "commit": "4fcec03"
+    },
+    "github_release_candidate_ci": {
+      "run_id": 34990314526,
+      "status": "PASS",
+      "commit": "4fcec03"
+    },
+    "strongest_reachability_claim": "GitHub-hosted external smoke passed the custom-domain root/API, Vercel fallback root/API, Cloudflare Worker health, and GitHub Pages fallback on commit 4fcec03. This supports global public reachability from that external network; it does not establish a Mainland-China SLA."
   }
 }
