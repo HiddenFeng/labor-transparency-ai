@@ -73,6 +73,8 @@ test('contribution UI is low-friction with progressive disclosure and daily feed
   assert.match(html,/今天平台更新了什么/);assert.match(html,/一句话就够/);assert.match(html,/每天 18:00/);assert.match(html,/19:00/);
   assert.doesNotMatch(html,/name="rights"/);assert.doesNotMatch(html,/name="shareConsent"/);assert.doesNotMatch(html,/name="rightsNote"/);
   assert.match(js,/rights:sourceUrl\?'reference_only':'own_summary'/);assert.match(js,/\/api\/community-feedback/);assert.match(js,/\/api\/announcements/);
+  assert.doesNotMatch(js,/await loadCompanies\(\);await loadHomeLive\(\)/,'boot must not reload company options twice and race a user selection');
+  assert.match(js,/const current=select\.value;select\.replaceChildren\(\)/);assert.match(js,/if\(current&&\[\.\.\.select\.options\]\.some\(x=>x\.value===current\)\)select\.value=current/);
   assert.match(css,/\.progressive-details/);assert.match(css,/\.feedback-quick-grid/);assert.match(css,/\.official-relation-card/);
 });
 

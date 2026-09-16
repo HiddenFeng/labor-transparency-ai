@@ -144,7 +144,7 @@ async function boot(){
   try{
     const cfg=await api('/api/config');state.csrf=cfg.csrfToken;
     const rt=$('#runtime-status');if(rt)rt.textContent=`服务已连接 · ${cfg.version} · 匿名辅导开启 / 敏感私密信息与附件关闭`;
-    await loadCompanies();await loadHomeLive();
+    await loadHomeLive();
     const requested=(location.hash||'#home').slice(1);
     if(requested.startsWith('company/')){switchTab('discover',{scroll:false});const companyId=decodeURIComponent(requested.slice('company/'.length));if(companyId)await openCompanyDetail(companyId,{updateHash:true});}
     else if($(`[data-panel="${CSS.escape(requested)}"]`))switchTab(requested,{scroll:false});
@@ -176,9 +176,10 @@ async function loadCompanies({fromPoll=false}={}){
   armResearchPolling();
 }
 function renderCompanySelect(){
-  const select=$('#company-select');if(!select)return;select.replaceChildren();
+  const select=$('#company-select');if(!select)return;const current=select.value;select.replaceChildren();
   if(!state.companies.length){const o=document.createElement('option');o.value='';o.textContent='请先创建公司空间';select.append(o)}
   for(const co of state.companies){const o=document.createElement('option');o.value=co.id;o.textContent=`${co.name} · ${co.region}`;select.append(o)}
+  if(current&&[...select.options].some(x=>x.value===current))select.value=current;
 }
 function renderAdvisoryCompanySelect(){
   const select=$('#advisory-company-select');if(!select)return;const current=select.value;select.replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent='不关联 / 暂不明确';select.append(empty);
