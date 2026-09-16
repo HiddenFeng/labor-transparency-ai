@@ -1380,6 +1380,40 @@
       "Stable Mainland-China access SLA remains unclaimed.",
       "The first scheduled 18:00/19:00 occurrences were still future at acceptance time; schedule installation/readiness is verified without claiming those future runs already completed."
     ],
-    "production_gate": "PASS_RUNTIME_DEPLOYED_CI_E2E_SMOKE_BROWSER_D1_SCHEDULE_READY"
+    "production_gate": "PASS_RUNTIME_DEPLOYED_CI_E2E_SMOKE_BROWSER_D1_SCHEDULE_READY",
+    "browse_to_contribute_patch": {
+      "status": "PASS_PRODUCTION",
+      "behavior_sha": "594b0a5fd7eb31425f258f12db6cd90335ba6733",
+      "frontend_deployment": "https://workermanifestfellowship-3e7hwlusu-hiddenfeng.vercel.app",
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "behavior": [
+        "company cards expose direct contextual contribution action",
+        "company detail exposes direct contextual contribution action",
+        "company detail exposes canonical public #company/<id> share link",
+        "contextual contribution keeps the exact company preselected through async refresh"
+      ],
+      "privacy": "share URL contains origin + pathname + encoded public company id fragment only; no cookie/session/csrf/query state",
+      "production_browser": {
+        "real_company": "星宇股份有限公司",
+        "company_id": "co_c9d8bc0f46b2f597da",
+        "card_to_contribute_preselection": "PASS",
+        "detail_actions_visible": "PASS",
+        "console_errors": 0,
+        "network_errors": 0,
+        "page_errors": 0,
+        "production_mutation_performed": false
+      },
+      "validation": {
+        "sites_api_ui": "PASS_25_OF_25",
+        "github_release_ci": {
+          "run_id": 35072367319,
+          "status": "PASS"
+        },
+        "github_public_smoke": {
+          "run_id": 35072367267,
+          "status": "PASS"
+        }
+      }
+    }
   }
 }
