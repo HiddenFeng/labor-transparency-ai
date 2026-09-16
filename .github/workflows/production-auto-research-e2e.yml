@@ -49,6 +49,8 @@ jobs:
           assert.equal(config.capabilities?.unattendedCompanyIntelligence,true);
           assert.equal(config.capabilities?.companyResearchQueue,true);
           assert.equal(config.capabilities?.scheduledCompanyResearch,true);
+          assert.equal(config.capabilities?.officialReferences,true);
+          assert.equal(config.capabilities?.officialRelations,true);
           const cookie=(configResponse.headers.get('set-cookie')||'').split(';')[0];
           assert.match(cookie,/^ltp_session=/);
           assert.match(config.csrfToken,/^[a-f0-9]{64}$/);
@@ -127,6 +129,8 @@ jobs:
           assert.equal(detail.company?.id,companyId);assert.equal(detail.community?.negative,1);assert.equal(detail.community?.participants,1);
           assert.equal(detail.research?.intelligence?.dossier?.status,'REFERENCE_READY');
           assert.ok(detail.research?.intelligence?.timeline?.length>0,'company dossier must expose the safe event timeline');
+          assert.ok(Array.isArray(detail.officialReferences),'company dossier must expose the official-reference lane even when empty');
+          assert.ok(Array.isArray(detail.officialRelations),'company dossier must expose the official-relation lane even when empty');
           assert.ok(Array.isArray(detail.contributions?.products));assert.ok(Array.isArray(detail.contributions?.labourClaims));
           scan(detail);
 
