@@ -1,4 +1,5 @@
 name: Manual production auto-research E2E
+# v0.8.4-rc.2 post-deploy acceptance trigger: current production must satisfy this exact workflow.
 
 on:
   workflow_dispatch:
