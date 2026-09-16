@@ -120,6 +120,16 @@ export const RESOURCE_GROUPS = [
     ]
   },
   {
+    id:'cn',
+    label:'中国大陆',
+    items:[
+      {name:'全国人社政务服务平台（12333）',kind:'劳动关系 / 人社办事入口',for:'工资、劳动关系、争议调解、地方人社服务窗口与办事指南',description:'由人力资源和社会保障部主办，可从“劳动关系”、办事指南和地方服务窗口继续查找所在地的人社办理渠道。',url:'https://www.12333.gov.cn/',tags:['pay','hours','contract','retaliation']},
+      {name:'全国就业公共服务平台 · 劳动关系服务',kind:'劳动争议调解 / 合同示范文本',for:'希望在线查找劳动人事争议调解申请、进展查询或劳动合同示范文本',description:'人社部门全国就业公共服务平台提供劳动关系服务入口，包括劳动人事争议调解申请、进展查询和合同示范文本等事项。',url:'https://www.12333.gov.cn/job/',tags:['pay','hours','contract','retaliation']},
+      {name:'中国法律服务网（12348）',kind:'公共法律服务 / 法律援助导航',for:'需要法律咨询、法律援助机构或其他公共法律服务入口',description:'司法部中国法律服务网提供公共法律服务导航及咨询入口；是否符合援助或受理条件，以所在地司法行政机关和平台说明为准。',url:'https://www.12348.gov.cn/',tags:['pay','contract','discrimination','retaliation','other']},
+      {name:'全国根治欠薪线索反映平台',kind:'欠薪线索正式反映',for:'被拖欠工资，希望把欠薪线索提交给正式政府处理渠道',description:'国务院相关欠薪线索入口会要求实名并把线索流转至属地人社部门核实处理。这里是外部正式渠道；不要把需要提交给该平台的身份证明、联系方式等敏感信息复制到本站。',url:'https://liuyan.www.gov.cn/hudong/atwls/rmqz.htm',tags:['pay']}
+    ]
+  },
+  {
     id:'us',
     label:'美国',
     items:[

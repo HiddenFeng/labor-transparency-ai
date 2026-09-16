@@ -779,8 +779,8 @@
     }
   },
   "remaining_human_only": [],
-  "next_gate": "v0.8.7 SSE+SZSE listing depth is production-accepted. Shift from exchange-source expansion to a product-level usability/operational audit of the main worker flows; fix concrete defects first. BSE or other source depth should proceed only where it materially improves a currently visible evidence gap through a documented public official path.",
-  "strongest_claim": "v0.8.7-rc.1 is production-deployed and accepted. China company investigation now exposes strict SSE and SZSE listing/disclosure coverage while keeping legal identity, official references/relations/events and community claims separate. The real 星宇股份有限公司 remains fail-closed with zero forced exchange reference because neither provider produces an exact full-name match for the current company-space name. GitHub CI 35099735327 and public smoke 35099735221 pass; Worker 975f2c7a-bfd6-41fc-a355-230f2a3b29e6 and Vercel e1dtesru0 are live; production still has one real company, zero pending feedback and no official reference/relation/event rows, with existing community evidence preserved.",
+  "next_gate": "v0.8.8 production-usability candidate is locally validated. Require GitHub CI, deploy only after CI passes, then verify Mainland China worker resources and primary browser flows; run production auto-research E2E manually after deployment and clean exact QA state before final acceptance.",
+  "strongest_claim": "v0.8.7-rc.1 remains accepted production. A v0.8.8-rc.1 usability-hardening candidate fixes a real release-operations defect (production auto-research E2E racing source pushes before deployment) and adds actionable Mainland China official worker-help routes to the China-first public product. Local public-smoke 9/9, sites-app 30/30, backend 24/24, Worker+D1 restart, build and privacy gates pass; production is unchanged until release CI and deployment complete.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -1860,5 +1860,38 @@
       "Stable Mainland-China access SLA remains unclaimed."
     ],
     "production_gate": "PASS_DEPLOYED_BROWSER_D1_CI_E2E_SMOKE_CHINA_SOURCE_BINDING_AND_GAPS"
+  },
+  "candidate_v088_production_usability_hardening": {
+    "status": "PASS_LOCAL_RELEASE_CANDIDATE_NOT_PRODUCTION_DEPLOYED",
+    "runtime_version": "0.8.8-rc.1",
+    "base_production_head": "ba38dfb",
+    "change_record": "docs/v0_8/CHANGE-v0.8.8-production-usability-hardening.md",
+    "production_audit": {
+      "canonical_runtime_observed_before_candidate": "0.8.7-rc.1",
+      "browser_primary_surfaces": "PASS_HOME_COMPANY_ADVISORY_CONTRIBUTE_MINE_RESOURCES_ZERO_PAGE_NETWORK_CONSOLE_ERRORS",
+      "defect_predeploy_e2e_race": {
+        "run_id": 35099735387,
+        "status": "FAIL_RETAINED",
+        "head_sha": "d402a1e1e79ab1dec555ee52e26a4f2d324c72e3",
+        "reason": "workflow auto-triggered from source push before matching v0.8.7 runtime deployment; job failed during first production step before QA company creation",
+        "fix": "workflow_dispatch only + expected version derived from sites-app/package.json + always-run artifact/cleanup-boundary steps"
+      },
+      "defect_china_help_gap": {
+        "before": "resource groups were global/US/UK/Australia/EU only",
+        "fix": "added 中国大陆 group with 12333, 12333 labour-service, 12348, and official national wage-arrears route",
+        "privacy_boundary": "formal external channels may request sensitive identity/contact data; site copy explicitly says not to paste that data into Labor Transparency"
+      }
+    },
+    "local_validation": {
+      "public_smoke_contract": "PASS_9_OF_9",
+      "sites_app": "PASS_30_OF_30",
+      "cloudflare_backend": "PASS_24_OF_24",
+      "worker_d1_http_restart": "PASS_0.8.8_RC1",
+      "sites_build": "PASS_17_FILES_0.8.8_RC1",
+      "frontend_privacy_audit": "PASS_0_FORBIDDEN_MATCHES",
+      "git_diff_check": "PASS"
+    },
+    "production_state": "UNCHANGED_V087_ACCEPTED",
+    "next_release_gate": "GitHub CI -> deploy Cloudflare/Vercel -> canonical browser/resource validation -> manual post-deploy production auto-research E2E -> precise QA cleanup -> production acceptance"
   }
 }

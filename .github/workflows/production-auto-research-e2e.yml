@@ -1,12 +1,9 @@
 name: Manual production auto-research E2E
-# v0.8.7-rc.1 post-deploy acceptance trigger: current production must satisfy this exact workflow.
+# Post-deploy acceptance only. Do not auto-run this against the previous
+# production version immediately after a source push.
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/production-auto-research-e2e.yml'
 
 permissions:
   contents: read
@@ -39,12 +36,13 @@ jobs:
           const runCode=Number(runId).toString(36);
           const region=`US · production-auto-research-e2e-${runCode}`;
           const companyName='Starbucks Corporation';
+          const expectedVersion=JSON.parse(await fs.readFile('sites-app/package.json','utf8')).version;
 
           const configResponse=await fetch(`${origin}/api/config`,{headers:{Origin:origin}});
           assert.equal(configResponse.status,200,'production config must be reachable');
           const config=await configResponse.json();
           assert.equal(config.mode,'CLOUDFLARE_WORKER_D1');
-          assert.equal(config.version,'0.8.7-rc.1');
+          assert.equal(config.version,expectedVersion,'manual E2E must run only after this checked-out release is deployed');
           assert.equal(config.capabilities?.automaticCompanyResearch,true);
           assert.equal(config.capabilities?.unattendedCompanyIntelligence,true);
           assert.equal(config.capabilities?.companyResearchQueue,true);
@@ -166,12 +164,14 @@ jobs:
           NODE
 
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: production-auto-research-e2e-${{ github.run_id }}
           path: /tmp/production-auto-research-e2e.json
           retention-days: 7
 
       - name: Cleanup boundary
+        if: always()
         run: |
           echo 'This workflow intentionally has no Cloudflare credentials.'
           echo 'The project automation operator must delete only the QA company, companyResearch and QA ballot records from production D1 after capturing the artifact.'

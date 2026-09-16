@@ -1,0 +1,62 @@
+{
+  "status": "PASS_WITH_TWO_FIXES_REQUIRED",
+  "date": "2026-09-16",
+  "canonical": "https://workermanifestfellowship.dpdns.org",
+  "runtimeBeforeCandidate": "0.8.7-rc.1",
+  "browser": {
+    "home": {
+      "usable": true,
+      "pageErrors": 0,
+      "networkErrors": 0,
+      "consoleErrors": 0
+    },
+    "companyDiscoveryAndDetail": {
+      "usable": true,
+      "pageErrors": 0,
+      "networkErrors": 0,
+      "consoleErrors": 0
+    },
+    "anonymousAdvisory": {
+      "usable": true,
+      "companyOptionsPopulateAfterAsyncLoad": true,
+      "pageErrors": 0,
+      "networkErrors": 0,
+      "consoleErrors": 0
+    },
+    "contribution": {
+      "usable": true,
+      "companySelectPresent": true,
+      "lowFrictionFieldsPresent": true,
+      "pageErrors": 0,
+      "networkErrors": 0,
+      "consoleErrors": 0
+    },
+    "mySubmissions": {
+      "usable": true,
+      "emptyStateSafe": true,
+      "pageErrors": 0,
+      "networkErrors": 0,
+      "consoleErrors": 0
+    },
+    "resources": {
+      "usable": true,
+      "preCandidateGroups": [
+        "global",
+        "us",
+        "uk",
+        "au",
+        "eu"
+      ],
+      "missingMainlandChina": true,
+      "pageErrors": 0,
+      "networkErrors": 0,
+      "consoleErrors": 0
+    }
+  },
+  "operationalFinding": {
+    "productionAutoResearchRun": 35099735387,
+    "result": "FAIL_PREDEPLOY_VERSION_RACE",
+    "qaCompanyCreated": false,
+    "fix": "manual-post-deploy-only workflow"
+  }
+}

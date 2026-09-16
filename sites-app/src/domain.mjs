@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 
-export const VERSION = '0.8.7-rc.1';
+export const VERSION = '0.8.8-rc.1';
 export const EVIDENCE_LEVELS = new Set(['E0','E1','E2','E3','E4','E5']);
 export const KINDS = new Set(['product','brand','company_fact','relationship','labour_claim','product_claim']);
 export const DIMENSIONS = new Set(['pay','rest','hours','safety','contract','respect','representation','other']);

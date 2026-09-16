@@ -99,7 +99,7 @@ export LTP_EDGEONE_SITE=global
 
 外部可达性由 `.github/workflows/public-smoke.yml` 独立验证。该 workflow 可手动运行，并每日从 GitHub-hosted runner 做**语义级**检查，而不是只看 HTTP 200：项目自有域名与 Vercel 回退必须返回劳动透明计划页面及安全响应头；两条同源 `/api` 路径和 Worker 直连必须返回 `cloudflare-d1` health/config 契约；Session Cookie 必须保持 `HttpOnly; Secure; SameSite=Strict`；项目域名和 Vercel origin 必须被 Worker 精确允许，未知 origin 与已经退出生产链的 EdgeOne origin 必须返回 403；GitHub Pages 继续验证为只读回退。它的 PASS 只证明所测外部网络上的全球公网路径及这些安全/语义契约成立，不等于中国大陆 SLA。
 
-自动公司研究的**生产 Queue 验收**使用 workflow `.github/workflows/production-auto-research-e2e.yml`。它从项目自有域名创建一条唯一 QA 公司，要求响应立即得到 `QUEUED + researchDispatch=QUEUE_SENT`，随后只轮询普通公开公司 API，在短窗口内等待真实 Cloudflare Queue Consumer 推进到 `AUTO_READY*`，并验证 `reviewRequired=false`、机器参考事实、来源信号、身份状态及字段白名单。该 workflow 不持有 Cloudflare 凭据，也不手工调用 research-agent run/review，因此证明用户路径确实由系统自动驱动。每次验收完成后只删除该 QA 公司及其 research 记录；已有真实用户记录必须保留并单独观察迁移结果。
+自动公司研究的**生产 Queue 验收**使用 workflow `.github/workflows/production-auto-research-e2e.yml`。它是部署完成后的手动验收，不得因代码 push 自动触发：否则新提交还未部署时会错误地拿旧生产版本与新代码版本比较。workflow 从当前 checkout 的 `sites-app/package.json` 读取期望版本，先确认生产 runtime 已匹配，再从项目自有域名创建一条唯一 QA 公司，要求响应立即得到 `QUEUED + researchDispatch=QUEUE_SENT`，随后只轮询普通公开公司 API，在短窗口内等待真实 Cloudflare Queue Consumer 推进到 `AUTO_READY*`，并验证 `reviewRequired=false`、机器参考事实、来源信号、身份状态及字段白名单。该 workflow 不持有 Cloudflare 凭据，也不手工调用 research-agent run/review，因此证明用户路径确实由系统自动驱动。每次成功验收捕获证据后，operator 必须精准删除该 QA company / companyResearch / ballot；任何非 QA 公司与真实社区数据都必须保留。失败时也要保留失败证据与清理边界，不得把预部署版本竞争误记成产品运行失败。
 
 ## 6. 当前已上线地址与无人值守边界
 

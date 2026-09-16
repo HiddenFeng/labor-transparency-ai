@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {validateHtml,validateHealth,validateConfig,validateResearchHealth,validateCompanyDetail,validateSecurityHeaders,selectDossierCompany} from './public_smoke.mjs';
 
 function response(status=200,headers={}){return new Response('',{status,headers});}
@@ -63,4 +64,13 @@ test('public smoke ignores concurrent queued QA company and selects an already c
 test('security validator rejects framing regression',()=>{
   const bad=response(200,{...security,'x-frame-options':'SAMEORIGIN'});
   assert.throws(()=>validateSecurityHeaders('root',bad,{csp:true}),/x-frame-options/);
+});
+
+test('production auto-research E2E is post-deploy manual-only and release-version aware',()=>{
+  const workflow=fs.readFileSync('.github/workflows/production-auto-research-e2e.yml','utf8');
+  assert.match(workflow,/workflow_dispatch:/);
+  assert.doesNotMatch(workflow,/\n\s+push:\s*\n/,'production E2E must not race a source push before deployment');
+  assert.match(workflow,/sites-app\/package\.json/,'expected production version must come from the checked-out release');
+  assert.match(workflow,/manual E2E must run only after this checked-out release is deployed/);
+  assert.match(workflow,/if: always\(\)/,'cleanup/evidence boundary must still run on a failed E2E');
 });
