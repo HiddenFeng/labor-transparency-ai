@@ -5,11 +5,12 @@ Operate Labor Transparency as a non-commercial public-interest project with the 
 
 ## Inputs of record
 1. `AGENTS.md`
-2. current user/project requirements
-3. `qa/v0_8/verification.json` for the current independent-deployment candidate; `qa/v0_7/verification.json` and `qa/v0_6/verification.json` are historical baselines
-4. `docs/v0_8/CHANGE-v0.8.1-tencent-free-deployment.md`, `docs/v0_8/CHANGE-v0.8.1-user-company-auto-research.md`, `docs/v0_8/CHANGE-v0.8.2-autonomous-company-intelligence.md`, `docs/v0_8/CHANGE-v0.8.3-usable-company-dossiers.md`, `docs/v0_8/OFFICIAL_SOURCE_EXPANSION_0.8.4.md`, `docs/v0_8/CHANGE-v0.8.5-china-enterprise-investigation.md`, `docs/v0_8/DAILY_AGENT_OPERATIONS.md`, and the current v0.8 deployment/privacy/company-research docs
-5. current code/tests/runtime evidence
-6. optional local `HANDOFF_MANIFEST.json` only as a historical v0.6 integrity/handoff baseline when present; it must not override current v0.8 evidence
+2. `PROJECT_CONTINUITY.md` — the single live cold-start/continuity summary; every volatile fact it points to must be reverified
+3. current user/project requirements
+4. `qa/v0_8/verification.json` latest accepted section plus the current release/change record; `qa/v0_7/verification.json` and `qa/v0_6/verification.json` are historical baselines
+5. the current v0.8 path routed by `PROJECT_CONTINUITY.md`, including the v0.8.1 deployment/privacy + Queue changes, v0.8.2 autonomous intelligence, v0.8.3 usable dossiers, v0.8.4 community growth, v0.8.5 China investigation, v0.8.6 SSE, v0.8.7 SZSE, v0.8.8 production usability hardening, and `docs/v0_8/DAILY_AGENT_OPERATIONS.md` when relevant
+6. current Git/code/tests/runtime evidence
+7. if a local `HANDOFF_MANIFEST.json` is present, treat it only as a pointer to current continuity and archived integrity material; archived manifests must never override current v0.8 evidence
 
 ## Normal loop
 `recover current truth -> select highest-value necessary work -> implement -> run decisive checks -> synchronize docs/evidence -> commit -> publish only if current release gate permits`

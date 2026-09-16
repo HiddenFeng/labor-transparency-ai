@@ -1,4 +1,4 @@
-# 劳动透明计划 · 稳定版 v0.6.1 / 独立交互部署 v0.8.3 RC
+# 劳动透明计划 · 当前生产基线 v0.8.8-rc.1
 
 **公开源码：** https://github.com/HiddenFeng/labor-transparency-ai
 
@@ -10,13 +10,15 @@
 
 **运营方式：** AI 制作、AI Agent 日常管理；非商业公益用途。
 
-本版在v0.5公开企业资料研究基础上增加**可恢复批次调度、队列健康、逾期状态通知、资料发布通知与升级保护**。当前工作目录已经位于用户Mac：`<project-root>`。本轮进一步完成了独立静态前端、Cloudflare Worker + D1、真实公网部署、多源公司资料候选收集和中国大陆访问路径 PoC。GitHub Pages 仍保留为 v0.6.1 只读镜像；v0.8.1 的 Vercel + Cloudflare 全球交互链已经真实上线。
+当前生产已经从早期本地/只读原型演进为 **Vercel 静态前端 + Cloudflare Worker/D1 + Cloudflare Queue/Cron + 项目 DNS** 的独立公网系统。`v0.8.8-rc.1` 已通过核心用户流程浏览器验收、发布 CI、部署后自动公司研究 E2E、精确 QA 清理和公开语义 smoke，作为当前审计过的可用基线。中国大陆稳定访问 SLA 仍不声明；腾讯云/EdgeOne 仅保留历史 PoC，不是当前完成条件。
 
-平台仍遵循：E0讨论可正常传播；热度与证据等级分离；公司资料不完整不阻止已经开放的社区或私密求助能力；社区贡献不能绕过既有证据/再分发规则，自动公司资料则只允许通过当前失败关闭机器信任规则发布窄范围参考事实、开放知识上下文、来源信号与事件候选。
+平台始终遵循：E0讨论可正常传播；热度与证据等级分离；公司资料不完整不阻止已开放的社区或匿名帮助能力；社区贡献、官方来源引用/关系/事件和自动研究输出属于不同证据 lane。缺失或零结果保持未知/范围受限，不能被写成“没有问题”或“没有关系”。
 
-## v0.8.3 无人值守公司资料页 + 地区适配研究
+新 Agent / 新对话接管时，**先读 `AGENTS.md` 与 `PROJECT_CONTINUITY.md`**，再验证当前 Git、版本、`qa/v0_8/verification.json` 最新接受证据和必要的真实运行状态。不要从旧 README 段落、历史白皮书、旧 QA 或旧 handoff 推断当前 NEXT_GATE。
 
-当前 `main` / GitHub Pages 继续保持 **v0.6.1 只读稳定版**；v0.8.3 在既有无人值守 Queue/D1 链上把“自动采集”提升成真正可读的公司资料产品：列表只显示资料摘要，详情页把社区声音、机器参考事实、开放知识上下文、公共记录事件候选、用户贡献、资料缺口、来源覆盖与更新时间分层展示。研究会按司法区选择适用来源；例如非美国公司不会再运行 SEC/NLRB/OSHA/WHD/FMCS/OLMS/USAspending 并误报覆盖，而是明确记为 `NOT_APPLICABLE`。Wikidata 支持地区语言、公司简称和结构化字段；唯一公司简称 + 国家一致 + 明确组织结构信号可成为低中置信的 `OPEN_KNOWLEDGE_CONTEXT`，但不会升级成法律实体事实。Python back office 继续仅作可选离线审计，不是网站运行依赖。
+## 当前 v0.8.8 核心能力
+
+当前公司资料产品建立在无人值守 Queue/D1 链上：列表提供简洁摘要，详情页将社区声音、机器参考事实、开放知识上下文、官方 reference/relation/event、公共记录事件候选、用户贡献、资料缺口、来源覆盖与更新时间分层展示。研究按司法区选择适用来源；不适用来源明确为 `NOT_APPLICABLE`。China-first 路径已经加入 source-scoped 调查索引、严格 SSE/SZSE 主体绑定、NMPA/SAMR/CSRC bounded collectors、北京时间 18:00/19:00 日常运营，以及中国大陆官方劳动/法律/欠薪帮助资源。Python back office 继续只作可选离线审计，不是生产可用性依赖。
 
 - 公司讨论空间与去重正/负社区评价；
 - 产品、公司资料、关系、劳动实践和产品体验的公开贡献；
@@ -57,6 +59,9 @@ node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 
 ## 先读
 
+- `PROJECT_CONTINUITY.md`：当前唯一项目接管/连续性摘要；包含用户目标、需求演化、当前状态、反复错误、治理写回规则和 NEXT_GATE。
+- `AGENTS.md`：所有 Agent 的强制冷启动协议与不可破坏 invariants。
+- `docs/v0_8/CHANGE-v0.8.8-production-usability-hardening.md` + `qa/v0_8/verification.json` 最新接受段：当前生产接受证据。
 - `docs/v0_8/DEPLOYMENT_ARCHITECTURE.md`：v0.8 独立前后端架构与安全边界。
 - `docs/v0_8/MAINLAND_CHINA_ACCESS.md`：中国大陆访问边界，以及不依赖中国云实名/支付信息的当前策略。
 - `docs/v0_8/PUBLIC_IDENTITY_PRIVACY.md`：公网开发者身份与部署隐私策略。
@@ -70,7 +75,7 @@ node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 - `qa/v0_6/browser/result.json`：实际浏览器阻断记录。
 - `qa/v0_6/live-source.json`：实际GLEIF联网检查结果。
 
-v0.1—v0.7文档保留演进历史；账号隐私迁移后，旧 GitHub Pages 阶段镜像不再作为当前公开入口。当前公开交互服务以 v0.8.2 的 Vercel/Cloudflare 公网部署和 `qa/v0_8` 证据为准；项目域名已在 Vercel 配置验证。中国大陆稳定访问仍未建立，也不再以腾讯云账户补全、实名、支付方式或 EdgeOne 接入作为项目完成条件；若未来重新选择中国大陆本地/加速服务，将作为单独的隐私与合规决策重新评估。
+v0.1—v0.7文档保留演进历史；账号隐私迁移后，旧 GitHub Pages 阶段镜像不再作为当前公开入口。当前公开交互服务以 v0.8.8 的 Vercel/Cloudflare 公网部署、`PROJECT_CONTINUITY.md` 和 `qa/v0_8` 最新接受证据为准；项目域名已在 Vercel 配置验证。中国大陆稳定访问仍未建立，也不再以腾讯云账户补全、实名、支付方式或 EdgeOne 接入作为项目完成条件；若未来重新选择中国大陆本地/加速服务，将作为单独的隐私与合规决策重新评估。
 
 ## 启动
 
@@ -142,9 +147,9 @@ python scripts/runtime_backup.py restore --backup /安全位置/ltp-backup-001 -
 
 只有确实需要替换现有数据库时再加 `--replace`；脚本会先创建安全备份再替换。当前备份仍是**本地明文运维备份**：附件本体在数据库内加密，但案件事实等数据库字段并未整体加密，因此生产环境仍需独立的异地备份加密、密钥托管、保留策略和恢复权限控制。
 
-## 生产入口候选（尚未公网部署）
+## 历史 v0.6 Python 生产候选（非当前公网主链）
 
-本地验证仍使用 `app.server:app`；未来公网服务必须使用独立的 `app.production:app`，并先通过失败关闭的生产配置预检：
+以下内容保留用于解释 v0.6 的本地安全/恢复基线，不是当前 v0.8.8 Cloudflare Worker/D1 生产部署方案。该历史链本地验证使用 `app.server:app`，其独立 Python 生产候选使用 `app.production:app` 与失败关闭的生产配置预检：
 
 ```sh
 python scripts/check_production_config.py
@@ -176,4 +181,4 @@ python scripts/apply_to_local.py --apply --service-stopped
 
 ## 发布边界
 
-源码公开继续遵循本项目公益用途许可证，禁止商业化和其他非公益用途；这不是OSI定义的开源许可证。项目已经获得将安全源码与只读公益站点公开到 GitHub/GitHub Pages 的授权；公开静态站点不接收私密申诉或账号数据。生产后端、正式域名和真实机构提交仍必须满足各自的运行与权限边界，不能因为源码公开就被描述为已经生产上线。
+源码公开继续遵循本项目公益用途许可证，禁止商业化和其他非公益用途；这不是OSI定义的开源许可证。当前 Vercel + Cloudflare Worker/D1 + 项目 DNS 交互生产链已真实上线，但敏感附件/真实私密案件、自动外部机构提交和中国大陆稳定 SLA 仍不属于当前能力。任何新 release 必须按 `AGENTS.md`、`PROJECT_CONTINUITY.md`、当前 change record 和 `qa/v0_8` 的证据门执行，不能用“源码已公开”或“测试通过”替代对应生产证据。

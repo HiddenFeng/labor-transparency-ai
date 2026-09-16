@@ -11,6 +11,18 @@ The GitHub account holder and any infrastructure account holder remain the legal
 - `agents/DAILY_COMMUNITY_AGENT.md` — Beijing 18:00 official-source/community operations pass invoked by LocalAgentRuntime.
 - `agents/DAILY_COMMUNITY_REVIEW_AGENT.md` — Beijing 19:00 independent review/continuation pass.
 
+## Mandatory cold-start takeover protocol
+
+Every new Agent/conversation that takes over this repository must recover state from the repository and runtime rather than from chat memory.
+
+1. Read this file, then `PROJECT_CONTINUITY.md`. `PROJECT_CONTINUITY.md` is the single live project-continuity summary; if a local `HANDOFF_MANIFEST.json` exists, it is only a pointer, and archived manifests/history are not current authority.
+2. Verify the actual project root, branch, `git rev-parse HEAD`, worktree status and current package version before making any claim about the current state.
+3. Read the latest accepted section of `qa/v0_8/verification.json` plus the current release/change record. Treat older QA/change/whitepaper sections as historical context unless the current continuity file routes to them.
+4. If the task depends on a volatile external fact—production runtime, deployment, queue/database state, public UI or scheduled operations—verify that fact directly with the appropriate current tool. Do not infer it from an old conversation or stale prose.
+5. Recover the user goal, current accepted baseline, active change/work, protected invariants, known gaps, and one highest-value next action before editing. Then execute the requested work; do not stop at a new high-level plan when the project already contains an accepted plan.
+6. Do not create a second project-memory/TODO/governance system. Substantive work must update the existing canonical artifacts listed in `PROJECT_CONTINUITY.md` so the next Agent can resume without old chat history.
+7. Before handoff, leave Git/work state explainable, preserve failed evidence, update current blockers/NEXT_GATE if they changed, and ensure the next Agent can distinguish FACT / UNKNOWN / historical context.
+
 ## Non-negotiable invariants
 
 1. Never fabricate a source, review, worker experience, legal conclusion, external receipt or institution response.
@@ -21,7 +33,7 @@ The GitHub account holder and any infrastructure account holder remain the legal
 6. Public redistribution rights and publication rights are independent and must remain explicit.
 7. The project is source-available for non-commercial public-interest use under `LICENSE`; it is not OSI open source.
 8. No paid ranking, paid deletion, employer retaliation, worker blacklisting, commercial resale or commercial model training.
-9. Claims about readiness must match machine-verifiable evidence. `qa/v0_6/verification.json` is the stable v0.6 baseline; `qa/v0_7/verification.json` governs the historical v0.7 candidate; `qa/v0_8/verification.json` governs the current independent-deployment candidate. Current runtime evidence outranks prose.
+9. Claims about readiness must match machine-verifiable evidence. `PROJECT_CONTINUITY.md` routes the current state but does not replace evidence. `qa/v0_6/verification.json` is the stable v0.6 baseline; `qa/v0_7/verification.json` governs the historical v0.7 candidate; `qa/v0_8/verification.json` is the current v0.8 evidence ledger. Use its latest accepted release section together with current Git/runtime verification; current runtime evidence outranks stale prose.
 10. Security controls must fail closed. Never weaken Host/HTTPS/Origin/CSRF, admin-network, attachment scanning or privacy boundaries merely to make deployment easier.
 11. Anonymous advisory is a non-sensitive assistance queue, not a private-data inbox. Never solicit names, private contacts, identity documents, detailed home addresses, health/payment data or attachments there. Plaintext receipt codes are bearer credentials: never store them in persistent state or publish/log them.
 12. Advisory public reports may contain aggregate counts only; individual case text, company association, owner/session identifiers, receipt hashes/codes and private advice stay non-public.

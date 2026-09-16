@@ -47,6 +47,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: node --test scripts/project_continuity.test.mjs
       - run: node --test scripts/deployment/public_smoke.test.mjs
       - run: npm --prefix sites-app test
       - run: npm --prefix sites-app run build
