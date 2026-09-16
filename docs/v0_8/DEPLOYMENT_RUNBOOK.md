@@ -87,9 +87,11 @@ export LTP_EDGEONE_SITE=global
 - 允许 Origin 的 CORS 正常；错误 Origin / 缺 CSRF mutation 为 403；
 - 匿名辅导提交 -> Agent -> 私有建议 -> 聚合日报；
 - `/api/research/status` 仅公开 queued/collecting/failed/completed 等聚合状态；`/api/research-agent/*` 必须使用独立 research token；
-- 用户新建真实公司后必须立即看到 `QUEUED`，创建响应必须是 `researchDispatch=QUEUE_SENT`；Cloudflare Queue Consumer 自动消费，无需后台人工 enqueue/run；
-- 自动公司研究产生候选后，普通公司 API 只能返回字段白名单的来源状态/官方链接/候选预览，不得泄露 raw candidate records、案件正文或研究 token；
-- Queue Consumer 遇到单一来源 403/429/timeout/网络错误时应保留其他来源结果并显式记录来源错误，不能把任务整体伪装成完整成功；队列投递/运行时失败使用有界退避并最终进入 DLQ；
+- 用户新建真实公司后必须立即看到 `QUEUED`，创建响应必须是 `researchDispatch=QUEUE_SENT`；Cloudflare Queue Consumer 自动消费，无需后台人工 enqueue/run/review；
+- 完成状态必须为 `AUTO_READY*` 且 `reviewRequired=false`；普通公司 API 只能返回字段白名单的机器参考事实、来源信号、冲突/降级原因、官方链接和候选预览，不得泄露 raw candidate records、案件正文或研究 token；
+- `MACHINE_VERIFIED_REFERENCE` 必须来自当前机器信任规则；主体歧义、国家冲突、无效 LEI/CIK 或法律语义不明确时自动失败关闭，不能为了“无人值守”降低事实门槛；
+- Queue Consumer 遇到单一来源 403/429/timeout/网络错误时保留其他来源结果并显式记录来源缺口；主 Queue 运行时失败使用有界退避并最终进入 DLQ，DLQ 也必须有 consumer 将耗尽状态写回 D1，之后由 scheduled fallback 按 failureCount 退避重新投递；
+- `/api/research/health` 必须报告无人值守状态、缺失研究、陈旧 queued/collecting、可重试失败、DLQ 历史、当前策略迁移与来源缺口；正常恢复不得要求命名 operator；
 - D1 重启/新 Worker 版本后数据仍在；
 - 管理 token 不出现在前端包或网络响应；
 - 真实 production 静态包通过 privacy audit；
@@ -97,9 +99,9 @@ export LTP_EDGEONE_SITE=global
 
 外部可达性由 `.github/workflows/public-smoke.yml` 独立验证。该 workflow 可手动运行，并每日从 GitHub-hosted runner 做**语义级**检查，而不是只看 HTTP 200：项目自有域名与 Vercel 回退必须返回劳动透明计划页面及安全响应头；两条同源 `/api` 路径和 Worker 直连必须返回 `cloudflare-d1` health/config 契约；Session Cookie 必须保持 `HttpOnly; Secure; SameSite=Strict`；项目域名和 Vercel origin 必须被 Worker 精确允许，未知 origin 与已经退出生产链的 EdgeOne origin 必须返回 403；GitHub Pages 继续验证为只读回退。它的 PASS 只证明所测外部网络上的全球公网路径及这些安全/语义契约成立，不等于中国大陆 SLA。
 
-自动公司研究的**生产 Queue 验收**使用 workflow `.github/workflows/production-auto-research-e2e.yml`。它从项目自有域名创建一条唯一 QA 公司，要求响应立即得到 `QUEUED + researchDispatch=QUEUE_SENT`，随后只轮询普通公开公司 API，在短于 5 分钟 Cron 主周期的窗口内等待真实 Cloudflare Queue Consumer 推进到 `REVIEW_REQUIRED*` 并出现安全候选预览。该 workflow 不持有 Cloudflare 凭据，也不手工调用 research-agent run，因此可以证明用户路径确实由 Queue 自动驱动。每次验收完成后，项目运营 Agent 必须依据 workflow 输出的 company ID 从生产 D1 删除 QA `companies` / `companyResearch` 记录并复核无残留。
+自动公司研究的**生产 Queue 验收**使用 workflow `.github/workflows/production-auto-research-e2e.yml`。它从项目自有域名创建一条唯一 QA 公司，要求响应立即得到 `QUEUED + researchDispatch=QUEUE_SENT`，随后只轮询普通公开公司 API，在短窗口内等待真实 Cloudflare Queue Consumer 推进到 `AUTO_READY*`，并验证 `reviewRequired=false`、机器参考事实、来源信号、身份状态及字段白名单。该 workflow 不持有 Cloudflare 凭据，也不手工调用 research-agent run/review，因此证明用户路径确实由系统自动驱动。每次验收完成后只删除该 QA 公司及其 research 记录；已有真实用户记录必须保留并单独观察迁移结果。
 
-## 6. 当前已上线地址与仍需人工步骤
+## 6. 当前已上线地址与无人值守边界
 
 - 主公开交互域名：`https://workermanifestfellowship.dpdns.org`
 - Vercel 平台回退：`https://workermanifestfellowship.vercel.app`
@@ -107,4 +109,4 @@ export LTP_EDGEONE_SITE=global
 - GitHub Pages 只读回退：`https://hiddenfeng.github.io/labor-transparency-ai/`
 - EdgeOne：历史项目/PoC 证据保留，但不属于当前 production dependency 或 release gate。
 
-Cloudflare、Vercel 与 DigitalPlat 已构成当前完整生产路径。项目域名 `workermanifestfellowship.dpdns.org` 已由 DigitalPlat 配置并通过 Vercel 验证。腾讯云/EdgeOne 的实名认证、账户补全和支付方式不再是人工待办；不得为了当前发布要求账号持有人提交这些资料。
+Cloudflare、Vercel 与 DigitalPlat 已构成当前完整生产路径。项目域名 `workermanifestfellowship.dpdns.org` 已由 DigitalPlat 配置并通过 Vercel 验证。正常用户创建公司、自动采集、信任分流、刷新、失败/DLQ恢复与页面展示不得依赖指定人员。Python/human review 仅作为可选审计工具；腾讯云/EdgeOne 的实名认证、账户补全和支付方式也不属于项目运行待办。

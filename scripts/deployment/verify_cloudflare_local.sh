@@ -28,7 +28,7 @@ npx wrangler d1 migrations apply DB --local --persist-to "$STATE" >/dev/null
 start(){
   npx wrangler dev --local --persist-to "$STATE" --test-scheduled --port "$PORT" \
     --env-file "$ENVFILE" --log-level warn \
-    --var LTP_ENV:development --var "LTP_ALLOWED_ORIGINS:$ORIGIN" --var LTP_COOKIE_SECURE:false --var LTP_SEED:true --var LTP_RESEARCH_SCHEDULED:false --var LTP_RESEARCH_MAX_COMPANIES_PER_RUN:1 \
+    --var LTP_ENV:development --var "LTP_ALLOWED_ORIGINS:$ORIGIN" --var LTP_COOKIE_SECURE:false --var LTP_SEED:true --var LTP_RESEARCH_SCHEDULED:false --var LTP_RESEARCH_QUEUE_DISPATCH:false --var LTP_RESEARCH_MAX_COMPANIES_PER_RUN:1 \
     >"$LOG" 2>&1 &
   PID=$!
   for _ in $(seq 1 100); do
@@ -53,4 +53,4 @@ const base=process.argv[2];const c=await (await fetch(base+'/api/companies')).js
 NODE
 )"
 [[ "$BEFORE" == "$AFTER" ]] || { echo "persistence mismatch before=$BEFORE after=$AFTER" >&2; exit 2; }
-echo "{\"status\":\"PASS\",\"worker\":\"0.8.1-rc.2\",\"restartPersistence\":true,\"state\":$AFTER}"
+echo "{\"status\":\"PASS\",\"worker\":\"0.8.2-rc.1\",\"restartPersistence\":true,\"state\":$AFTER}"

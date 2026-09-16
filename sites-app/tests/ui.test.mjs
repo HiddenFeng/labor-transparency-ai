@@ -34,13 +34,20 @@ test('company UI exposes automatic research lifecycle and safe candidate-detail 
   const css=await fs.readFile(new URL('../public/styles.css',import.meta.url),'utf8');
   assert.match(js,/已进入自动采集队列/);
   assert.match(js,/正在自动采集公开来源/);
+  assert.match(js,/自动资料已更新/);
+  assert.match(js,/机器可验证的窄范围参考事实/);
+  assert.match(js,/来源信号（不是公司结论）/);
+  assert.match(js,/上下文候选（不自动当事实）/);
+  assert.match(js,/自动候选聚类/);
+  assert.match(js,/系统自动分流歧义，不依赖指定人员审核/);
+  assert.match(js,/\/api\/research\/health/);
   assert.match(js,/查看自动收集的公开来源候选/);
-  assert.match(js,/候选不会自动变成公司事实/);
   assert.match(js,/researchPollRemaining=36/);
   assert.match(js,/公司空间已创建，并已自动进入公开资料采集队列/);
   assert.doesNotMatch(js,/\.records\b/);
   assert.match(css,/\.research-details/);
   assert.match(css,/\.research-preview-list/);
+  assert.match(css,/\.machine-intelligence/);
 });
 
 test('system demo records never enter the operational review queue',()=>{

@@ -36,8 +36,9 @@ async function req(path,{method='GET',body,token,sendCsrf=true,requestOrigin=ori
 }
 
 const cfg=await req('/api/config');
-assert.equal(cfg.status,200);assert.equal(cfg.data.version,'0.8.1-rc.2');assert.equal(cfg.data.mode,'CLOUDFLARE_WORKER_D1');assert.ok(cookie.startsWith('ltp_session='));assert.equal(cfg.headers.get('access-control-allow-origin'),origin);csrf=cfg.data.csrfToken;assert.match(csrf,/^[a-f0-9]{64}$/);
+assert.equal(cfg.status,200);assert.equal(cfg.data.version,'0.8.2-rc.1');assert.equal(cfg.data.mode,'CLOUDFLARE_WORKER_D1');assert.equal(cfg.data.capabilities.unattendedCompanyIntelligence,true);assert.ok(cookie.startsWith('ltp_session='));assert.equal(cfg.headers.get('access-control-allow-origin'),origin);csrf=cfg.data.csrfToken;assert.match(csrf,/^[a-f0-9]{64}$/);
 const researchStatus=await req('/api/research/status');assert.equal(researchStatus.status,200);assert.equal(researchStatus.data.companiesTracked,0);assert.match(researchStatus.data.boundary,/候选/);
+const researchHealth=await req('/api/research/health');assert.equal(researchHealth.status,200);assert.equal(researchHealth.data.unattendedOperation,true);assert.equal(researchHealth.data.selfHealing.manualOperatorRequired,false);assert.equal(researchHealth.data.runtime.companyResearchQueue,false);const baselineRealCompanies=Number(researchHealth.data.realCompanies||0);
 const researchDenied=await req('/api/research-agent/queue',{token:'wrong-research-token'});assert.equal(researchDenied.status,403);
 const researchQueue=await req('/api/research-agent/queue',{token:researchToken});assert.equal(researchQueue.status,200);assert.equal(Array.isArray(researchQueue.data.items),true);
 
@@ -56,6 +57,7 @@ const ballot=await req(`/api/companies/${companyId}/ballot`,{method:'POST',body:
 const concurrentNames=await Promise.all([0,1,2,3].map(i=>createIsolatedCompany(i,suffix)));
 const afterConcurrent=await req('/api/companies');assert.equal(afterConcurrent.status,200);for(const name of concurrentNames){const item=afterConcurrent.data.items.find(x=>x.name===name);assert.ok(item);assert.equal(item.research?.status,'QUEUED');}
 const queuedStatus=await req('/api/research/status');assert.equal(queuedStatus.status,200);assert.equal(queuedStatus.data.companiesTracked,5);assert.equal(queuedStatus.data.queued,5);assert.equal(queuedStatus.data.collecting,0);
+const queuedHealth=await req('/api/research/health');assert.equal(queuedHealth.status,200);assert.equal(queuedHealth.data.realCompanies,baselineRealCompanies+5);assert.equal(queuedHealth.data.runtime.companyResearchQueue,false);
 
 const contribution=await req('/api/contributions',{method:'POST',body:{companyId,kind:'labour_claim',title:'示例工时记录',description:'用于验证独立部署链路的合成公开线索。',scope:'示例岗位',periodStart:'2026-01-01',periodEnd:'2026-12-31',direction:'negative',dimension:'hours',productId:'',relation:'',category:'',sources:[{url:'https://example.org/evidence',title:'合成公开来源',type:'public_record',publishedAt:'2026-01-01',supports:'仅用于本地自动化测试的合成范围'}],public:true,consent:true,shareConsent:true,rights:'own_summary',rightsNote:'',creditName:'自动化测试'}});
 assert.equal(contribution.status,200);assert.equal(contribution.data.item.evidence,'E0');const cid=contribution.data.item.id;const version=contribution.data.item.version;
@@ -76,4 +78,4 @@ const access=await req('/api/advisory/access',{method:'POST',body:{receiptCode:r
 const reports=await req('/api/advisory/reports?limit=5');assert.equal(reports.status,200);assert.ok(reports.data.items.length>=1);const publicReports=JSON.stringify(reports.data);assert.equal(publicReports.includes(receipt),false);assert.equal(publicReports.includes('最近排班和实际工时持续变化'),false);
 
 const health=await req('/api/health',{requestOrigin:''});assert.equal(health.status,200);assert.equal(health.data.storage,'cloudflare-d1');
-console.log(JSON.stringify({status:'PASS',backend:cfg.data.version,cors:true,csrf:true,d1:true,companyFlow:true,automaticResearchQueue:true,queuedCompanies:queuedStatus.data.queued,reviewExportCorrection:true,advisoryAgentReport:true,receiptPublicLeak:false,concurrentWrites:4}));
+console.log(JSON.stringify({status:'PASS',backend:cfg.data.version,cors:true,csrf:true,d1:true,companyFlow:true,automaticResearchQueue:true,unattendedCompanyIntelligence:true,researchHealthContract:true,queuedCompanies:queuedStatus.data.queued,reviewExportCorrection:true,advisoryAgentReport:true,receiptPublicLeak:false,concurrentWrites:4}));

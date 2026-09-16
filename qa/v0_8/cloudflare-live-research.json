@@ -1,17 +1,23 @@
 {
-  "status": "PASS_LIVE_AUTOMATIC_QUEUE_COMPANY_RESEARCH_AND_SAFE_DISPLAY_PROJECTION",
-  "version": "0.8.1-rc.2",
+  "status": "PASS_LIVE_AUTONOMOUS_COMPANY_INTELLIGENCE",
+  "version": "0.8.2-rc.1",
   "company": {
-    "id": "co_d17195cb24c2c3c32e",
+    "id": "co_59bc24f0e9dd544658",
     "name": "Starbucks Corporation",
     "region": "US"
   },
   "trigger": "USER_CREATE_DIRECT_QUEUE_CONSUMER",
   "researchDispatch": "QUEUE_SENT",
-  "researchStatus": "REVIEW_REQUIRED_WITH_SOURCE_GAPS",
+  "researchStatus": "AUTO_READY_WITH_SOURCE_GAPS",
   "processedCompanies": 1,
   "candidateCount": 10,
   "sourceErrors": 3,
+  "machineVerifiedFacts": 6,
+  "sourceSignals": 4,
+  "identityStatus": "AUTO_BOUND_REFERENCE",
+  "clusterCount": 6,
+  "healthStatus": "DEGRADED_SOURCE_COVERAGE",
+  "unattendedOperation": true,
   "providers": {
     "GLEIF": {
       "status": "OK",
@@ -71,7 +77,7 @@
   },
   "publicProjectionSafe": true,
   "publicProviderCount": 11,
-  "reviewRequired": true,
-  "boundary": "Live Worker Queue consumer stores and publicly previews bounded source candidates only. No candidate was auto-bound, approved or published as a company fact.",
+  "reviewRequired": false,
+  "boundary": "Live Worker Queue consumer automatically derives only narrow machine-verifiable reference facts and bounded source signals. Ambiguous or legally interpretive material remains candidate/unknown without a named reviewer gate.",
   "restartPersistence": true
 }

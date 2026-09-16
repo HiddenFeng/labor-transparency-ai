@@ -43,7 +43,9 @@ jobs:
           assert.equal(configResponse.status,200,'production config must be reachable');
           const config=await configResponse.json();
           assert.equal(config.mode,'CLOUDFLARE_WORKER_D1');
+          assert.equal(config.version,'0.8.2-rc.1');
           assert.equal(config.capabilities?.automaticCompanyResearch,true);
+          assert.equal(config.capabilities?.unattendedCompanyIntelligence,true);
           assert.equal(config.capabilities?.companyResearchQueue,true);
           assert.equal(config.capabilities?.scheduledCompanyResearch,true);
           const cookie=(configResponse.headers.get('set-cookie')||'').split(';')[0];
@@ -74,15 +76,20 @@ jobs:
             assert.ok(company,'created company must remain publicly visible during QA');
             const status=company.research?.status||'MISSING';
             console.log(`poll=${attempt} research=${status} candidates=${company.research?.candidateCount||0} sourceErrors=${company.research?.sourceErrorCount||0}`);
-            if(['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(status))break;
+            if(['AUTO_READY','AUTO_READY_WITH_SOURCE_GAPS'].includes(status))break;
             assert.ok(['QUEUED','COLLECTING'].includes(status),`unexpected lifecycle state ${status}`);
             await new Promise(resolve=>setTimeout(resolve,5000));
           }
 
           assert.ok(company?.research,'research projection must exist');
-          assert.ok(['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(company.research.status),'real Cloudflare Queue consumer must finish the queued company within the acceptance window');
+          assert.ok(['AUTO_READY','AUTO_READY_WITH_SOURCE_GAPS'].includes(company.research.status),'real Cloudflare Queue consumer must finish autonomous research within the acceptance window');
           assert.ok(company.research.candidateCount>0,'Starbucks should produce at least one bounded source candidate');
-          assert.equal(company.research.reviewRequired,true);
+          assert.equal(company.research.reviewRequired,false,'normal production intelligence must not wait for a named reviewer');
+          assert.ok(company.research.intelligence,'autonomous intelligence projection must exist');
+          assert.ok(company.research.intelligence.coverage.machineVerifiedFacts>0,'Starbucks should produce at least one narrow machine-verified reference fact');
+          assert.ok(company.research.intelligence.coverage.sourceSignals>0,'Starbucks should produce at least one bounded source signal');
+          assert.equal(company.research.intelligence.identity.status,'AUTO_BOUND_REFERENCE','Starbucks US QA must satisfy the strict GLEIF name+country rule');
+          assert.ok(Array.isArray(company.research.intelligence.clusters)&&company.research.intelligence.clusters.length>0,'autonomous candidate clusters must be public-safe and present');
           assert.ok(Array.isArray(company.research.providers)&&company.research.providers.length>=10);
           assert.ok(company.research.providers.some(x=>Array.isArray(x.previews)&&x.previews.length>0),'ordinary public projection must expose a safe candidate preview');
           assert.match(company.research.boundary,/候选/);
@@ -98,8 +105,19 @@ jobs:
           }
           scan(company.research);
 
+          const healthResponse=await fetch(`${origin}/api/research/health`,{headers:{Origin:origin,Cookie:cookie,Accept:'application/json'}});
+          assert.equal(healthResponse.status,200);const health=await healthResponse.json();
+          assert.equal(health.unattendedOperation,true);assert.equal(health.runtime?.companyResearchQueue,true);assert.equal(health.selfHealing?.manualOperatorRequired,false);
+
+          const ballotResponse=await fetch(`${origin}/api/companies/${companyId}/ballot`,{
+            method:'POST',headers:{Origin:origin,Accept:'application/json','Content-Type':'application/json','X-LTP-CSRF':config.csrfToken,Cookie:cookie},body:JSON.stringify({direction:'negative'})
+          });
+          assert.equal(ballotResponse.status,200,'normal user interaction must remain functional after autonomous research');
+          const afterBallotResponse=await fetch(`${origin}/api/companies`,{headers:{Origin:origin,Cookie:cookie,Accept:'application/json'}});assert.equal(afterBallotResponse.status,200);
+          const afterBallot=(await afterBallotResponse.json()).items.find(x=>x.id===companyId);assert.equal(afterBallot.negative,1);assert.equal(afterBallot.participants,1);
+
           const result={
-            status:'PASS_PRODUCTION_USER_CREATE_TO_QUEUE_TO_SAFE_DISPLAY',
+            status:'PASS_PRODUCTION_AUTONOMOUS_COMPANY_INTELLIGENCE_AND_INTERACTION',
             runId,
             origin,
             companyId,
@@ -110,10 +128,17 @@ jobs:
             candidateCount:company.research.candidateCount,
             sourceSuccessCount:company.research.sourceSuccessCount,
             sourceErrorCount:company.research.sourceErrorCount,
+            machineVerifiedFacts:company.research.intelligence.coverage.machineVerifiedFacts,
+            sourceSignals:company.research.intelligence.coverage.sourceSignals,
+            identityStatus:company.research.intelligence.identity.status,
+            clusterCount:company.research.intelligence.clusters.length,
+            healthStatus:health.status,
+            unattendedOperation:health.unattendedOperation,
+            userInteraction:{negative:afterBallot.negative,participants:afterBallot.participants},
             publicProviderCount:company.research.providers.length,
             hasSafePreview:company.research.providers.some(x=>x.previews?.length),
             cleanupRequired:true,
-            evidenceBoundary:'Displayed records are source candidates only; this workflow does not bind, review, approve or publish them as company facts.'
+            evidenceBoundary:'The autonomous policy may machine-bind only narrow source-of-record reference facts under strict rules. Labor/legal/context material remains source signals or candidates and is not converted into broad company conclusions.'
           };
           await fs.writeFile('/tmp/production-auto-research-e2e.json',JSON.stringify(result,null,2)+'\n');
           console.log(JSON.stringify(result));
@@ -128,4 +153,4 @@ jobs:
       - name: Cleanup boundary
         run: |
           echo 'This workflow intentionally has no Cloudflare credentials.'
-          echo 'The project operator must delete the QA company and companyResearch records from production D1 after capturing the artifact.'
+          echo 'The project automation operator must delete only the QA company, companyResearch and QA ballot records from production D1 after capturing the artifact.'

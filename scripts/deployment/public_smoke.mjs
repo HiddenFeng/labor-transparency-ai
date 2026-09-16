@@ -49,12 +49,30 @@ export function validateConfig(label,response,data){
   assert.equal(data.capabilities?.attachments,false,`${label}: attachments disabled`);
   assert.equal(data.capabilities?.privateSensitiveInfo,false,`${label}: private sensitive info disabled`);
   assert.equal(data.capabilities?.anonymousAdvisory,true,`${label}: anonymous advisory capability`);
+  assert.equal(data.capabilities?.automaticCompanyResearch,true,`${label}: automatic company research`);
+  assert.equal(data.capabilities?.unattendedCompanyIntelligence,true,`${label}: unattended company intelligence`);
+  assert.equal(data.capabilities?.companyResearchQueue,true,`${label}: company research queue`);
   assert.ok(typeof data.csrfToken==='string'&&data.csrfToken.length>=32,`${label}: csrf token`);
   const cookie=header(response,'set-cookie');
   assert.match(cookie,/ltp_session=/i,`${label}: session cookie`);
   assert.match(cookie,/HttpOnly/i,`${label}: HttpOnly cookie`);
   assert.match(cookie,/Secure/i,`${label}: Secure cookie`);
   assert.match(cookie,/SameSite=Strict/i,`${label}: SameSite cookie`);
+  validateSecurityHeaders(label,response);
+}
+
+export function validateResearchHealth(label,response,data){
+  assert.equal(response.status,200,`${label}: HTTP status`);
+  assert.match(header(response,'content-type'),/application\/json/i,`${label}: content-type`);
+  assert.equal(data.unattendedOperation,true,`${label}: unattended operation`);
+  assert.equal(data.runtime?.companyResearchQueue,true,`${label}: queue configured`);
+  assert.equal(data.runtime?.scheduledFallback,true,`${label}: scheduled fallback configured`);
+  assert.equal(data.selfHealing?.manualOperatorRequired,false,`${label}: no named operator required`);
+  assert.ok(['HEALTHY','DEGRADED_SOURCE_COVERAGE','RECOVERY_NEEDED'].includes(data.status),`${label}: health state`);
+  assert.equal(Number(data.missingResearch||0),0,`${label}: no company missing research lifecycle`);
+  assert.equal(Number(data.staleQueued||0),0,`${label}: no stale queued work`);
+  assert.equal(Number(data.staleCollecting||0),0,`${label}: no stale collecting lease`);
+  assert.equal(Number(data.retryEligibleFailures||0),0,`${label}: no retry-due failures`);
   validateSecurityHeaders(label,response);
 }
 
@@ -113,6 +131,7 @@ export async function runPublicSmoke(env=process.env){
   await getHtml('primary root',`${primaryOrigin}/`);
   const primaryHealth=await getJson('primary health',`${primaryOrigin}/api/health`,validateHealth);
   await getJson('primary config',`${primaryOrigin}/api/config`,validateConfig);
+  const primaryResearchHealth=await getJson('primary research health',`${primaryOrigin}/api/research/health`,validateResearchHealth);
 
   await getHtml('vercel fallback root',`${vercelOrigin}/`);
   const vercelHealth=await getJson('vercel fallback health',`${vercelOrigin}/api/health`,validateHealth);
@@ -120,9 +139,11 @@ export async function runPublicSmoke(env=process.env){
 
   const workerHealth=await getJson('worker health',`${workerOrigin}/api/health`,validateHealth);
   await getJson('worker config',`${workerOrigin}/api/config`,validateConfig);
+  const workerResearchHealth=await getJson('worker research health',`${workerOrigin}/api/research/health`,validateResearchHealth);
 
   assert.equal(primaryHealth.version,workerHealth.version,'primary rewrite backend version matches worker');
   assert.equal(vercelHealth.version,workerHealth.version,'vercel rewrite backend version matches worker');
+  assert.equal(primaryResearchHealth.policyVersion,workerResearchHealth.policyVersion,'primary rewrite autonomous policy matches worker');
 
   await checkOrigin('primary origin allowed',workerOrigin,primaryOrigin,204);
   await checkOrigin('vercel origin allowed',workerOrigin,vercelOrigin,204);

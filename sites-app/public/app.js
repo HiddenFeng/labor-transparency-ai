@@ -35,7 +35,7 @@ function statusLabel(value){
   return ({PENDING:'等待复核',REVIEWED:'已复核',VERIFIED:'已验证',REJECTED:'未通过',DISPUTED:'有争议',WITHDRAWN:'已撤回',ADVISED:'已给出建议',RECEIVED:'已收到'})[value]||value;
 }
 function researchStatusLabel(value){
-  return ({QUEUED:'已进入自动采集队列',COLLECTING:'正在自动采集公开来源',REVIEW_REQUIRED:'已采集 · 等待主体绑定/复核',REVIEW_REQUIRED_WITH_SOURCE_GAPS:'已采集 · 部分来源暂不可用',COLLECTION_FAILED:'本轮自动采集失败 · 将自动重试'})[value]||value;
+  return ({QUEUED:'已进入自动采集队列',COLLECTING:'正在自动采集公开来源',AUTO_READY:'自动资料已更新',AUTO_READY_WITH_SOURCE_GAPS:'自动资料已更新 · 部分来源暂不可用',REVIEW_REQUIRED:'历史资料 · 待自动迁移',REVIEW_REQUIRED_WITH_SOURCE_GAPS:'历史资料 · 待自动迁移且有来源缺口',COLLECTION_FAILED:'本轮自动采集失败 · 将自动重试'})[value]||value;
 }
 function researchErrorLabel(value){
   return ({SOURCE_ACCESS_DENIED:'来源拒绝当前自动访问',SOURCE_RATE_LIMITED:'来源暂时限流',SOURCE_UNAVAILABLE:'来源暂时不可用',SOURCE_NETWORK_OR_RUNTIME_ERROR:'来源网络暂时异常',SOURCE_TIMEOUT:'来源响应超时',SOURCE_CONTENT_TYPE:'来源响应格式变化',SOURCE_JSON_INVALID:'来源数据格式异常',SOURCE_TOO_LARGE:'来源响应超出安全上限'})[value]||'来源暂时不可用';
@@ -187,6 +187,50 @@ function researchPreviewMeta(preview){
   if(preview.reference)parts.push(`参考标识 ${preview.reference}`);
   return parts.join(' · ');
 }
+function intelligenceBlock(intelligence){
+  if(!intelligence)return null;
+  const wrap=document.createElement('section');wrap.className='machine-intelligence';
+  const title=document.createElement('div');title.className='machine-intelligence-title';
+  title.append(text('strong','机器自动整理'));
+  title.append(badge(`${intelligence.coverage?.machineVerifiedFacts||0} 个参考事实`,'evidence'),badge(`${intelligence.coverage?.sourceSignals||0} 个来源信号`));
+  wrap.append(title);
+  if(intelligence.identity){
+    const id=document.createElement('p');id.className='machine-identity';
+    const labels={AUTO_BOUND_REFERENCE:'已自动匹配法律实体参考',AMBIGUOUS:'存在多个身份候选，未自动选择',COUNTRY_CONFLICT:'地区冲突，未自动绑定',COUNTRY_HINT_REQUIRED:'缺少可机器确认的国家提示，保持未绑定',SOURCE_SCHEMA_CONFLICT:'来源标识未通过机器校验，保持未绑定',SOURCE_GAP:'身份根来源暂不可用',NO_VERIFIED_REFERENCE:'本轮没有足够强的身份参考'};
+    id.append(badge(labels[intelligence.identity.status]||intelligence.identity.status,intelligence.identity.status==='AUTO_BOUND_REFERENCE'?'evidence':'pending'),text('span',` ${intelligence.identity.reason||''}`));wrap.append(id);
+  }
+  if(intelligence.facts?.length){
+    const sec=document.createElement('div');sec.className='machine-facts';sec.append(text('h4','机器可验证的窄范围参考事实'));
+    const ul=document.createElement('ul');
+    for(const fact of intelligence.facts){const li=document.createElement('li');li.append(text('strong',fact.text),text('small',`${fact.source?.sourceOfRecord||fact.provider} · ${fact.scope}`),text('span',fact.caveat));if(fact.source?.official)li.append(link('官方来源',fact.source.official,'research-source-link'));ul.append(li)}
+    sec.append(ul);wrap.append(sec);
+  }
+  if(intelligence.signals?.length){
+    const sec=document.createElement('div');sec.className='machine-signals';sec.append(text('h4','来源信号（不是公司结论）'));
+    const ul=document.createElement('ul');
+    for(const signal of intelligence.signals){const li=document.createElement('li');li.append(text('strong',signal.text),text('small',`${signal.source?.sourceOfRecord||signal.provider} · ${signal.scope}`),text('span',signal.caveat));if(signal.source?.official)li.append(link('官方来源',signal.source.official,'research-source-link'));ul.append(li)}
+    sec.append(ul);wrap.append(sec);
+  }
+  if(intelligence.contextCandidates?.length){
+    const sec=document.createElement('div');sec.className='machine-context';sec.append(text('h4','上下文候选（不自动当事实）'));
+    const ul=document.createElement('ul');
+    for(const item of intelligence.contextCandidates){const li=document.createElement('li');li.append(text('strong',item.label||'未命名候选'),text('small',`${item.source?.sourceOfRecord||item.provider}${item.reference?` · ${item.reference}`:''}`));if(item.description)li.append(text('span',item.description));li.append(text('span',item.caveat));if(item.source?.official)li.append(link('来源入口',item.source.official,'research-source-link'));ul.append(li)}
+    sec.append(ul);wrap.append(sec);
+  }
+  if(intelligence.conflicts?.length){
+    const sec=document.createElement('div');sec.className='machine-conflicts';sec.append(text('h4','自动降级 / 冲突'));
+    const ul=document.createElement('ul');for(const conflict of intelligence.conflicts)ul.append(text('li',conflict.message||conflict.code));sec.append(ul);wrap.append(sec);
+  }
+  if(intelligence.clusters?.length){
+    const details=document.createElement('details');details.className='machine-clusters';
+    const summary=document.createElement('summary');summary.textContent=`查看 ${intelligence.clusters.length} 组自动候选聚类`;details.append(summary);
+    const ul=document.createElement('ul');
+    for(const cluster of intelligence.clusters){ul.append(text('li',`${cluster.label} · ${cluster.providers.join(' / ')} · 候选 ${cluster.candidateCount} · 公开记录命中 ${cluster.totalMatchedRecords}`));}
+    details.append(ul);wrap.append(details);
+  }
+  wrap.append(text('p',intelligence.boundary,'method-note'));
+  return wrap;
+}
 function researchBlock(co){
   const r=co.research;
   if(!r)return text('p','自动公开资料采集尚未进入首轮结果。公司空间可以先使用；生产系统会自动把新公司加入研究队列。','research-summary');
@@ -195,8 +239,10 @@ function researchBlock(co){
   head.append(badge(researchStatusLabel(r.status),['QUEUED','COLLECTING'].includes(r.status)?'pending':'evidence'));
   if(['QUEUED','COLLECTING'].includes(r.status))head.append(text('span',' 系统会自动处理，无需用户或管理员再次入队。'));
   else if(r.status==='COLLECTION_FAILED')head.append(text('span',' 公司空间不受影响；失败任务会按重试窗口再次进入自动队列。'));
-  else head.append(text('span',` 本轮 ${r.sourceSuccessCount} 个来源可用 · ${r.candidateCount} 条待核对候选${r.sourceErrorCount?` · ${r.sourceErrorCount} 个来源存在缺口`:''}。候选不会自动变成公司事实。`));
+  else if(['AUTO_READY','AUTO_READY_WITH_SOURCE_GAPS'].includes(r.status))head.append(text('span',` 本轮 ${r.sourceSuccessCount} 个来源可用 · ${r.intelligence?.coverage?.machineVerifiedFacts||0} 个机器参考事实 · ${r.intelligence?.coverage?.sourceSignals||0} 个来源信号 · ${r.candidateCount} 条来源候选${r.sourceErrorCount?` · ${r.sourceErrorCount} 个来源存在缺口`:''}。系统自动分流歧义，不依赖指定人员审核。`));
+  else head.append(text('span',` 本轮 ${r.sourceSuccessCount} 个来源可用 · ${r.candidateCount} 条历史候选；系统将在下次刷新自动迁移到自治规则。`));
   wrap.append(head);
+  const intelligence=intelligenceBlock(r.intelligence);if(intelligence)wrap.append(intelligence);
   if(r.providers?.length){
     const details=document.createElement('details');details.className='research-details';
     const summary=document.createElement('summary');summary.textContent='查看自动收集的公开来源候选';details.append(summary);
@@ -250,7 +296,12 @@ const coverageStatusLabel={
 async function loadResearchCoverage(){
   const root=$('#research-coverage');if(!root)return;
   try{
-    const d=await api('/api/research/coverage');root.replaceChildren();
+    const [d,status,ops]=await Promise.all([api('/api/research/coverage'),api('/api/research/status'),api('/api/research/health')]);root.replaceChildren();
+    const health=document.createElement('div');health.className='notice neutral';
+    const healthLabel=({HEALTHY:'自动研究运行正常',DEGRADED_SOURCE_COVERAGE:'自动研究运行正常，但部分来源当前不可用',RECOVERY_NEEDED:'系统检测到待自愈任务',LOCAL_REFERENCE_MODE:'本地参考模式未启用生产自动研究'})[ops.status]||'自动研究状态可用';
+    const recovery=Number(ops.missingResearch||0)+Number(ops.staleQueued||0)+Number(ops.staleCollecting||0)+Number(ops.retryEligibleFailures||0)+Number(ops.missingCurrentPolicy||0);
+    health.append(text('strong',healthLabel),text('p',`真实公司 ${ops.realCompanies||0} · 自动资料 ${status.autonomousReady||0} · 机器参考事实 ${status.machineVerifiedFacts||0} · 来源信号 ${status.sourceSignals||0} · 待自愈 ${recovery}`));
+    health.append(text('small','无人值守规则：Queue 自动消费；5 分钟与每日任务重投递漏单、陈旧、失败和旧策略记录；歧义不会阻塞页面，而是自动保持候选或未知。'));root.append(health);
     root.append(text('p',d.claimBoundary,'method-note'));
     const list=document.createElement('div');list.className='cards compact-cards';
     for(const x of d.sections){

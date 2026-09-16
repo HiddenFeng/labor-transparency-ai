@@ -1,18 +1,18 @@
-# v0.8.1 自动公司资料研究：来源、流程与边界
+# v0.8.2 无人值守公司资料研究：来源、信任规则与自愈边界
 
 日期：2026-09-16
-状态：`USER_CREATE_AUTO_QUEUE_AND_SAFE_PUBLIC_PREVIEW_IMPLEMENTED / GLOBAL_COVERAGE_PARTIAL`
+状态：`AUTONOMOUS_TRUST_LAYER_LOCAL_VERIFIED / PRODUCTION_DEPLOYMENT_PENDING / GLOBAL_COVERAGE_PARTIAL`
 
 ## 1. 目标不是“爬到越多越好”
 
-系统现在把公司公开资料自动化拆成四层：
+系统现在把公司公开资料自动化拆成四层，而且正常生产路径不等待某个具体人员：
 
 1. **来源候选**：公开来源返回了一个名称、案件、设施、申报或交易候选；
-2. **主体绑定**：确认该候选确实属于当前公司空间，而不是同名公司、门店、子公司或无关主体；
-3. **独立复核**：核对来源、时间、适用范围、程序状态、许可和隐私；
-4. **发布**：只有经过复核的具体事实才进入研究快照。候选本身不进入公开事实层。
+2. **确定性身份/信任判定**：机器按权威来源、精确名称、国家提示、LEI/CIK 等结构化校验决定是否允许形成窄范围参考事实；任何歧义都失败关闭；
+3. **机器事实 / 来源信号 / 候选分流**：满足严格规则的客观参考字段进入 `MACHINE_VERIFIED_REFERENCE`；劳动、执法、工会、停工等名称命中只进入带原始程序语义限制的 `SOURCE_SIGNAL`；其余为 `CONTEXT_CANDIDATE` / 未知；
+4. **持续重算与撤回**：每次刷新以当前来源重新生成机器资料。旧事实失去当前支持时自动删除/降级，不要求运营人员手动清理。
 
-因此，“没查到”仍然是未知，不写成“不存在”；“查到案件”也不自动写成“公司违法”。Cloudflare Worker 会把完整 raw candidate 保存在受限 `companyResearch` 记录中；普通公众只看到研究生命周期、来源可用/失败状态、候选数量、官方来源链接，以及每个来源最多 3 条经过字段白名单裁剪的“待核对候选”预览。案件正文、raw `records` 和后台复核材料不进入普通公司 API。
+因此，“没查到”仍然是未知，不写成“不存在”；“查到案件”也不自动写成“公司违法”。Cloudflare Worker 会把完整 raw candidate 保存在受限 `companyResearch` 记录中；普通公众可看到机器参考事实、来源信号、自动降级原因、研究生命周期、来源可用/失败状态，以及每个来源最多 3 条经过字段白名单裁剪的候选预览。案件正文、raw `records`、私有队列和后台审计材料不进入普通公司 API。
 
 ## 2. 当前来源矩阵
 
@@ -40,7 +40,7 @@ LaborData 在本项目里只作为美国公共劳工数据的**结构化镜像/�
 
 ### 企业主体
 
-GLEIF 是当前 identity root。名称搜索只产生候选；LEI 或经运营确认的主体绑定后，才能把登记字段放进草稿。OpenCorporates 只能在 token + 许可复核通过后作为补充。
+GLEIF 是当前 identity root。只有**唯一精确法律名称候选 + 公司空间存在可机器解析的国家提示 + GLEIF 国家一致 + LEI 通过 ISO-17442 mod-97 校验**时，机器才发布法律名称、LEI、国家/地区、辖区、实体状态和 LEI 维护状态等窄范围参考字段。多个精确候选、国家缺失/冲突、LEI 校验失败都会自动保持未绑定。OpenCorporates 只能在 token + 许可决策完成后作为补充。
 
 ### 业务与产品
 
@@ -76,7 +76,7 @@ Wikidata 的官网字段只用于公开入口。正式劳动申诉渠道高度�
 
 ## 4. 自动执行架构
 
-### Python back office：证据化主链
+### Python back office：可选离线审计，不是生产门
 
 ```text
 公司空间
@@ -90,11 +90,11 @@ Wikidata 的官网字段只用于公开入口。正式劳动申诉渠道高度�
   -> 用户/关注者通知
 ```
 
-这里沿用既有的 queue / lease / daily budget / cache / immutable run / review / release 机制，没有另外创建一套可以绕开复核的发布路径。
+这条历史链继续保留用于研究、审计和更复杂的显式绑定实验，但 v0.8.2 生产网站不会等待它，也不会要求一个命名 reviewer 才能正常展示自动公司资料。
 
-### Cloudflare Worker：线上自动候选收集
+### Cloudflare Worker + Queue：线上无人值守主链
 
-用户通过 `POST /api/companies` 新建真实公司空间时，Worker 会在同一个 D1 事务中创建 `QUEUED` 研究记录，并立即向 Cloudflare Queue `labor-transparency-company-research` 投递只包含 company ID / reason / refresh 标记的消息。Queue Consumer 才执行真实多源采集，状态进入 `COLLECTING`，完成后为 `REVIEW_REQUIRED` 或 `REVIEW_REQUIRED_WITH_SOURCE_GAPS`；意外运行时失败记为 `COLLECTION_FAILED` 并按退避重试，超过最大重试进入 DLQ。`*/5` 与日更 Cron 只重新投递遗漏、陈旧或到期刷新任务，不再直接执行外部采集。网络请求始终在 D1 写锁之外进行。
+用户通过 `POST /api/companies` 新建真实公司空间时，Worker 会在同一个 D1 事务中创建 `QUEUED` 研究记录，并立即向 Cloudflare Queue `labor-transparency-company-research` 投递只包含 company ID / reason / refresh 标记的消息。Queue Consumer 执行多源采集和自治信任规则，状态进入 `COLLECTING`，完成后为 `AUTO_READY` 或 `AUTO_READY_WITH_SOURCE_GAPS`，且 `reviewRequired=false`。意外运行时失败记为 `COLLECTION_FAILED` 并按退避重试；主 Queue 多次失败后进入 DLQ，DLQ 也由同一 Worker 消费并把耗尽状态写回 D1，之后定时兜底按 failureCount 指数退避重新投回主 Queue。`*/5` 与日更 Cron 只重新投递遗漏、陈旧、失败或到期刷新任务，不直接执行外部采集。
 
 默认约束：
 
@@ -103,10 +103,10 @@ Wikidata 的官网字段只用于公开入口。正式劳动申诉渠道高度�
 - 原始候选与 raw source records 仅在 research-agent 受限接口可见；
 - 普通公司列表只公开安全研究投影：生命周期、来源状态/数量、官方来源链接和每来源最多 3 条字段白名单候选预览；
 - `/api/research/status` 公开 queued / collecting / failed / completed 等聚合状态；
-- `COMPANY_RESEARCH_QUEUE` 是生产主消费者；每批 1 条消息、最大并发 1、默认重试延迟 60 秒、最多 5 次并配置独立 DLQ；
+- `COMPANY_RESEARCH_QUEUE` 是生产主消费者；每批 1 条消息、最大并发 1、默认重试延迟 60 秒、最多 5 次并配置独立 DLQ；DLQ consumer 每批/并发仍为 1，遇到底层写入失败最多重试 10 次；
 - `LTP_RESEARCH_QUEUE_DISPATCH=true` 才允许 HTTP/调度器向真实 Queue 投递；本地普通 smoke 默认关闭，避免测试无意触发真实联网采集；
 - `LTP_RESEARCH_SCHEDULED=true` 时 `*/5` 与 `0 1 * * *` 只承担漏单/到期刷新重投递，不直接跑外部 provider；
-- 完成记录默认 24 小时后才重新进入刷新候选；失败记录 30 分钟后可重试，`COLLECTING` 超过 15 分钟视为陈旧 lease；
+- 完成记录默认 24 小时后重新刷新；策略版本变化或历史记录缺少当前 intelligence 时立即进入自动迁移。失败从 30 分钟起按 failureCount 指数退避，最高 8 小时；`COLLECTING` 超过 15 分钟视为陈旧 lease；
 - 每个外部来源请求有 8 秒硬超时，来源串行执行以减少对公共 API 的突发压力；单来源超时/403/429 不丢弃其他来源结果；
 - 研究 Agent token 与 advisory/review/export token 完全分离；
 - 来源错误统一成有限错误码，不能把第三方内部 reference、网络异常正文或凭据回给公众。
@@ -117,7 +117,7 @@ Wikidata 的官网字段只用于公开入口。正式劳动申诉渠道高度�
 
 `qa/v0_8/live-company-intelligence.json`：在 QA 中显式指定 Starbucks 的 GLEIF/Wikidata/NLRB/OSHA/WHD/F-7/OLMS/USAspending 绑定后生成 `DRAFT_READY` 多源草稿。该动作没有批准或发布草稿。
 
-`qa/v0_8/cloudflare-live-research.json`：真实本地 Wrangler Worker + D1 + Queue + 真实外网自动链验证；流程为“用户创建 Starbucks Corporation -> D1 `QUEUED` -> create response `QUEUE_SENT` -> Queue Consumer -> 多源采集 -> 普通 `/api/companies` 安全候选预览 -> Worker 重启恢复”。真实网络中的超时、403/429 等按单来源缺口记录，不把整个公司研究任务伪装成完整成功，也不丢弃已经成功的来源。
+`qa/v0_8/cloudflare-live-research.json`：v0.8.2 候选已完成真实本地 Wrangler Worker + D1 + Queue + 真实外网自动链验证；流程为“用户创建 Starbucks Corporation -> D1 `QUEUED` -> `QUEUE_SENT` -> Queue Consumer -> 多源采集 -> 自治信任分层 -> 普通 `/api/companies` 机器参考事实/来源信号/候选安全投影 -> Worker 重启恢复”。最近一次本地真实来源链得到 `AUTO_READY_WITH_SOURCE_GAPS`、6 个机器参考事实、4 个来源信号，且 `reviewRequired=false`。这是发布前证据，生产 v0.8.2 验收仍必须在部署后重新执行。
 
 `qa/v0_8/company-intelligence-audit.json`：确定性 fixture 对所有主要 provider 完成 `candidate -> explicit binding -> draft -> independent review -> release -> reopen persistence` 审计。
 

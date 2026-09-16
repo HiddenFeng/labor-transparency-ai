@@ -22,9 +22,9 @@ api.example.org  ── Cloudflare Worker
    |
    +── D1：公司、社区票、贡献、复核、纠错、匿名辅导、私有建议、聚合日报
    |
-   +── D1：companyResearch 受限候选队列（不自动发布为公司事实）
+   +── D1：companyResearch 生命周期 + 当前来源候选 + 自治 intelligence（机器参考事实/来源信号/冲突/指纹）
    |
-   +── Cloudflare Queue：用户创建公司后立即投递；Queue Consumer 串行执行多源研究，失败重试/DLQ
+   +── Cloudflare Queue：用户创建公司后立即投递；Queue Consumer 串行执行多源研究 + 确定性信任分层；失败重试/DLQ
    |
    +── Cron Trigger：每 5 分钟只补投遗漏/陈旧研究任务 + 每日匿名辅导/研究刷新兜底
 ```
@@ -33,7 +33,8 @@ api.example.org  ── Cloudflare Worker
 
 - `cloudflare-backend/src/worker.mjs`：Worker HTTP / Queue consumer / scheduled 入口。
 - `cloudflare-backend/src/d1-store.mjs`：D1 持久化适配层。
-- `cloudflare-backend/src/company-research.mjs`：线上多源公司资料候选采集；只保存待复核候选。
+- `cloudflare-backend/src/company-research.mjs`：线上多源公司资料采集、生命周期与刷新/自愈调度。
+- `sites-app/src/autonomous-intelligence.mjs`：共享的无人值守信任策略、身份失败关闭规则、候选聚类、机器参考事实/来源信号、刷新指纹与健康判定。
 - `cloudflare-backend/migrations/`：D1 schema。
 - `sites-app/src/domain.mjs`：跨运行时共享的 canonical 领域/隐私规则。
 - `sites-app/public/`：公共前端源。
@@ -111,7 +112,7 @@ Edge Function 对非 GET/HEAD body 限制为 96 KiB；向上游发请求时不�
 - 5xx 不向客户端返回堆栈或内部错误详情。
 - Worker 不记录匿名辅导正文；scheduled log 只记录聚合数字。
 - 匿名回执明文只返回一次；D1 只保存 SHA-256 hash。
-- 用户新建真实公司后会原子写入 `companyResearch: QUEUED` 并立即投递 `COMPANY_RESEARCH_QUEUE`；Queue Consumer 以单消息/单并发执行多源采集，重复投递在生命周期层幂等 ACK。5 分钟与每日 Cron 只补投遗漏/到期刷新任务。普通公司列表只返回安全研究投影（生命周期、来源状态、官方来源链接、最多 3 条字段裁剪候选预览），不返回 raw records、案件正文或后台复核材料。
+- 用户新建真实公司后会原子写入 `companyResearch: QUEUED` 并立即投递 `COMPANY_RESEARCH_QUEUE`；Queue Consumer 以单消息/单并发执行多源采集和确定性自治信任规则，重复投递在生命周期层幂等 ACK。唯一精确、国家一致且 LEI 校验有效的 GLEIF 身份可形成窄范围机器参考事实；劳动/执法等来源只形成保留程序语义的来源信号。歧义/冲突自动降级，不等待命名 reviewer。主 Queue 重试耗尽进入 DLQ；DLQ 也有 consumer，把耗尽状态持久化后由定时兜底按退避重新投递。5 分钟与每日 Cron 只补投遗漏、陈旧、失败或到期刷新任务。普通公司列表只返回安全投影，不返回 raw records、案件正文或后台审计材料。
 - 当前依旧不接收真实姓名、私人联系方式、身份证明、详细家庭地址、健康/支付信息和敏感附件。
 
 ## 版本与回滚

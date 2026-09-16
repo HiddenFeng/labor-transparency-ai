@@ -519,8 +519,8 @@
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
   "remaining_human_only": [],
-  "next_gate": "Queue-driven user-added-company automatic research is production-verified. Continue routine source-quality, entity-binding/review, monitoring, and product development; no human deployment gate remains for this capability.",
-  "strongest_claim": "v0.8.1-rc.2 retains the verified non-China-cloud public deployment and now has a production-verified Queue-driven user-company automatic research loop: public company creation durably writes QUEUED and returns researchDispatch=QUEUE_SENT, a single-concurrency Cloudflare Queue consumer collects independent source candidates with per-source failure isolation/timeouts, D1 persists lifecycle/results, and the ordinary company API/UI exposes only allowlisted candidate previews. Production GitHub-hosted E2E, release-candidate CI, and public semantic smoke all pass; candidates are not auto-published as facts.",
+  "next_gate": "Deploy v0.8.2 autonomous company intelligence to canonical Cloudflare/Vercel production, verify GitHub-hosted QA create -> QUEUE_SENT -> AUTO_READY* without reviewer, observe existing real company self-migration under the current policy, repair any defect, then remove only QA rows.",
+  "strongest_claim": "v0.8.2-rc.1 is locally and live-source verified for unattended company intelligence but is not yet claimed as production-deployed: Queue collection automatically derives only fail-closed MACHINE_VERIFIED_REFERENCE facts and bounded SOURCE_SIGNAL records, ambiguity remains candidate/unknown, refresh retracts unsupported facts, and Queue/DLQ/scheduled recovery has no named-operator dependency. Production v0.8.1 remains live until v0.8.2 deployment passes CI/E2E.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -724,5 +724,70 @@
         "status": "PASS"
       }
     }
+  },
+  "autonomous_company_intelligence_v082": {
+    "status": "LOCAL_FULL_AND_LIVE_SOURCE_VERIFIED_PRODUCTION_DEPLOYMENT_PENDING",
+    "change_record": "docs/v0_8/CHANGE-v0.8.2-autonomous-company-intelligence.md",
+    "version": "0.8.2-rc.1",
+    "normal_path": "company create -> D1 QUEUED -> Cloudflare Queue -> serial multi-source collection -> deterministic trust policy -> AUTO_READY* -> safe public machine intelligence",
+    "named_operator_required": false,
+    "trust_policy": {
+      "machine_verified_reference": "Unique exact GLEIF legal name + parseable company country + matching GLEIF country + valid ISO-17442 LEI checksum. Compatible exact SEC reference additionally requires valid 10-digit CIK and machine-bound US identity.",
+      "source_signal": "Exact normalized labor/public-record name matches may publish only source/count/procedural-context signals with provider-specific caveats.",
+      "context_candidate": "Secondary/ambiguous/conflicting/unbound candidates remain candidates or unknown.",
+      "legal_or_quality_conclusions": "PROHIBITED_FROM_AUTONOMOUS_INFERENCE"
+    },
+    "refresh": {
+      "replace_current_machine_intelligence": true,
+      "unsupported_fact_retraction": "PASS_DETERMINISTIC",
+      "fingerprint_change": "INITIAL_UNCHANGED_UPDATED",
+      "legacy_or_old_policy_migration": "IMMEDIATE_REFRESH_ELIGIBLE",
+      "normal_refresh_hours": 24
+    },
+    "self_healing": {
+      "main_queue": "labor-transparency-company-research",
+      "main_batch_size": 1,
+      "main_max_concurrency": 1,
+      "main_max_retries": 5,
+      "dead_letter_queue": "labor-transparency-company-research-dlq",
+      "dlq_consumer": "IMPLEMENTED_SAME_WORKER",
+      "dlq_batch_size": 1,
+      "dlq_max_concurrency": 1,
+      "dlq_max_retries": 10,
+      "dlq_retry_delay_seconds": 300,
+      "d1_failure_backoff": "30m exponential by failureCount, capped at 8h",
+      "scheduled_reenqueue": "5-minute + daily fallback",
+      "health_endpoint": "/api/research/health",
+      "manual_operator_required": false
+    },
+    "local_validation": {
+      "python": "PASS_291",
+      "sites": "PASS_21",
+      "cloudflare_autonomy_queue": "PASS_19",
+      "worker_d1_http": "PASS",
+      "frontend_build": "PASS",
+      "privacy_audit": "PASS_0_FORBIDDEN_MATCHES",
+      "git_diff_check": "PASS"
+    },
+    "live_source_queue_test": {
+      "status": "PASS_LIVE_AUTONOMOUS_COMPANY_INTELLIGENCE",
+      "company_name": "Starbucks Corporation",
+      "research_dispatch": "QUEUE_SENT",
+      "research_status": "AUTO_READY_WITH_SOURCE_GAPS",
+      "review_required": false,
+      "candidate_count": 10,
+      "machine_verified_facts": 6,
+      "source_signals": 4,
+      "identity_status": "AUTO_BOUND_REFERENCE",
+      "source_error_count": 3,
+      "source_errors": {
+        "WIKIDATA": "SOURCE_TIMEOUT",
+        "SEC_EDGAR": "SOURCE_ACCESS_DENIED",
+        "USA_SPENDING": "SOURCE_NETWORK_OR_RUNTIME_ERROR"
+      },
+      "public_projection_safe": true,
+      "restart_persistence": true
+    },
+    "production_gate": "PENDING_GITHUB_CI_DEPLOY_PRODUCTION_E2E_EXISTING_REAL_COMPANY_MIGRATION"
   }
 }

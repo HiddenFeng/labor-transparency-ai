@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateHtml,validateHealth,validateConfig,validateSecurityHeaders} from './public_smoke.mjs';
+import {validateHtml,validateHealth,validateConfig,validateResearchHealth,validateSecurityHeaders} from './public_smoke.mjs';
 
 function response(status=200,headers={}){return new Response('',{status,headers});}
 const security={
@@ -24,9 +24,16 @@ test('health validator pins Worker D1 privacy contract',()=>{
 
 test('config validator requires secure session and disabled sensitive-data capability',()=>{
   const r=response(200,{...security,'content-type':'application/json','set-cookie':'ltp_session=abc; HttpOnly; Secure; SameSite=Strict; Path=/'});
-  validateConfig('config',r,{mode:'CLOUDFLARE_WORKER_D1',cookieSecure:true,csrfToken:'x'.repeat(64),capabilities:{attachments:false,privateSensitiveInfo:false,anonymousAdvisory:true}});
+  const capabilities={attachments:false,privateSensitiveInfo:false,anonymousAdvisory:true,automaticCompanyResearch:true,unattendedCompanyIntelligence:true,companyResearchQueue:true};
+  validateConfig('config',r,{mode:'CLOUDFLARE_WORKER_D1',cookieSecure:true,csrfToken:'x'.repeat(64),capabilities});
   const insecure=response(200,{...security,'content-type':'application/json','set-cookie':'ltp_session=abc; Path=/'});
-  assert.throws(()=>validateConfig('config',insecure,{mode:'CLOUDFLARE_WORKER_D1',cookieSecure:true,csrfToken:'x'.repeat(64),capabilities:{attachments:false,privateSensitiveInfo:false,anonymousAdvisory:true}}),/HttpOnly/);
+  assert.throws(()=>validateConfig('config',insecure,{mode:'CLOUDFLARE_WORKER_D1',cookieSecure:true,csrfToken:'x'.repeat(64),capabilities}),/HttpOnly/);
+});
+
+test('research health validator requires autonomous runtime and no named operator dependency',()=>{
+  const r=response(200,{...security,'content-type':'application/json'});
+  validateResearchHealth('research-health',r,{status:'DEGRADED_SOURCE_COVERAGE',unattendedOperation:true,missingResearch:0,staleQueued:0,staleCollecting:0,retryEligibleFailures:0,runtime:{companyResearchQueue:true,scheduledFallback:true},selfHealing:{manualOperatorRequired:false}});
+  assert.throws(()=>validateResearchHealth('research-health',r,{status:'HEALTHY',unattendedOperation:true,missingResearch:0,staleQueued:0,staleCollecting:0,retryEligibleFailures:0,runtime:{companyResearchQueue:false,scheduledFallback:true},selfHealing:{manualOperatorRequired:false}}),/queue configured/);
 });
 
 test('security validator rejects framing regression',()=>{

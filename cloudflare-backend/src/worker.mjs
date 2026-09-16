@@ -5,11 +5,11 @@ import {
   reviewQueue, createReceiptCode, hashReceiptCode, addAdvisoryCase, listOwnAdvisory, accessAdvisoryByReceipt,
   advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase
 } from '../../sites-app/src/domain.mjs';
-import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus} from '../../sites-app/src/research-status.mjs';
+import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus,publicResearchHealth} from '../../sites-app/src/research-status.mjs';
 import {D1StateStore} from './d1-store.mjs';
-import {collectCompanyResearch,selectResearchCompanies,mergeCompanyResearch,queueCompanyResearch,markCompanyResearchStarted,markCompanyResearchFailed} from './company-research.mjs';
+import {collectCompanyResearch,selectResearchCompanies,mergeCompanyResearch,queueCompanyResearch,markCompanyResearchStarted,markCompanyResearchFailed,markCompanyResearchDeadLettered} from './company-research.mjs';
 
-const BACKEND_VERSION='0.8.1-rc.2';
+const BACKEND_VERSION='0.8.2-rc.1';
 const COOKIE='ltp_session';
 const BODY_LIMIT=96*1024;
 
@@ -118,7 +118,7 @@ export async function createCompanyWithAutoResearch(store,input,owner,{now=new D
 export async function dispatchCompanyResearch(env,result,{reason='USER_CREATE',allowRefresh=false}={}){
   const research=result?.research;
   if(!researchQueueEnabled(env)||!result?.company?.id||!research)return 'QUEUE_UNAVAILABLE';
-  const dispatchable=['QUEUED','COLLECTION_FAILED'].includes(research.status)||(allowRefresh&&['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(research.status));
+  const dispatchable=['QUEUED','COLLECTION_FAILED'].includes(research.status)||(allowRefresh&&['AUTO_READY','AUTO_READY_WITH_SOURCE_GAPS','REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(research.status));
   if(!dispatchable)return 'NOT_DISPATCHED';
   try{
     await env.COMPANY_RESEARCH_QUEUE.send({type:'COMPANY_RESEARCH',companyId:result.company.id,reason,allowRefresh,enqueuedAt:new Date().toISOString()});
@@ -207,6 +207,19 @@ export async function consumeResearchQueueBatch(batch,env,{fetchImpl=fetch,now=n
   }
 }
 
+export async function consumeResearchDeadLetterBatch(batch,env,{now=new Date(),store:providedStore=null}={}){
+  const store=providedStore||await storeFor(env).init();
+  for(const message of batch.messages||[]){
+    const body=message?.body;const companyId=String(body?.companyId||'');
+    if(body?.type!=='COMPANY_RESEARCH'||!/^co_[a-f0-9]+$/i.test(companyId)){
+      console.error(JSON.stringify({event:'company_research_dlq_invalid_message'}));message.ack();continue;
+    }
+    const persisted=await store.transaction(state=>markCompanyResearchDeadLettered(state,companyId,{now}));
+    console.error(JSON.stringify({event:'company_research_dlq_persisted',companyId,persisted:Boolean(persisted),selfHealing:'scheduled_reenqueue_after_backoff'}));
+    message.ack();
+  }
+}
+
 async function handleApi(request,env){
   const url=new URL(request.url);
   if(request.method==='OPTIONS'){
@@ -218,11 +231,15 @@ async function handleApi(request,env){
   if(!mutationAuthorized(request,url,env,ctx))return responseWithSession(json(request,env,403,{error:'跨站请求或请求校验未获允许'}),ctx,env);
 
   let response;
-  if(request.method==='GET'&&url.pathname==='/api/config') response=json(request,env,200,{version:BACKEND_VERSION,domainVersion:DOMAIN_VERSION,mode:'CLOUDFLARE_WORKER_D1',csrfToken:ctx.csrf,cookieSecure:String(env.LTP_COOKIE_SECURE||'true')!=='false',capabilities:{companies:true,ballots:true,contributions:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,scheduledAdvisory:true,automaticCompanyResearch:researchQueueEnabled(env),companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导仅接收非敏感结构化问题；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
+  if(request.method==='GET'&&url.pathname==='/api/config') response=json(request,env,200,{version:BACKEND_VERSION,domainVersion:DOMAIN_VERSION,mode:'CLOUDFLARE_WORKER_D1',csrfToken:ctx.csrf,cookieSecure:String(env.LTP_COOKIE_SECURE||'true')!=='false',capabilities:{companies:true,ballots:true,contributions:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,scheduledAdvisory:true,automaticCompanyResearch:researchQueueEnabled(env),unattendedCompanyIntelligence:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导仅接收非敏感结构化问题；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
   else if(request.method==='GET'&&url.pathname==='/api/health') response=json(request,env,200,{status:'ok',version:BACKEND_VERSION,storage:'cloudflare-d1',scheduledAdvisory:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,anonymousAdvisory:true});
   else if(request.method==='GET'&&url.pathname==='/api/companies') response=json(request,env,200,{items:publicCompanyList(await store.read())});
   else if(request.method==='GET'&&url.pathname==='/api/research/coverage') response=json(request,env,200,companyResearchCoverage());
   else if(request.method==='GET'&&url.pathname==='/api/research/status') response=json(request,env,200,publicResearchStatus(await store.read()));
+  else if(request.method==='GET'&&url.pathname==='/api/research/health'){
+    const health=publicResearchHealth(await store.read());const queueConfigured=researchQueueEnabled(env);const scheduledFallback=String(env.LTP_RESEARCH_SCHEDULED||'false')==='true';
+    response=json(request,env,200,{...health,status:queueConfigured?health.status:'RECOVERY_NEEDED',runtime:{companyResearchQueue:queueConfigured,scheduledFallback},selfHealing:{...health.selfHealing,queue:queueConfigured,scheduledReenqueue:scheduledFallback}});
+  }
   else if(request.method==='POST'&&url.pathname==='/api/companies'){
     const input=await bodyJson(request);const out=await createCompanyWithAutoResearch(store,input,ctx.owner);
     const researchDispatch=await dispatchCompanyResearch(env,out,{reason:out.duplicate?'DUPLICATE_RETRY':'USER_CREATE'});
@@ -304,7 +321,8 @@ export default {
     }
   },
   async queue(batch,env,ctx){
-    ctx.waitUntil(consumeResearchQueueBatch(batch,env));
+    const work=batch.queue==='labor-transparency-company-research-dlq'?consumeResearchDeadLetterBatch(batch,env):consumeResearchQueueBatch(batch,env);
+    ctx.waitUntil(work);
   },
   async scheduled(controller,env,ctx){
     ctx.waitUntil((async()=>{

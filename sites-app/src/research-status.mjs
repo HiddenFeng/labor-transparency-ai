@@ -1,17 +1,20 @@
+import {publicAutonomousIntelligence,researchAutonomyHealth} from './autonomous-intelligence.mjs';
+
 export const COMPANY_RESEARCH_COVERAGE = Object.freeze({
   status:'MULTI_SOURCE_AUTOMATION_PARTIAL_GLOBAL_COVERAGE',
-  runtime:'PYTHON_MULTI_SOURCE_BACKOFFICE_PLUS_CLOUDFLARE_PUBLIC_API',
+  runtime:'CLOUDFLARE_QUEUE_D1_AUTONOMOUS_PUBLIC_PIPELINE_PLUS_OPTIONAL_PYTHON_AUDIT',
   pipeline:{
     queue:'IMPLEMENTED',
     boundedCollector:'IMPLEMENTED',
     retryLeaseBudgetCache:'IMPLEMENTED',
-    identityDisambiguation:'IMPLEMENTED_GLEIF_ROOT',
-    providerSpecificBinding:'IMPLEMENTED',
-    independentReview:'IMPLEMENTED',
+    identityDisambiguation:'AUTONOMOUS_FAIL_CLOSED_GLEIF_REFERENCE',
+    providerSpecificBinding:'AUTONOMOUS_TRUST_TIERS',
+    autonomousTrustPolicy:'IMPLEMENTED_BOUNDED_FAIL_CLOSED',
+    independentReview:'OPTIONAL_BACKOFFICE_AUDIT_NOT_PRODUCTION_GATE',
     scheduledRelease:'IMPLEMENTED',
     requesterFollowerNotice:'IMPLEMENTED',
-    persistentState:'IMPLEMENTED_SQLITE_BACKOFFICE',
-    publicationRule:'UNRESOLVED_SOURCE_CANDIDATES_ARE_NOT_FACTS'
+    persistentState:'IMPLEMENTED_D1_PRODUCTION',
+    publicationRule:'MACHINE_VERIFIED_REFERENCE_ONLY; SOURCE_SIGNALS_AND_AMBIGUOUS_CANDIDATES_NEVER_BECOME_BROAD_FACTS'
   },
   sections:[
     {key:'identity',label:'法律实体身份',status:'AUTOMATED_SUPPORTED',source:'GLEIF；OpenCorporates 为可选 token/许可复核来源',scope:'法律名称、LEI、登记国家/地区、法律辖区、实体/维护状态；OpenCorporates 默认关闭'},
@@ -26,13 +29,13 @@ export const COMPANY_RESEARCH_COVERAGE = Object.freeze({
     {provider:'OPENCORPORATES',status:'OPTIONAL_TOKEN_LICENSE_REVIEW_REQUIRED',reason:'API key required; open-data usage has share-alike attribution terms that must be reviewed against this project license.'},
     {provider:'OPEN_SUPPLY_HUB',status:'OPTIONAL_TOKEN_SUBSCRIPTION',reason:'API token/trial or subscription required; facility relationship remains a candidate until provenance review.'}
   ],
-  claimBoundary:'自动研究已从 GLEIF 单源扩展为多源候选/绑定/复核流程。当前能够自动覆盖若干法律实体、美国公开申报、开放知识图谱、美国 NLRB/OSHA/WHD/FMCS/OLMS 劳工记录和 USAspending 联邦award关系；它仍不是“全球所有公司所有数据”的完整镜像。没有来源、未绑定候选、地区不适用和来源不可达都会显式保留为未知。'
+  claimBoundary:'生产系统无人值守运行：严格机器规则满足时可自动发布窄范围法律实体/申报参考事实；劳动、执法、工会、停工、知识图谱等高歧义或高语义风险内容只作为来源信号/候选。它仍不是“全球所有公司所有数据”的完整镜像；没有来源、地区不适用、主体歧义和来源不可达都会显式保留为未知。'
 });
 
 export function companyResearchCoverage(){return structuredClone(COMPANY_RESEARCH_COVERAGE);}
 
 const PUBLIC_CANDIDATE_LIMIT=3;
-const PUBLIC_RESEARCH_BOUNDARY='自动采集结果只作为待核对来源候选展示；未完成主体绑定和独立复核前不会自动升级成公司事实。';
+const PUBLIC_RESEARCH_BOUNDARY='系统会自动发布满足机器规则的窄范围参考事实与来源信号；主体歧义、法律结论、来源冲突和未绑定上下文继续保持候选或未知，不等待特定人员处理。';
 
 function bounded(value,max){return String(value??'').slice(0,max);}
 function publicCandidatePreview(provider,candidate){
@@ -60,6 +63,7 @@ export function publicCompanyResearch(record){
     sourceSuccessCount:Number(record.sourceSuccessCount||0),
     sourceErrorCount:Number(record.sourceErrorCount||0),
     reviewRequired:record.reviewRequired!==false,
+    intelligence:publicAutonomousIntelligence(record.intelligence),
     providers:(record.providers||[]).map(provider=>({
       provider:bounded(provider.provider,64),
       status:provider.status==='ERROR'?'ERROR':'OK',
@@ -74,7 +78,8 @@ export function publicCompanyResearch(record){
 
 export function publicResearchStatus(state){
   const records=Array.isArray(state?.companyResearch)?state.companyResearch:[];
-  const completed=records.filter(x=>['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(x.status));
+  const completed=records.filter(x=>['AUTO_READY','AUTO_READY_WITH_SOURCE_GAPS','REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(x.status));
+  const health=researchAutonomyHealth(state);
   return {
     companiesTracked:records.length,
     queued:records.filter(x=>x.status==='QUEUED').length,
@@ -83,7 +88,16 @@ export function publicResearchStatus(state){
     completed:completed.length,
     lastCollectedAt:completed.map(x=>x.collectedAt).filter(Boolean).sort().at(-1)||null,
     pendingReview:completed.filter(x=>x.reviewRequired).length,
+    autonomousReady:completed.filter(x=>x.intelligence&&x.reviewRequired===false).length,
+    machineVerifiedFacts:completed.reduce((n,x)=>n+Number(x.intelligence?.coverage?.machineVerifiedFacts||0),0),
+    sourceSignals:completed.reduce((n,x)=>n+Number(x.intelligence?.coverage?.sourceSignals||0),0),
+    conflicts:completed.reduce((n,x)=>n+Number(x.intelligence?.conflicts?.length||0),0),
     sourceErrors:completed.reduce((n,x)=>n+Number(x.sourceErrorCount||0),0),
+    automation:{health:health.status,queuedTooLong:health.staleQueued,staleCollecting:health.staleCollecting,retryDue:health.retryEligibleFailures,legacyPendingMigration:health.missingCurrentPolicy,selfHealing:'Queue retries plus 5-minute/daily fallback re-enqueue missing, stale and retry-eligible work; no named operator is required for normal recovery.'},
     boundary:PUBLIC_RESEARCH_BOUNDARY
   };
+}
+
+export function publicResearchHealth(state,{now=new Date()}={}){
+  return researchAutonomyHealth(state,{now});
 }

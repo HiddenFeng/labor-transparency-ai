@@ -10,7 +10,7 @@ import {
   advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase
 } from './domain.mjs';
 import {FileStore} from './storage.mjs';
-import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus} from './research-status.mjs';
+import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus,publicResearchHealth} from './research-status.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.resolve(__dirname,'../public');
@@ -110,6 +110,7 @@ export async function createAppServer(options={}){
       if (req.method==='GET' && url.pathname==='/api/companies') return json(res,200,{items:publicCompanyList(runtime.store.read())});
       if (req.method==='GET' && url.pathname==='/api/research/coverage') return json(res,200,companyResearchCoverage());
       if (req.method==='GET' && url.pathname==='/api/research/status') return json(res,200,publicResearchStatus(runtime.store.read()));
+      if (req.method==='GET' && url.pathname==='/api/research/health') { const health=publicResearchHealth(runtime.store.read()); return json(res,200,{...health,status:'LOCAL_REFERENCE_MODE',runtime:{companyResearchQueue:false,scheduledFallback:false},selfHealing:{...health.selfHealing,queue:false,scheduledReenqueue:false}}); }
       if (req.method==='POST' && url.pathname==='/api/companies') {
         const input=await bodyJson(req); const out=await runtime.store.transaction(s=>addCompany(s,input,owner)); return json(res,200,out);
       }

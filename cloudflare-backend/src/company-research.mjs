@@ -1,3 +1,5 @@
+import {buildAutonomousIntelligence,AUTONOMOUS_INTELLIGENCE_POLICY_VERSION} from '../../sites-app/src/autonomous-intelligence.mjs';
+
 const UA='LaborTransparencyPublicInterest/0.8.1 (+https://github.com/HiddenFeng/labor-transparency-ai)';
 const MAX_BODY=2_000_000;
 const SOURCE_TIMEOUT_MS=8_000;
@@ -98,8 +100,8 @@ async function runBoundedProviderTasks(tasks,limit=4){
 
 function researchRecordBase(company,status,at){return {
   id:`research_${company.id}`,companyId:company.id,companyName:boundedText(company.name,160),region:boundedText(company.region,100),
-  status,queuedAt:at,startedAt:null,collectedAt:null,failedAt:null,reviewRequired:true,providers:[],candidateCount:0,
-  exactNameCandidateCount:0,sourceSuccessCount:0,sourceErrorCount:0
+  status,queuedAt:at,startedAt:null,collectedAt:null,failedAt:null,reviewRequired:false,providers:[],candidateCount:0,
+  exactNameCandidateCount:0,sourceSuccessCount:0,sourceErrorCount:0,intelligence:null,failureCount:0,deadLetteredAt:null
 };}
 
 export async function collectCompanyResearch(company,{fetchImpl=fetch,now=new Date()}={}){
@@ -116,13 +118,23 @@ export async function collectCompanyResearch(company,{fetchImpl=fetch,now=new Da
   const all=providers.flatMap(x=>x.candidates||[]);
   base.candidateCount=all.length;base.exactNameCandidateCount=all.filter(x=>x.match==='EXACT_NAME').length;
   base.sourceSuccessCount=providers.filter(x=>x.status==='OK').length;base.sourceErrorCount=providers.filter(x=>x.status==='ERROR').length;
-  base.status=base.sourceErrorCount?'REVIEW_REQUIRED_WITH_SOURCE_GAPS':'REVIEW_REQUIRED';
+  base.intelligence=buildAutonomousIntelligence(company,base,{now});
+  base.status=base.sourceErrorCount?'AUTO_READY_WITH_SOURCE_GAPS':'AUTO_READY';
   return base;
 }
 
 export function mergeCompanyResearch(state,records){
   if(!Array.isArray(state.companyResearch))state.companyResearch=[];
-  const by=new Map(state.companyResearch.map(x=>[x.companyId,x]));for(const r of records)by.set(r.companyId,r);
+  const by=new Map(state.companyResearch.map(x=>[x.companyId,x]));
+  for(const r of records){
+    const old=by.get(r.companyId);
+    if(r.intelligence){
+      const previous=old?.intelligence?.fingerprint||null;
+      r.intelligence.previousFingerprint=previous;
+      r.intelligence.change=!previous?'INITIAL':previous===r.intelligence.fingerprint?'UNCHANGED':'UPDATED';
+    }
+    by.set(r.companyId,r);
+  }
   state.companyResearch=[...by.values()].sort((a,b)=>String(a.companyId).localeCompare(String(b.companyId)));return records.length;
 }
 
@@ -140,7 +152,7 @@ export function markCompanyResearchStarted(state,company,{now=new Date(),staleCo
   if(!Array.isArray(state.companyResearch))state.companyResearch=[];
   const existing=state.companyResearch.find(x=>x.companyId===company.id);
   if(existing?.status==='COLLECTING'&&existing.startedAt&&now.getTime()-new Date(existing.startedAt).getTime()<staleCollectingMs)return null;
-  if(existing&&!['QUEUED','COLLECTION_FAILED','COLLECTING'].includes(existing.status)&&!(allowRefresh&&['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(existing.status)))return null;
+  if(existing&&!['QUEUED','COLLECTION_FAILED','COLLECTING'].includes(existing.status)&&!(allowRefresh&&['AUTO_READY','AUTO_READY_WITH_SOURCE_GAPS','REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(existing.status)))return null;
   const base=existing||researchRecordBase(company,'QUEUED',now.toISOString());
   const record={...base,status:'COLLECTING',queuedAt:base.queuedAt||now.toISOString(),startedAt:now.toISOString(),failedAt:null};
   mergeCompanyResearch(state,[record]);return record;
@@ -148,8 +160,19 @@ export function markCompanyResearchStarted(state,company,{now=new Date(),staleCo
 
 export function markCompanyResearchFailed(state,companyId,{now=new Date(),error='COLLECTION_RUNTIME_FAILED'}={}){
   const existing=(state.companyResearch||[]).find(x=>x.companyId===companyId);if(!existing)return null;
-  const record={...existing,status:'COLLECTION_FAILED',failedAt:now.toISOString(),lastError:boundedText(error,80),reviewRequired:true};
+  const record={...existing,status:'COLLECTION_FAILED',failedAt:now.toISOString(),lastError:boundedText(error,80),reviewRequired:false,failureCount:Number(existing.failureCount||0)+1};
   mergeCompanyResearch(state,[record]);return record;
+}
+
+export function markCompanyResearchDeadLettered(state,companyId,{now=new Date()}={}){
+  const existing=(state.companyResearch||[]).find(x=>x.companyId===companyId);if(!existing)return null;
+  const record={...existing,status:'COLLECTION_FAILED',deadLetteredAt:now.toISOString(),lastError:'QUEUE_RETRIES_EXHAUSTED',reviewRequired:false};
+  mergeCompanyResearch(state,[record]);return record;
+}
+
+function failedRetryDelayMs(record,baseMs){
+  const failures=Math.max(1,Number(record?.failureCount||1));
+  return Math.min(8*60*60*1000,baseMs*(2**Math.min(failures-1,4)));
 }
 
 export function selectResearchCompanies(state,max=2,{now=new Date(),refreshAfterMs=24*60*60*1000,failureRetryMs=30*60*1000,staleCollectingMs=15*60*1000}={}){
@@ -158,8 +181,8 @@ export function selectResearchCompanies(state,max=2,{now=new Date(),refreshAfter
     const r=existing.get(company.id);if(!r)return true;
     if(r.status==='QUEUED')return true;
     if(r.status==='COLLECTING')return !r.startedAt||now.getTime()-new Date(r.startedAt).getTime()>=staleCollectingMs;
-    if(r.status==='COLLECTION_FAILED')return !r.failedAt||now.getTime()-new Date(r.failedAt).getTime()>=failureRetryMs;
-    if(['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(r.status))return !r.collectedAt||now.getTime()-new Date(r.collectedAt).getTime()>=refreshAfterMs;
+    if(r.status==='COLLECTION_FAILED')return !r.failedAt||now.getTime()-new Date(r.failedAt).getTime()>=failedRetryDelayMs(r,failureRetryMs);
+    if(['AUTO_READY','AUTO_READY_WITH_SOURCE_GAPS','REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(r.status))return r.intelligence?.policyVersion!==AUTONOMOUS_INTELLIGENCE_POLICY_VERSION||!r.collectedAt||now.getTime()-new Date(r.collectedAt).getTime()>=refreshAfterMs;
     return true;
   });
   function priority(company){const r=existing.get(company.id);if(!r||r.status==='QUEUED')return 0;if(r.status==='COLLECTION_FAILED'||r.status==='COLLECTING')return 1;return 2;}
