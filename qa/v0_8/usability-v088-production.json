@@ -1,0 +1,66 @@
+{
+  "status": "PASS_DEPLOYED_CI_BROWSER_POSTDEPLOY_E2E_CLEANUP_PUBLIC_SMOKE_V088",
+  "date": "2026-09-16",
+  "release": {
+    "version": "0.8.8-rc.1",
+    "head": "cf1067a4d30485baf22258072d51bb3fc5348c5e",
+    "ciRun": 35103315352,
+    "pushPublicSmokeRun": 35103315270
+  },
+  "deployment": {
+    "workerVersionId": "a7f6e635-a5b5-4bff-9171-b47a0ba8b26e",
+    "vercel": "https://workermanifestfellowship-hx68r01vs-hiddenfeng.vercel.app",
+    "canonical": "https://workermanifestfellowship.dpdns.org",
+    "configVersion": "0.8.8-rc.1"
+  },
+  "browser": {
+    "mainlandChinaResourceGroup": true,
+    "routes": [
+      "https://www.12333.gov.cn/",
+      "https://www.12333.gov.cn/job/",
+      "https://www.12348.gov.cn/",
+      "https://liuyan.www.gov.cn/hudong/atwls/rmqz.htm"
+    ],
+    "primaryNavigationRechecked": true,
+    "pageErrors": 0,
+    "networkErrors": 0,
+    "consoleErrors": 0
+  },
+  "productionAutoResearchE2E": {
+    "runId": 35104087790,
+    "status": "PASS",
+    "event": "workflow_dispatch",
+    "qaCompanyId": "co_8e5224dd99f7fe56b0",
+    "qaRegion": "US · production-auto-research-e2e-g4k2fhq",
+    "researchStatus": "AUTO_READY_WITH_SOURCE_GAPS"
+  },
+  "cleanup": {
+    "status": "PASS",
+    "relatedRowsBefore": 3,
+    "rowsDeleted": 3,
+    "residualQaRows": 0,
+    "revisionBefore": 77,
+    "revisionAfter": 78,
+    "writeLockUsed": true,
+    "nonQaRecordsPreserved": true
+  },
+  "postCleanupState": {
+    "companies": 1,
+    "companyNames": [
+      "星宇股份有限公司"
+    ],
+    "ballots": 1,
+    "companyResearch": 1,
+    "contributions": 1,
+    "pendingFeedback": 0,
+    "officialReferences": 0,
+    "officialRelations": 0,
+    "officialEvents": 0,
+    "dailyRuns": 2
+  },
+  "postdeployPublicSmoke": {
+    "runId": 35104628662,
+    "status": "PASS",
+    "event": "workflow_dispatch"
+  }
+}

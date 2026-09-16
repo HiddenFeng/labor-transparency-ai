@@ -1,7 +1,7 @@
 # v0.8.8-rc.1 — Production usability hardening
 
 Date: 2026-09-16
-Status: `PASS_LOCAL_RELEASE_CANDIDATE_NOT_PRODUCTION_DEPLOYED`
+Status: `PASS_PRODUCTION_USABILITY_HARDENING_V088`
 
 ## Why this milestone
 
@@ -55,14 +55,22 @@ The resource copy preserves the platform privacy boundary. Formal external chann
 - frontend candidate build + privacy audit: `PASS`, 0 forbidden matches;
 - `git diff --check`: `PASS`.
 
-## Release gate
+## Production acceptance
 
-Current accepted production remains v0.8.7-rc.1 until v0.8.8 passes GitHub release CI and is deployed through the canonical Cloudflare Worker + Vercel path. After deployment:
+Accepted on 2026-09-16 after release and post-deploy verification.
 
-1. verify canonical `/api/config` reports `0.8.8-rc.1`;
-2. browser-check the new 中国大陆 resource group and the existing advisory/contribution/company flows;
-3. manually run the production auto-research E2E only after runtime version matches the checked-out release;
-4. precisely clean any QA company/research/ballot created by that E2E and verify production data hygiene;
-5. record final acceptance evidence in `qa/v0_8/verification.json`.
+- Release feature head: `cf1067a4d30485baf22258072d51bb3fc5348c5e`.
+- GitHub release CI run `35103315352`: `PASS`.
+- Push-triggered public semantic smoke run `35103315270`: `PASS`.
+- Cloudflare Worker version: `a7f6e635-a5b5-4bff-9171-b47a0ba8b26e`.
+- Vercel production deployment: `https://workermanifestfellowship-hx68r01vs-hiddenfeng.vercel.app`, aliased to `https://workermanifestfellowship.dpdns.org`.
+- Canonical `/api/config`: `version=0.8.8-rc.1`, `domainVersion=0.8.8-rc.1`, `mode=CLOUDFLARE_WORKER_D1`.
+- Canonical browser verification: the 中国大陆 resource filter exposes 12333, the 12333 labour-service route, 12348 and the national wage-arrears route; advisory, contribution and company discovery/detail navigation still works with zero page/network/console errors.
+- Manual **post-deploy** production auto-research E2E run `35104087790`: `PASS`. The workflow created `Starbucks Corporation` in the unique QA region `US · production-auto-research-e2e-g4k2fhq`, observed the real Cloudflare Queue consumer reach `AUTO_READY_WITH_SOURCE_GAPS`, and completed the negative-ballot interaction without invoking a private research run/review endpoint.
+- Exact cleanup preflight found only three QA-related D1 rows: the QA company, its companyResearch record and its ballot. Those rows were removed under the production `ltp_write_lock`; D1 revision advanced `77 -> 78` and no QA row remained.
+- Post-cleanup production state: 1 real company (`星宇股份有限公司`), 1 real ballot, 1 companyResearch record, 1 contribution, 0 pending community feedback, 0 official references, 0 official relations and 0 official events; real community evidence remained intact.
+- Manual **post-deploy** public semantic smoke run `35104628662`: `PASS`.
 
-The milestone should stop there unless the audit finds another concrete broken user path. BSE or other source-depth expansion is lower priority than a real usability/operations defect.
+Production gate: `PASS_DEPLOYED_CI_BROWSER_POSTDEPLOY_E2E_CLEANUP_PUBLIC_SMOKE_V088`.
+
+No material broken core user path was found after the fixes above. Remaining work is normal source/coverage growth (for example BSE only if an official reproducible public interface is available) and future product iteration; it is not a blocker to the current product being usable.

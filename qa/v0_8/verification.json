@@ -779,8 +779,8 @@
     }
   },
   "remaining_human_only": [],
-  "next_gate": "v0.8.8 production-usability candidate is locally validated. Require GitHub CI, deploy only after CI passes, then verify Mainland China worker resources and primary browser flows; run production auto-research E2E manually after deployment and clean exact QA state before final acceptance.",
-  "strongest_claim": "v0.8.7-rc.1 remains accepted production. A v0.8.8-rc.1 usability-hardening candidate fixes a real release-operations defect (production auto-research E2E racing source pushes before deployment) and adds actionable Mainland China official worker-help routes to the China-first public product. Local public-smoke 9/9, sites-app 30/30, backend 24/24, Worker+D1 restart, build and privacy gates pass; production is unchanged until release CI and deployment complete.",
+  "next_gate": "v0.8.8 usability hardening is production-accepted and the audited core worker flows are usable. Continue only high-value product/source growth from concrete user needs or verified coverage gaps; BSE remains optional until a documented reproducible official public path exists. No current production blocker requires user action.",
+  "strongest_claim": "v0.8.8-rc.1 is production-deployed and accepted as a fully usable current baseline for the audited core flows. Homepage/guidance, company discovery/detail, anonymous advisory, low-friction contribution, personal submissions, resource navigation and runtime status were browser-validated; Mainland China official help routes are now present. Production auto-research E2E is correctly post-deploy/manual and run 35104087790 passed on the real Queue consumer; its exact three QA rows were removed under the D1 write lock and production returned to one real company with existing community evidence preserved. Release CI 35103315352 and post-deploy public smoke 35104628662 pass; Worker a7f6e635-a5b5-4bff-9171-b47a0ba8b26e and Vercel hx68r01vs are live.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -1862,7 +1862,7 @@
     "production_gate": "PASS_DEPLOYED_BROWSER_D1_CI_E2E_SMOKE_CHINA_SOURCE_BINDING_AND_GAPS"
   },
   "candidate_v088_production_usability_hardening": {
-    "status": "PASS_LOCAL_RELEASE_CANDIDATE_NOT_PRODUCTION_DEPLOYED",
+    "status": "PASS_PRODUCTION_USABILITY_HARDENING_V088",
     "runtime_version": "0.8.8-rc.1",
     "base_production_head": "ba38dfb",
     "change_record": "docs/v0_8/CHANGE-v0.8.8-production-usability-hardening.md",
@@ -1891,7 +1891,67 @@
       "frontend_privacy_audit": "PASS_0_FORBIDDEN_MATCHES",
       "git_diff_check": "PASS"
     },
-    "production_state": "UNCHANGED_V087_ACCEPTED",
-    "next_release_gate": "GitHub CI -> deploy Cloudflare/Vercel -> canonical browser/resource validation -> manual post-deploy production auto-research E2E -> precise QA cleanup -> production acceptance"
+    "production_state": "PASS_DEPLOYED_CI_BROWSER_POSTDEPLOY_E2E_CLEANUP_PUBLIC_SMOKE_V088",
+    "next_release_gate": "NONE_FOR_V088_ACCEPTANCE; future source/product changes require their own bounded validation/release gate.",
+    "release_head": "cf1067a4d30485baf22258072d51bb3fc5348c5e",
+    "production": {
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "worker_version_id": "a7f6e635-a5b5-4bff-9171-b47a0ba8b26e",
+      "vercel_deployment": "https://workermanifestfellowship-hx68r01vs-hiddenfeng.vercel.app",
+      "runtime_version_observed": "0.8.8-rc.1",
+      "release_ci": {
+        "run_id": 35103315352,
+        "status": "PASS",
+        "head_sha": "cf1067a4d30485baf22258072d51bb3fc5348c5e"
+      },
+      "push_public_smoke": {
+        "run_id": 35103315270,
+        "status": "PASS",
+        "head_sha": "cf1067a4d30485baf22258072d51bb3fc5348c5e"
+      },
+      "postdeploy_auto_research_e2e": {
+        "run_id": 35104087790,
+        "status": "PASS",
+        "event": "workflow_dispatch",
+        "head_sha": "cf1067a4d30485baf22258072d51bb3fc5348c5e",
+        "qa_company_id": "co_8e5224dd99f7fe56b0",
+        "qa_region": "US · production-auto-research-e2e-g4k2fhq",
+        "research_status": "AUTO_READY_WITH_SOURCE_GAPS"
+      },
+      "postdeploy_public_smoke": {
+        "run_id": 35104628662,
+        "status": "PASS",
+        "event": "workflow_dispatch",
+        "head_sha": "cf1067a4d30485baf22258072d51bb3fc5348c5e"
+      },
+      "browser_canonical": "PASS_MAINLAND_CHINA_RESOURCES_AND_PRIMARY_NAV_ZERO_PAGE_NETWORK_CONSOLE_ERRORS"
+    },
+    "production_qa_cleanup": {
+      "status": "PASS_EXACT_3_ROWS_REMOVED_UNDER_WRITE_LOCK",
+      "qa_company_id": "co_8e5224dd99f7fe56b0",
+      "rows_deleted": 3,
+      "collections": [
+        "companies",
+        "companyResearch",
+        "ballots"
+      ],
+      "related_rows_before_cleanup": 3,
+      "residual_qa_rows": 0,
+      "revision_before": 77,
+      "revision_after": 78,
+      "non_qa_records_preserved": true
+    },
+    "production_hygiene": {
+      "companies": 1,
+      "ballots": 1,
+      "companyResearch": 1,
+      "contributions": 1,
+      "pending_feedback": 0,
+      "official_references": 0,
+      "official_relations": 0,
+      "official_events": 0,
+      "real_company": "星宇股份有限公司",
+      "existing_real_community_evidence_preserved": true
+    }
   }
 }
