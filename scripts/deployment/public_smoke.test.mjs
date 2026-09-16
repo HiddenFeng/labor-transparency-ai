@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateHtml,validateHealth,validateConfig,validateResearchHealth,validateCompanyDetail,validateSecurityHeaders} from './public_smoke.mjs';
+import {validateHtml,validateHealth,validateConfig,validateResearchHealth,validateCompanyDetail,validateSecurityHeaders,selectDossierCompany} from './public_smoke.mjs';
 
 function response(status=200,headers={}){return new Response('',{status,headers});}
 const security={
@@ -48,6 +48,16 @@ test('company dossier validator requires China investigation boundary for China 
   const detail={company:{id:'co_cn',name:'示例中国公司',region:'中国'},community:{positive:0,negative:0,boundary:'社区反馈不改变证据等级。'},research:{intelligence:{policyVersion:'auto-intelligence-0.8.3',dossier:{status:'LIMITED_DATA'}}},officialReferences:[],officialRelations:[],officialEvents:[],contributions:{products:[],labourClaims:[]},chinaInvestigation:{jurisdiction:'CN',sourceCoverage:[],gaps:[],boundary:'这是来源索引，不是信用评级或公司整体判断。'},boundary:'公司详情把社区反馈与自动资料分层展示。'};
   validateCompanyDetail('china-detail',r,detail);
   assert.throws(()=>validateCompanyDetail('china-detail',r,{...detail,chinaInvestigation:null}),/China investigation projection/);
+});
+
+test('public smoke ignores concurrent queued QA company and selects an already completed dossier',()=>{
+  const items=[
+    {id:'co_qa',synthetic:false,research:{status:'QUEUED'}},
+    {id:'co_ready',synthetic:false,research:{status:'AUTO_READY',intelligence:{dossier:{status:'CONTEXT_READY'}}}},
+    {id:'co_demo',synthetic:true,research:{status:'AUTO_READY',intelligence:{dossier:{status:'REFERENCE_READY'}}}},
+  ];
+  assert.equal(selectDossierCompany(items)?.id,'co_ready');
+  assert.equal(selectDossierCompany([{id:'co_wait',synthetic:false,research:{status:'COLLECTING'}}]),null);
 });
 
 test('security validator rejects framing regression',()=>{

@@ -14,6 +14,7 @@ const RETIRED_ORIGINS=[
 
 function normalizeOrigin(value){return String(value||'').replace(/\/$/,'');}
 function header(response,name){return response.headers.get(name)||'';}
+export function selectDossierCompany(items){return (items||[]).find(x=>!x.synthetic&&x.research?.intelligence?.dossier)||null;}
 
 export function validateSecurityHeaders(label,response,{csp=false}={}){
   assert.equal(header(response,'x-content-type-options').toLowerCase(),'nosniff',`${label}: x-content-type-options`);
@@ -164,8 +165,12 @@ export async function runPublicSmoke(env=process.env){
   await getJson('primary config',`${primaryOrigin}/api/config`,validateConfig);
   const primaryResearchHealth=await getJson('primary research health',`${primaryOrigin}/api/research/health`,validateResearchHealth);
   const primaryCompanies=await getJson('primary companies',`${primaryOrigin}/api/companies`,(label,response,data)=>{assert.equal(response.status,200,`${label}: HTTP status`);assert.ok(Array.isArray(data.items),`${label}: items`);validateSecurityHeaders(label,response);});
-  const realCompany=primaryCompanies.items.find(x=>!x.synthetic);
-  if(realCompany) await getJson('primary company dossier',`${primaryOrigin}/api/companies/${encodeURIComponent(realCompany.id)}`,validateCompanyDetail);
+  const realCompanies=primaryCompanies.items.filter(x=>!x.synthetic);
+  const dossierCompany=selectDossierCompany(realCompanies);
+  if(realCompanies.length){
+    assert.ok(dossierCompany,'primary companies: at least one existing real company must have a completed public dossier; ignore concurrent QA companies still QUEUED/COLLECTING');
+    await getJson('primary company dossier',`${primaryOrigin}/api/companies/${encodeURIComponent(dossierCompany.id)}`,validateCompanyDetail);
+  }
 
   await getHtml('vercel fallback root',`${vercelOrigin}/`);
   const vercelHealth=await getJson('vercel fallback health',`${vercelOrigin}/api/health`,validateHealth);
