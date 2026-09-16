@@ -1,7 +1,7 @@
 # v0.8.5 China enterprise investigation
 
 Date: 2026-09-16
-Status: CANDIDATE_LOCAL_PASS_AWAITING_PRODUCTION_DEPLOYMENT
+Status: PASS_PRODUCTION_CHINA_ENTERPRISE_INVESTIGATION
 Runtime: `0.8.5-rc.1`
 Company-intelligence policy: `auto-intelligence-0.8.3` (unchanged)
 
@@ -109,19 +109,32 @@ The platform still does not monitor whether the 18:00 Agent remains active; the 
 - China collector unit tests: 6/6 PASS.
 - Sites/API/UI: 27/27 PASS.
 - Cloudflare backend: 24/24 PASS.
-- Public-smoke contract: 7/7 PASS.
+- Public-smoke contract: 8/8 PASS, including the concurrent-QUEUED-QA-company race guard.
 - Full Python project environment: 310/310 PASS.
 - Local Worker+D1 HTTP/restart smoke: PASS including `officialEvents` trusted write and public company-detail projection.
 - Sites build: PASS, 17 files, `0.8.5-rc.1`.
 - Built-site privacy audit: PASS, 0 forbidden matches.
 - `git diff --check`: PASS.
 
-## Production gate
+## Production acceptance
 
-Not yet accepted at this point in the file history. Production acceptance requires:
-- Worker and Vercel deployment of `0.8.5-rc.1`;
-- canonical public config exposing `officialEvents`;
-- real China company detail exposing `chinaInvestigation` + `officialEvents` array;
-- browser validation of the China investigation UI;
-- public smoke / release CI / production E2E passing;
-- remote D1 inspection showing no QA company/event residue and preserving real community data.
+Accepted on 2026-09-16.
+
+- Runtime behavior commit: `f1e906386f05b51941de4c99b08ee8f0f99e32ef` (`feat: deepen China enterprise investigation`).
+- Current main after race-safe smoke governance fix: `ddc433f7fb50abda7b0416b5143ffbe805c3fa96`.
+- Cloudflare Worker version: `cc0a8ba1-ea8c-4b70-8dee-69d443aabe14`.
+- Vercel production deployment: `https://workermanifestfellowship-bu1mh88k4-hiddenfeng.vercel.app`, aliased to the canonical project domain and Vercel fallback.
+- Canonical `/api/config`: `0.8.5-rc.1`, `officialEvents=true`.
+- Real Xingyu detail: `chinaInvestigation` present, `officialEvents=[]`, strict legal identity remains `NO_VERIFIED_REFERENCE`, Wikidata shortened-name context remains context only, and the existing negative community ballot/labor claim are preserved.
+- Desktop production browser: China investigation visible with zero console/network/page errors.
+- Independent narrow Chrome/CDP: page width 485 / viewport 485×757, China investigation/gaps visible, zero console/network/page errors.
+- Production E2E #11 run `35084225680`: PASS.
+- Behavior Release CI #42 run `35084225660`: PASS.
+- Initial Public smoke #32 run `35084225617`: FAIL retained as evidence. It selected a concurrently-created QA company still `QUEUED/COLLECTING`, not a product/runtime failure.
+- Race-safe smoke fix `ddc433f`: selects an existing completed dossier and ignores concurrent QA companies until their dossier is ready; local smoke contract 8/8 PASS.
+- Latest Public smoke #33 run `35084656560`: PASS.
+- Latest Release CI #43 run `35084656499`: PASS.
+- Remote D1 post-E2E cleanup: exact QA Starbucks company/research/ballot removed under the production state lock; revision advanced to 71. Final production state returned to one real company, one ballot, one companyResearch, one contribution, one public announcement and one 18:00 agentDailyRun; no QA official reference/relation/event/feedback rows remain.
+- First Beijing 18:00 daily Agent occurrence produced durable NMPA/SAMR/CSRC/EU/Japan metrics and phase-18 run evidence. The 19:00 independent review remained future at this acceptance point and is not claimed as completed.
+
+Production gate: `PASS_DEPLOYED_BROWSER_D1_CI_E2E_SMOKE_CHINA_SOURCE_BINDING_AND_GAPS`.

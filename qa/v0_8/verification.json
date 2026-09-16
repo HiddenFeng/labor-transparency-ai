@@ -1,7 +1,7 @@
 {
-  "version": "0.8.4-rc.3",
+  "version": "0.8.5-rc.1",
   "date": "2026-09-16",
-  "status": "PASS_PRODUCTION_COMMUNITY_GROWTH_DAILY_AGENT_V084_RC3",
+  "status": "PASS_PRODUCTION_CHINA_ENTERPRISE_INVESTIGATION_V085",
   "git": {
     "branch": "main",
     "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai",
@@ -25,7 +25,7 @@
         "cloudflare_backend": "success"
       }
     },
-    "current_main_sha": "9a26bf077cd89bdf83d2ef6d46aeda74cb8ab821",
+    "current_main_sha": "ddc433f7fb50abda7b0416b5143ffbe805c3fa96",
     "origin_main_matches": true,
     "final_release_ci": {
       "run_id": 35047372002,
@@ -89,9 +89,9 @@
     }
   },
   "public_deployment": {
-    "version": "0.8.4-rc.3",
+    "version": "0.8.5-rc.1",
     "date": "2026-09-16",
-    "status": "PUBLIC_HIDDENFENG_VERCEL_CLOUDFLARE_V084_COMMUNITY_GROWTH_LIVE",
+    "status": "PUBLIC_HIDDENFENG_VERCEL_CLOUDFLARE_V085_CHINA_INVESTIGATION_LIVE",
     "cloudflare": {
       "backend": "https://labor-transparency-api.labor-transparency-public.workers.dev",
       "worker_live": true,
@@ -325,6 +325,18 @@
       "daily_agent_18": "fx_0ae10ddc598947738441",
       "daily_review_19": "fx_061391ba3d304dea8a8d",
       "bounded_command_line_control_fallback": "PASS_WRANGLER_D1_REVISION_64"
+    },
+    "current_v085": {
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "worker_version_id": "cc0a8ba1-ea8c-4b70-8dee-69d443aabe14",
+      "vercel_deployment": "https://workermanifestfellowship-bu1mh88k4-hiddenfeng.vercel.app",
+      "runtime_version": "0.8.5-rc.1",
+      "behavior_sha": "f1e906386f05b51941de4c99b08ee8f0f99e32ef",
+      "main_sha": "ddc433f7fb50abda7b0416b5143ffbe805c3fa96",
+      "china_investigation": true,
+      "official_events": true,
+      "real_company_preserved": true,
+      "qa_cleanup": "PASS"
     }
   },
   "architecture": {
@@ -614,8 +626,8 @@
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
   "remaining_human_only": [],
-  "next_gate": "No release gate remains for v0.8.4 community-growth infrastructure. Observe the scheduled Beijing 18:00 and 19:00 occurrences through durable project/database records; continue jurisdiction/source expansion only through documented official interfaces or explicit credential/application gates.",
-  "strongest_claim": "v0.8.4-rc.3 is production-deployed and accepted for low-friction community contribution, separate official reference/relation tiers, China NMPA UDI, EU TED procurement and Japan NTA daily-delta sources, private feedback plus sourced daily announcements, and installed Beijing-time 18:00/19:00 LocalAgentRuntime operations. The project Mac also has a production-proven bounded Wrangler-D1 control fallback for daily Agent data when command-line public API networking is unavailable; it uses the existing D1 lock/domain mutators and cannot mutate company/ballot/contribution/research main data. Existing company intelligence remains auto-intelligence-0.8.3 and no broader legal/quality inference was introduced.",
+  "next_gate": "No release gate remains for v0.8.5 China-enterprise investigation. Continue China source depth with strict legal-name/identifier binding: prioritize documented exchange/listing disclosures, procurement award detail paths that do not require CAPTCHA bypass, additional SAMR/CSRC source-specific public records, and trustworthy labor/public-enforcement sources. Preserve explicit unknowns and do not turn event counts into company scores.",
+  "strongest_claim": "v0.8.5-rc.1 is production-deployed and accepted for China-first enterprise investigation: NMPA product relations, SAMR recall events and CSRC administrative-penalty events use strict fail-closed binding; China company pages expose a source-scoped investigation summary across identity/listing/brand-product/regulatory/recall/procurement/labor dimensions with explicit unknown gaps; community evidence stays separate; the real Xingyu company remains unverified at legal-identity level and has zero forced official event matches; local 27/24/310 tests, Worker+D1 restart smoke, production browser, Production E2E, Release CI and race-safe Public smoke pass, and production D1 is clean after QA cleanup.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -1467,5 +1479,233 @@
       "The first scheduled 18:00/19:00 occurrences were still future at this acceptance checkpoint; installation/readiness is verified without claiming those future runs already completed."
     ],
     "production_gate": "PASS_RUNTIME_DEPLOYED_CI_E2E_SMOKE_BROWSER_D1_SCHEDULE_AND_CONTROL_FALLBACK_READY"
+  },
+  "china_enterprise_investigation_v085": {
+    "status": "PASS_PRODUCTION_CHINA_ENTERPRISE_INVESTIGATION_V085",
+    "change_record": "docs/v0_8/CHANGE-v0.8.5-china-enterprise-investigation.md",
+    "runtime_version": "0.8.5-rc.1",
+    "company_intelligence_policy_version": "auto-intelligence-0.8.3",
+    "main_sha": "ddc433f7fb50abda7b0416b5143ffbe805c3fa96",
+    "production_runtime_sha": "f1e906386f05b51941de4c99b08ee8f0f99e32ef",
+    "production": {
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "vercel_fallback": "https://workermanifestfellowship.vercel.app",
+      "worker_api": "https://labor-transparency-api.labor-transparency-public.workers.dev",
+      "worker_version_id": "cc0a8ba1-ea8c-4b70-8dee-69d443aabe14",
+      "vercel_deployment": "https://workermanifestfellowship-bu1mh88k4-hiddenfeng.vercel.app",
+      "runtime_version_observed": "0.8.5-rc.1",
+      "official_events_capability": true,
+      "research_policy": "auto-intelligence-0.8.3"
+    },
+    "china_source_registry": {
+      "schema": "ltp-company-source-registry-1.2",
+      "source_count": 24,
+      "automated": [
+        {
+          "provider": "CN_NMPA_UDI",
+          "tier": "OFFICIAL_SOURCE_RELATION",
+          "binding": "exact registrant / approved identifier",
+          "scope": "specific medical-device registrant/filing ↔ UDI/product record"
+        },
+        {
+          "provider": "CN_SAMR_RECALL",
+          "tier": "OFFICIAL_SOURCE_EVENT",
+          "binding": "full company name in recall-title producer segment + detail producer reconfirmation",
+          "scope": "specific SAMR defective-product recall notice"
+        },
+        {
+          "provider": "CN_CSRC_PENALTY",
+          "tier": "OFFICIAL_SOURCE_EVENT",
+          "binding": "full company name in official search summary + exact 当事人 boundary in c101928 decision body",
+          "scope": "specific CSRC administrative-penalty decision"
+        }
+      ],
+      "lookup_only": [
+        "CN_GSXT",
+        "CN_CNIPA_TRADEMARK",
+        "CN_SAMR_QUERY_HUB"
+      ],
+      "explicit_non_bypass": [
+        "GSXT CAPTCHA/anti-bot/login controls",
+        "CNIPA undocumented/private endpoints",
+        "China Government Procurement CAPTCHA search"
+      ],
+      "listing_boundary": "shortened company names/open-context exchange hints are insufficient; official stock-code/legal-name corroboration required"
+    },
+    "evidence_model": {
+      "official_source_reference": "bounded registry/disclosure reference; not necessarily strict identity",
+      "official_source_relation": "specific official entity/product/brand/procurement relation",
+      "official_source_event": "specific dated official recall/regulatory/enforcement event",
+      "community_claims": "remain E0+ contributions and never auto-promote to official tiers",
+      "broad_score_or_verdict": false
+    },
+    "china_investigation_projection": {
+      "endpoint": "GET /api/companies/:id",
+      "field": "chinaInvestigation",
+      "dimensions": [
+        "identity",
+        "listing/disclosure",
+        "brand/products",
+        "regulatory",
+        "recalls",
+        "procurement",
+        "labour"
+      ],
+      "source_coverage_visible": true,
+      "unknown_gaps_visible": true,
+      "official_events_timeline_visible": true,
+      "zero_match_means_absence": false,
+      "boundary": "evidence/gap index only; not credit, misconduct, legal-risk, employer, product or labor-quality score"
+    },
+    "live_source_validation": {
+      "real_production_company": {
+        "id": "co_c9d8bc0f46b2f597da",
+        "name": "星宇股份有限公司",
+        "region": "中国",
+        "nmpa": {
+          "records_scanned": 8350,
+          "exact_relations": 0
+        },
+        "samr_recall": {
+          "index_requests": 4,
+          "index_records": 84,
+          "exact_title_matches": 0,
+          "detail_requests": 0,
+          "events": 0
+        },
+        "csrc_penalty": {
+          "search_requests": 1,
+          "search_results": 0,
+          "detail_requests": 0,
+          "events": 0
+        },
+        "legal_identity_status": "NO_VERIFIED_REFERENCE",
+        "open_context_reference": "Q106240022",
+        "open_context_not_upgraded": true,
+        "community_negative_ballots_preserved": 1,
+        "community_labour_claims_preserved": 1
+      },
+      "samr_positive_probe": {
+        "company": "小米汽车科技有限公司",
+        "production_write": false,
+        "index_records": 84,
+        "title_matches": 2,
+        "detail_accepted": 1,
+        "detail_rejected": 1,
+        "rejected_detail_producer": "北京汽车集团越野车有限公司（委托小米汽车科技有限公司）",
+        "meaning": "title match cannot override more-specific producer detail"
+      },
+      "csrc_positive_probe": {
+        "company": "大唐高鸿网络股份有限公司",
+        "production_write": false,
+        "search_requests": 1,
+        "search_results": 1,
+        "detail_requests": 1,
+        "events": 1,
+        "decision_number": "〔2026〕10号",
+        "short-name_substring_binding_rejected_before_deploy": true
+      }
+    },
+    "daily_agent": {
+      "time_zone": "Asia/Shanghai",
+      "operations_18_fixed_run_id": "fx_0ae10ddc598947738441",
+      "review_19_fixed_run_id": "fx_061391ba3d304dea8a8d",
+      "china_first_order": [
+        "CN_NMPA_UDI",
+        "CN_SAMR_RECALL",
+        "CN_CSRC_PENALTY"
+      ],
+      "monitor_other_agent_activity": false,
+      "first_18_durable_record": "history/daily/2026-09-16/18-operations.md",
+      "first_18_database_run_present": true,
+      "first_18_result": "COMPLETED_WITH_ZERO_CHINA_MATCHES_AND_EXPLICIT_GAPS",
+      "review_19_future_at_acceptance_time": true
+    },
+    "local_validation": {
+      "china_collector_unit_tests": "PASS_6_OF_6",
+      "sites_api_ui": "PASS_27_OF_27",
+      "cloudflare_backend": "PASS_24_OF_24",
+      "public_smoke_contract": "PASS_8_OF_8",
+      "python_full_project_venv": "PASS_310_OF_310",
+      "worker_d1_http_restart": "PASS_INCLUDING_OFFICIAL_EVENTS",
+      "sites_build": "PASS_17_FILES_0.8.5-rc.1",
+      "built_site_privacy": "PASS_0_FORBIDDEN_MATCHES",
+      "git_diff_check": "PASS",
+      "system_python_failure": "ENVIRONMENT_ONLY_MISSING_FASTAPI_HTTPX_CRYPTOGRAPHY_NOT_PRODUCT_FAILURE"
+    },
+    "production_browser": {
+      "desktop": {
+        "status": "PASS",
+        "company": "星宇股份有限公司",
+        "china_investigation_visible": true,
+        "official_events_lane_visible": true,
+        "console_errors": 0,
+        "network_errors": 0,
+        "page_errors": 0
+      },
+      "narrow_cdp": {
+        "status": "PASS",
+        "page_width": 485,
+        "viewport": "485x757",
+        "china_investigation_visible": true,
+        "gaps_visible": true,
+        "console_errors": 0,
+        "network_errors": 0,
+        "page_errors": 0
+      }
+    },
+    "github_validation": {
+      "behavior_commit": "f1e906386f05b51941de4c99b08ee8f0f99e32ef",
+      "production_e2e": {
+        "run_id": 35084225680,
+        "status": "PASS"
+      },
+      "release_ci_behavior": {
+        "run_id": 35084225660,
+        "status": "PASS"
+      },
+      "initial_public_smoke": {
+        "run_id": 35084225617,
+        "status": "FAIL_CONCURRENT_QA_COMPANY_SELECTED_BEFORE_DOSSIER_READY",
+        "retained_as_evidence": true
+      },
+      "smoke_race_fix_commit": "ddc433f7fb50abda7b0416b5143ffbe805c3fa96",
+      "release_ci_latest": {
+        "run_id": 35084656499,
+        "status": "PASS"
+      },
+      "public_smoke_latest": {
+        "run_id": 35084656560,
+        "status": "PASS"
+      },
+      "race_fix": "select completed non-synthetic dossier rather than first non-synthetic company; unit-tested"
+    },
+    "production_d1_hygiene": {
+      "post_e2e_cleanup": "PASS",
+      "revision_after_cleanup": 71,
+      "app_version": "0.8.5-rc.1",
+      "companies": 1,
+      "ballots": 1,
+      "companyResearch": 1,
+      "contributions": 1,
+      "publicAnnouncements": 1,
+      "agentDailyRuns": 1,
+      "officialReferences": 0,
+      "officialRelations": 0,
+      "officialEvents": 0,
+      "communityFeedback": 0,
+      "qa_company_rows_remaining": 0,
+      "real_company_preserved": "星宇股份有限公司",
+      "real_negative_ballot_preserved": true
+    },
+    "remaining_boundaries": [
+      "Strict China legal-entity identity is not auto-bound through GSXT because CAPTCHA/anti-bot/login controls are not bypassed.",
+      "CNIPA trademark and China Government Procurement search remain verification gaps until a documented automation path is approved.",
+      "Exchange/listing disclosure is not bound from shortened company names or open-context exchange hints alone.",
+      "China labor-inspection/arbitration/judicial coverage remains partial and lacks one nationwide safely automatable company-level source.",
+      "Zero source matches do not prove absence of recalls, penalties, procurement, disputes, product issues or labor issues.",
+      "Stable Mainland-China access SLA remains unclaimed."
+    ],
+    "production_gate": "PASS_DEPLOYED_BROWSER_D1_CI_E2E_SMOKE_CHINA_SOURCE_BINDING_AND_GAPS"
   }
 }
