@@ -1,7 +1,7 @@
 {
-  "version": "0.8.3-rc.1",
+  "version": "0.8.4-rc.2",
   "date": "2026-09-16",
-  "status": "PASS_PRODUCTION_USABLE_COMPANY_DOSSIERS_V083",
+  "status": "PASS_PRODUCTION_COMMUNITY_GROWTH_DAILY_AGENT_V084",
   "git": {
     "branch": "main",
     "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai",
@@ -25,7 +25,7 @@
         "cloudflare_backend": "success"
       }
     },
-    "current_main_sha": "bb6ff338ffe3bcf6723d65d2dd5f89b97d1c437b",
+    "current_main_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00",
     "origin_main_matches": true,
     "final_release_ci": {
       "run_id": 35047372002,
@@ -59,12 +59,28 @@
       "run_id": 35056094856,
       "status": "PASS",
       "head_sha": "bb6ff338ffe3bcf6723d65d2dd5f89b97d1c437b"
+    },
+    "v084_runtime_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00",
+    "v084_release_ci": {
+      "run_id": 35069581626,
+      "status": "PASS",
+      "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00"
+    },
+    "v084_production_e2e": {
+      "run_id": 35069581755,
+      "status": "PASS",
+      "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00"
+    },
+    "v084_public_smoke": {
+      "run_id": 35069581745,
+      "status": "PASS",
+      "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00"
     }
   },
   "public_deployment": {
-    "version": "0.8.2-rc.1",
+    "version": "0.8.4-rc.2",
     "date": "2026-09-16",
-    "status": "PUBLIC_HIDDENFENG_VERCEL_CLOUDFLARE_V082_UNATTENDED_INTELLIGENCE_LIVE",
+    "status": "PUBLIC_HIDDENFENG_VERCEL_CLOUDFLARE_V084_COMMUNITY_GROWTH_LIVE",
     "cloudflare": {
       "backend": "https://labor-transparency-api.labor-transparency-public.workers.dev",
       "worker_live": true,
@@ -77,7 +93,7 @@
         "total_seconds": 8.109733
       },
       "note": "Public backend is externally reachable, but the current Mainland-China network cannot reliably connect directly to workers.dev.",
-      "current_worker_version_id": "e71ec720-a846-4ffa-a43d-dfab8b4b6769"
+      "current_worker_version_id": "1f161f2f-c30b-418a-9f9e-65a8cfb73595"
     },
     "vercel": {
       "frontend": "https://workermanifestfellowship.vercel.app",
@@ -88,7 +104,7 @@
         "api_health": 200
       },
       "remote_e2e_status": "PASS_PUBLIC_VERCEL_TO_CLOUDFLARE_D1_RESEARCH_E2E",
-      "remote_backend_version": "0.8.2-rc.1",
+      "remote_backend_version": "0.8.4-rc.2",
       "remote_research": {
         "candidateCount": 11,
         "sourceSuccessCount": 9,
@@ -282,6 +298,22 @@
       "dlq": "PASS_1_CONSUMER",
       "existing_real_company_self_migration": "PASS",
       "real_community_interaction_preserved": true
+    },
+    "current_v084": {
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "vercel_fallback": "https://workermanifestfellowship.vercel.app",
+      "worker_api": "https://labor-transparency-api.labor-transparency-public.workers.dev",
+      "runtime_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00",
+      "runtime_version": "0.8.4-rc.2",
+      "worker_version_id": "1f161f2f-c30b-418a-9f9e-65a8cfb73595",
+      "community_feedback": true,
+      "public_announcements": true,
+      "official_relations": true,
+      "nmpa_udi_daily": true,
+      "eu_ted_daily": true,
+      "daily_agent_18_ready": true,
+      "daily_agent_19_ready": true,
+      "real_user_data_preserved": true
     }
   },
   "architecture": {
@@ -571,8 +603,8 @@
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
   "remaining_human_only": [],
-  "next_gate": "No deployment or human-review gate remains for v0.8.3 usable company dossiers. Continue routine source-quality expansion, jurisdiction coverage, community contribution quality, and monitoring; preserve fail-closed identity/evidence boundaries and do not claim a Mainland-China stable SLA.",
-  "strongest_claim": "v0.8.3-rc.1 is production-deployed and production-accepted on the canonical non-Tencent stack: user-created companies autonomously progress through Queue research into evidence-scoped company dossiers; region-inapplicable sources are explicit, multilingual open context is bounded, public-record events remain candidates, company-detail UI/API separate community/evidence/unknowns, existing real Xingyu self-migrated to CONTEXT_READY while legal identity stayed unverified, and GitHub CI/E2E/public smoke plus production browser/D1 evidence all pass.",
+  "next_gate": "No release gate remains for the v0.8.4 community-growth infrastructure. Observe the first scheduled 18:00 and 19:00 Asia/Shanghai occurrences through their durable project/database records; continue source expansion only through documented official interfaces or explicit credential/application gates.",
+  "strongest_claim": "v0.8.4-rc.2 is production-deployed and accepted for low-friction community contribution, evidence-scoped official company/brand/product/procurement relationships, private suggestion/appeal handling, sourced public daily announcements, and installed Beijing-time 18:00/19:00 LocalAgentRuntime operations. NMPA UDI and EU TED are the first automated official relationship collectors; both fail closed on non-exact matches. Existing company intelligence remains on auto-intelligence-0.8.3 and no broader identity/legal/quality inference was introduced.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -1127,5 +1159,227 @@
       "Optional token/subscription sources remain disabled until access and redistribution terms are satisfied.",
       "Mainland-China stable availability/SLA is not claimed."
     ]
+  },
+  "community_growth_v084": {
+    "status": "PASS_PRODUCTION_COMMUNITY_GROWTH_AND_DAILY_AGENT_INFRASTRUCTURE_V084",
+    "change_record": "docs/v0_8/CHANGE-v0.8.4-community-growth.md",
+    "runtime_version": "0.8.4-rc.2",
+    "company_intelligence_policy_version": "auto-intelligence-0.8.3",
+    "runtime_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00",
+    "source_registry": {
+      "schema": "ltp-company-source-registry-1.2",
+      "source_count": 22,
+      "automated_daily_official_relations": [
+        {
+          "provider": "CN_NMPA_UDI",
+          "state": "AUTOMATED_DAILY_LOCAL_AGENT_SUPPORTED",
+          "binding": "exact existing-company registrant match",
+          "scope": "specific NMPA UDI registrant/filing to medical-device record"
+        },
+        {
+          "provider": "EU_TED",
+          "state": "AUTOMATED_SUPPORTED_DAILY_LOCAL_AGENT",
+          "binding": "EU/EEA company gate plus exact participant-name post-filter",
+          "scope": "specific published TED procurement notice"
+        }
+      ],
+      "official_lookup_no_bypass": [
+        "CN_GSXT",
+        "CN_CNIPA_TRADEMARK",
+        "CN_SAMR_QUERY_HUB"
+      ],
+      "credential_or_application_gated": [
+        "UK_COMPANIES_HOUSE",
+        "KR_OPENDART",
+        "JP_NTA_CORPORATE_NUMBER",
+        "JP_GBIZINFO"
+      ],
+      "nmpa_live_probe": {
+        "daily_file": "UDID_DAY_UPDATE_20260915.zip",
+        "records_scanned": 8350,
+        "production_companies_considered": 1,
+        "exact_relations": 0,
+        "published_relations": 0,
+        "result": "PASS_ZERO_MATCH_FAIL_CLOSED"
+      },
+      "ted_live_probe": {
+        "exact_fixture_company": "Airbus Defence and Space GmbH",
+        "exact_results_observed": true,
+        "fuzzy_suffix_rejected_by_unit_test": true,
+        "production_eligible_eu_eea_companies": 0,
+        "normal_daily_requests_today": 0,
+        "published_relations_today": 0
+      }
+    },
+    "relationship_model": {
+      "official_tier": "OFFICIAL_SOURCE_RELATION",
+      "community_kinds": [
+        "brand",
+        "product",
+        "relationship"
+      ],
+      "typed_community_relations": [
+        "company_brand",
+        "company_product",
+        "brand_product",
+        "parent_subsidiary",
+        "supplier_customer",
+        "other"
+      ],
+      "separation": "official relations are stored/projected separately from community E0+ contributions",
+      "broad_quality_or_legality_inference": false
+    },
+    "low_friction_contribution_ux": {
+      "default_visible_steps": [
+        "choose company",
+        "choose information type",
+        "write one sentence"
+      ],
+      "company_creation_required_fields": [
+        "company name",
+        "country/region"
+      ],
+      "progressive_optional_fields": [
+        "public source URL",
+        "source type",
+        "time range",
+        "scope",
+        "relationship type",
+        "direction where applicable",
+        "public credit"
+      ],
+      "hidden_internal_fields_from_normal_users": [
+        "rights",
+        "shareConsent",
+        "rightsNote",
+        "evidence level",
+        "review state",
+        "export state"
+      ],
+      "safe_defaults": {
+        "no_source": "own_summary + no redistribution grant + E0",
+        "source_url": "reference_only + no redistribution grant + E0"
+      },
+      "desktop_production_browser": "PASS_ZERO_CONSOLE_NETWORK_PAGE_ERRORS",
+      "mobile_system_chrome": {
+        "status": "PASS",
+        "viewport": "390x844",
+        "advanced_details_default_open": false,
+        "runtime_loaded": "0.8.4-rc.2"
+      },
+      "company_selection_async_refresh_fix": "PASS"
+    },
+    "community_feedback_and_announcements": {
+      "collections": [
+        "communityFeedback",
+        "communityFeedbackResponses",
+        "publicAnnouncements",
+        "agentDailyRuns"
+      ],
+      "feedback_types": [
+        "suggestion",
+        "appeal",
+        "correction",
+        "source_request",
+        "other"
+      ],
+      "feedback_public_by_default": false,
+      "feedback_visible_to_submitter_and_trusted_agent": true,
+      "announcement_auto_exposes_feedback_text": false,
+      "production_announcement_day": "2026-09-16",
+      "production_announcement_sources": [
+        "https://udi.nmpa.gov.cn/",
+        "https://docs.ted.europa.eu/api/latest/search.html",
+        "https://github.com/HiddenFeng/labor-transparency-ai"
+      ]
+    },
+    "daily_agent_operations": {
+      "time_zone": "Asia/Shanghai",
+      "runtime": "LocalAgentRuntime",
+      "platform_monitors_agent_activity_between_invocations": false,
+      "operations_18": {
+        "conversation_url": "https://chatgpt.com/c/6aaa3b01-bf7c-83ea-a3ae-2a33b1e06de3",
+        "fixed_run_id": "fx_0ae10ddc598947738441",
+        "status": "READY",
+        "enabled": true,
+        "display_stage": "SCHEDULED",
+        "first_trigger_utc": "2026-09-16T10:00:00.479Z",
+        "first_trigger_beijing": "2026-09-16 18:00:00.479",
+        "interval_seconds": 86400
+      },
+      "review_19": {
+        "conversation_url": "https://chatgpt.com/c/6aaa3bc2-5d90-83ea-ac3d-b28f397abdc0",
+        "fixed_run_id": "fx_061391ba3d304dea8a8d",
+        "status": "READY",
+        "enabled": true,
+        "display_stage": "SCHEDULED",
+        "first_trigger_utc": "2026-09-16T11:00:00.495Z",
+        "first_trigger_beijing": "2026-09-16 19:00:00.495",
+        "interval_seconds": 86400
+      },
+      "stopped_superseded_runs": [
+        "fx_d63a2ea9d94749758cd8",
+        "fx_56aaf59d0f954b6981aa"
+      ],
+      "credential_storage": "Cloudflare Worker secret + local macOS Keychain service labor-transparency-community-agent; value not committed",
+      "durable_history_root": "history/daily/YYYY-MM-DD/",
+      "first_scheduled_occurrences_completed_at_acceptance_time": false
+    },
+    "validation": {
+      "cloudflare_backend": "PASS_24_OF_24",
+      "sites_api_ui": "PASS_25_OF_25",
+      "python_full": "PASS_296_OF_296",
+      "public_smoke_contract": "PASS_6_OF_6",
+      "worker_d1_http_restart": "PASS_COMMUNITY_AGENT_OFFICIAL_RELATIONS_FEEDBACK_ANNOUNCEMENTS_PERSISTENCE",
+      "github_release_ci": {
+        "run_id": 35069581626,
+        "status": "PASS",
+        "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00"
+      },
+      "github_production_e2e": {
+        "run_id": 35069581755,
+        "status": "PASS",
+        "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00",
+        "scope_note": "covers canonical company research/dossier/ballot production path; new community-agent endpoints are covered by real local Worker+D1 smoke"
+      },
+      "github_public_smoke": {
+        "run_id": 35069581745,
+        "status": "PASS",
+        "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00"
+      },
+      "earlier_failed_production_e2e": {
+        "run_id": 35067802632,
+        "head_sha": "399e18c5",
+        "status": "FAIL_RETAINED_AS_EVIDENCE",
+        "resolved_by_later_main_runs": true
+      }
+    },
+    "production": {
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "vercel_fallback": "https://workermanifestfellowship.vercel.app",
+      "worker_api": "https://labor-transparency-api.labor-transparency-public.workers.dev",
+      "worker_version_id": "1f161f2f-c30b-418a-9f9e-65a8cfb73595",
+      "runtime_version_observed_all_three_endpoints": "0.8.4-rc.2",
+      "research_health": "HEALTHY",
+      "real_companies": 1,
+      "real_ballots": 1,
+      "real_company_research": 1,
+      "real_contributions": 1,
+      "public_announcements": 1,
+      "community_feedback_rows": 0,
+      "official_relation_rows": 0,
+      "agent_daily_run_rows": 0,
+      "qa_company_or_feedback_residue": false,
+      "real_company_preserved": "星宇股份有限公司",
+      "real_negative_ballot_preserved": true
+    },
+    "remaining_boundaries": [
+      "China/global official-source coverage remains partial and jurisdiction-dependent.",
+      "A source record supports only its explicit scope and never automatically proves misconduct, legality, labor quality or product quality.",
+      "Credential/application-gated sources remain disabled until access/reuse conditions are satisfied.",
+      "Stable Mainland-China access SLA remains unclaimed.",
+      "The first scheduled 18:00/19:00 occurrences were still future at acceptance time; schedule installation/readiness is verified without claiming those future runs already completed."
+    ],
+    "production_gate": "PASS_RUNTIME_DEPLOYED_CI_E2E_SMOKE_BROWSER_D1_SCHEDULE_READY"
   }
 }
