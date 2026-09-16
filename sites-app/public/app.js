@@ -354,6 +354,21 @@ function researchTeaser(co){
   box.append(text('small',`更新 ${readableDate(d?.updatedAt||r.collectedAt)} · 适用来源成功 ${r.sourceSuccessCount||0}${r.sourceErrorCount?` · 暂不可用 ${r.sourceErrorCount}`:''}${r.sourceNotApplicableCount?` · 地区不适用 ${r.sourceNotApplicableCount}`:''}`));
   return box;
 }
+function openContributionForCompany(companyId){
+  if(!companyId)return;
+  if($('#company-detail-dialog')?.open)closeCompanyDetail({updateHash:false});
+  switchTab('contribute');
+  const select=$('#company-select');
+  if(select&&[...select.options].some(x=>x.value===companyId))select.value=companyId;
+  const form=$('#contribution-form');
+  if(form){form.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});setTimeout(()=>select?.focus(),0)}
+}
+function companyShareUrl(companyId){return `${location.origin}${location.pathname}#company/${encodeURIComponent(companyId)}`;}
+async function copyCompanyShareUrl(companyId){
+  const url=companyShareUrl(companyId);
+  try{await navigator.clipboard.writeText(url);toast('公司资料链接已复制')}
+  catch{prompt('复制这个公司资料链接：',url)}
+}
 function companyCard(co,{actions=true}={}){
   const c=document.createElement('article');c.className='card company-card';
   const title=document.createElement('div');title.className='company-title-row';title.append(text('strong',co.name),text('small',co.region+(co.synthetic?' · 演示数据':'')));c.append(title);
@@ -361,7 +376,7 @@ function companyCard(co,{actions=true}={}){
   if(!co.synthetic)c.append(researchTeaser(co));
   if(co.products.length)c.append(text('p',`公开产品线索：${co.products.map(x=>`${x.title}（${evidenceLabel(x.evidence)}）`).join('、')}`,'company-products'));
   else c.append(text('p','目前没有公开产品线索。没有记录不代表不存在。','company-products'));
-  if(!co.synthetic){const detail=document.createElement('button');detail.className='primary';detail.type='button';detail.dataset.companyDetail=co.id;detail.textContent='查看完整资料';const a=document.createElement('div');a.className='card-actions';a.append(detail);if(actions)for(const [dir,label] of [['positive','留下正向反馈'],['negative','留下负向反馈'],[null,'撤回我的反馈']]){const btn=document.createElement('button');btn.className='secondary';btn.textContent=label;btn.dataset.ballot=dir||'';btn.dataset.company=co.id;a.append(btn)}c.append(a)}
+  if(!co.synthetic){const detail=document.createElement('button');detail.className='primary';detail.type='button';detail.dataset.companyDetail=co.id;detail.textContent='查看完整资料';const contribute=document.createElement('button');contribute.className='secondary';contribute.type='button';contribute.dataset.companyContribute=co.id;contribute.textContent='补充这家公司资料';const a=document.createElement('div');a.className='card-actions';a.append(detail,contribute);if(actions)for(const [dir,label] of [['positive','留下正向反馈'],['negative','留下负向反馈'],[null,'撤回我的反馈']]){const btn=document.createElement('button');btn.className='secondary';btn.textContent=label;btn.dataset.ballot=dir||'';btn.dataset.company=co.id;a.append(btn)}c.append(a)}
   return c;
 }
 function dossierSection(title,description=''){
@@ -402,7 +417,7 @@ function renderCompanyDetail(detail){
   intro.append(text('p',dossier?.summary||'自动资料仍在生成或当前来源不足；这不会阻止社区反馈和公开线索继续累积。'));
   if(detail.company.website)intro.append(link('公司空间登记的公开官网',detail.company.website,'detail-official-link'));
   const community=document.createElement('aside');community.className='company-community-panel';community.append(text('strong','社区声音'),text('span',`正向 ${detail.community.positive}`),text('span',`负向 ${detail.community.negative}`),text('span',`参与 ${detail.community.participants}`),text('small',detail.community.boundary));
-  const actions=document.createElement('div');actions.className='card-actions';for(const [dir,label] of [['positive','留下正向反馈'],['negative','留下负向反馈'],[null,'撤回我的反馈']]){const btn=document.createElement('button');btn.className='secondary';btn.textContent=label;btn.dataset.ballot=dir||'';btn.dataset.company=detail.company.id;btn.dataset.detailBallot='1';actions.append(btn)}community.append(actions);top.append(intro,community);root.append(top);
+  const actions=document.createElement('div');actions.className='card-actions';const contribute=document.createElement('button');contribute.className='primary';contribute.type='button';contribute.dataset.companyContribute=detail.company.id;contribute.textContent='补充这家公司资料';const share=document.createElement('button');share.className='secondary';share.type='button';share.dataset.companyShare=detail.company.id;share.textContent='复制资料链接';actions.append(contribute,share);for(const [dir,label] of [['positive','留下正向反馈'],['negative','留下负向反馈'],[null,'撤回我的反馈']]){const btn=document.createElement('button');btn.className='secondary';btn.textContent=label;btn.dataset.ballot=dir||'';btn.dataset.company=detail.company.id;btn.dataset.detailBallot='1';actions.append(btn)}community.append(actions);top.append(intro,community);root.append(top);
 
   const auto=dossierSection('自动资料与公开来源','这一部分由确定性规则自动整理。法律实体参考、开放知识上下文、来源信号和事件候选具有不同证据层级。');
   auto.append(researchBlock({research:detail.research}));root.append(auto);
@@ -509,6 +524,8 @@ async function loadReview(){
 
 document.addEventListener('click',async e=>{
   const detail=e.target.closest('[data-company-detail]');if(detail){await openCompanyDetail(detail.dataset.companyDetail);return}
+  const contribute=e.target.closest('[data-company-contribute]');if(contribute){openContributionForCompany(contribute.dataset.companyContribute);return}
+  const share=e.target.closest('[data-company-share]');if(share){await copyCompanyShareUrl(share.dataset.companyShare);return}
   const close=e.target.closest('[data-company-close]');if(close){closeCompanyDetail();return}
   const tab=e.target.closest('[data-tab]');if(tab){e.preventDefault();switchTab(tab.dataset.tab);return}
   const issue=e.target.closest('[data-issue]');if(issue){state.focusIssue=issue.dataset.issue;switchTab('rights');return}
