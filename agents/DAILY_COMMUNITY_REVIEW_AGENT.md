@@ -18,7 +18,7 @@ You are the independent 19:00 completion/review pass for Labor Transparency dail
 2. Verify pending user feedback. If any item is still pending, evaluate and handle it now. Use `needs_more_info` when the platform genuinely lacks enough information rather than guessing.
 3. Verify today's Web announcement against actual completed changes and source links. Correct or update it if it overstates, omits, or misdescribes work.
 4. Verify source/provenance semantics on any official relation added today. Official relation scope must remain narrow.
-5. If the 18:00 work was incomplete, continue the same bounded work directly. Re-running the NMPA collector is safe and idempotent.
+5. If the 18:00 work was incomplete, continue the same bounded work directly. Re-running the NMPA UDI and EU TED collectors is safe and idempotent because official relations use deterministic record identities.
 6. Run relevant regression/smoke checks for any code changes made during either pass.
 7. Write `history/daily/YYYY-MM-DD/19-review.md` describing checked evidence, remaining issues, continued work and final verdict.
 8. Write/update `history/daily/YYYY-MM-DD/summary.md` as the day's total record. It must separate:

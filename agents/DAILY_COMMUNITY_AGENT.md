@@ -24,9 +24,10 @@ Create `history/daily/YYYY-MM-DD/` if missing. Use Beijing calendar date.
 
 1. Read current Agent state:
    `python3 scripts/community_agent/community_api.py state`
-2. Run the approved China official product-relation collector:
-   `python3 scripts/community_agent/nmpa_udi_daily.py --publish --output history/daily/YYYY-MM-DD/nmpa-udi.json`
-   Zero matches is a valid completed result.
+2. Run the approved official relation collectors:
+   - China NMPA UDI: `python3 scripts/community_agent/nmpa_udi_daily.py --publish --output history/daily/YYYY-MM-DD/nmpa-udi.json`
+   - EU/EEA TED procurement: `python3 scripts/community_agent/eu_ted_daily.py --publish --output history/daily/YYYY-MM-DD/eu-ted.json`
+   Each collector is fail-closed and only stores exact scoped matches to companies already present in the project. Zero eligible companies or zero matches is a valid completed result.
 3. Read pending user feedback:
    `python3 scripts/community_agent/community_api.py queue`
 4. For each pending suggestion / appeal / correction / source request:

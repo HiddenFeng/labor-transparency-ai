@@ -5,6 +5,7 @@ This directory is the durable project-local record for the Beijing-time 18:00 op
 Each day uses `history/daily/YYYY-MM-DD/` and may contain:
 
 - `nmpa-udi.json` — bounded NMPA UDI collection metrics only, not the bulk source dataset.
+- `eu-ted.json` — bounded EU TED collection metrics only; specific matching notice URLs remain in official relation records.
 - `announcement.json` — public announcement payload actually submitted to the Web API.
 - `run-18.json` — phase-18 database run record payload.
 - `18-operations.md` — what the 18:00 Agent actually completed and what remained.

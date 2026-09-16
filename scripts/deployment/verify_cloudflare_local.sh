@@ -54,4 +54,4 @@ const base=process.argv[2];const c=await (await fetch(base+'/api/companies')).js
 NODE
 )"
 [[ "$BEFORE" == "$AFTER" ]] || { echo "persistence mismatch before=$BEFORE after=$AFTER" >&2; exit 2; }
-echo "{\"status\":\"PASS\",\"worker\":\"0.8.4-rc.1\",\"restartPersistence\":true,\"state\":$AFTER}"
+echo "{\"status\":\"PASS\",\"worker\":\"0.8.4-rc.2\",\"restartPersistence\":true,\"state\":$AFTER}"

@@ -40,7 +40,7 @@ Official entry: https://zwfw.samr.gov.cn/wyc/
 
 ## Other jurisdictions
 
-- EU TED Search API: keyless published-procurement search; adapter-ready for scoped procurement relationships.
+- EU TED Search API: implemented keyless daily collector (`scripts/community_agent/eu_ted_daily.py`). It queries a rolling 8-day window for EU/EEA company spaces, uses at most two API requests per eligible company (winner/buyer), and publishes only exact post-filtered participant-name matches as scoped `PUBLIC_PROCUREMENT_RELATION` records. Live API validation on 2026-09-16 returned exact Airbus Defence and Space GmbH award notices; the current real production company set has zero EU/EEA companies, so its daily production path is currently a zero-request no-op.
 - UK Companies House: official REST API; requires API authentication, so adapter is fail-closed until a project credential exists.
 - Korea OpenDART: official FSS disclosure API; requires a certification key.
 - Japan NTA Corporate Number: official bulk downloads are public; Web API requires a free application ID and imposes an attribution statement for public services.

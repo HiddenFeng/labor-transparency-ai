@@ -50,7 +50,7 @@ async function req(path,{method='GET',body,token,originHeader=origin}={}){
  if(body!==undefined){headers['Content-Type']='application/json';if(csrf)headers['X-LTP-CSRF']=csrf;}if(token)headers.Authorization=`Bearer ${token}`;
  const r=await fetch(base+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)});const set=r.headers.get('set-cookie');if(set)cookie=set.split(';')[0];return {status:r.status,data:await r.json()};
 }
-const cfg=await req('/api/config');assert.equal(cfg.status,200);assert.equal(cfg.data.version,'0.8.4-rc.1');csrf=cfg.data.csrfToken;
+const cfg=await req('/api/config');assert.equal(cfg.status,200);assert.equal(cfg.data.version,'0.8.4-rc.2');csrf=cfg.data.csrfToken;
 const created=await req('/api/companies',{method:'POST',body:{name:'Starbucks Corporation',region:'US',website:'https://www.starbucks.com/',consent:true}});assert.equal(created.status,200);assert.equal(created.data.researchQueued,true);assert.equal(created.data.research.status,'QUEUED');assert.equal(created.data.researchDispatch,'QUEUE_SENT');const companyId=created.data.company.id;
 let queue,record;
 for(let i=0;i<160;i++){

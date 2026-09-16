@@ -549,10 +549,12 @@
         "value",
         "publication_date"
       ],
-      "state": "ADAPTER_READY_KEYLESS",
-      "binding": "EXACT_PARTICIPANT_NAME_OR_OFFICIAL_IDENTIFIER_REQUIRED",
+      "state": "AUTOMATED_SUPPORTED_DAILY_LOCAL_AGENT",
+      "binding": "EXACT_PARTICIPANT_NAME_POST_FILTER_REQUIRED",
       "request_budget": 2,
-      "semantic_boundary": "A procurement notice supports only the specific public-procurement event/relationship represented by the notice."
+      "semantic_boundary": "A TED notice supports only the exact company role in the specific published public-procurement event. It does not establish the company complete customer/supplier network, product quality, labor quality, legality beyond the notice, or endorsement.",
+      "implementation": "scripts/community_agent/eu_ted_daily.py",
+      "schedule": "18:00 Asia/Shanghai daily, rolling 8-day publication window"
     },
     "UK_COMPANIES_HOUSE": {
       "label": "UK Companies House API",
