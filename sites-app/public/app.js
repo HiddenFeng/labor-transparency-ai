@@ -395,6 +395,7 @@ function appendContributionGroup(root,title,rows,empty='暂无公开贡献。'){
   const list=document.createElement('div');list.className='detail-contribution-list';rows.forEach(x=>list.append(contributionDetailCard(x)));sec.append(list);root.append(sec);
 }
 function officialRelationLabel(value){return ({COMPANY_REGISTERS_PRODUCT:'官方登记产品',COMPANY_OWNS_BRAND:'官方记录的公司—品牌关系',BRAND_MARKETS_PRODUCT:'官方记录的品牌—产品关系',COMPANY_PARENT_OF_COMPANY:'官方记录的母公司关系',COMPANY_SUBSIDIARY_OF_COMPANY:'官方记录的子公司关系',PUBLIC_PROCUREMENT_RELATION:'公共采购关系',OTHER_OFFICIAL_RELATION:'其他官方关系'})[value]||value;}
+function officialEventLabel(value){return ({PRODUCT_RECALL:'产品召回',ADMINISTRATIVE_PENALTY:'行政处罚决定',REGULATORY_MEASURE:'监管措施',OTHER_OFFICIAL_EVENT:'其他官方事件'})[value]||value;}
 function appendOfficialReferences(root,rows){
   if(!rows?.length)return;
   const sec=dossierSection('官方登记参考','这是官方登记/披露来源中与当前公司空间精确匹配的窄范围参考。它和机器法律身份绑定是不同层级；如果尚未完成全国/全库唯一性确认，页面会明确保留这个边界。');
@@ -419,6 +420,39 @@ function appendOfficialRelations(root,rows){
   }
   sec.append(list);root.append(sec);
 }
+function appendOfficialEvents(root,rows){
+  if(!rows?.length)return;
+  const sec=dossierSection('官方监管 / 召回事件','按日期展示能与当前公司空间精确绑定的官方事件。每一条只支持该事件本身，不自动扩张成企业整体信用、违法频率或产品质量评分。');
+  const list=document.createElement('ol');list.className='official-event-timeline';
+  for(const item of rows){
+    const li=document.createElement('li');li.className='official-event-card';
+    const top=document.createElement('div');top.className='official-event-head';top.append(badge(officialEventLabel(item.eventType),item.eventType==='ADMINISTRATIVE_PENALTY'?'negative':'evidence'),text('time',item.eventDate||item.source?.date||'日期未标注'));
+    li.append(top,text('strong',item.title));
+    const meta=[item.decisionNo&&`文号/编号 ${item.decisionNo}`,item.status&&`状态 ${item.status}`,item.source?.sourceOfRecord||item.provider].filter(Boolean);if(meta.length)li.append(text('small',meta.join(' · ')));
+    if(item.summary)li.append(text('p',item.summary));if(item.scope)li.append(text('small',item.scope));li.append(text('p',item.caveat,'method-note'));
+    if(item.source?.url)li.append(link('查看官方原文',item.source.url,'research-source-link'));list.append(li);
+  }
+  sec.append(list);root.append(sec);
+}
+function appendChinaInvestigation(root,investigation){
+  if(!investigation)return;
+  const sec=dossierSection('中国企业调查概览','先看“已知 / 未知 / 来源覆盖”，再看具体官方记录。没有命中不会显示成“没有问题”。');
+  sec.classList.add('china-investigation');sec.append(text('p',investigation.summary,'china-investigation-summary'));
+  const d=investigation.dimensions||{};const grid=document.createElement('div');grid.className='china-investigation-grid';
+  const cards=[
+    ['主体核验',`${d.identity?.officialReferenceCount||0} 条官方登记参考`,`法律身份：${d.identity?.legalIdentityStatus||'未知'}`],
+    ['上市 / 披露',`${d.listingDisclosure?.officialReferenceCount||0} 条官方披露参考`,'未绑定不等于未上市'],
+    ['品牌 / 产品',`${d.brandProducts?.officialProductRelations||0} 条官方产品关系`,`社区品牌 ${d.brandProducts?.communityBrands||0} · 产品 ${d.brandProducts?.communityProducts||0}`],
+    ['监管处罚',`${d.regulatory?.administrativePenalties||0} 条行政处罚`,`其他监管措施 ${d.regulatory?.regulatoryMeasures||0}`],
+    ['产品召回',`${d.recalls?.count||0} 条召回事件`,'只覆盖总局召回公开范围'],
+    ['政府采购',`${d.procurement?.officialRelations||0} 条官方采购关系`,'验证码搜索不绕过'],
+    ['劳动实践',`${d.labour?.communityClaims||0} 条社区主张`,'全国自动官方覆盖仍有限']
+  ];
+  for(const [title,value,note] of cards){const card=document.createElement('article');card.className='china-investigation-metric';card.append(text('strong',title),text('span',value),text('small',note));grid.append(card)}sec.append(grid);
+  const coverage=document.createElement('details');coverage.className='research-details';const cs=document.createElement('summary');cs.textContent='查看中国官方来源覆盖';coverage.append(cs);const covList=document.createElement('div');covList.className='china-source-coverage';for(const x of investigation.sourceCoverage||[]){const row=document.createElement('article');row.append(text('strong',x.label),badge(x.mode==='OFFICIAL_LOOKUP_ONLY'?'仅官方核验入口':'自动精确匹配',x.mode==='OFFICIAL_LOOKUP_ONLY'?'pending':'evidence'),text('small',x.scope));covList.append(row)}coverage.append(covList);sec.append(coverage);
+  if(investigation.gaps?.length){const gaps=document.createElement('details');gaps.className='research-details';const gs=document.createElement('summary');gs.textContent=`当前仍未知 / 待补 ${investigation.gaps.length} 项`;gaps.append(gs);const ul=document.createElement('ul');ul.className='dossier-gap-list';for(const gap of investigation.gaps){const li=document.createElement('li');li.append(text('strong',gap.label),text('span',gap.detail));ul.append(li)}gaps.append(ul);sec.append(gaps)}
+  sec.append(text('p',investigation.boundary,'detail-boundary'));root.append(sec);
+}
 function renderCompanyDetail(detail){
   const root=$('#company-detail-content');root.replaceChildren();
   $('#company-detail-title').textContent=detail.company.name;
@@ -431,11 +465,14 @@ function renderCompanyDetail(detail){
   const community=document.createElement('aside');community.className='company-community-panel';community.append(text('strong','社区声音'),text('span',`正向 ${detail.community.positive}`),text('span',`负向 ${detail.community.negative}`),text('span',`参与 ${detail.community.participants}`),text('small',detail.community.boundary));
   const actions=document.createElement('div');actions.className='card-actions';const contribute=document.createElement('button');contribute.className='primary';contribute.type='button';contribute.dataset.companyContribute=detail.company.id;contribute.textContent='补充这家公司资料';const share=document.createElement('button');share.className='secondary';share.type='button';share.dataset.companyShare=detail.company.id;share.textContent='复制资料链接';actions.append(contribute,share);for(const [dir,label] of [['positive','留下正向反馈'],['negative','留下负向反馈'],[null,'撤回我的反馈']]){const btn=document.createElement('button');btn.className='secondary';btn.textContent=label;btn.dataset.ballot=dir||'';btn.dataset.company=detail.company.id;btn.dataset.detailBallot='1';actions.append(btn)}community.append(actions);top.append(intro,community);root.append(top);
 
+  appendChinaInvestigation(root,detail.chinaInvestigation);
+
   const auto=dossierSection('自动资料与公开来源','这一部分由确定性规则自动整理。法律实体参考、开放知识上下文、来源信号和事件候选具有不同证据层级。');
   auto.append(researchBlock({research:detail.research}));root.append(auto);
 
   appendOfficialReferences(root,detail.officialReferences||[]);
   appendOfficialRelations(root,detail.officialRelations||[]);
+  appendOfficialEvents(root,detail.officialEvents||[]);
 
   const contrib=detail.contributions||{};
   appendContributionGroup(root,'公开公司资料贡献',contrib.companyFacts,'还没有用户补充的公开公司资料。');

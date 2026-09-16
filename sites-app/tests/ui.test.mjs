@@ -57,12 +57,15 @@ test('company UI exposes usable dossier detail while keeping evidence tiers sepa
   assert.match(js,/researchPollRemaining=36/);
   assert.match(js,/公开资料会自动开始整理，你不用再做设置/);
   assert.match(js,/官方登记参考/);assert.match(js,/官方来源确认的公司 \/ 品牌 \/ 产品关系/);
+  assert.match(js,/中国企业调查概览/);assert.match(js,/官方监管 \/ 召回事件/);assert.match(js,/产品召回/);assert.match(js,/行政处罚决定/);
+  assert.match(js,/没有命中不会显示成“没有问题”/);assert.match(js,/政府采购/);assert.match(js,/全国自动官方覆盖仍有限/);
   assert.doesNotMatch(js,/\.records\b/);
   assert.match(css,/\.research-details/);
   assert.match(css,/\.research-preview-list/);
   assert.match(css,/\.machine-intelligence/);
   assert.match(css,/\.event-timeline/);
   assert.match(css,/\.company-dossier-teaser/);
+  assert.match(css,/\.china-investigation-grid/);assert.match(css,/\.official-event-timeline/);assert.match(css,/\.china-source-coverage/);
 });
 
 test('contribution UI is low-friction with progressive disclosure and daily feedback loop',async()=>{

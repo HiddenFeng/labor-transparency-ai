@@ -55,6 +55,7 @@ export function validateConfig(label,response,data){
   assert.equal(data.capabilities?.communityFeedback,true,`${label}: community feedback`);
   assert.equal(data.capabilities?.officialReferences,true,`${label}: official reference layer`);
   assert.equal(data.capabilities?.officialRelations,true,`${label}: official relationship layer`);
+  assert.equal(data.capabilities?.officialEvents,true,`${label}: official event layer`);
   assert.equal(data.capabilities?.publicAnnouncements,true,`${label}: public announcements`);
   assert.ok(typeof data.csrfToken==='string'&&data.csrfToken.length>=32,`${label}: csrf token`);
   const cookie=header(response,'set-cookie');
@@ -94,6 +95,13 @@ export function validateCompanyDetail(label,response,data){
   assert.ok(data.contributions&&Array.isArray(data.contributions.products)&&Array.isArray(data.contributions.labourClaims),`${label}: grouped public contributions`);
   assert.ok(Array.isArray(data.officialReferences),`${label}: official reference projection`);
   assert.ok(Array.isArray(data.officialRelations),`${label}: official relation projection`);
+  assert.ok(Array.isArray(data.officialEvents),`${label}: official event projection`);
+  if(/(^|[\s,，·/])(cn|china)($|[\s,，·/])|中国|中华人民共和国|中国大陆/i.test(String(data.company?.region||''))){
+    assert.equal(data.chinaInvestigation?.jurisdiction,'CN',`${label}: China investigation projection`);
+    assert.ok(Array.isArray(data.chinaInvestigation?.sourceCoverage),`${label}: China source coverage`);
+    assert.ok(Array.isArray(data.chinaInvestigation?.gaps),`${label}: China investigation gaps`);
+    assert.match(String(data.chinaInvestigation?.boundary||''),/不是信用评级/,`${label}: China analysis boundary`);
+  }
   const raw=JSON.stringify(data);for(const forbidden of ['\"owner\"','\"receiptHash\"','\"rightsNote\"','\"records\"','\"sampleRecord\"'])assert.equal(raw.includes(forbidden),false,`${label}: forbidden public field ${forbidden}`);
   assert.match(String(data.boundary||''),/公司详情/,`${label}: dossier boundary`);
   validateSecurityHeaders(label,response);

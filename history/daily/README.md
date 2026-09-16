@@ -5,6 +5,8 @@ This directory is the durable project-local record for the Beijing-time 18:00 op
 Each day uses `history/daily/YYYY-MM-DD/` and may contain:
 
 - `nmpa-udi.json` — bounded NMPA UDI collection metrics only, not the bulk source dataset.
+- `cn-samr-recall.json` — bounded China SAMR recall-index/detail metrics; matched events live in the official-event layer, not as bulk page copies.
+- `cn-csrc-penalty.json` — bounded China CSRC company-search/decision metrics; matched events retain the official decision URL and scoped metadata only.
 - `eu-ted.json` — bounded EU TED collection metrics only; specific matching notice URLs remain in official relation records.
 - `jp-nta.json` — bounded Japan NTA Corporate Number daily-delta metrics only; downloaded delta files stay temporary and exact-name references remain separate from machine legal-identity verification.
 - `announcement.json` — public announcement payload actually submitted to the Web API.

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  emptyState,addCompany,addContribution,upsertOfficialReferences,publicOfficialReferences,upsertOfficialRelations,publicOfficialRelations,
+  emptyState,addCompany,addContribution,upsertOfficialReferences,publicOfficialReferences,upsertOfficialRelations,publicOfficialRelations,upsertOfficialEvents,publicOfficialEvents,
   addCommunityFeedback,listOwnCommunityFeedback,communityAgentQueue,respondCommunityFeedback,
   addPublicAnnouncement,publicAnnouncements,recordAgentDailyRun
 } from '../src/domain.mjs';
@@ -34,6 +34,15 @@ test('official registry references are deterministic and separate from identity 
   assert.equal(first.savedCount,1);assert.equal(second.savedCount,1);assert.equal(state.officialReferences.length,1);assert.equal(state.officialRelations.length,0);
   const refs=publicOfficialReferences(state,company.id);assert.equal(refs.length,1);assert.equal(refs[0].tier,'OFFICIAL_SOURCE_REFERENCE');assert.equal(refs[0].fields.corporateNumber,'1234567890123');assert.equal(refs[0].bindingBasis,'EXACT_NAME_IN_OFFICIAL_DAILY_DELTA_NOT_NATIONAL_UNIQUENESS');
   const detail=publicCompanyDetail(state,company.id);assert.equal(detail.officialReferences.length,1);assert.equal(detail.officialRelations.length,0);assert.equal(detail.research,null);
+});
+
+test('official China events are idempotent, source-scoped and included in China investigation without becoming community claims',()=>{
+  const {state,company}=stateWithCompany();
+  const payload={items:[{companyId:company.id,provider:'CN_CSRC_PENALTY',jurisdiction:'CN',eventType:'ADMINISTRATIVE_PENALTY',title:'中国证券监督管理委员会行政处罚决定书',summary:'决定书对特定证券监管事项作出行政处罚。',eventDate:'2026-04-07',decisionNo:'〔2026〕10号',status:'ADMINISTRATIVE_PENALTY_DECISION_PUBLISHED',sourceRecordId:'c7626997',sourceOfRecord:'中国证券监督管理委员会',sourceUrl:'https://www.csrc.gov.cn/csrc/c101928/c7626997/content.shtml',sourceDate:'2026-04-07',confidence:'HIGH',scope:'仅限该份行政处罚决定。',caveat:'该决定只支持决定书明确记载的主体、事实、期间和处罚，不自动扩张成公司其他业务或期间的违法结论。',attributes:{decisionNumber:'〔2026〕10号'}}]};
+  const first=upsertOfficialEvents(state,payload);const second=upsertOfficialEvents(state,payload);
+  assert.equal(first.savedCount,1);assert.equal(second.savedCount,1);assert.equal(state.officialEvents.length,1);
+  const events=publicOfficialEvents(state,company.id);assert.equal(events.length,1);assert.equal(events[0].tier,'OFFICIAL_SOURCE_EVENT');assert.equal(events[0].eventType,'ADMINISTRATIVE_PENALTY');assert.equal(events[0].decisionNo,'〔2026〕10号');
+  const detail=publicCompanyDetail(state,company.id);assert.equal(detail.officialEvents.length,1);assert.equal(detail.chinaInvestigation.jurisdiction,'CN');assert.equal(detail.chinaInvestigation.dimensions.regulatory.administrativePenalties,1);assert.equal(detail.contributions.labourClaims.length,0);assert.match(detail.chinaInvestigation.boundary,/不是信用评级/);
 });
 
 test('community feedback is private to owner until agent response and never enters public announcement automatically',()=>{

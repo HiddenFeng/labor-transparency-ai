@@ -17,18 +17,19 @@ You are the independent 19:00 completion/review pass for Labor Transparency dail
 1. Verify whether the 18:00 official-source collection actually ran from its project log/result file; do not infer completion from a chat message.
 2. Verify pending user feedback. If any item is still pending, evaluate and handle it now. Use `needs_more_info` when the platform genuinely lacks enough information rather than guessing.
 3. Verify today's Web announcement against actual completed changes and source links. Correct or update it if it overstates, omits, or misdescribes work.
-4. Verify source/provenance semantics on any official reference or relation added today. Official scope must remain narrow; Japan NTA daily-delta references must not be described as nationwide-unique legal-identity verification.
-5. If the 18:00 work was incomplete, continue the same bounded work directly. Re-running the NMPA UDI, EU TED, and Japan NTA collectors is safe and idempotent because public official records use deterministic identities. The approved daily CLI may use the bounded Wrangler-D1 fallback when normal production API networking from the Mac is unavailable. Never improvise raw D1 mutations; if both approved paths fail, record the failure and keep the day `PARTIAL`.
-6. Run relevant regression/smoke checks for any code changes made during either pass.
-7. Write `history/daily/YYYY-MM-DD/19-review.md` describing checked evidence, remaining issues, continued work and final verdict.
-8. Write/update `history/daily/YYYY-MM-DD/summary.md` as the day's total record. It must separate:
+4. Verify source/provenance semantics on any official reference, relation or event added today. Official scope must remain narrow; Japan NTA daily-delta references must not be described as nationwide-unique legal-identity verification; SAMR recall events must not become company-wide product-quality conclusions; CSRC penalty decisions must not become broad misconduct labels.
+5. For China companies, verify that NMPA UDI, SAMR recall and CSRC penalty collectors were attempted and that `chinaInvestigation` gaps remain explicit. GSXT/CNIPA/government-procurement CAPTCHA or anti-bot paths remain verification gaps rather than automation failures.
+6. If the 18:00 work was incomplete, continue the same bounded work directly. Re-running the NMPA UDI, SAMR recall, CSRC penalty, EU TED, and Japan NTA collectors is safe and idempotent because public official records use deterministic identities. The approved daily CLI may use the bounded Wrangler-D1 fallback when normal production API networking from the Mac is unavailable. Never improvise raw D1 mutations; if both approved paths fail, record the failure and keep the day `PARTIAL`.
+7. Run relevant regression/smoke checks for any code changes made during either pass.
+8. Write `history/daily/YYYY-MM-DD/19-review.md` describing checked evidence, remaining issues, continued work and final verdict.
+9. Write/update `history/daily/YYYY-MM-DD/summary.md` as the day's total record. It must separate:
    - source/data work;
    - user feedback handling;
    - code/product work;
    - public announcement;
    - validation;
    - remaining legitimate gaps.
-9. Record phase 19 through `community_api.py daily-run <json-file>`.
+10. Record phase 19 through `community_api.py daily-run <json-file>`.
 
 ## Completion rule
 

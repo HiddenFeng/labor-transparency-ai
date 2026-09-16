@@ -499,6 +499,66 @@
       "request_budget": 0,
       "semantic_boundary": "A trademark record supports a specific mark/application/owner relationship. It does not prove current consumer use, product quality, or complete brand ownership without the recorded status/scope."
     },
+    "CN_SAMR_RECALL": {
+      "label": "国家市场监督管理总局缺陷产品召回技术中心",
+      "authority": "PRIMARY_CHINA_GOVERNMENT_PRODUCT_RECALL_PUBLICATION",
+      "access": "KEYLESS_PUBLIC_HTML_LIST_AND_DETAIL",
+      "license": "OFFICIAL_PUBLICITY_WITHOUT_PROJECT_ASSUMED_OPEN_LICENSE",
+      "license_url": "https://www.samrdprc.org.cn/",
+      "source_of_record": "国家市场监督管理总局缺陷产品召回技术中心",
+      "regions": [
+        "CN"
+      ],
+      "sections": [
+        "products",
+        "recalls",
+        "regulatory_events"
+      ],
+      "fields": [
+        "recall_number",
+        "producer_name",
+        "recall_date",
+        "recall_count",
+        "product_or_vehicle_scope",
+        "defect_description",
+        "remedy"
+      ],
+      "state": "AUTOMATED_DAILY_LOCAL_AGENT_SUPPORTED",
+      "binding": "FULL_COMPANY_NAME_IN_RECALL_TITLE_PRODUCER_SEGMENT_AND_DETAIL_RECONFIRMATION",
+      "request_budget": 6,
+      "implementation": "scripts/community_agent/cn_samr_recall_daily.py",
+      "schedule": "18:00 Asia/Shanghai daily, bounded recent vehicle + consumer recall index pages",
+      "semantic_boundary": "A recall notice supports only the specific published recall, affected scope and defect/remedy stated in that notice. It does not establish company-wide product quality, safety, illegality, or the current status of unrelated products."
+    },
+    "CN_CSRC_PENALTY": {
+      "label": "中国证券监督管理委员会行政处罚决定",
+      "authority": "PRIMARY_CHINA_SECURITIES_REGULATORY_ENFORCEMENT_PUBLICATION",
+      "access": "KEYLESS_PUBLIC_OFFICIAL_SITE_SEARCH_AND_DECISION_PAGE",
+      "license": "OFFICIAL_PUBLICITY_WITHOUT_PROJECT_ASSUMED_OPEN_LICENSE",
+      "license_url": "https://www.csrc.gov.cn/csrc/c101928/common_list.shtml",
+      "source_of_record": "中国证券监督管理委员会",
+      "regions": [
+        "CN"
+      ],
+      "sections": [
+        "regulatory_events",
+        "enforcement",
+        "listed_company_disclosure"
+      ],
+      "fields": [
+        "decision_number",
+        "party_name",
+        "decision_date",
+        "decision_summary",
+        "official_decision_url"
+      ],
+      "state": "AUTOMATED_DAILY_LOCAL_AGENT_SUPPORTED",
+      "binding": "FULL_COMPANY_NAME_IN_OFFICIAL_SEARCH_SUMMARY_AND_EXACT_PARTY_NAME_IN_C101928_DECISION_BODY",
+      "request_budget": 2,
+      "implementation": "scripts/community_agent/cn_csrc_penalty_daily.py",
+      "schedule": "18:00 Asia/Shanghai daily, one official site search per eligible China company plus matched detail pages only",
+      "semantic_boundary": "An administrative penalty decision supports only the specific securities-regulatory decision, parties, facts, period and disposition stated in that decision. It must not be generalized into other-business or other-period misconduct and does not replace later review, litigation or correction status."
+    },
     "CN_SAMR_QUERY_HUB": {
       "label": "国家市场监督管理总局政务服务平台 · 我要查",
       "authority": "PRIMARY_CHINA_GOVERNMENT_QUERY_DIRECTORY",

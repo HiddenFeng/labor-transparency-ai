@@ -24,31 +24,35 @@ Create `history/daily/YYYY-MM-DD/` if missing. Use Beijing calendar date.
 
 1. Read current Agent state:
    `python3 scripts/community_agent/community_api.py state`
-2. Run the approved official reference/relation collectors:
+2. Prioritize existing **China company spaces** and run the approved China investigation collectors first:
    - China NMPA UDI: `python3 scripts/community_agent/nmpa_udi_daily.py --publish --output history/daily/YYYY-MM-DD/nmpa-udi.json`
+   - China SAMR defective-product recalls: `python3 scripts/community_agent/cn_samr_recall_daily.py --publish --output history/daily/YYYY-MM-DD/cn-samr-recall.json`
+   - China CSRC administrative penalties: `python3 scripts/community_agent/cn_csrc_penalty_daily.py --publish --output history/daily/YYYY-MM-DD/cn-csrc-penalty.json`
+   These China collectors must keep `OFFICIAL_SOURCE_RELATION` and `OFFICIAL_SOURCE_EVENT` separate. A recall/penalty event supports only its specific official record; zero matches never means “no recalls / no penalties / no problems exist”.
+3. Run the other approved jurisdiction collectors only for companies to which they apply:
    - EU/EEA TED procurement: `python3 scripts/community_agent/eu_ted_daily.py --publish --output history/daily/YYYY-MM-DD/eu-ted.json`
    - Japan NTA Corporate Number daily delta: `python3 scripts/community_agent/jp_nta_daily.py --publish --output history/daily/YYYY-MM-DD/jp-nta.json`
    Each collector is fail-closed and only stores exact scoped matches to companies already present in the project. The Japan daily-delta result is `OFFICIAL_SOURCE_REFERENCE`, not a machine legal-identity upgrade. Zero eligible companies or zero matches is a valid completed result.
    If the normal production API is unreachable from the command-line network, the helper may transparently use the bounded Wrangler-D1 fallback documented in `docs/v0_8/DAILY_AGENT_OPERATIONS.md`. Do not replace that fallback with ad-hoc/raw D1 SQL.
-3. Read pending user feedback:
+4. Read pending user feedback:
    `python3 scripts/community_agent/community_api.py queue`
-4. For each pending suggestion / appeal / correction / source request:
+5. For each pending suggestion / appeal / correction / source request:
    - verify the relevant project/database/source state;
    - make a small, reversible improvement when it is clearly justified and inside governance;
    - otherwise answer with `answered`, `planned`, `declined`, or `needs_more_info` and state the concrete reason;
    - use `python3 scripts/community_agent/community_api.py respond ...` to save the response.
-5. Inspect current real companies and dossier/source gaps from the public API and project state. Use only approved official/public sources. Do not invent a result merely to fill a gap.
-6. If a small project fix is needed, implement it inside this repository, run the relevant tests, and record exact evidence. Preserve unrelated dirty work. Do not make sweeping redesigns during daily operations.
-7. Create/update today's public announcement. It must say only what actually changed today, in simple language, and every external factual/data-source item must have a source URL. Use `community_api.py announce <json-file>`.
-8. Write `history/daily/YYYY-MM-DD/18-operations.md` with:
+6. Inspect every real China company's `chinaInvestigation` gaps first, then other jurisdictions. Use only approved official/public sources. Do not invent a result merely to fill a gap. In particular, GSXT/CNIPA and China Government Procurement search paths that require CAPTCHA/anti-bot interaction remain official verification gaps rather than automation targets.
+7. If a small project fix is needed, implement it inside this repository, run the relevant tests, and record exact evidence. Preserve unrelated dirty work. Do not make sweeping redesigns during daily operations.
+8. Create/update today's public announcement. It must say only what actually changed today, in simple language, and every external factual/data-source item must have a source URL. Use `community_api.py announce <json-file>`.
+9. Write `history/daily/YYYY-MM-DD/18-operations.md` with:
    - source collections attempted and result counts;
-   - official references/relations added/updated;
+   - official references/relations/events added/updated;
    - feedback handled (IDs/statuses only, no private message text);
    - code/data fixes actually completed;
    - tests/evidence;
    - unresolved items for 19:00 review;
    - announcement ID/day.
-9. Record phase 18 via `community_api.py daily-run <json-file>` with status `COMPLETED`, `PARTIAL`, or `FAILED`, a concise summary, metrics and the log path.
+10. Record phase 18 via `community_api.py daily-run <json-file>` with status `COMPLETED`, `PARTIAL`, or `FAILED`, a concise summary, metrics and the log path.
 
 ## Success definition
 

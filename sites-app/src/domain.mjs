@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 
-export const VERSION = '0.8.4-rc.3';
+export const VERSION = '0.8.5-rc.1';
 export const EVIDENCE_LEVELS = new Set(['E0','E1','E2','E3','E4','E5']);
 export const KINDS = new Set(['product','brand','company_fact','relationship','labour_claim','product_claim']);
 export const DIMENSIONS = new Set(['pay','rest','hours','safety','contract','respect','representation','other']);
@@ -9,6 +9,7 @@ export const SOURCE_TYPES = new Set(['first_person','company_disclosure','public
 export const RELATION_TYPES = new Set(['company_brand','company_product','brand_product','parent_subsidiary','supplier_customer','other']);
 export const COMMUNITY_FEEDBACK_TYPES = new Set(['suggestion','appeal','correction','source_request','other']);
 export const OFFICIAL_REFERENCE_TYPES = new Set(['LEGAL_ENTITY_REGISTRY','DISCLOSURE_REGISTRY','OTHER_OFFICIAL_REFERENCE']);
+export const OFFICIAL_EVENT_TYPES = new Set(['PRODUCT_RECALL','ADMINISTRATIVE_PENALTY','REGULATORY_MEASURE','OTHER_OFFICIAL_EVENT']);
 export const ADVISORY_CATEGORIES = new Set(['pay','hours_rest','contract','termination','safety','respect','representation','other']);
 export const ADVISORY_URGENCY = new Set(['routine','soon','urgent']);
 export const EMPLOYMENT_STATUS = new Set(['current','former','applicant','contractor','other']);
@@ -80,6 +81,7 @@ export function emptyState(){
     companyResearch: [],
     officialReferences: [],
     officialRelations: [],
+    officialEvents: [],
     communityFeedback: [],
     communityFeedbackResponses: [],
     publicAnnouncements: [],
@@ -90,7 +92,7 @@ export function emptyState(){
 export function upgradeState(state){
   if (!state || typeof state !== 'object' || Array.isArray(state)) throw new Error('状态文件无效');
   for (const key of ['companies','contributions','reviews','exportReviews','ballots','flags']) if (!Array.isArray(state[key])) state[key]=[];
-  for (const key of ['advisoryCases','advisoryAdvice','advisoryDailyReports','officialReferences','officialRelations','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns']) if (!Array.isArray(state[key])) state[key]=[];
+  for (const key of ['advisoryCases','advisoryAdvice','advisoryDailyReports','officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns']) if (!Array.isArray(state[key])) state[key]=[];
   if (!Array.isArray(state.companyResearch)) state.companyResearch=[];
   state.schemaVersion = '0.8';
   state.version = VERSION;
@@ -488,6 +490,53 @@ export function publicOfficialRelations(state,companyId){
     source:{sourceOfRecord:x.sourceOfRecord,url:x.sourceUrl,recordId:x.sourceRecordId,date:x.sourceDate||'',observedAt:x.observedAt},
     confidence:x.confidence,scope:x.scope,caveat:x.caveat,updatedAt:x.updatedAt
   })).sort((a,b)=>String(b.source.date||b.updatedAt||'').localeCompare(String(a.source.date||a.updatedAt||''))||a.id.localeCompare(b.id));
+}
+
+function eventStableId(item){
+  const parts=[item.provider,item.sourceRecordId,item.companyId,item.eventType];
+  return `oevt_${crypto.createHash('sha256').update(parts.map(x=>String(x||'')).join('\u001f')).digest('hex').slice(0,24)}`;
+}
+function validateOfficialEventInput(state,input){
+  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('官方事件需要结构化对象');
+  const company=state.companies.find(x=>x.id===String(input.companyId||'')&&!x.synthetic);
+  if(!company)throw new Error('官方事件必须绑定真实公司空间');
+  const eventType=String(input.eventType||'');if(!OFFICIAL_EVENT_TYPES.has(eventType))throw new Error('官方事件类型无效');
+  const provider=safeText(input.provider,{min:2,max:80,field:'官方来源标识'});
+  const sourceRecordId=safeOfficialValue(input.sourceRecordId,180);if(!sourceRecordId)throw new Error('官方事件记录标识不能为空');
+  const eventDate=safeDate(input.eventDate||input.sourceDate||'','事件日期');
+  const item={
+    companyId:company.id,provider,jurisdiction:safeText(input.jurisdiction||'',{min:0,max:20,field:'司法区'}),eventType,
+    title:safeText(input.title,{min:2,max:300,field:'官方事件标题'}),
+    summary:safeText(input.summary||'',{min:0,max:1600,field:'官方事件摘要'}),
+    eventDate,decisionNo:safeOfficialValue(input.decisionNo||'',120),status:safeOfficialValue(input.status||'',80),
+    sourceRecordId,sourceOfRecord:safeText(input.sourceOfRecord,{min:2,max:180,field:'官方来源名称'}),sourceUrl:safeUrl(input.sourceUrl),
+    sourceDate:safeDate(input.sourceDate||eventDate,'来源日期'),observedAt:safeText(input.observedAt||nowIso(),{min:10,max:40,field:'观察时间'}),
+    confidence:['HIGH','MEDIUM','LOW_MEDIUM'].includes(input.confidence)?input.confidence:'HIGH',
+    scope:safeText(input.scope||'',{min:0,max:700,field:'事件范围'}),caveat:safeText(input.caveat||'',{min:8,max:1000,field:'事件边界'}),
+    attributes:boundedRelationAttributes(input.attributes),tier:'OFFICIAL_SOURCE_EVENT',recordStatus:'CURRENT'
+  };
+  return {...item,id:eventStableId(item)};
+}
+export function upsertOfficialEvents(state,input){
+  const rows=Array.isArray(input)?input:Array.isArray(input?.items)?input.items:[];
+  if(!rows.length||rows.length>500)throw new Error('官方事件批次需为1—500条');
+  const at=nowIso();const saved=[];
+  for(const raw of rows){
+    const next={...validateOfficialEventInput(state,raw),updatedAt:at};
+    const index=state.officialEvents.findIndex(x=>x.id===next.id);
+    if(index>=0){next.createdAt=state.officialEvents[index].createdAt||at;state.officialEvents[index]=next;}
+    else {next.createdAt=at;state.officialEvents.push(next);}
+    saved.push(next);
+  }
+  return {savedCount:saved.length,items:saved};
+}
+export function publicOfficialEvents(state,companyId){
+  return (state.officialEvents||[]).filter(x=>x.companyId===companyId&&x.recordStatus==='CURRENT').map(x=>({
+    id:x.id,tier:'OFFICIAL_SOURCE_EVENT',provider:x.provider,jurisdiction:x.jurisdiction,eventType:x.eventType,
+    title:x.title,summary:x.summary||'',eventDate:x.eventDate||'',decisionNo:x.decisionNo||'',status:x.status||'',attributes:x.attributes||{},
+    source:{sourceOfRecord:x.sourceOfRecord,url:x.sourceUrl,recordId:x.sourceRecordId,date:x.sourceDate||'',observedAt:x.observedAt},
+    confidence:x.confidence,scope:x.scope,caveat:x.caveat,updatedAt:x.updatedAt
+  })).sort((a,b)=>String(b.eventDate||b.source.date||b.updatedAt||'').localeCompare(String(a.eventDate||a.source.date||a.updatedAt||''))||a.id.localeCompare(b.id));
 }
 
 function latestFeedbackResponse(state,feedbackId){return (state.communityFeedbackResponses||[]).filter(x=>x.feedbackId===feedbackId).sort((a,b)=>b.createdAt.localeCompare(a.createdAt))[0]||null;}

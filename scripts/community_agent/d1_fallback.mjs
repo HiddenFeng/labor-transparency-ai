@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {
   VERSION,emptyState,upgradeState,nowIso,
-  upsertOfficialReferences,upsertOfficialRelations,communityAgentQueue,
+  upsertOfficialReferences,upsertOfficialRelations,upsertOfficialEvents,communityAgentQueue,
   respondCommunityFeedback,addPublicAnnouncement,publicAnnouncements,recordAgentDailyRun
 } from '../../sites-app/src/domain.mjs';
 
@@ -20,9 +20,9 @@ const CONFIG='wrangler.production.jsonc';
 const ALL_COLLECTIONS=[
   'companies','contributions','reviews','exportReviews','ballots','flags',
   'advisoryCases','advisoryAdvice','advisoryDailyReports','companyResearch',
-  'officialReferences','officialRelations','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns'
+  'officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns'
 ];
-const MUTABLE=new Set(['officialReferences','officialRelations','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns']);
+const MUTABLE=new Set(['officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns']);
 
 function quote(value){return `'${String(value??'').replaceAll('\0','').replaceAll("'","''")}'`;}
 function runD1(sql){
@@ -80,7 +80,7 @@ function persistAllowedDiff(before,after){
 function communityState(state){
   return {
     companies:(state.companies||[]).filter(x=>!x.synthetic).map(x=>({id:x.id,name:x.name,region:x.region,website:x.website||''})),
-    pendingFeedback:communityAgentQueue(state),officialReferenceCount:Number(state.officialReferences?.length||0),officialRelationCount:Number(state.officialRelations?.length||0),
+    pendingFeedback:communityAgentQueue(state),officialReferenceCount:Number(state.officialReferences?.length||0),officialRelationCount:Number(state.officialRelations?.length||0),officialEventCount:Number(state.officialEvents?.length||0),
     latestAnnouncements:publicAnnouncements(state,7),
     dailyRuns:(state.agentDailyRuns||[]).slice().sort((a,b)=>b.day.localeCompare(a.day)||b.phase.localeCompare(a.phase)).slice(0,14).map(x=>({day:x.day,phase:x.phase,status:x.status,summary:x.summary,metrics:x.metrics||{},logRef:x.logRef||'',updatedAt:x.updatedAt}))
   };
@@ -102,6 +102,7 @@ function handleMutation(method,pathname,payload){
     const before=readState(),state=structuredClone(before);let out;
     if(pathname==='/api/community-agent/official-relations')out=upsertOfficialRelations(state,payload);
     else if(pathname==='/api/community-agent/official-references')out=upsertOfficialReferences(state,payload);
+    else if(pathname==='/api/community-agent/official-events')out=upsertOfficialEvents(state,payload);
     else if(pathname==='/api/community-agent/announcements')out=addPublicAnnouncement(state,payload,'daily-community-agent');
     else if(pathname==='/api/community-agent/daily-run')out=recordAgentDailyRun(state,payload,'daily-community-agent');
     else {
@@ -111,7 +112,7 @@ function handleMutation(method,pathname,payload){
     }
     const revision=persistAllowedDiff(before,state);
     const check=readState();if(check.revision!==revision)throw new Error('production D1 read-back revision mismatch');
-    if(pathname.endsWith('/official-relations')||pathname.endsWith('/official-references'))return {savedCount:out.savedCount,revision,fallback:'WRANGLER_D1'};
+    if(pathname.endsWith('/official-relations')||pathname.endsWith('/official-references')||pathname.endsWith('/official-events'))return {savedCount:out.savedCount,revision,fallback:'WRANGLER_D1'};
     if(pathname.endsWith('/announcements'))return {id:out.id,day:out.day,updatedAt:out.updatedAt,revision,fallback:'WRANGLER_D1'};
     if(pathname.endsWith('/daily-run'))return {id:out.id,day:out.day,phase:out.phase,status:out.status,updatedAt:out.updatedAt,revision,fallback:'WRANGLER_D1'};
     return {id:out.id,feedbackId:out.feedbackId,decision:out.decision,createdAt:out.createdAt,revision,fallback:'WRANGLER_D1'};
