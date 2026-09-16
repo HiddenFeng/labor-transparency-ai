@@ -1,7 +1,7 @@
 {
-  "version": "0.8.1-rc.2",
-  "date": "2026-09-15",
-  "status": "PUBLIC_HIDDENFENG_MULTI_SOURCE_NON_CHINA_CLOUD_CANONICAL_AUTO_RESEARCH_CANDIDATE_VERIFIED",
+  "version": "0.8.2-rc.1",
+  "date": "2026-09-16",
+  "status": "PASS_PRODUCTION_UNATTENDED_COMPANY_INTELLIGENCE_V082",
   "git": {
     "branch": "main",
     "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai",
@@ -24,12 +24,30 @@
         "web_candidate": "success",
         "cloudflare_backend": "success"
       }
+    },
+    "current_main_sha": "cf8066dcfa83f624601fedb5d08acf8a1cc8cd96",
+    "origin_main_matches": true,
+    "final_release_ci": {
+      "run_id": 35047372002,
+      "status": "PASS",
+      "head_sha": "cf8066dcfa83f624601fedb5d08acf8a1cc8cd96",
+      "jobs": {
+        "verify_3_9": "success",
+        "verify_3_13": "success",
+        "web_candidate": "success",
+        "cloudflare_backend": "success"
+      }
+    },
+    "final_public_smoke": {
+      "run_id": 35047371964,
+      "status": "PASS",
+      "head_sha": "cf8066dcfa83f624601fedb5d08acf8a1cc8cd96"
     }
   },
   "public_deployment": {
-    "version": "0.8.1-rc.2",
-    "date": "2026-09-15",
-    "status": "PUBLIC_HIDDENFENG_GITHUB_AND_VERCEL_LIVE_EDGEONE_OPTIONAL_HISTORY",
+    "version": "0.8.2-rc.1",
+    "date": "2026-09-16",
+    "status": "PUBLIC_HIDDENFENG_VERCEL_CLOUDFLARE_V082_UNATTENDED_INTELLIGENCE_LIVE",
     "cloudflare": {
       "backend": "https://labor-transparency-api.labor-transparency-public.workers.dev",
       "worker_live": true,
@@ -41,7 +59,8 @@
         "connect_seconds": 0.0,
         "total_seconds": 8.109733
       },
-      "note": "Public backend is externally reachable, but the current Mainland-China network cannot reliably connect directly to workers.dev."
+      "note": "Public backend is externally reachable, but the current Mainland-China network cannot reliably connect directly to workers.dev.",
+      "current_worker_version_id": "e71ec720-a846-4ffa-a43d-dfab8b4b6769"
     },
     "vercel": {
       "frontend": "https://workermanifestfellowship.vercel.app",
@@ -52,7 +71,7 @@
         "api_health": 200
       },
       "remote_e2e_status": "PASS_PUBLIC_VERCEL_TO_CLOUDFLARE_D1_RESEARCH_E2E",
-      "remote_backend_version": "0.8.1-rc.2",
+      "remote_backend_version": "0.8.2-rc.1",
       "remote_research": {
         "candidateCount": 11,
         "sourceSuccessCount": 9,
@@ -132,7 +151,8 @@
       "account": "HiddenFeng",
       "account_slug": "hiddenfeng",
       "project": "workermanifestfellowship",
-      "hiddenfeng_migration_e2e": "PASS_HIDDENFENG_VERCEL_CLOUDFLARE_D1_E2E"
+      "hiddenfeng_migration_e2e": "PASS_HIDDENFENG_VERCEL_CLOUDFLARE_D1_E2E",
+      "current_canonical_deployment": "https://workermanifestfellowship-qhyozehuu-hiddenfeng.vercel.app"
     },
     "edgeone": {
       "temporary_preview_status": "PASS_TEMPORARY_EDGEONE_MAINLAND_PREVIEW_RC2",
@@ -197,7 +217,7 @@
       "new_account_pages_live": true,
       "reason": "PASS: HiddenFeng Pages run 34980498497 succeeded after selecting GitHub Actions as the Pages source."
     },
-    "production_d1_qa_cleanup": "PASS_ZERO_QA_RECORDS_AFTER_HIDDENFENG_VERCEL_E2E",
+    "production_d1_qa_cleanup": "PASS_V082_QA_COMPANY_RESEARCH_BALLOT_3_ROWS_REMOVED_REAL_RECORDS_PRESERVED",
     "developer_identity": {
       "public_ui_exposes_personal_email": false,
       "public_ui_exposes_real_name": false,
@@ -231,6 +251,20 @@
           "cloudflare_backend": "success"
         }
       }
+    },
+    "current_v082": {
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "worker_version_id": "e71ec720-a846-4ffa-a43d-dfab8b4b6769",
+      "vercel_deployment": "https://workermanifestfellowship-qhyozehuu-hiddenfeng.vercel.app",
+      "main_sha": "cf8066dcfa83f624601fedb5d08acf8a1cc8cd96",
+      "production_e2e_run": 35046956907,
+      "release_ci_run": 35047372002,
+      "public_smoke_run": 35047371964,
+      "unattended_company_intelligence": true,
+      "main_queue": "PASS_1_PRODUCER_1_CONSUMER",
+      "dlq": "PASS_1_CONSUMER",
+      "existing_real_company_self_migration": "PASS",
+      "real_community_interaction_preserved": true
     }
   },
   "architecture": {
@@ -241,7 +275,8 @@
     "same_origin_proxy_supported": true,
     "scheduled_advisory": true,
     "scheduled_company_research": true,
-    "company_research_publication_rule": "SOURCE_CANDIDATES_NEVER_AUTO_BECOME_COMPANY_FACTS"
+    "company_research_publication_rule": "STRICT_MACHINE_VERIFIED_REFERENCE_PLUS_BOUNDED_SOURCE_SIGNAL; AMBIGUOUS_OR_LEGAL_INTERPRETIVE_MATERIAL_REMAINS_CANDIDATE_OR_UNKNOWN",
+    "company_research_normal_operator_dependency": "NONE"
   },
   "company_research": {
     "identity_root": "GLEIF",
@@ -519,8 +554,8 @@
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
   "remaining_human_only": [],
-  "next_gate": "Deploy v0.8.2 autonomous company intelligence to canonical Cloudflare/Vercel production, verify GitHub-hosted QA create -> QUEUE_SENT -> AUTO_READY* without reviewer, observe existing real company self-migration under the current policy, repair any defect, then remove only QA rows.",
-  "strongest_claim": "v0.8.2-rc.1 is locally and live-source verified for unattended company intelligence but is not yet claimed as production-deployed: Queue collection automatically derives only fail-closed MACHINE_VERIFIED_REFERENCE facts and bounded SOURCE_SIGNAL records, ambiguity remains candidate/unknown, refresh retracts unsupported facts, and Queue/DLQ/scheduled recovery has no named-operator dependency. Production v0.8.1 remains live until v0.8.2 deployment passes CI/E2E.",
+  "next_gate": "Expand autonomous source coverage and evidence-scoped company dossier depth only through source-specific deterministic adapters; continue observing real production interactions and repair regressions, while preserving fail-closed identity/legal boundaries.",
+  "strongest_claim": "v0.8.2-rc.1 is production-deployed and externally verified for unattended company intelligence: normal user-created companies are queued, collected, clustered, trust-classified, refreshed/retracted and self-recovered without a named reviewer; only narrowly scoped machine-verifiable reference facts and bounded source signals are published, ambiguity remains candidate/unknown, and real production interaction/migration evidence is preserved.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -605,7 +640,7 @@
     "mainland_boundary": "External PASS proves the tested global public path and security contracts from GitHub-hosted infrastructure; it does not establish a Mainland-China SLA."
   },
   "user_added_company_auto_research": {
-    "status": "PASS_PRODUCTION_QUEUE_AUTO_RESEARCH_AND_SAFE_PUBLIC_DISPLAY",
+    "status": "HISTORICAL_V081_QUEUE_BASELINE_SUPERSEDED_BY_V082_AUTONOMOUS_INTELLIGENCE",
     "change_record": "docs/v0_8/CHANGE-v0.8.1-user-company-auto-research.md",
     "lifecycle": [
       "QUEUED",
@@ -723,10 +758,11 @@
         "run_id": 35042968391,
         "status": "PASS"
       }
-    }
+    },
+    "superseded_by": "autonomous_company_intelligence_v082"
   },
   "autonomous_company_intelligence_v082": {
-    "status": "LOCAL_FULL_AND_LIVE_SOURCE_VERIFIED_PRODUCTION_DEPLOYMENT_PENDING",
+    "status": "PASS_PRODUCTION_UNATTENDED_AUTONOMOUS_COMPANY_INTELLIGENCE",
     "change_record": "docs/v0_8/CHANGE-v0.8.2-autonomous-company-intelligence.md",
     "version": "0.8.2-rc.1",
     "normal_path": "company create -> D1 QUEUED -> Cloudflare Queue -> serial multi-source collection -> deterministic trust policy -> AUTO_READY* -> safe public machine intelligence",
@@ -788,6 +824,117 @@
       "public_projection_safe": true,
       "restart_persistence": true
     },
-    "production_gate": "PENDING_GITHUB_CI_DEPLOY_PRODUCTION_E2E_EXISTING_REAL_COMPANY_MIGRATION"
+    "production_gate": "PASS",
+    "production_runtime": {
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "worker_origin": "https://labor-transparency-api.labor-transparency-public.workers.dev",
+      "worker_version_id": "e71ec720-a846-4ffa-a43d-dfab8b4b6769",
+      "canonical_vercel_deployment": "https://workermanifestfellowship-qhyozehuu-hiddenfeng.vercel.app",
+      "canonical_vercel_project": "hiddenfeng/workermanifestfellowship",
+      "main_queue": {
+        "producer_count": 1,
+        "consumer_count": 1
+      },
+      "dead_letter_queue": {
+        "consumer_count": 1
+      },
+      "crons": [
+        "*/5 * * * *",
+        "0 1 * * *"
+      ]
+    },
+    "production_e2e": {
+      "run_id": 35046956907,
+      "head_sha": "54c195a67923eadf51c740718058fb14bbeb9e6c",
+      "status": "PASS_PRODUCTION_AUTONOMOUS_COMPANY_INTELLIGENCE_AND_INTERACTION",
+      "qa_company": "Starbucks Corporation",
+      "created_at": "2026-09-16T02:10:35.822Z",
+      "queue_started_at": "2026-09-16T02:10:37.671Z",
+      "queue_claim_delay_seconds": 1.849,
+      "research_status": "AUTO_READY_WITH_SOURCE_GAPS",
+      "review_required": false,
+      "machine_verified_facts": 6,
+      "source_signals": 4,
+      "source_success_count": 9,
+      "source_error_count": 2,
+      "identity_status": "AUTO_BOUND_REFERENCE",
+      "real_user_interaction_check": "negative ballot mutation passed on QA company",
+      "private_research_run_or_review_called": false,
+      "cleanup": {
+        "qa_company_deleted": true,
+        "qa_research_deleted": true,
+        "qa_ballot_deleted": true,
+        "rows_deleted": 3,
+        "non_qa_records_preserved": true
+      }
+    },
+    "existing_real_company_migration": {
+      "company_name": "星宇股份有限公司",
+      "company_region": "中国",
+      "migration_mode": "AUTOMATIC_SCHEDULED_REENQUEUE_AND_QUEUE_CONSUMER",
+      "research_status": "AUTO_READY_WITH_SOURCE_GAPS",
+      "policy_version": "auto-intelligence-0.8.2",
+      "review_required": false,
+      "identity_status": "NO_VERIFIED_REFERENCE",
+      "machine_verified_facts": 0,
+      "source_signals": 0,
+      "source_success_count": 9,
+      "source_error_count": 2,
+      "collected_at": "2026-09-16T02:00:57.452Z",
+      "fail_closed_result": "PASS_NO_IDENTITY_GUESS",
+      "real_community_ballot_preserved": {
+        "direction": "negative",
+        "count": 1
+      }
+    },
+    "browser_acceptance": {
+      "canonical_domain": "PASS",
+      "company_page_real_record_visible": true,
+      "real_negative_feedback_visible": true,
+      "autonomous_research_ui_visible": true,
+      "method_copy_aligned_with_unattended_semantics": true,
+      "console_errors": 0,
+      "network_errors": 0,
+      "page_errors": 0,
+      "displayed_version": "0.8.2-rc.1"
+    },
+    "external_validation": {
+      "production_e2e": {
+        "run_id": 35046956907,
+        "status": "PASS"
+      },
+      "release_ci_runtime_head": {
+        "run_id": 35046956817,
+        "status": "PASS",
+        "head_sha": "54c195a67923eadf51c740718058fb14bbeb9e6c"
+      },
+      "public_smoke_runtime_head": {
+        "run_id": 35046956831,
+        "status": "PASS",
+        "head_sha": "54c195a67923eadf51c740718058fb14bbeb9e6c"
+      },
+      "final_release_ci": {
+        "run_id": 35047372002,
+        "status": "PASS",
+        "head_sha": "cf8066dcfa83f624601fedb5d08acf8a1cc8cd96"
+      },
+      "final_public_smoke": {
+        "run_id": 35047371964,
+        "status": "PASS",
+        "head_sha": "cf8066dcfa83f624601fedb5d08acf8a1cc8cd96"
+      }
+    },
+    "deployment_defects_repaired": [
+      "Local Worker smoke accidentally inherited queue dispatch because CLI --var list omitted LTP_RESEARCH_QUEUE_DISPATCH=false; fixed and revalidated.",
+      "Vercel deploy script initially created noncanonical project dist from directory inference; script now pins hiddenfeng/workermanifestfellowship and canonical deployment/domain were revalidated.",
+      "Method page retained old human-review wording; production copy was aligned with deterministic unattended trust rules and revalidated in browser."
+    ],
+    "remaining_boundaries": [
+      "Global source coverage remains partial and jurisdiction-dependent.",
+      "No autonomous inference of legal liability, misconduct, product quality or broad company rating.",
+      "Ambiguous identity or unsupported relationships stay candidate/unknown rather than forcing a result.",
+      "Optional token/subscription sources remain fail-closed until license/access conditions are satisfied.",
+      "Mainland-China stable SLA is not claimed."
+    ]
   }
 }

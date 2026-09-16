@@ -1,7 +1,7 @@
 # v0.8.2 无人值守公司资料研究：来源、信任规则与自愈边界
 
 日期：2026-09-16
-状态：`AUTONOMOUS_TRUST_LAYER_LOCAL_VERIFIED / PRODUCTION_DEPLOYMENT_PENDING / GLOBAL_COVERAGE_PARTIAL`
+状态：`PASS_PRODUCTION_UNATTENDED_AUTONOMOUS_COMPANY_INTELLIGENCE / GLOBAL_COVERAGE_PARTIAL`
 
 ## 1. 目标不是“爬到越多越好”
 
@@ -117,7 +117,7 @@ Wikidata 的官网字段只用于公开入口。正式劳动申诉渠道高度�
 
 `qa/v0_8/live-company-intelligence.json`：在 QA 中显式指定 Starbucks 的 GLEIF/Wikidata/NLRB/OSHA/WHD/F-7/OLMS/USAspending 绑定后生成 `DRAFT_READY` 多源草稿。该动作没有批准或发布草稿。
 
-`qa/v0_8/cloudflare-live-research.json`：v0.8.2 候选已完成真实本地 Wrangler Worker + D1 + Queue + 真实外网自动链验证；流程为“用户创建 Starbucks Corporation -> D1 `QUEUED` -> `QUEUE_SENT` -> Queue Consumer -> 多源采集 -> 自治信任分层 -> 普通 `/api/companies` 机器参考事实/来源信号/候选安全投影 -> Worker 重启恢复”。最近一次本地真实来源链得到 `AUTO_READY_WITH_SOURCE_GAPS`、6 个机器参考事实、4 个来源信号，且 `reviewRequired=false`。这是发布前证据，生产 v0.8.2 验收仍必须在部署后重新执行。
+`qa/v0_8/cloudflare-live-research.json`：v0.8.2 已完成真实本地 Wrangler Worker + D1 + Queue + 真实外网自动链验证；流程为“用户创建 Starbucks Corporation -> D1 `QUEUED` -> `QUEUE_SENT` -> Queue Consumer -> 多源采集 -> 自治信任分层 -> 普通 `/api/companies` 机器参考事实/来源信号/候选安全投影 -> Worker 重启恢复”。本地真实来源链得到 `AUTO_READY_WITH_SOURCE_GAPS`、6 个机器参考事实、4 个来源信号，且 `reviewRequired=false`。正式生产 E2E run `35046956907` 也从项目自有域名完成同一主链，并额外验证普通用户负向 ballot 交互；QA company/research/ballot 共 3 条记录随后精准清理。现有真实公司“星宇股份有限公司”无需私有 run/review 即自动迁移到 `auto-intelligence-0.8.2`，在无法得到足够强身份参考时正确保持 `NO_VERIFIED_REFERENCE`，其真实社区负向反馈继续保留。最终机器证据见 `qa/v0_8/autonomous-company-intelligence-v082-production.json` 与 `qa/v0_8/verification.json`。
 
 `qa/v0_8/company-intelligence-audit.json`：确定性 fixture 对所有主要 provider 完成 `candidate -> explicit binding -> draft -> independent review -> release -> reopen persistence` 审计。
 

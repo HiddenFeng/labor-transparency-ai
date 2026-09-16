@@ -1,0 +1,97 @@
+{
+  "schema": "labor-transparency-autonomous-company-intelligence-production-evidence-v1",
+  "date": "2026-09-16",
+  "status": "PASS_PRODUCTION_UNATTENDED_AUTONOMOUS_COMPANY_INTELLIGENCE",
+  "version": "0.8.2-rc.1",
+  "final_main_sha": "cf8066dcfa83f624601fedb5d08acf8a1cc8cd96",
+  "worker_version_id": "e71ec720-a846-4ffa-a43d-dfab8b4b6769",
+  "canonical_vercel_deployment": "https://workermanifestfellowship-qhyozehuu-hiddenfeng.vercel.app",
+  "production_e2e_run": 35046956907,
+  "release_ci_run": 35047372002,
+  "public_smoke_run": 35047371964,
+  "real_company_migration": {
+    "company_name": "星宇股份有限公司",
+    "company_region": "中国",
+    "migration_mode": "AUTOMATIC_SCHEDULED_REENQUEUE_AND_QUEUE_CONSUMER",
+    "research_status": "AUTO_READY_WITH_SOURCE_GAPS",
+    "policy_version": "auto-intelligence-0.8.2",
+    "review_required": false,
+    "identity_status": "NO_VERIFIED_REFERENCE",
+    "machine_verified_facts": 0,
+    "source_signals": 0,
+    "source_success_count": 9,
+    "source_error_count": 2,
+    "collected_at": "2026-09-16T02:00:57.452Z",
+    "fail_closed_result": "PASS_NO_IDENTITY_GUESS",
+    "real_community_ballot_preserved": {
+      "direction": "negative",
+      "count": 1
+    }
+  },
+  "qa_e2e": {
+    "run_id": 35046956907,
+    "head_sha": "54c195a67923eadf51c740718058fb14bbeb9e6c",
+    "status": "PASS_PRODUCTION_AUTONOMOUS_COMPANY_INTELLIGENCE_AND_INTERACTION",
+    "qa_company": "Starbucks Corporation",
+    "created_at": "2026-09-16T02:10:35.822Z",
+    "queue_started_at": "2026-09-16T02:10:37.671Z",
+    "queue_claim_delay_seconds": 1.849,
+    "research_status": "AUTO_READY_WITH_SOURCE_GAPS",
+    "review_required": false,
+    "machine_verified_facts": 6,
+    "source_signals": 4,
+    "source_success_count": 9,
+    "source_error_count": 2,
+    "identity_status": "AUTO_BOUND_REFERENCE",
+    "real_user_interaction_check": "negative ballot mutation passed on QA company",
+    "private_research_run_or_review_called": false,
+    "cleanup": {
+      "qa_company_deleted": true,
+      "qa_research_deleted": true,
+      "qa_ballot_deleted": true,
+      "rows_deleted": 3,
+      "non_qa_records_preserved": true
+    }
+  },
+  "browser_acceptance": {
+    "canonical_domain": "PASS",
+    "company_page_real_record_visible": true,
+    "real_negative_feedback_visible": true,
+    "autonomous_research_ui_visible": true,
+    "method_copy_aligned_with_unattended_semantics": true,
+    "console_errors": 0,
+    "network_errors": 0,
+    "page_errors": 0,
+    "displayed_version": "0.8.2-rc.1"
+  },
+  "queue": {
+    "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+    "worker_origin": "https://labor-transparency-api.labor-transparency-public.workers.dev",
+    "worker_version_id": "e71ec720-a846-4ffa-a43d-dfab8b4b6769",
+    "canonical_vercel_deployment": "https://workermanifestfellowship-qhyozehuu-hiddenfeng.vercel.app",
+    "canonical_vercel_project": "hiddenfeng/workermanifestfellowship",
+    "main_queue": {
+      "producer_count": 1,
+      "consumer_count": 1
+    },
+    "dead_letter_queue": {
+      "consumer_count": 1
+    },
+    "crons": [
+      "*/5 * * * *",
+      "0 1 * * *"
+    ]
+  },
+  "defects_repaired": [
+    "Local Worker smoke accidentally inherited queue dispatch because CLI --var list omitted LTP_RESEARCH_QUEUE_DISPATCH=false; fixed and revalidated.",
+    "Vercel deploy script initially created noncanonical project dist from directory inference; script now pins hiddenfeng/workermanifestfellowship and canonical deployment/domain were revalidated.",
+    "Method page retained old human-review wording; production copy was aligned with deterministic unattended trust rules and revalidated in browser."
+  ],
+  "claim_boundary": [
+    "Global source coverage remains partial and jurisdiction-dependent.",
+    "No autonomous inference of legal liability, misconduct, product quality or broad company rating.",
+    "Ambiguous identity or unsupported relationships stay candidate/unknown rather than forcing a result.",
+    "Optional token/subscription sources remain fail-closed until license/access conditions are satisfied.",
+    "Mainland-China stable SLA is not claimed."
+  ]
+}
