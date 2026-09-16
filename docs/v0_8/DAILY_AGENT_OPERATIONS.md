@@ -42,6 +42,16 @@ Collect/publish current official reference/relation matches:
 
 The Japan NTA daily-delta collector writes `OFFICIAL_SOURCE_REFERENCE`, not a machine legal-identity upgrade. When there are no Japan company spaces, it performs zero NTA source requests.
 
+### Command-line network fallback
+
+Normal daily commands first use the canonical production `/api` surface. On this Mac, browser traffic and command-line traffic may take different network routes; direct Python/curl access to Vercel/Cloudflare can therefore be temporarily unavailable even while the public site is healthy.
+
+The shared HTTP helper has one bounded fallback for that case: `scripts/community_agent/d1_fallback.mjs`. It uses the already-authenticated local Wrangler CLI to access the same production D1, reads the current revision/state, acquires the existing `ltp_write_lock`, calls the same domain validation/mutator functions, persists **only** `officialReferences`, `officialRelations`, `communityFeedback`, `communityFeedbackResponses`, `publicAnnouncements`, and `agentDailyRuns`, increments the state revision, then reads the revision back. It does not expose arbitrary SQL to the Agent and must never be extended to mutate companies, ballots, contributions, advisory records, or companyResearch as a convenience shortcut.
+
+Trusted POST fallback is refused unless the caller already supplied the community-Agent credential. The Wrangler login on the project Mac is a second local authority boundary; neither credential nor Wrangler output containing account secrets may be copied into project history or announcements.
+
+If both the normal API path and this bounded fallback fail, record `PARTIAL`/`FAILED` with the concrete error and let the 19:00 review pass continue. Do not improvise raw D1 SQL.
+
 Respond to one feedback item:
 
 `python3 scripts/community_agent/community_api.py respond <feedback-id> --decision planned --answer "..." --action "..."`

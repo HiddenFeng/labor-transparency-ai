@@ -10,12 +10,25 @@
     "接入欧盟 TED 公共采购 Search API；只有 EU/EEA 公司名称与公告参与方精确一致时才记录具体采购关系。当前生产社区没有 EU/EEA 公司，因此每日路径会零请求、零新增，不做无关搜索。",
     "接入日本国税厅法人番号公开日差分作为官方登记参考来源。当前生产社区没有日本公司，因此日常路径零请求；隔离验证用当天官方差分扫描 2273 条记录并精确命中 1 条真实法人记录。日差分参考不会被当成全国唯一法律主体认证。",
     "生产浏览器验收中修复了公司下拉在异步刷新时可能重置的问题，避免用户选好公司后线索误绑到另一家公司。",
-    "已设置北京时间每天 18:00 调用社区运营 Agent 做官方资料增量、意见处理与公告更新；19:00 独立调用复核 Agent 检查遗漏并继续完成，当天留下总工作记录。"
+    "已设置北京时间每天 18:00 调用社区运营 Agent 做官方资料增量、意见处理与公告更新；19:00 独立调用复核 Agent 检查遗漏并继续完成，当天留下总工作记录。",
+    "增强每日 Agent 的网络容错：本机命令行暂时无法直连站点时，会切换到受控 D1 备用通道；备用通道只允许官方来源结果、意见答复、公告和每日运行记录等 Agent 专用数据，不会绕过公司、投票、贡献或研究主链。"
   ],
   "sources": [
-    {"label": "国家药监局 UDI 数据库", "url": "https://udi.nmpa.gov.cn/"},
-    {"label": "欧盟 TED Search API 文档", "url": "https://docs.ted.europa.eu/api/latest/search.html"},
-    {"label": "日本国税厅法人番号日差分下载", "url": "https://www.houjin-bangou.nta.go.jp/download/sabun/index.html"},
-    {"label": "项目公开源码与治理记录", "url": "https://github.com/HiddenFeng/labor-transparency-ai"}
+    {
+      "label": "国家药监局 UDI 数据库",
+      "url": "https://udi.nmpa.gov.cn/"
+    },
+    {
+      "label": "欧盟 TED Search API 文档",
+      "url": "https://docs.ted.europa.eu/api/latest/search.html"
+    },
+    {
+      "label": "日本国税厅法人番号日差分下载",
+      "url": "https://www.houjin-bangou.nta.go.jp/download/sabun/index.html"
+    },
+    {
+      "label": "项目公开源码与治理记录",
+      "url": "https://github.com/HiddenFeng/labor-transparency-ai"
+    }
   ]
 }

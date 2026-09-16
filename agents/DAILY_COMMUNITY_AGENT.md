@@ -29,6 +29,7 @@ Create `history/daily/YYYY-MM-DD/` if missing. Use Beijing calendar date.
    - EU/EEA TED procurement: `python3 scripts/community_agent/eu_ted_daily.py --publish --output history/daily/YYYY-MM-DD/eu-ted.json`
    - Japan NTA Corporate Number daily delta: `python3 scripts/community_agent/jp_nta_daily.py --publish --output history/daily/YYYY-MM-DD/jp-nta.json`
    Each collector is fail-closed and only stores exact scoped matches to companies already present in the project. The Japan daily-delta result is `OFFICIAL_SOURCE_REFERENCE`, not a machine legal-identity upgrade. Zero eligible companies or zero matches is a valid completed result.
+   If the normal production API is unreachable from the command-line network, the helper may transparently use the bounded Wrangler-D1 fallback documented in `docs/v0_8/DAILY_AGENT_OPERATIONS.md`. Do not replace that fallback with ad-hoc/raw D1 SQL.
 3. Read pending user feedback:
    `python3 scripts/community_agent/community_api.py queue`
 4. For each pending suggestion / appeal / correction / source request:
