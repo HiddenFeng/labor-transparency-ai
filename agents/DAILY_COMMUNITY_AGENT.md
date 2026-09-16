@@ -26,9 +26,10 @@ Create `history/daily/YYYY-MM-DD/` if missing. Use Beijing calendar date.
    `python3 scripts/community_agent/community_api.py state`
 2. Prioritize existing **China company spaces** and run the approved China investigation collectors first:
    - China NMPA UDI: `python3 scripts/community_agent/nmpa_udi_daily.py --publish --output history/daily/YYYY-MM-DD/nmpa-udi.json`
+   - Shanghai Stock Exchange listing/disclosure reference: `python3 scripts/community_agent/cn_sse_listing_daily.py --publish --output history/daily/YYYY-MM-DD/cn-sse-listing.json`
    - China SAMR defective-product recalls: `python3 scripts/community_agent/cn_samr_recall_daily.py --publish --output history/daily/YYYY-MM-DD/cn-samr-recall.json`
    - China CSRC administrative penalties: `python3 scripts/community_agent/cn_csrc_penalty_daily.py --publish --output history/daily/YYYY-MM-DD/cn-csrc-penalty.json`
-   These China collectors must keep `OFFICIAL_SOURCE_RELATION` and `OFFICIAL_SOURCE_EVENT` separate. A recall/penalty event supports only its specific official record; zero matches never means “no recalls / no penalties / no problems exist”.
+   These China collectors must keep `OFFICIAL_SOURCE_REFERENCE`, `OFFICIAL_SOURCE_RELATION`, and `OFFICIAL_SOURCE_EVENT` separate. SSE candidate security codes are discovery only: an SSE reference is saved only after the official company overview returns an exact full-name match. A recall/penalty event supports only its specific official record; zero matches never means “not listed / no recalls / no penalties / no problems exist”.
 3. Run the other approved jurisdiction collectors only for companies to which they apply:
    - EU/EEA TED procurement: `python3 scripts/community_agent/eu_ted_daily.py --publish --output history/daily/YYYY-MM-DD/eu-ted.json`
    - Japan NTA Corporate Number daily delta: `python3 scripts/community_agent/jp_nta_daily.py --publish --output history/daily/YYYY-MM-DD/jp-nta.json`

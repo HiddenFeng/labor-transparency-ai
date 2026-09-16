@@ -14,7 +14,7 @@ function buildChinaInvestigation(company,research,officialReferences,officialRel
   const legalIdentityStatus=research?.intelligence?.identity?.status||'NO_RESEARCH_REFERENCE';
   const gaps=[];
   if(!legalRefs.length&&legalIdentityStatus!=='AUTO_BOUND_REFERENCE')gaps.push({code:'CN_LEGAL_IDENTITY_NOT_STRICTLY_BOUND',label:'法律主体仍需官方登记核验',detail:'当前没有可公开自动化的全国工商严格绑定；GSXT 保留为官方核验入口，不绕验证码或反爬。'});
-  if(!disclosureRefs.length)gaps.push({code:'CN_LISTING_DISCLOSURE_NOT_BOUND',label:'尚无交易所/披露登记绑定',detail:'未绑定上市披露不代表企业未上市；后续只在证券代码/主体可以可靠绑定时加入。'});
+  if(!disclosureRefs.length)gaps.push({code:'CN_LISTING_DISCLOSURE_NOT_BOUND',label:'尚无交易所/披露登记严格绑定',detail:'已接入上交所股票目录→证券代码→公司概况的双重核验；未精确命中不代表企业未上市，深交所/北交所仍是明确覆盖缺口。'});
   if(!products.length)gaps.push({code:'CN_PRODUCT_RELATION_LIMITED',label:'官方产品关系覆盖有限',detail:'NMPA UDI 目前只覆盖医疗器械；没有命中不代表企业没有产品。'});
   if(!penalties.length&&!measures.length)gaps.push({code:'CN_REGULATORY_EVENT_NO_MATCH',label:'当前未命中证监处罚/监管事件',detail:'未命中只表示已接入来源当前没有精确公司记录，不代表不存在其他行政、司法或地方监管事项。'});
   if(!recalls.length)gaps.push({code:'CN_RECALL_NO_MATCH',label:'当前未命中召回事件',detail:'召回源仅覆盖国家市场监管总局缺陷产品召回中心公开范围；未命中不代表产品不存在其他质量或安全问题。'});
@@ -26,7 +26,7 @@ function buildChinaInvestigation(company,research,officialReferences,officialRel
     summary:`已接入中国官方来源：登记参考 ${officialReferences.length} 条、官方关系 ${officialRelations.length} 条、官方事件 ${officialEvents.length} 条；所有结论仅限具体来源记录，不生成企业整体好坏评分。`,
     dimensions:{
       identity:{legalIdentityStatus,officialReferenceCount:legalRefs.length,openContextCount:research?.intelligence?.coverage?.openContextReferences||0},
-      listingDisclosure:{officialReferenceCount:disclosureRefs.length},
+      listingDisclosure:{officialReferenceCount:disclosureRefs.length,providers:[...new Set(disclosureRefs.map(x=>x.provider).filter(Boolean))]},
       brandProducts:{officialProductRelations:products.length,communityBrands:(contributions?.brands||[]).length,communityProducts:(contributions?.products||[]).length},
       regulatory:{administrativePenalties:penalties.length,regulatoryMeasures:measures.length,latest:[...penalties,...measures].slice().sort((a,b)=>String(b.eventDate).localeCompare(String(a.eventDate))).slice(0,5)},
       recalls:{count:recalls.length,latest:recalls.slice(0,5)},
@@ -35,6 +35,7 @@ function buildChinaInvestigation(company,research,officialReferences,officialRel
     },
     sourceCoverage:[
       {provider:'CN_NMPA_UDI',label:'国家药监局 UDI',mode:'AUTOMATED_EXACT_MATCH',scope:'医疗器械注册人/备案人 ↔ 产品记录'},
+      {provider:'CN_SSE_LISTING',label:'上海证券交易所股票列表 / 公司概况',mode:'AUTOMATED_CODE_PLUS_EXACT_FULL_NAME',scope:'证券代码候选 → 官方公司概况完整名称精确复核；只形成上市/披露参考'},
       {provider:'CN_SAMR_RECALL',label:'市场监管总局缺陷产品召回',mode:'AUTOMATED_EXACT_MATCH',scope:'具体汽车/消费品召回公告'},
       {provider:'CN_CSRC_PENALTY',label:'中国证监会行政处罚',mode:'AUTOMATED_EXACT_MATCH',scope:'具体行政处罚决定'},
       {provider:'CN_GSXT',label:'国家企业信用信息公示系统',mode:'OFFICIAL_LOOKUP_ONLY',scope:'工商/企业信用官方核验入口'},

@@ -19,6 +19,7 @@ export const COMPANY_RESEARCH_COVERAGE = Object.freeze({
   sections:[
     {key:'identity',label:'法律实体身份',status:'AUTOMATED_SUPPORTED',source:'GLEIF；OpenCorporates 为可选 token/许可确认来源',scope:'法律名称、LEI、登记国家/地区、法律辖区、实体/维护状态；OpenCorporates 默认关闭'},
     {key:'ownership',label:'母子公司与品牌',status:'AUTOMATED_PARTIAL',source:'GLEIF + 绑定后的 Wikidata；OpenCorporates 可选',scope:'GLEIF直接/最终会计合并母公司；Wikidata上下级/子组织仅作上下文，不等于完整股权或控制关系'},
+    {key:'official_references',label:'官方登记 / 上市披露参考',status:'AUTOMATED_PARTIAL_REGION_LIMITED',source:'中国上海证券交易所股票列表 / 公司概况 + 日本国税庁法人番号日次差分；GSXT 保留官方核验入口',scope:'上交所目录仅发现证券代码候选，必须由官方公司概况完整名称与公司空间名称精确一致后才形成上市/披露参考；日本法人番号日差分只形成当日精确名称参考。两者都不自动升级全国法律主体身份，也不代表企业整体质量或合规。'},
     {key:'official_relations',label:'官方公司 / 品牌 / 产品关系',status:'AUTOMATED_PARTIAL_REGION_LIMITED',source:'中国 NMPA UDI 每日增量 + EU/EEA TED 采购公告；GSXT/CNIPA 当前仅作官方核验入口',scope:'NMPA 只支持精确注册人/备案人 ↔ 医疗器械 UDI 记录；TED 只支持精确参与方 ↔ 某一条公开采购公告。两者都不代表完整产品目录、完整客户供应链、产品质量或公司整体评价'},
     {key:'official_events',label:'官方监管 / 召回事件',status:'AUTOMATED_PARTIAL_REGION_LIMITED',source:'中国市场监管总局缺陷产品召回技术中心 + 中国证监会行政处罚决定；美国既有执法来源仍保持各自来源信号层级',scope:'SAMR 只支持某一条具体召回公告；CSRC 只支持某一份证券监管行政处罚决定。未命中不等于不存在其他地方监管、司法、仲裁、质量或劳动事件，也不生成公司总体风险/信用评分'},
     {key:'business',label:'业务/产品/公开披露',status:'AUTOMATED_PARTIAL_REGION_LIMITED',source:'SEC EDGAR（美国公开申报主体）+ Wikidata + DOL WHD 行业上下文 + USAspending award 描述',scope:'CIK、ticker、交易所、SIC、近期申报、部分XBRL财务事实、行业/成立时间/产品或品牌上下文，以及特定政府award描述；仍不等于完整产品目录或全部市场数据'},
@@ -31,7 +32,7 @@ export const COMPANY_RESEARCH_COVERAGE = Object.freeze({
     {provider:'OPENCORPORATES',status:'OPTIONAL_TOKEN_LICENSE_REVIEW_REQUIRED',reason:'API key required; open-data usage has share-alike attribution terms that must be reviewed against this project license.'},
     {provider:'OPEN_SUPPLY_HUB',status:'OPTIONAL_TOKEN_SUBSCRIPTION',reason:'API token/trial or subscription required; facility relationship remains a candidate until provenance review.'}
   ],
-  claimBoundary:'生产系统无人值守运行：严格机器规则满足时可自动发布窄范围法律实体/申报参考事实；每日本地Agent可把NMPA UDI与EU TED的精确官方关系写入OFFICIAL_SOURCE_RELATION层，并把SAMR召回/CSRC行政处罚等精确绑定的具体官方记录写入OFFICIAL_SOURCE_EVENT层。任何单条官方事件都不能自动扩张为企业整体违法、风险、劳动质量或产品质量结论；没有来源、地区不适用、主体歧义和来源不可达都会显式保留为未知。'
+  claimBoundary:'生产系统无人值守运行：严格机器规则满足时可自动发布窄范围法律实体/申报参考事实；每日本地Agent可把上交所上市披露与日本法人番号日差分的严格匹配写入OFFICIAL_SOURCE_REFERENCE层，把NMPA UDI与EU TED的精确官方关系写入OFFICIAL_SOURCE_RELATION层，并把SAMR召回/CSRC行政处罚等精确绑定的具体官方记录写入OFFICIAL_SOURCE_EVENT层。任何单条参考、关系或事件都不能自动扩张为企业整体违法、风险、劳动质量、产品质量或投资价值结论；没有来源、地区不适用、主体歧义和来源不可达都会显式保留为未知。'
 });
 
 export function companyResearchCoverage(){return structuredClone(COMPANY_RESEARCH_COVERAGE);}

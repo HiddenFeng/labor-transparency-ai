@@ -34,7 +34,7 @@ test('real HTTP contribution -> review -> redistribution -> correction -> persis
   const dataFile=path.join(dir,'state.json');
   let env=await start({dataFile});t.after(()=>env.server.listening&&env.server.close());
   const client=new Client(env.base);const cfg=await client.config();
-  assert.equal(cfg.version,'0.8.5-rc.1');assert.equal(cfg.capabilities.attachments,false);assert.equal(cfg.capabilities.privateSensitiveInfo,false);assert.equal(cfg.capabilities.anonymousAdvisory,true);assert.equal(cfg.capabilities.communityFeedback,true);assert.equal(cfg.capabilities.officialReferences,true);assert.equal(cfg.capabilities.officialRelations,true);assert.equal(cfg.capabilities.officialEvents,true);assert.equal(cfg.capabilities.publicAnnouncements,true);
+  assert.equal(cfg.version,'0.8.6-rc.1');assert.equal(cfg.capabilities.attachments,false);assert.equal(cfg.capabilities.privateSensitiveInfo,false);assert.equal(cfg.capabilities.anonymousAdvisory,true);assert.equal(cfg.capabilities.communityFeedback,true);assert.equal(cfg.capabilities.officialReferences,true);assert.equal(cfg.capabilities.officialRelations,true);assert.equal(cfg.capabilities.officialEvents,true);assert.equal(cfg.capabilities.publicAnnouncements,true);
   const researchHealth=await client.request('/api/research/health');assert.equal(researchHealth.status,200);assert.equal(researchHealth.data.status,'LOCAL_REFERENCE_MODE');assert.equal(researchHealth.data.unattendedOperation,true);assert.equal(researchHealth.data.runtime.companyResearchQueue,false);assert.equal(researchHealth.data.selfHealing.manualOperatorRequired,false);
 
   const company=await client.request('/api/companies',{method:'POST',body:{name:'HTTP示例公司',region:'示例地区',website:'https://example.org',consent:true}});

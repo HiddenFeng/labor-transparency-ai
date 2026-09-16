@@ -402,8 +402,8 @@ function appendOfficialReferences(root,rows){
   const list=document.createElement('div');list.className='official-relation-list';
   for(const item of rows){
     const f=item.fields||{};const card=document.createElement('article');card.className='official-relation-card';
-    card.append(badge('官方登记参考','evidence'),text('strong',f.legalName||f.name||item.source?.recordId||'官方登记记录'),text('small',`${item.source?.sourceOfRecord||item.provider}${item.source?.date?` · ${item.source.date}`:''} · ${item.bindingBasis||'限定匹配'}`));
-    const meta=[f.corporateNumber&&`法人番号 ${f.corporateNumber}`,f.prefectureName&&`都道府县 ${f.prefectureName}`,f.cityName&&`市区町村 ${f.cityName}`,f.assignmentDate&&`指定日 ${f.assignmentDate}`,f.closeDate&&`注销日 ${f.closeDate}`,f.enName&&`英文名 ${f.enName}`].filter(Boolean);if(meta.length)card.append(text('p',meta.join(' · ')));
+    card.append(badge('官方登记参考','evidence'),text('strong',f.fullLegalName||f.legalName||f.name||item.source?.recordId||'官方登记记录'),text('small',`${item.source?.sourceOfRecord||item.provider}${item.source?.date?` · ${item.source.date}`:''} · ${item.bindingBasis||'限定匹配'}`));
+    const meta=[f.exchange&&`交易所 ${f.exchange}`,f.securityCode&&`证券代码 ${f.securityCode}`,f.securityAbbreviation&&`证券简称 ${f.securityAbbreviation}`,f.listingDate&&`上市日期 ${f.listingDate}`,f.listingStatus&&`上市状态 ${f.listingStatus}`,f.industry&&`行业 ${f.industry}`,f.registeredArea&&`注册地区 ${f.registeredArea}`,f.corporateNumber&&`法人番号 ${f.corporateNumber}`,f.prefectureName&&`都道府县 ${f.prefectureName}`,f.cityName&&`市区町村 ${f.cityName}`,f.assignmentDate&&`指定日 ${f.assignmentDate}`,f.closeDate&&`注销日 ${f.closeDate}`,f.enName&&`英文名 ${f.enName}`].filter(Boolean);if(meta.length)card.append(text('p',meta.join(' · ')));
     if(item.scope)card.append(text('small',item.scope));card.append(text('p',item.caveat,'method-note'));if(item.source?.url)card.append(link('查看官方来源',item.source.url,'research-source-link'));list.append(card);
   }
   sec.append(list);root.append(sec);

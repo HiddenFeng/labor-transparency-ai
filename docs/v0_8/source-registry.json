@@ -444,6 +444,37 @@
       "semantic_boundary": "An NMPA UDI record supports a specific registrant/filing-to-medical-device relationship and product identifier. It does not establish general product quality, safety across all uses, or the complete product portfolio of the company.",
       "note": "Use official RSS/bulk release. Do not republish the bulk dataset wholesale; retain bounded matched records plus source provenance."
     },
+    "CN_SSE_LISTING": {
+      "label": "上海证券交易所股票列表 / 公司概况",
+      "authority": "PRIMARY_CHINA_EXCHANGE_LISTING_DISCLOSURE",
+      "access": "KEYLESS_PUBLIC_OFFICIAL_SITE_DIRECTORY_AND_COMPANY_OVERVIEW",
+      "license": "OFFICIAL_PUBLICITY_WITHOUT_PROJECT_ASSUMED_OPEN_LICENSE",
+      "license_url": "https://www.sse.com.cn/market/publicdata/",
+      "source_of_record": "上海证券交易所",
+      "regions": [
+        "CN"
+      ],
+      "sections": [
+        "business",
+        "listed_company_disclosure"
+      ],
+      "fields": [
+        "security_code",
+        "security_abbreviation",
+        "full_legal_name",
+        "security_type",
+        "listing_date",
+        "listing_status",
+        "industry",
+        "registered_area"
+      ],
+      "state": "AUTOMATED_DAILY_LOCAL_AGENT_SUPPORTED",
+      "binding": "SSE_SECURITY_CODE_CANDIDATE_THEN_EXACT_FULL_LEGAL_NAME_IN_OFFICIAL_COMPANY_OVERVIEW",
+      "request_budget": 9,
+      "implementation": "scripts/community_agent/cn_sse_listing_daily.py",
+      "schedule": "18:00 Asia/Shanghai daily, one public SSE security directory request plus at most eight candidate detail requests per eligible company",
+      "semantic_boundary": "The SSE security directory is candidate discovery only. An OFFICIAL_SOURCE_REFERENCE is created only when the official company overview for the candidate security code exactly matches the existing company-space full name. The reference supports that bounded SSE listing/disclosure relationship only; it does not upgrade GSXT legal identity or imply compliance, labor, product-quality or investment conclusions."
+    },
     "CN_GSXT": {
       "label": "国家企业信用信息公示系统",
       "authority": "PRIMARY_CHINA_GOVERNMENT_ENTERPRISE_CREDIT_PUBLICITY_SYSTEM",

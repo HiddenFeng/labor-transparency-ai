@@ -25,7 +25,7 @@
         "cloudflare_backend": "success"
       }
     },
-    "current_main_sha": "ddc433f7fb50abda7b0416b5143ffbe805c3fa96",
+    "current_main_sha": "367501b141beb118dbeb44589221ed45e6f1ebc6",
     "origin_main_matches": true,
     "final_release_ci": {
       "run_id": 35047372002,
@@ -104,7 +104,7 @@
         "total_seconds": 8.109733
       },
       "note": "Public backend is externally reachable, but the current Mainland-China network cannot reliably connect directly to workers.dev.",
-      "current_worker_version_id": "45f98a78-afa6-4e82-bac7-fa94f29c48f2"
+      "current_worker_version_id": "cc0a8ba1-ea8c-4b70-8dee-69d443aabe14"
     },
     "vercel": {
       "frontend": "https://workermanifestfellowship.vercel.app",
@@ -115,7 +115,7 @@
         "api_health": 200
       },
       "remote_e2e_status": "PASS_PUBLIC_VERCEL_TO_CLOUDFLARE_D1_RESEARCH_E2E",
-      "remote_backend_version": "0.8.4-rc.2",
+      "remote_backend_version": "0.8.5-rc.1",
       "remote_research": {
         "candidateCount": 11,
         "sourceSuccessCount": 9,
@@ -196,7 +196,7 @@
       "account_slug": "hiddenfeng",
       "project": "workermanifestfellowship",
       "hiddenfeng_migration_e2e": "PASS_HIDDENFENG_VERCEL_CLOUDFLARE_D1_E2E",
-      "current_canonical_deployment": "https://workermanifestfellowship-of8jyduto-hiddenfeng.vercel.app"
+      "current_canonical_deployment": "https://workermanifestfellowship-bu1mh88k4-hiddenfeng.vercel.app"
     },
     "edgeone": {
       "temporary_preview_status": "PASS_TEMPORARY_EDGEONE_MAINLAND_PREVIEW_RC2",
@@ -332,7 +332,7 @@
       "vercel_deployment": "https://workermanifestfellowship-bu1mh88k4-hiddenfeng.vercel.app",
       "runtime_version": "0.8.5-rc.1",
       "behavior_sha": "f1e906386f05b51941de4c99b08ee8f0f99e32ef",
-      "main_sha": "ddc433f7fb50abda7b0416b5143ffbe805c3fa96",
+      "main_sha": "367501b141beb118dbeb44589221ed45e6f1ebc6",
       "china_investigation": true,
       "official_events": true,
       "real_company_preserved": true,
@@ -625,8 +625,45 @@
     "custom_domain_candidate": "workermanifestfellowship.dpdns.org",
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
-  "remaining_human_only": [],
-  "next_gate": "No release gate remains for v0.8.5 China-enterprise investigation. Continue China source depth with strict legal-name/identifier binding: prioritize documented exchange/listing disclosures, procurement award detail paths that do not require CAPTCHA bypass, additional SAMR/CSRC source-specific public records, and trustworthy labor/public-enforcement sources. Preserve explicit unknowns and do not turn event counts into company scores.",
+  "candidate_v086_sse_listing_depth": {
+    "status": "PASS_LOCAL_RELEASE_CANDIDATE_NOT_PRODUCTION_DEPLOYED",
+    "runtime_version": "0.8.6-rc.1",
+    "base_production_main_sha": "367501b141beb118dbeb44589221ed45e6f1ebc6",
+    "candidate_branch": "agent/china-source-depth",
+    "change_record": "docs/v0_8/CHANGE-v0.8.6-china-sse-listing-depth.md",
+    "new_source": {
+      "provider": "CN_SSE_LISTING",
+      "source_of_record": "上海证券交易所",
+      "reference_lane": "OFFICIAL_SOURCE_REFERENCE",
+      "binding": "SSE_SECURITY_CODE_CANDIDATE_THEN_EXACT_FULL_LEGAL_NAME_IN_OFFICIAL_COMPANY_OVERVIEW",
+      "source_registry_count": 25,
+      "production_publish_performed": false
+    },
+    "real_source_boundary_probe_2026_09_16": {
+      "directory_rows": 2377,
+      "positive_control": "贵州茅台酒股份有限公司 -> 600519 -> exact FULL_NAME -> 1 bounded reference",
+      "current_real_company": "星宇股份有限公司 -> 601799 -> FULL_NAME 常州星宇车灯股份有限公司 -> 0 references",
+      "current_real_company_fail_closed": true
+    },
+    "local_validation": {
+      "python_full_project_batched": "PASS_315_OF_315",
+      "collector_regression": "PASS_21_OF_21",
+      "sites_app": "PASS_28_OF_28",
+      "cloudflare_backend": "PASS_24_OF_24",
+      "public_smoke_contract": "PASS_8_OF_8",
+      "worker_d1_http_restart": "PASS_0.8.6_RC1",
+      "sites_build": "PASS_17_FILES_0.8.6_RC1",
+      "frontend_privacy_audit": "PASS_0_FORBIDDEN_MATCHES",
+      "source_registry": "PASS_25_SOURCES_INCLUDING_CN_SSE_LISTING",
+      "git_diff_check": "PASS"
+    },
+    "production_state": "UNCHANGED_V085_ACCEPTED",
+    "release_boundary": "Production push/deploy is an explicit external-release decision. Until approved, v0.8.5-rc.1 remains the accepted production runtime and no CN_SSE_LISTING record is published to production."
+  },
+  "remaining_human_only": [
+    "Approve or reject public push/deployment of the locally validated v0.8.6-rc.1 SSE listing-depth candidate."
+  ],
+  "next_gate": "v0.8.6-rc.1 SSE listing-depth is locally validated and fail-closed. The next gate is explicit production-release approval; do not push/deploy externally without it. After acceptance, continue equivalent strict SZSE/BSE listing coverage, approved procurement detail paths, additional SAMR/CSRC records, and trustworthy China labor/public-enforcement sources.",
   "strongest_claim": "v0.8.5-rc.1 is production-deployed and accepted for China-first enterprise investigation: NMPA product relations, SAMR recall events and CSRC administrative-penalty events use strict fail-closed binding; China company pages expose a source-scoped investigation summary across identity/listing/brand-product/regulatory/recall/procurement/labor dimensions with explicit unknown gaps; community evidence stays separate; the real Xingyu company remains unverified at legal-identity level and has zero forced official event matches; local 27/24/310 tests, Worker+D1 restart smoke, production browser, Production E2E, Release CI and race-safe Public smoke pass, and production D1 is clean after QA cleanup.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",

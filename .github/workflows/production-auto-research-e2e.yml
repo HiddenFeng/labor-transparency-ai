@@ -1,5 +1,5 @@
 name: Manual production auto-research E2E
-# v0.8.5-rc.1 post-deploy acceptance trigger: current production must satisfy this exact workflow.
+# v0.8.6-rc.1 post-deploy acceptance trigger: current production must satisfy this exact workflow.
 
 on:
   workflow_dispatch:
@@ -44,7 +44,7 @@ jobs:
           assert.equal(configResponse.status,200,'production config must be reachable');
           const config=await configResponse.json();
           assert.equal(config.mode,'CLOUDFLARE_WORKER_D1');
-          assert.equal(config.version,'0.8.5-rc.1');
+          assert.equal(config.version,'0.8.6-rc.1');
           assert.equal(config.capabilities?.automaticCompanyResearch,true);
           assert.equal(config.capabilities?.unattendedCompanyIntelligence,true);
           assert.equal(config.capabilities?.companyResearchQueue,true);

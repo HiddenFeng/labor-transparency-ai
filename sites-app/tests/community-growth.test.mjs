@@ -36,6 +36,18 @@ test('official registry references are deterministic and separate from identity 
   const detail=publicCompanyDetail(state,company.id);assert.equal(detail.officialReferences.length,1);assert.equal(detail.officialRelations.length,0);assert.equal(detail.research,null);
 });
 
+test('strict SSE listing reference fills only the China listing/disclosure dimension',()=>{
+  const {state,company}=stateWithCompany();
+  const payload={items:[{companyId:company.id,provider:'CN_SSE_LISTING',jurisdiction:'CN',referenceType:'DISCLOSURE_REGISTRY',sourceRecordId:'SSE:600001',sourceOfRecord:'上海证券交易所',sourceUrl:'https://www.sse.com.cn/assortment/stock/list/info/company/index.shtml?COMPANY_CODE=600001',sourceDate:'2026-09-16',confidence:'HIGH',bindingBasis:'SSE_SECURITY_CODE_CANDIDATE_THEN_EXACT_FULL_LEGAL_NAME_IN_OFFICIAL_COMPANY_OVERVIEW',scope:'上交所公司概况中的证券代码与完整公司名称精确关联。',caveat:'仅支持该上交所上市披露参考；不升级 GSXT 法律主体身份，也不支持劳动、产品质量或投资结论。',fields:{exchange:'SSE',securityCode:'600001',securityAbbreviation:'鼎科医疗',fullLegalName:'苏州鼎科医疗技术股份有限公司',listingDate:'2020-01-02',listingStatus:'上市'}}]};
+  upsertOfficialReferences(state,payload);
+  const detail=publicCompanyDetail(state,company.id);
+  assert.equal(detail.officialReferences[0].fields.securityCode,'600001');
+  assert.equal(detail.chinaInvestigation.dimensions.listingDisclosure.officialReferenceCount,1);
+  assert.deepEqual(detail.chinaInvestigation.dimensions.listingDisclosure.providers,['CN_SSE_LISTING']);
+  assert.equal(detail.chinaInvestigation.gaps.some(x=>x.code==='CN_LISTING_DISCLOSURE_NOT_BOUND'),false);
+  assert.equal(detail.chinaInvestigation.dimensions.identity.legalIdentityStatus,'NO_RESEARCH_REFERENCE');
+});
+
 test('official China events are idempotent, source-scoped and included in China investigation without becoming community claims',()=>{
   const {state,company}=stateWithCompany();
   const payload={items:[{companyId:company.id,provider:'CN_CSRC_PENALTY',jurisdiction:'CN',eventType:'ADMINISTRATIVE_PENALTY',title:'中国证券监督管理委员会行政处罚决定书',summary:'决定书对特定证券监管事项作出行政处罚。',eventDate:'2026-04-07',decisionNo:'〔2026〕10号',status:'ADMINISTRATIVE_PENALTY_DECISION_PUBLISHED',sourceRecordId:'c7626997',sourceOfRecord:'中国证券监督管理委员会',sourceUrl:'https://www.csrc.gov.cn/csrc/c101928/c7626997/content.shtml',sourceDate:'2026-04-07',confidence:'HIGH',scope:'仅限该份行政处罚决定。',caveat:'该决定只支持决定书明确记载的主体、事实、期间和处罚，不自动扩张成公司其他业务或期间的违法结论。',attributes:{decisionNumber:'〔2026〕10号'}}]};
