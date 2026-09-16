@@ -28,7 +28,7 @@ cp cloudflare-backend/wrangler.production.example.jsonc cloudflare-backend/wrang
 
 ```sh
 export LTP_FRONTEND_ORIGINS='https://www.example.org'
-# 每次自动研究 tick 最多处理的公司数；默认 2。新公司由 */5 Cron 优先消费，日更任务做刷新兜底
+# Cron 每次最多重新投递的公司数；默认 2。新公司主路径由 Cloudflare Queue 立即消费，Cron 仅做漏单/刷新兜底
 export LTP_RESEARCH_MAX_COMPANIES_PER_RUN=2
 # 可选：直接绑定 Worker custom domain
 export LTP_API_DOMAIN='api.example.org'
@@ -87,9 +87,9 @@ export LTP_EDGEONE_SITE=global
 - 允许 Origin 的 CORS 正常；错误 Origin / 缺 CSRF mutation 为 403；
 - 匿名辅导提交 -> Agent -> 私有建议 -> 聚合日报；
 - `/api/research/status` 仅公开 queued/collecting/failed/completed 等聚合状态；`/api/research-agent/*` 必须使用独立 research token；
-- 用户新建真实公司后必须立即看到 `QUEUED`，无需后台人工 enqueue；`*/5` Cron 自动消费队列；
+- 用户新建真实公司后必须立即看到 `QUEUED`，创建响应必须是 `researchDispatch=QUEUE_SENT`；Cloudflare Queue Consumer 自动消费，无需后台人工 enqueue/run；
 - 自动公司研究产生候选后，普通公司 API 只能返回字段白名单的来源状态/官方链接/候选预览，不得泄露 raw candidate records、案件正文或研究 token；
-- Cron 公司研究出现单一来源 403/429/网络错误时应保留其他来源结果并显式记录来源错误，不能把任务整体伪装成完整成功；
+- Queue Consumer 遇到单一来源 403/429/timeout/网络错误时应保留其他来源结果并显式记录来源错误，不能把任务整体伪装成完整成功；队列投递/运行时失败使用有界退避并最终进入 DLQ；
 - D1 重启/新 Worker 版本后数据仍在；
 - 管理 token 不出现在前端包或网络响应；
 - 真实 production 静态包通过 privacy audit；
@@ -97,7 +97,7 @@ export LTP_EDGEONE_SITE=global
 
 外部可达性由 `.github/workflows/public-smoke.yml` 独立验证。该 workflow 可手动运行，并每日从 GitHub-hosted runner 做**语义级**检查，而不是只看 HTTP 200：项目自有域名与 Vercel 回退必须返回劳动透明计划页面及安全响应头；两条同源 `/api` 路径和 Worker 直连必须返回 `cloudflare-d1` health/config 契约；Session Cookie 必须保持 `HttpOnly; Secure; SameSite=Strict`；项目域名和 Vercel origin 必须被 Worker 精确允许，未知 origin 与已经退出生产链的 EdgeOne origin 必须返回 403；GitHub Pages 继续验证为只读回退。它的 PASS 只证明所测外部网络上的全球公网路径及这些安全/语义契约成立，不等于中国大陆 SLA。
 
-自动公司研究的**生产计划任务验收**使用手动 workflow `.github/workflows/production-auto-research-e2e.yml`。它从项目自有域名创建一条唯一 QA 公司，要求创建响应立即为 `QUEUED`，然后只轮询普通公开公司 API，等待真实 `*/5` Cloudflare Cron 自行推进到 `REVIEW_REQUIRED*` 并出现安全候选预览。该 workflow 不持有 Cloudflare 凭据，也不手工调用 research-agent run，因此可以证明用户路径确实不依赖后台人工执行。每次验收完成后，项目运营 Agent 必须依据 workflow 输出的 company ID 从生产 D1 删除 QA `companies` / `companyResearch` 记录并复核无残留。
+自动公司研究的**生产 Queue 验收**使用 workflow `.github/workflows/production-auto-research-e2e.yml`。它从项目自有域名创建一条唯一 QA 公司，要求响应立即得到 `QUEUED + researchDispatch=QUEUE_SENT`，随后只轮询普通公开公司 API，在短于 5 分钟 Cron 主周期的窗口内等待真实 Cloudflare Queue Consumer 推进到 `REVIEW_REQUIRED*` 并出现安全候选预览。该 workflow 不持有 Cloudflare 凭据，也不手工调用 research-agent run，因此可以证明用户路径确实由 Queue 自动驱动。每次验收完成后，项目运营 Agent 必须依据 workflow 输出的 company ID 从生产 D1 删除 QA `companies` / `companyResearch` 记录并复核无残留。
 
 ## 6. 当前已上线地址与仍需人工步骤
 

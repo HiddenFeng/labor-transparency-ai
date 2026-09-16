@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Create QA company and observe real scheduled research
+      - name: Create QA company and observe real Queue consumer research
         env:
           LTP_E2E_ORIGIN: https://workermanifestfellowship.dpdns.org
           LTP_E2E_RUN_ID: ${{ github.run_id }}
@@ -44,6 +44,7 @@ jobs:
           const config=await configResponse.json();
           assert.equal(config.mode,'CLOUDFLARE_WORKER_D1');
           assert.equal(config.capabilities?.automaticCompanyResearch,true);
+          assert.equal(config.capabilities?.companyResearchQueue,true);
           assert.equal(config.capabilities?.scheduledCompanyResearch,true);
           const cookie=(configResponse.headers.get('set-cookie')||'').split(';')[0];
           assert.match(cookie,/^ltp_session=/);
@@ -59,12 +60,13 @@ jobs:
           assert.equal(created.duplicate,false,'QA region must create an isolated company');
           assert.equal(created.researchQueued,true);
           assert.equal(created.research?.status,'QUEUED');
+          assert.equal(created.researchDispatch,'QUEUE_SENT');
           const companyId=created.company.id;
           console.log(`CREATED_COMPANY_ID=${companyId}`);
           console.log(`CREATED_COMPANY_REGION=${region}`);
 
           let company=null;
-          for(let attempt=0;attempt<44;attempt++){
+          for(let attempt=0;attempt<48;attempt++){
             const response=await fetch(`${origin}/api/companies`,{headers:{Origin:origin,Cookie:cookie,Accept:'application/json'}});
             assert.equal(response.status,200);
             const data=await response.json();
@@ -74,11 +76,11 @@ jobs:
             console.log(`poll=${attempt} research=${status} candidates=${company.research?.candidateCount||0} sourceErrors=${company.research?.sourceErrorCount||0}`);
             if(['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(status))break;
             assert.ok(['QUEUED','COLLECTING'].includes(status),`unexpected lifecycle state ${status}`);
-            await new Promise(resolve=>setTimeout(resolve,15000));
+            await new Promise(resolve=>setTimeout(resolve,5000));
           }
 
           assert.ok(company?.research,'research projection must exist');
-          assert.ok(['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(company.research.status),'real */5 Cron must finish the queued company within the acceptance window');
+          assert.ok(['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(company.research.status),'real Cloudflare Queue consumer must finish the queued company within the acceptance window');
           assert.ok(company.research.candidateCount>0,'Starbucks should produce at least one bounded source candidate');
           assert.equal(company.research.reviewRequired,true);
           assert.ok(Array.isArray(company.research.providers)&&company.research.providers.length>=10);
@@ -97,12 +99,13 @@ jobs:
           scan(company.research);
 
           const result={
-            status:'PASS_PRODUCTION_USER_CREATE_TO_REAL_CRON_TO_SAFE_DISPLAY',
+            status:'PASS_PRODUCTION_USER_CREATE_TO_QUEUE_TO_SAFE_DISPLAY',
             runId,
             origin,
             companyId,
             companyName,
             region,
+            researchDispatch:created.researchDispatch,
             researchStatus:company.research.status,
             candidateCount:company.research.candidateCount,
             sourceSuccessCount:company.research.sourceSuccessCount,

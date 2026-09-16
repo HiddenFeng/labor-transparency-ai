@@ -94,7 +94,7 @@ Wikidata 的官网字段只用于公开入口。正式劳动申诉渠道高度�
 
 ### Cloudflare Worker：线上自动候选收集
 
-用户通过 `POST /api/companies` 新建真实公司空间时，Worker 会在同一个 D1 事务中创建 `QUEUED` 研究记录；不要求管理员再次入队。独立的 `*/5 * * * *` Cron 优先消费 `QUEUED` / 未研究公司，日更 Cron 保留为刷新兜底。消费时状态进入 `COLLECTING`，完成后为 `REVIEW_REQUIRED` 或 `REVIEW_REQUIRED_WITH_SOURCE_GAPS`；意外运行时失败记为 `COLLECTION_FAILED`。网络请求始终在 D1 写锁之外进行。
+用户通过 `POST /api/companies` 新建真实公司空间时，Worker 会在同一个 D1 事务中创建 `QUEUED` 研究记录，并立即向 Cloudflare Queue `labor-transparency-company-research` 投递只包含 company ID / reason / refresh 标记的消息。Queue Consumer 才执行真实多源采集，状态进入 `COLLECTING`，完成后为 `REVIEW_REQUIRED` 或 `REVIEW_REQUIRED_WITH_SOURCE_GAPS`；意外运行时失败记为 `COLLECTION_FAILED` 并按退避重试，超过最大重试进入 DLQ。`*/5` 与日更 Cron 只重新投递遗漏、陈旧或到期刷新任务，不再直接执行外部采集。网络请求始终在 D1 写锁之外进行。
 
 默认约束：
 
@@ -103,7 +103,9 @@ Wikidata 的官网字段只用于公开入口。正式劳动申诉渠道高度�
 - 原始候选与 raw source records 仅在 research-agent 受限接口可见；
 - 普通公司列表只公开安全研究投影：生命周期、来源状态/数量、官方来源链接和每来源最多 3 条字段白名单候选预览；
 - `/api/research/status` 公开 queued / collecting / failed / completed 等聚合状态；
-- `LTP_RESEARCH_SCHEDULED=true` 时 `*/5` Cron 自动消费新队列，`0 1 * * *` 日更任务继续承担兜底刷新；
+- `COMPANY_RESEARCH_QUEUE` 是生产主消费者；每批 1 条消息、最大并发 1、默认重试延迟 60 秒、最多 5 次并配置独立 DLQ；
+- `LTP_RESEARCH_QUEUE_DISPATCH=true` 才允许 HTTP/调度器向真实 Queue 投递；本地普通 smoke 默认关闭，避免测试无意触发真实联网采集；
+- `LTP_RESEARCH_SCHEDULED=true` 时 `*/5` 与 `0 1 * * *` 只承担漏单/到期刷新重投递，不直接跑外部 provider；
 - 完成记录默认 24 小时后才重新进入刷新候选；失败记录 30 分钟后可重试，`COLLECTING` 超过 15 分钟视为陈旧 lease；
 - 每个外部来源请求有 8 秒硬超时，来源串行执行以减少对公共 API 的突发压力；单来源超时/403/429 不丢弃其他来源结果；
 - 研究 Agent token 与 advisory/review/export token 完全分离；
@@ -115,7 +117,7 @@ Wikidata 的官网字段只用于公开入口。正式劳动申诉渠道高度�
 
 `qa/v0_8/live-company-intelligence.json`：在 QA 中显式指定 Starbucks 的 GLEIF/Wikidata/NLRB/OSHA/WHD/F-7/OLMS/USAspending 绑定后生成 `DRAFT_READY` 多源草稿。该动作没有批准或发布草稿。
 
-`qa/v0_8/cloudflare-live-research.json`：真实本地 Wrangler Worker + D1 + 真实外网自动链验证；流程为“用户创建 Starbucks Corporation -> `QUEUED` -> 模拟生产 `*/5` Cron -> 多源采集 -> 普通 `/api/companies` 安全候选预览 -> Worker 重启恢复”。真实网络中的超时、403/429 等按单来源缺口记录，不把整个公司研究任务伪装成完整成功，也不丢弃已经成功的来源。
+`qa/v0_8/cloudflare-live-research.json`：真实本地 Wrangler Worker + D1 + Queue + 真实外网自动链验证；流程为“用户创建 Starbucks Corporation -> D1 `QUEUED` -> create response `QUEUE_SENT` -> Queue Consumer -> 多源采集 -> 普通 `/api/companies` 安全候选预览 -> Worker 重启恢复”。真实网络中的超时、403/429 等按单来源缺口记录，不把整个公司研究任务伪装成完整成功，也不丢弃已经成功的来源。
 
 `qa/v0_8/company-intelligence-audit.json`：确定性 fixture 对所有主要 provider 完成 `candidate -> explicit binding -> draft -> independent review -> release -> reopen persistence` 审计。
 

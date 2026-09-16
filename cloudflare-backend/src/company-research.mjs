@@ -135,11 +135,12 @@ export function queueCompanyResearch(state,company,{now=new Date()}={}){
   return {queued:true,record};
 }
 
-export function markCompanyResearchStarted(state,company,{now=new Date(),staleCollectingMs=15*60*1000}={}){
+export function markCompanyResearchStarted(state,company,{now=new Date(),staleCollectingMs=15*60*1000,allowRefresh=false}={}){
   if(!company||company.synthetic)return null;
   if(!Array.isArray(state.companyResearch))state.companyResearch=[];
   const existing=state.companyResearch.find(x=>x.companyId===company.id);
   if(existing?.status==='COLLECTING'&&existing.startedAt&&now.getTime()-new Date(existing.startedAt).getTime()<staleCollectingMs)return null;
+  if(existing&&!['QUEUED','COLLECTION_FAILED','COLLECTING'].includes(existing.status)&&!(allowRefresh&&['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(existing.status)))return null;
   const base=existing||researchRecordBase(company,'QUEUED',now.toISOString());
   const record={...base,status:'COLLECTING',queuedAt:base.queuedAt||now.toISOString(),startedAt:now.toISOString(),failedAt:null};
   mergeCompanyResearch(state,[record]);return record;

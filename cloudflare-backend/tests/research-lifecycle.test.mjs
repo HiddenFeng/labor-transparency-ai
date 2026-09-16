@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {emptyState} from '../../sites-app/src/domain.mjs';
 import {publicCompanyResearch,publicResearchStatus} from '../../sites-app/src/research-status.mjs';
-import {createCompanyWithAutoResearch,runResearchBatch} from '../src/worker.mjs';
+import {createCompanyWithAutoResearch,dispatchCompanyResearch,consumeResearchQueueBatch,enqueueEligibleResearch,runResearchBatch} from '../src/worker.mjs';
 import {selectResearchCompanies} from '../src/company-research.mjs';
 import {mockResearchFetch,makeResearchFetch} from './research-fixture.mjs';
 
@@ -25,10 +25,14 @@ test('new public company is durably queued then automatically collected and safe
   assert.equal(state.companyResearch[0].status,'QUEUED');
   assert.equal(selectResearchCompanies(state,2,{now:new Date('2026-09-16T00:01:00Z')})[0].id,created.company.id);
 
-  const result=await runResearchBatch(store,{LTP_RESEARCH_MAX_COMPANIES_PER_RUN:'2'},{fetchImpl:mockResearchFetch,now:new Date('2026-09-16T00:01:00Z')});
-  assert.equal(result.attemptedCompanies,1);
-  assert.equal(result.processedCompanies,1);
-  assert.equal(result.failedCompanies,0);
+  const sent=[];
+  const env={LTP_RESEARCH_QUEUE_DISPATCH:'true',COMPANY_RESEARCH_QUEUE:{async send(body){sent.push(body);}}};
+  assert.equal(await dispatchCompanyResearch(env,created),'QUEUE_SENT');
+  assert.equal(sent.length,1);assert.equal(sent[0].companyId,created.company.id);assert.equal(sent[0].allowRefresh,false);
+  let acked=0,retried=0;
+  const message={body:sent[0],attempts:1,ack(){acked++},retry(){retried++}};
+  await consumeResearchQueueBatch({messages:[message]},env,{store,fetchImpl:mockResearchFetch,now:new Date('2026-09-16T00:01:00Z')});
+  assert.equal(acked,1);assert.equal(retried,0);
   state=await store.read();
   const record=state.companyResearch[0];
   assert.equal(record.status,'REVIEW_REQUIRED');
@@ -45,6 +49,10 @@ test('new public company is durably queued then automatically collected and safe
   assert.equal(serialized.includes('reason_closed'),false);
   assert.match(projection.boundary,/候选/);
   assert.equal(publicResearchStatus(state).completed,1);
+
+  let duplicateAck=0;
+  await consumeResearchQueueBatch({messages:[{body:sent[0],attempts:1,ack(){duplicateAck++},retry(){assert.fail('completed duplicate must not retry')}}]},env,{store,fetchImpl:async()=>assert.fail('completed duplicate must not recollect'),now:new Date('2026-09-16T00:02:00Z')});
+  assert.equal(duplicateAck,1);
 });
 
 test('duplicate company creation is idempotent and does not fan out a second queue record',async()=>{
@@ -90,8 +98,23 @@ test('scheduler prioritizes queued work, skips fresh completed work, and recover
   assert.deepEqual(selected.map(x=>x.id),['queued','stale']);
 });
 
-test('production config includes a frequent bounded research consumer and the daily fallback cron',async()=>{
+test('scheduled fallback only enqueues eligible work and leaves collection to the Queue consumer',async()=>{
+  const store=new MemoryStore();
+  const created=await createCompanyWithAutoResearch(store,COMPANY,'owner',{now:new Date('2026-09-16T03:00:00Z')});
+  const batches=[];
+  const env={LTP_RESEARCH_QUEUE_DISPATCH:'true',LTP_RESEARCH_MAX_COMPANIES_PER_RUN:'2',COMPANY_RESEARCH_QUEUE:{async sendBatch(messages){batches.push(messages);}}};
+  const result=await enqueueEligibleResearch(store,env,{now:new Date('2026-09-16T03:01:00Z'),reason:'TEST_FALLBACK'});
+  assert.equal(result.status,'QUEUE_SENT');assert.equal(result.enqueuedCompanies,1);assert.equal(result.companyIds[0],created.company.id);
+  assert.equal(batches.length,1);assert.equal(batches[0][0].body.allowRefresh,true);assert.equal(batches[0][0].body.reason,'TEST_FALLBACK');
+  assert.equal((await store.read()).companyResearch[0].status,'QUEUED');
+});
+
+test('production config includes Queue producer/consumer guardrails and scheduled fallback crons',async()=>{
   const text=await fs.readFile(new URL('../wrangler.production.example.jsonc',import.meta.url),'utf8');
+  assert.match(text,/COMPANY_RESEARCH_QUEUE/);
+  assert.match(text,/labor-transparency-company-research-dlq/);
+  assert.match(text,/"max_batch_size": 1/);
+  assert.match(text,/"max_concurrency": 1/);
   assert.match(text,/\*\/5 \* \* \* \*/);
   assert.match(text,/0 1 \* \* \*/);
   assert.match(text,/LTP_RESEARCH_MAX_COMPANIES_PER_RUN/);

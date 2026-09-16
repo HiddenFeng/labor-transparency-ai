@@ -24,12 +24,14 @@ api.example.org  ── Cloudflare Worker
    |
    +── D1：companyResearch 受限候选队列（不自动发布为公司事实）
    |
-   +── Cron Trigger：每 5 分钟有界消费新公司研究队列 + 每日匿名辅导/研究刷新兜底
+   +── Cloudflare Queue：用户创建公司后立即投递；Queue Consumer 串行执行多源研究，失败重试/DLQ
+   |
+   +── Cron Trigger：每 5 分钟只补投遗漏/陈旧研究任务 + 每日匿名辅导/研究刷新兜底
 ```
 
 代码对应：
 
-- `cloudflare-backend/src/worker.mjs`：Worker HTTP / scheduled 入口。
+- `cloudflare-backend/src/worker.mjs`：Worker HTTP / Queue consumer / scheduled 入口。
 - `cloudflare-backend/src/d1-store.mjs`：D1 持久化适配层。
 - `cloudflare-backend/src/company-research.mjs`：线上多源公司资料候选采集；只保存待复核候选。
 - `cloudflare-backend/migrations/`：D1 schema。
@@ -109,7 +111,7 @@ Edge Function 对非 GET/HEAD body 限制为 96 KiB；向上游发请求时不�
 - 5xx 不向客户端返回堆栈或内部错误详情。
 - Worker 不记录匿名辅导正文；scheduled log 只记录聚合数字。
 - 匿名回执明文只返回一次；D1 只保存 SHA-256 hash。
-- 用户新建真实公司后会原子写入 `companyResearch: QUEUED`；5 分钟 Cron 自动消费。普通公司列表只返回安全研究投影（生命周期、来源状态、官方来源链接、最多 3 条字段裁剪候选预览），不返回 raw records、案件正文或后台复核材料。
+- 用户新建真实公司后会原子写入 `companyResearch: QUEUED` 并立即投递 `COMPANY_RESEARCH_QUEUE`；Queue Consumer 以单消息/单并发执行多源采集，重复投递在生命周期层幂等 ACK。5 分钟与每日 Cron 只补投遗漏/到期刷新任务。普通公司列表只返回安全研究投影（生命周期、来源状态、官方来源链接、最多 3 条字段裁剪候选预览），不返回 raw records、案件正文或后台复核材料。
 - 当前依旧不接收真实姓名、私人联系方式、身份证明、详细家庭地址、健康/支付信息和敏感附件。
 
 ## 版本与回滚

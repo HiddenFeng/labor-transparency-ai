@@ -519,8 +519,8 @@
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
   "remaining_human_only": [],
-  "next_gate": "Deploy the user-added-company automatic research build to the canonical Cloudflare/Vercel production path, then verify a real public company create -> QUEUED -> scheduled collection -> safe public display cycle and remove QA records.",
-  "strongest_claim": "v0.8.1-rc.2 retains the verified non-China-cloud public deployment and now has a locally/prod-like verified user-company automatic research loop: public company creation durably queues research, a bounded 5-minute scheduled consumer collects independent source candidates with per-source failure isolation/timeouts, D1 persists lifecycle/results, and the ordinary company API/UI exposes only allowlisted candidate previews. Production deployment of this new capability is the remaining gate; candidates are not auto-published as facts.",
+  "next_gate": "Deploy the Queue-driven user-added-company research build to the canonical Cloudflare/Vercel production path, then verify a real public company create -> QUEUE_SENT -> Queue consumer collection -> safe public display cycle and remove QA records.",
+  "strongest_claim": "v0.8.1-rc.2 retains the verified non-China-cloud public deployment and now has a locally/prod-like verified Queue-driven user-company automatic research loop: public company creation durably writes QUEUED and dispatches a Cloudflare Queue message, a single-concurrency Queue consumer collects independent source candidates with per-source failure isolation/timeouts, D1 persists lifecycle/results, and the ordinary company API/UI exposes only allowlisted candidate previews. Production deployment of the Queue binding/consumer is the remaining gate; candidates are not auto-published as facts.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -605,7 +605,7 @@
     "mainland_boundary": "External PASS proves the tested global public path and security contracts from GitHub-hosted infrastructure; it does not establish a Mainland-China SLA."
   },
   "user_added_company_auto_research": {
-    "status": "IMPLEMENTED_LOCAL_AND_PRODUCTION_LIKE_VERIFIED_PRODUCTION_DEPLOYMENT_PENDING",
+    "status": "QUEUE_IMPLEMENTED_LOCAL_AND_PRODUCTION_LIKE_VERIFIED_PRODUCTION_QUEUE_BINDING_PENDING",
     "change_record": "docs/v0_8/CHANGE-v0.8.1-user-company-auto-research.md",
     "lifecycle": [
       "QUEUED",
@@ -614,7 +614,7 @@
       "REVIEW_REQUIRED_WITH_SOURCE_GAPS",
       "COLLECTION_FAILED"
     ],
-    "trigger": "POST /api/companies atomically creates QUEUED for new non-synthetic companies; */5 Worker cron consumes queued work; daily cron remains refresh fallback",
+    "trigger": "POST /api/companies atomically creates QUEUED and sends COMPANY_RESEARCH_QUEUE; Queue consumer performs collection; */5 and daily Cron only re-enqueue fallback/refresh work",
     "refresh_retry": {
       "completed_refresh_hours": 24,
       "failed_retry_minutes": 30,
@@ -641,7 +641,7 @@
       ]
     },
     "deterministic_tests": {
-      "cloudflare_research_and_lifecycle": "PASS_7",
+      "cloudflare_research_and_lifecycle": "PASS_8",
       "sites_app_full": "PASS_21",
       "python_full": "PASS_291"
     },
@@ -652,9 +652,22 @@
       "concurrentCompanyWrites": 4,
       "restartPersistence": true
     },
-    "bounded_live_scheduled_test": {
-      "status": "PASS_LIVE_AUTOMATIC_SCHEDULED_COMPANY_RESEARCH_AND_SAFE_DISPLAY_PROJECTION",
-      "trigger": "USER_CREATE_QUEUED_THEN_5_MIN_CRON_CONSUMER",
+    "evidence_boundary": "Source search results remain candidates. Entity binding and independent review are still required before a candidate can support a published company fact.",
+    "production_gate": "PENDING_CANONICAL_WORKER_QUEUE_BINDING_DEPLOY_AND_REAL_PUBLIC_CREATE_QUEUE_DISPLAY_QA",
+    "queue": {
+      "name": "labor-transparency-company-research",
+      "dead_letter_queue": "labor-transparency-company-research-dlq",
+      "resources_created": true,
+      "max_batch_size": 1,
+      "max_concurrency": 1,
+      "max_retries": 5,
+      "retry_delay_seconds": 60,
+      "create_dispatch_result": "QUEUE_SENT"
+    },
+    "bounded_live_queue_test": {
+      "status": "PASS_LIVE_AUTOMATIC_QUEUE_COMPANY_RESEARCH_AND_SAFE_DISPLAY_PROJECTION",
+      "trigger": "USER_CREATE_DIRECT_QUEUE_CONSUMER",
+      "research_dispatch": "QUEUE_SENT",
       "company_name": "Starbucks Corporation",
       "research_status": "REVIEW_REQUIRED_WITH_SOURCE_GAPS",
       "candidate_count": 10,
@@ -668,8 +681,6 @@
       "public_projection_safe": true,
       "public_provider_count": 11,
       "restart_persistence": true
-    },
-    "evidence_boundary": "Source search results remain candidates. Entity binding and independent review are still required before a candidate can support a published company fact.",
-    "production_gate": "PENDING_CANONICAL_CLOUDFLARE_VERCEL_DEPLOY_AND_REAL_PUBLIC_CREATE_CRON_DISPLAY_QA"
+    }
   }
 }

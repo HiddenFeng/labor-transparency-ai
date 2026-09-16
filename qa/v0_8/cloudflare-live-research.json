@@ -1,12 +1,13 @@
 {
-  "status": "PASS_LIVE_AUTOMATIC_SCHEDULED_COMPANY_RESEARCH_AND_SAFE_DISPLAY_PROJECTION",
+  "status": "PASS_LIVE_AUTOMATIC_QUEUE_COMPANY_RESEARCH_AND_SAFE_DISPLAY_PROJECTION",
   "version": "0.8.1-rc.2",
   "company": {
-    "id": "co_c0a6c5a0c469553faa",
+    "id": "co_d17195cb24c2c3c32e",
     "name": "Starbucks Corporation",
     "region": "US"
   },
-  "trigger": "USER_CREATE_QUEUED_THEN_5_MIN_CRON_CONSUMER",
+  "trigger": "USER_CREATE_DIRECT_QUEUE_CONSUMER",
+  "researchDispatch": "QUEUE_SENT",
   "researchStatus": "REVIEW_REQUIRED_WITH_SOURCE_GAPS",
   "processedCompanies": 1,
   "candidateCount": 10,
@@ -71,6 +72,6 @@
   "publicProjectionSafe": true,
   "publicProviderCount": 11,
   "reviewRequired": true,
-  "boundary": "Live Worker scheduled collection stores and publicly previews bounded source candidates only. No candidate was auto-bound, approved or published as a company fact.",
+  "boundary": "Live Worker Queue consumer stores and publicly previews bounded source candidates only. No candidate was auto-bound, approved or published as a company fact.",
   "restartPersistence": true
 }

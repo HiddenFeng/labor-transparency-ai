@@ -105,6 +105,7 @@ function mutationAuthorized(request,url,env,ctx){
   return safeEqual(request.headers.get('x-ltp-csrf'),ctx.csrf);
 }
 function storeFor(env){return new D1StateStore(env.DB,{seed:String(env.LTP_SEED||'false')==='true'});}
+function researchQueueEnabled(env){return Boolean(env?.COMPANY_RESEARCH_QUEUE)&&String(env.LTP_RESEARCH_QUEUE_DISPATCH||'true')!=='false';}
 
 export async function createCompanyWithAutoResearch(store,input,owner,{now=new Date()}={}){
   return store.transaction(state=>{
@@ -114,12 +115,42 @@ export async function createCompanyWithAutoResearch(store,input,owner,{now=new D
   });
 }
 
-export async function runResearchForCompany(store,companyId,{fetchImpl=fetch,now=new Date()}={}){
+export async function dispatchCompanyResearch(env,result,{reason='USER_CREATE',allowRefresh=false}={}){
+  const research=result?.research;
+  if(!researchQueueEnabled(env)||!result?.company?.id||!research)return 'QUEUE_UNAVAILABLE';
+  const dispatchable=['QUEUED','COLLECTION_FAILED'].includes(research.status)||(allowRefresh&&['REVIEW_REQUIRED','REVIEW_REQUIRED_WITH_SOURCE_GAPS'].includes(research.status));
+  if(!dispatchable)return 'NOT_DISPATCHED';
+  try{
+    await env.COMPANY_RESEARCH_QUEUE.send({type:'COMPANY_RESEARCH',companyId:result.company.id,reason,allowRefresh,enqueuedAt:new Date().toISOString()});
+    return 'QUEUE_SENT';
+  }catch{
+    console.error(JSON.stringify({event:'company_research_queue_send_failed',companyId:result.company.id,reason}));
+    return 'QUEUE_SEND_FAILED';
+  }
+}
+
+export async function enqueueEligibleResearch(store,env,{maxCompanies,now=new Date(),reason='SCHEDULED_FALLBACK'}={}){
+  if(!researchQueueEnabled(env))return {eligibleCompanies:0,enqueuedCompanies:0,companyIds:[],status:'QUEUE_UNAVAILABLE'};
+  const before=await store.read();
+  const max=Math.max(1,Math.min(10,Number(maxCompanies||env.LTP_RESEARCH_MAX_COMPANIES_PER_RUN||2)));
+  const companies=selectResearchCompanies(before,max,{now});
+  if(!companies.length)return {eligibleCompanies:0,enqueuedCompanies:0,companyIds:[],status:'NO_ELIGIBLE_COMPANIES'};
+  const messages=companies.map(company=>({body:{type:'COMPANY_RESEARCH',companyId:company.id,reason,allowRefresh:true,enqueuedAt:now.toISOString()}}));
+  try{
+    await env.COMPANY_RESEARCH_QUEUE.sendBatch(messages);
+    return {eligibleCompanies:companies.length,enqueuedCompanies:companies.length,companyIds:companies.map(x=>x.id),status:'QUEUE_SENT'};
+  }catch{
+    console.error(JSON.stringify({event:'company_research_queue_batch_send_failed',eligibleCompanies:companies.length,reason}));
+    return {eligibleCompanies:companies.length,enqueuedCompanies:0,companyIds:[],status:'QUEUE_SEND_FAILED'};
+  }
+}
+
+export async function runResearchForCompany(store,companyId,{fetchImpl=fetch,now=new Date(),allowRefresh=false}={}){
   const claim=await store.transaction(state=>{
     const company=(state.companies||[]).find(x=>x.id===companyId&&!x.synthetic);
     if(!company)return {started:false,reason:'COMPANY_NOT_FOUND'};
-    const lifecycle=markCompanyResearchStarted(state,company,{now});
-    if(!lifecycle)return {started:false,reason:'ALREADY_COLLECTING'};
+    const lifecycle=markCompanyResearchStarted(state,company,{now,allowRefresh});
+    if(!lifecycle)return {started:false,reason:'NOT_ELIGIBLE_OR_ALREADY_COLLECTING'};
     return {started:true,company:structuredClone(company),queuedAt:lifecycle.queuedAt,startedAt:lifecycle.startedAt};
   });
   if(!claim.started)return {processed:false,companyId,reason:claim.reason};
@@ -128,7 +159,7 @@ export async function runResearchForCompany(store,companyId,{fetchImpl=fetch,now
     record.queuedAt=claim.queuedAt;record.startedAt=claim.startedAt;
     await store.transaction(state=>mergeCompanyResearch(state,[record]));
     return {processed:true,companyId,candidateCount:record.candidateCount||0,sourceErrors:record.sourceErrorCount||0,status:record.status};
-  }catch(err){
+  }catch{
     await store.transaction(state=>markCompanyResearchFailed(state,companyId,{now,error:'COLLECTION_RUNTIME_FAILED'}));
     return {processed:false,companyId,failed:true,reason:'COLLECTION_RUNTIME_FAILED'};
   }
@@ -139,7 +170,7 @@ export async function runResearchBatch(store,env,{maxCompanies,fetchImpl=fetch,n
   const max=Math.max(1,Math.min(10,Number(maxCompanies||env.LTP_RESEARCH_MAX_COMPANIES_PER_RUN||2)));
   const companies=selectResearchCompanies(before,max,{now});
   const results=[];
-  for(const company of companies)results.push(await runResearchForCompany(store,company.id,{fetchImpl,now}));
+  for(const company of companies)results.push(await runResearchForCompany(store,company.id,{fetchImpl,now,allowRefresh:true}));
   return {
     attemptedCompanies:companies.length,
     processedCompanies:results.filter(x=>x.processed).length,
@@ -148,6 +179,32 @@ export async function runResearchBatch(store,env,{maxCompanies,fetchImpl=fetch,n
     candidateCount:results.reduce((n,x)=>n+(x.candidateCount||0),0),
     sourceErrors:results.reduce((n,x)=>n+(x.sourceErrors||0),0)
   };
+}
+
+export async function consumeResearchQueueBatch(batch,env,{fetchImpl=fetch,now=new Date(),store:providedStore=null}={}){
+  const store=providedStore||await storeFor(env).init();
+  for(const message of batch.messages||[]){
+    const body=message?.body;
+    const companyId=String(body?.companyId||'');
+    if(body?.type!=='COMPANY_RESEARCH'||!/^co_[a-f0-9]+$/i.test(companyId)){
+      console.error(JSON.stringify({event:'company_research_queue_invalid_message'}));
+      message.ack();
+      continue;
+    }
+    const result=await runResearchForCompany(store,companyId,{fetchImpl,now,allowRefresh:body.allowRefresh===true});
+    if(result.processed){
+      console.log(JSON.stringify({event:'company_research_queue_complete',companyId,status:result.status,candidateCount:result.candidateCount,sourceErrors:result.sourceErrors,attempts:message.attempts||1}));
+      message.ack();
+    }else if(result.failed){
+      const attempts=Math.max(1,Number(message.attempts||1));
+      const delaySeconds=Math.min(900,30*(2**Math.min(attempts-1,4)));
+      console.error(JSON.stringify({event:'company_research_queue_retry',companyId,attempts,delaySeconds}));
+      message.retry({delaySeconds});
+    }else{
+      console.log(JSON.stringify({event:'company_research_queue_noop',companyId,reason:result.reason}));
+      message.ack();
+    }
+  }
 }
 
 async function handleApi(request,env){
@@ -161,12 +218,16 @@ async function handleApi(request,env){
   if(!mutationAuthorized(request,url,env,ctx))return responseWithSession(json(request,env,403,{error:'跨站请求或请求校验未获允许'}),ctx,env);
 
   let response;
-  if(request.method==='GET'&&url.pathname==='/api/config') response=json(request,env,200,{version:BACKEND_VERSION,domainVersion:DOMAIN_VERSION,mode:'CLOUDFLARE_WORKER_D1',csrfToken:ctx.csrf,cookieSecure:String(env.LTP_COOKIE_SECURE||'true')!=='false',capabilities:{companies:true,ballots:true,contributions:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,scheduledAdvisory:true,automaticCompanyResearch:true,scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导仅接收非敏感结构化问题；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
-  else if(request.method==='GET'&&url.pathname==='/api/health') response=json(request,env,200,{status:'ok',version:BACKEND_VERSION,storage:'cloudflare-d1',scheduledAdvisory:true,scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,anonymousAdvisory:true});
+  if(request.method==='GET'&&url.pathname==='/api/config') response=json(request,env,200,{version:BACKEND_VERSION,domainVersion:DOMAIN_VERSION,mode:'CLOUDFLARE_WORKER_D1',csrfToken:ctx.csrf,cookieSecure:String(env.LTP_COOKIE_SECURE||'true')!=='false',capabilities:{companies:true,ballots:true,contributions:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,scheduledAdvisory:true,automaticCompanyResearch:researchQueueEnabled(env),companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导仅接收非敏感结构化问题；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
+  else if(request.method==='GET'&&url.pathname==='/api/health') response=json(request,env,200,{status:'ok',version:BACKEND_VERSION,storage:'cloudflare-d1',scheduledAdvisory:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,anonymousAdvisory:true});
   else if(request.method==='GET'&&url.pathname==='/api/companies') response=json(request,env,200,{items:publicCompanyList(await store.read())});
   else if(request.method==='GET'&&url.pathname==='/api/research/coverage') response=json(request,env,200,companyResearchCoverage());
   else if(request.method==='GET'&&url.pathname==='/api/research/status') response=json(request,env,200,publicResearchStatus(await store.read()));
-  else if(request.method==='POST'&&url.pathname==='/api/companies'){const input=await bodyJson(request);response=json(request,env,200,await createCompanyWithAutoResearch(store,input,ctx.owner));}
+  else if(request.method==='POST'&&url.pathname==='/api/companies'){
+    const input=await bodyJson(request);const out=await createCompanyWithAutoResearch(store,input,ctx.owner);
+    const researchDispatch=await dispatchCompanyResearch(env,out,{reason:out.duplicate?'DUPLICATE_RETRY':'USER_CREATE'});
+    response=json(request,env,200,{...out,researchDispatch});
+  }
   else {
     const ballot=url.pathname.match(/^\/api\/companies\/([^/]+)\/ballot$/);
     const contribution=url.pathname.match(/^\/api\/contributions\/([^/]+)$/);
@@ -242,6 +303,9 @@ export default {
       return json(request,env,safeStatus,{error:safeStatus>=500?'服务暂时不可用':message});
     }
   },
+  async queue(batch,env,ctx){
+    ctx.waitUntil(consumeResearchQueueBatch(batch,env));
+  },
   async scheduled(controller,env,ctx){
     ctx.waitUntil((async()=>{
       try{
@@ -249,8 +313,8 @@ export default {
         const cron=String(controller.cron||'');
         if(cron==='*/5 * * * *'){
           if(String(env.LTP_RESEARCH_SCHEDULED||'false')==='true'){
-            const research=await runResearchBatch(store,env);
-            console.log(JSON.stringify({event:'company_research_queue_tick_complete',attemptedCompanies:research.attemptedCompanies,processedCompanies:research.processedCompanies,failedCompanies:research.failedCompanies,candidateCount:research.candidateCount,sourceErrors:research.sourceErrors}));
+            const research=await enqueueEligibleResearch(store,env,{reason:'FIVE_MINUTE_FALLBACK'});
+            console.log(JSON.stringify({event:'company_research_fallback_enqueue_complete',eligibleCompanies:research.eligibleCompanies,enqueuedCompanies:research.enqueuedCompanies,status:research.status}));
           }
           return;
         }
@@ -258,8 +322,8 @@ export default {
         const out=await store.transaction(s=>runAdvisoryAgent(s,{day,timeZone:'Asia/Shanghai',agent:'cloudflare-daily-advisory-agent'}));
         console.log(JSON.stringify({event:'advisory_daily_complete',day,processedCount:out.processedCount,receivedCount:out.report.receivedCount,advisedCount:out.report.advisedCount,pendingCount:out.report.pendingCount}));
         if(String(env.LTP_RESEARCH_SCHEDULED||'false')==='true'){
-          const research=await runResearchBatch(store,env);
-          console.log(JSON.stringify({event:'company_research_daily_fallback_complete',attemptedCompanies:research.attemptedCompanies,processedCompanies:research.processedCompanies,failedCompanies:research.failedCompanies,candidateCount:research.candidateCount,sourceErrors:research.sourceErrors}));
+          const research=await enqueueEligibleResearch(store,env,{reason:'DAILY_REFRESH_FALLBACK'});
+          console.log(JSON.stringify({event:'company_research_daily_enqueue_complete',eligibleCompanies:research.eligibleCompanies,enqueuedCompanies:research.enqueuedCompanies,status:research.status}));
         }
       }catch(err){console.error(JSON.stringify({event:'scheduled_processing_failed',error:'scheduled_processing_failed'}));throw err;}
     })());
