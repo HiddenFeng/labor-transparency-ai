@@ -194,3 +194,11 @@ Remote D1 post-E2E inspection contains one real company, one real ballot, one re
 - Stable Mainland-China access SLA remains unclaimed.
 - Credential/application-gated sources remain disabled until their access/reuse conditions are satisfied.
 - The first scheduled 18:00/19:00 occurrences have not happened yet at the time of this acceptance record; installation/readiness is verified without falsely claiming those future scheduled runs have already executed.
+
+## Daily Agent command-line control resilience
+
+The project Mac can have a healthy browser/public site while command-line TLS to the Vercel/Cloudflare production hosts is temporarily unreachable. Daily community operations therefore keep the canonical Worker API as the normal control path and add a bounded local fallback in `scripts/community_agent/d1_fallback.mjs`.
+
+The fallback is not a general D1 shell. It uses the authenticated local Wrangler CLI, reads the current production revision/state, acquires the same `ltp_write_lock` used by the Worker, calls the same domain mutators, and can persist only `officialReferences`, `officialRelations`, `communityFeedback`, `communityFeedbackResponses`, `publicAnnouncements`, and `agentDailyRuns`. It cannot mutate company, ballot, contribution, advisory, or company-research collections and is not exposed as arbitrary SQL to the daily Agent. Trusted writes still require the community-Agent credential.
+
+Production validation on 2026-09-16 updated the already-valid daily public announcement through this fallback while the Mac command-line public API route was timing out. D1 revision moved from 63 to 64, the announcement was read back with all 9 items, and `app_version` remained `0.8.4-rc.3`. An earlier bridge attempt supplied an empty stdin payload; the existing domain validator rejected it and the lock was released before the synchronous stdin-read defect was corrected. This failed attempt is retained as evidence that the fallback fails closed rather than bypassing project validation.

@@ -1,7 +1,7 @@
 {
-  "version": "0.8.4-rc.2",
+  "version": "0.8.4-rc.3",
   "date": "2026-09-16",
-  "status": "PASS_PRODUCTION_COMMUNITY_GROWTH_DAILY_AGENT_V084",
+  "status": "PASS_PRODUCTION_COMMUNITY_GROWTH_DAILY_AGENT_V084_RC3",
   "git": {
     "branch": "main",
     "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai",
@@ -25,7 +25,7 @@
         "cloudflare_backend": "success"
       }
     },
-    "current_main_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00",
+    "current_main_sha": "9a26bf077cd89bdf83d2ef6d46aeda74cb8ab821",
     "origin_main_matches": true,
     "final_release_ci": {
       "run_id": 35047372002,
@@ -67,18 +67,29 @@
       "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00"
     },
     "v084_production_e2e": {
-      "run_id": 35069581755,
+      "run_id": 35075425468,
       "status": "PASS",
-      "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00"
+      "head_sha": "935e58f63a4555105d02b096152f491e4f361046"
     },
     "v084_public_smoke": {
       "run_id": 35069581745,
       "status": "PASS",
       "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00"
+    },
+    "v084_current_main_sha": "9a26bf077cd89bdf83d2ef6d46aeda74cb8ab821",
+    "v084_latest_release_ci": {
+      "run_id": 35079147551,
+      "status": "PASS",
+      "head_sha": "9a26bf077cd89bdf83d2ef6d46aeda74cb8ab821"
+    },
+    "v084_latest_public_smoke": {
+      "run_id": 35079147561,
+      "status": "PASS",
+      "head_sha": "9a26bf077cd89bdf83d2ef6d46aeda74cb8ab821"
     }
   },
   "public_deployment": {
-    "version": "0.8.4-rc.2",
+    "version": "0.8.4-rc.3",
     "date": "2026-09-16",
     "status": "PUBLIC_HIDDENFENG_VERCEL_CLOUDFLARE_V084_COMMUNITY_GROWTH_LIVE",
     "cloudflare": {
@@ -93,7 +104,7 @@
         "total_seconds": 8.109733
       },
       "note": "Public backend is externally reachable, but the current Mainland-China network cannot reliably connect directly to workers.dev.",
-      "current_worker_version_id": "1f161f2f-c30b-418a-9f9e-65a8cfb73595"
+      "current_worker_version_id": "45f98a78-afa6-4e82-bac7-fa94f29c48f2"
     },
     "vercel": {
       "frontend": "https://workermanifestfellowship.vercel.app",
@@ -185,7 +196,7 @@
       "account_slug": "hiddenfeng",
       "project": "workermanifestfellowship",
       "hiddenfeng_migration_e2e": "PASS_HIDDENFENG_VERCEL_CLOUDFLARE_D1_E2E",
-      "current_canonical_deployment": "https://workermanifestfellowship-qhyozehuu-hiddenfeng.vercel.app"
+      "current_canonical_deployment": "https://workermanifestfellowship-of8jyduto-hiddenfeng.vercel.app"
     },
     "edgeone": {
       "temporary_preview_status": "PASS_TEMPORARY_EDGEONE_MAINLAND_PREVIEW_RC2",
@@ -301,19 +312,19 @@
     },
     "current_v084": {
       "canonical_domain": "https://workermanifestfellowship.dpdns.org",
-      "vercel_fallback": "https://workermanifestfellowship.vercel.app",
-      "worker_api": "https://labor-transparency-api.labor-transparency-public.workers.dev",
-      "runtime_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00",
-      "runtime_version": "0.8.4-rc.2",
-      "worker_version_id": "1f161f2f-c30b-418a-9f9e-65a8cfb73595",
-      "community_feedback": true,
-      "public_announcements": true,
-      "official_relations": true,
-      "nmpa_udi_daily": true,
-      "eu_ted_daily": true,
-      "daily_agent_18_ready": true,
-      "daily_agent_19_ready": true,
-      "real_user_data_preserved": true
+      "runtime_version": "0.8.4-rc.3",
+      "production_runtime_sha": "9404a0343d9f90d25d33f70578b6daf42b361d91",
+      "main_sha": "9a26bf077cd89bdf83d2ef6d46aeda74cb8ab821",
+      "worker_version_id": "45f98a78-afa6-4e82-bac7-fa94f29c48f2",
+      "vercel_deployment": "https://workermanifestfellowship-of8jyduto-hiddenfeng.vercel.app",
+      "official_sources": [
+        "CN_NMPA_UDI",
+        "EU_TED",
+        "JP_NTA_CORPORATE_NUMBER"
+      ],
+      "daily_agent_18": "fx_0ae10ddc598947738441",
+      "daily_review_19": "fx_061391ba3d304dea8a8d",
+      "bounded_command_line_control_fallback": "PASS_WRANGLER_D1_REVISION_64"
     }
   },
   "architecture": {
@@ -603,8 +614,8 @@
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
   "remaining_human_only": [],
-  "next_gate": "No release gate remains for the v0.8.4 community-growth infrastructure. Observe the first scheduled 18:00 and 19:00 Asia/Shanghai occurrences through their durable project/database records; continue source expansion only through documented official interfaces or explicit credential/application gates.",
-  "strongest_claim": "v0.8.4-rc.2 is production-deployed and accepted for low-friction community contribution, evidence-scoped official company/brand/product/procurement relationships, private suggestion/appeal handling, sourced public daily announcements, and installed Beijing-time 18:00/19:00 LocalAgentRuntime operations. NMPA UDI and EU TED are the first automated official relationship collectors; both fail closed on non-exact matches. Existing company intelligence remains on auto-intelligence-0.8.3 and no broader identity/legal/quality inference was introduced.",
+  "next_gate": "No release gate remains for v0.8.4 community-growth infrastructure. Observe the scheduled Beijing 18:00 and 19:00 occurrences through durable project/database records; continue jurisdiction/source expansion only through documented official interfaces or explicit credential/application gates.",
+  "strongest_claim": "v0.8.4-rc.3 is production-deployed and accepted for low-friction community contribution, separate official reference/relation tiers, China NMPA UDI, EU TED procurement and Japan NTA daily-delta sources, private feedback plus sourced daily announcements, and installed Beijing-time 18:00/19:00 LocalAgentRuntime operations. The project Mac also has a production-proven bounded Wrangler-D1 control fallback for daily Agent data when command-line public API networking is unavailable; it uses the existing D1 lock/domain mutators and cannot mutate company/ballot/contribution/research main data. Existing company intelligence remains auto-intelligence-0.8.3 and no broader legal/quality inference was introduced.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -1161,11 +1172,12 @@
     ]
   },
   "community_growth_v084": {
-    "status": "PASS_PRODUCTION_COMMUNITY_GROWTH_AND_DAILY_AGENT_INFRASTRUCTURE_V084",
+    "status": "PASS_PRODUCTION_COMMUNITY_GROWTH_DAILY_AGENT_AND_BOUNDED_CONTROL_FALLBACK_V084",
     "change_record": "docs/v0_8/CHANGE-v0.8.4-community-growth.md",
-    "runtime_version": "0.8.4-rc.2",
+    "runtime_version": "0.8.4-rc.3",
     "company_intelligence_policy_version": "auto-intelligence-0.8.3",
-    "runtime_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00",
+    "main_sha": "9a26bf077cd89bdf83d2ef6d46aeda74cb8ab821",
+    "production_runtime_sha": "9404a0343d9f90d25d33f70578b6daf42b361d91",
     "source_registry": {
       "schema": "ltp-company-source-registry-1.2",
       "source_count": 22,
@@ -1173,7 +1185,7 @@
         {
           "provider": "CN_NMPA_UDI",
           "state": "AUTOMATED_DAILY_LOCAL_AGENT_SUPPORTED",
-          "binding": "exact existing-company registrant match",
+          "binding": "exact existing-company registrant name or unified social credit code",
           "scope": "specific NMPA UDI registrant/filing to medical-device record"
         },
         {
@@ -1181,6 +1193,15 @@
           "state": "AUTOMATED_SUPPORTED_DAILY_LOCAL_AGENT",
           "binding": "EU/EEA company gate plus exact participant-name post-filter",
           "scope": "specific published TED procurement notice"
+        }
+      ],
+      "automated_daily_official_references": [
+        {
+          "provider": "JP_NTA_CORPORATE_NUMBER",
+          "state": "AUTOMATED_DAILY_DELTA_OFFICIAL_REFERENCE_SUPPORTED",
+          "binding": "exact normalized name in one official daily delta; ambiguous duplicate exact names withheld",
+          "scope": "bounded Corporate Number/basic registry reference only",
+          "identity_upgrade": false
         }
       ],
       "official_lookup_no_bypass": [
@@ -1191,7 +1212,6 @@
       "credential_or_application_gated": [
         "UK_COMPANIES_HOUSE",
         "KR_OPENDART",
-        "JP_NTA_CORPORATE_NUMBER",
         "JP_GBIZINFO"
       ],
       "nmpa_live_probe": {
@@ -1209,10 +1229,23 @@
         "production_eligible_eu_eea_companies": 0,
         "normal_daily_requests_today": 0,
         "published_relations_today": 0
+      },
+      "japan_nta_live_probe": {
+        "daily_file": "diff_20260916.zip",
+        "records_scanned_isolated_validation": 2273,
+        "exact_reference_matches_isolated_validation": 1,
+        "official_signature_file_present": true,
+        "cryptographic_signature_verification_claimed": false,
+        "production_eligible_japan_companies": 0,
+        "normal_daily_requests_today": 0,
+        "published_references_today": 0,
+        "tier": "OFFICIAL_SOURCE_REFERENCE",
+        "confidence": "MEDIUM"
       }
     },
     "relationship_model": {
-      "official_tier": "OFFICIAL_SOURCE_RELATION",
+      "official_reference_tier": "OFFICIAL_SOURCE_REFERENCE",
+      "official_relation_tier": "OFFICIAL_SOURCE_RELATION",
       "community_kinds": [
         "brand",
         "product",
@@ -1226,7 +1259,7 @@
         "supplier_customer",
         "other"
       ],
-      "separation": "official relations are stored/projected separately from community E0+ contributions",
+      "separation": "official references/relations are stored and projected separately from community E0+ contributions and from autonomous machine identity facts",
       "broad_quality_or_legality_inference": false
     },
     "low_friction_contribution_ux": {
@@ -1265,9 +1298,10 @@
         "status": "PASS",
         "viewport": "390x844",
         "advanced_details_default_open": false,
-        "runtime_loaded": "0.8.4-rc.2"
+        "runtime_loaded": "0.8.4-rc.2_or_later"
       },
-      "company_selection_async_refresh_fix": "PASS"
+      "company_selection_async_refresh_fix": "PASS",
+      "browse_to_contribute": "PASS_COMPANY_CARD_AND_DETAIL_CONTEXTUAL_PREFILL_AND_PUBLIC_DEEP_LINK"
     },
     "community_feedback_and_announcements": {
       "collections": [
@@ -1287,9 +1321,11 @@
       "feedback_visible_to_submitter_and_trusted_agent": true,
       "announcement_auto_exposes_feedback_text": false,
       "production_announcement_day": "2026-09-16",
+      "production_announcement_items_after_control_fallback": 9,
       "production_announcement_sources": [
         "https://udi.nmpa.gov.cn/",
         "https://docs.ted.europa.eu/api/latest/search.html",
+        "https://www.houjin-bangou.nta.go.jp/download/sabun/index.html",
         "https://github.com/HiddenFeng/labor-transparency-ai"
       ]
     },
@@ -1323,33 +1359,79 @@
       ],
       "credential_storage": "Cloudflare Worker secret + local macOS Keychain service labor-transparency-community-agent; value not committed",
       "durable_history_root": "history/daily/YYYY-MM-DD/",
-      "first_scheduled_occurrences_completed_at_acceptance_time": false
+      "first_scheduled_occurrences_completed_at_acceptance_time": false,
+      "command_line_control_fallback": {
+        "status": "PASS_PRODUCTION_WRITE_AND_READBACK",
+        "normal_path": "canonical Worker API",
+        "fallback": "scripts/community_agent/d1_fallback.mjs via authenticated Wrangler remote D1",
+        "reason": "this Mac command-line network can temporarily fail direct Vercel/Cloudflare TLS while browser/product traffic remains healthy",
+        "allowed_read_routes": [
+          "/api/companies",
+          "/api/community-agent/state",
+          "/api/community-agent/queue"
+        ],
+        "allowed_mutable_collections": [
+          "officialReferences",
+          "officialRelations",
+          "communityFeedback",
+          "communityFeedbackResponses",
+          "publicAnnouncements",
+          "agentDailyRuns"
+        ],
+        "forbidden_scope": "no companies/ballots/contributions/advisory/companyResearch mutation and no arbitrary SQL interface to the Agent",
+        "uses_existing_d1_write_lock": true,
+        "uses_domain_mutators": true,
+        "optimistic_revision_readback": true,
+        "first_real_write": {
+          "operation": "update existing 2026-09-16 public announcement with truthful network-reliability note",
+          "fallback_result": "WRANGLER_D1",
+          "revision_before": 63,
+          "revision_after": 64,
+          "readback": "PASS",
+          "app_version": "0.8.4-rc.3"
+        },
+        "initial_failed_write_retained_as_evidence": "stdin bridge initially supplied empty payload; domain validation rejected the mutation and finally released the lock; fixed with synchronous fd0 read before successful write"
+      }
     },
     "validation": {
       "cloudflare_backend": "PASS_24_OF_24",
-      "sites_api_ui": "PASS_25_OF_25",
-      "python_full": "PASS_296_OF_296",
-      "public_smoke_contract": "PASS_6_OF_6",
+      "sites_api_ui": "PASS_26_OF_26",
+      "python_full": "PASS_304_OF_304",
+      "agent_control_fallback_targeted": "PASS_3_OF_3",
       "worker_d1_http_restart": "PASS_COMMUNITY_AGENT_OFFICIAL_RELATIONS_FEEDBACK_ANNOUNCEMENTS_PERSISTENCE",
-      "github_release_ci": {
-        "run_id": 35069581626,
+      "github_latest_main_release_ci": {
+        "run_id": 35079147551,
         "status": "PASS",
-        "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00"
+        "head_sha": "9a26bf077cd89bdf83d2ef6d46aeda74cb8ab821"
       },
-      "github_production_e2e": {
-        "run_id": 35069581755,
+      "github_latest_main_public_smoke": {
+        "run_id": 35079147561,
         "status": "PASS",
-        "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00",
-        "scope_note": "covers canonical company research/dossier/ballot production path; new community-agent endpoints are covered by real local Worker+D1 smoke"
+        "head_sha": "9a26bf077cd89bdf83d2ef6d46aeda74cb8ab821"
       },
-      "github_public_smoke": {
-        "run_id": 35069581745,
+      "github_reference_lane_release_ci": {
+        "run_id": 35075425621,
         "status": "PASS",
-        "head_sha": "7324d859e53e90e334d4cd3d53451c04c6a4dd00"
+        "head_sha": "935e58f63a4555105d02b096152f491e4f361046"
       },
-      "earlier_failed_production_e2e": {
+      "github_reference_lane_public_smoke": {
+        "run_id": 35075425593,
+        "status": "PASS",
+        "head_sha": "935e58f63a4555105d02b096152f491e4f361046"
+      },
+      "github_reference_lane_production_e2e": {
+        "run_id": 35075425468,
+        "status": "PASS",
+        "head_sha": "935e58f63a4555105d02b096152f491e4f361046"
+      },
+      "earlier_japan_production_e2e": {
+        "run_id": 35074831373,
+        "status": "FAIL_RETAINED_AS_EVIDENCE",
+        "head_sha": "9404a0343d9f90d25d33f70578b6daf42b361d91",
+        "resolved_by_followup_run": 35075425468
+      },
+      "earlier_eu_production_e2e": {
         "run_id": 35067802632,
-        "head_sha": "399e18c5",
         "status": "FAIL_RETAINED_AS_EVIDENCE",
         "resolved_by_later_main_runs": true
       }
@@ -1358,8 +1440,9 @@
       "canonical_domain": "https://workermanifestfellowship.dpdns.org",
       "vercel_fallback": "https://workermanifestfellowship.vercel.app",
       "worker_api": "https://labor-transparency-api.labor-transparency-public.workers.dev",
-      "worker_version_id": "1f161f2f-c30b-418a-9f9e-65a8cfb73595",
-      "runtime_version_observed_all_three_endpoints": "0.8.4-rc.2",
+      "worker_version_id": "45f98a78-afa6-4e82-bac7-fa94f29c48f2",
+      "vercel_canonical_deployment": "https://workermanifestfellowship-of8jyduto-hiddenfeng.vercel.app",
+      "runtime_version": "0.8.4-rc.3",
       "research_health": "HEALTHY",
       "real_companies": 1,
       "real_ballots": 1,
@@ -1368,7 +1451,9 @@
       "public_announcements": 1,
       "community_feedback_rows": 0,
       "official_relation_rows": 0,
+      "official_reference_rows": 0,
       "agent_daily_run_rows": 0,
+      "d1_revision_after_fallback_write": 64,
       "qa_company_or_feedback_residue": false,
       "real_company_preserved": "星宇股份有限公司",
       "real_negative_ballot_preserved": true
@@ -1376,44 +1461,11 @@
     "remaining_boundaries": [
       "China/global official-source coverage remains partial and jurisdiction-dependent.",
       "A source record supports only its explicit scope and never automatically proves misconduct, legality, labor quality or product quality.",
+      "Japan NTA daily-delta references are bounded official references, not nationwide-unique legal-identity verification.",
       "Credential/application-gated sources remain disabled until access/reuse conditions are satisfied.",
       "Stable Mainland-China access SLA remains unclaimed.",
-      "The first scheduled 18:00/19:00 occurrences were still future at acceptance time; schedule installation/readiness is verified without claiming those future runs already completed."
+      "The first scheduled 18:00/19:00 occurrences were still future at this acceptance checkpoint; installation/readiness is verified without claiming those future runs already completed."
     ],
-    "production_gate": "PASS_RUNTIME_DEPLOYED_CI_E2E_SMOKE_BROWSER_D1_SCHEDULE_READY",
-    "browse_to_contribute_patch": {
-      "status": "PASS_PRODUCTION",
-      "behavior_sha": "594b0a5fd7eb31425f258f12db6cd90335ba6733",
-      "frontend_deployment": "https://workermanifestfellowship-3e7hwlusu-hiddenfeng.vercel.app",
-      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
-      "behavior": [
-        "company cards expose direct contextual contribution action",
-        "company detail exposes direct contextual contribution action",
-        "company detail exposes canonical public #company/<id> share link",
-        "contextual contribution keeps the exact company preselected through async refresh"
-      ],
-      "privacy": "share URL contains origin + pathname + encoded public company id fragment only; no cookie/session/csrf/query state",
-      "production_browser": {
-        "real_company": "星宇股份有限公司",
-        "company_id": "co_c9d8bc0f46b2f597da",
-        "card_to_contribute_preselection": "PASS",
-        "detail_actions_visible": "PASS",
-        "console_errors": 0,
-        "network_errors": 0,
-        "page_errors": 0,
-        "production_mutation_performed": false
-      },
-      "validation": {
-        "sites_api_ui": "PASS_25_OF_25",
-        "github_release_ci": {
-          "run_id": 35072367319,
-          "status": "PASS"
-        },
-        "github_public_smoke": {
-          "run_id": 35072367267,
-          "status": "PASS"
-        }
-      }
-    }
+    "production_gate": "PASS_RUNTIME_DEPLOYED_CI_E2E_SMOKE_BROWSER_D1_SCHEDULE_AND_CONTROL_FALLBACK_READY"
   }
 }
