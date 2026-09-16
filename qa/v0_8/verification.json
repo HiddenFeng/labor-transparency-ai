@@ -626,12 +626,12 @@
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
   "candidate_v086_sse_listing_depth": {
-    "status": "PASS_LOCAL_RELEASE_CANDIDATE_NOT_PRODUCTION_DEPLOYED",
+    "status": "PASS_PRODUCTION_SSE_LISTING_DEPTH_V086",
     "runtime_version": "0.8.6-rc.1",
     "base_production_main_sha": "367501b141beb118dbeb44589221ed45e6f1ebc6",
-    "candidate_origin": "developed and validated on temporary agent/china-source-depth worktree; branch/worktree retired after local main fast-forward",
+    "candidate_origin": "implemented as local candidate, released after explicit user continuation at production gate",
     "candidate_code_commit": "e2639a5",
-    "local_main_integration": "FAST_FORWARD_COMPLETE_LOCAL_ONLY; origin/main and production remain 367501b until explicit release approval",
+    "local_main_integration": "RELEASED_TO_ORIGIN_MAIN",
     "change_record": "docs/v0_8/CHANGE-v0.8.6-china-sse-listing-depth.md",
     "new_source": {
       "provider": "CN_SSE_LISTING",
@@ -639,7 +639,7 @@
       "reference_lane": "OFFICIAL_SOURCE_REFERENCE",
       "binding": "SSE_SECURITY_CODE_CANDIDATE_THEN_EXACT_FULL_LEGAL_NAME_IN_OFFICIAL_COMPANY_OVERVIEW",
       "source_registry_count": 25,
-      "production_publish_performed": false
+      "production_publish_performed": true
     },
     "real_source_boundary_probe_2026_09_16": {
       "directory_rows": 2377,
@@ -659,14 +659,56 @@
       "source_registry": "PASS_25_SOURCES_INCLUDING_CN_SSE_LISTING",
       "git_diff_check": "PASS"
     },
-    "production_state": "UNCHANGED_V085_ACCEPTED",
-    "release_boundary": "Production push/deploy is an explicit external-release decision. Until approved, v0.8.5-rc.1 remains the accepted production runtime and no CN_SSE_LISTING record is published to production."
+    "production_state": "PASS_DEPLOYED_CI_PUBLIC_SMOKE_BROWSER_SSE_FAIL_CLOSED_V086",
+    "release_boundary": "v0.8.6 is accepted production. Any later source-depth release requires its own validation and deployment gate.",
+    "release_head": "b5477db18b868d675fa892218e29c2ce9b618910",
+    "production": {
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "worker_version_id": "bfb8d01a-df40-4079-a9ff-4bdfdebb035b",
+      "vercel_deployment": "https://workermanifestfellowship-ceyrdo8ip-hiddenfeng.vercel.app",
+      "runtime_version_observed": "0.8.6-rc.1",
+      "release_ci_initial": {
+        "run_id": 35092376390,
+        "status": "PASS",
+        "head_sha": "3c181e4e05add38e220a53db8bb2af0d2100dd2a"
+      },
+      "release_ci_final": {
+        "run_id": 35093466380,
+        "status": "PASS",
+        "head_sha": "b5477db18b868d675fa892218e29c2ce9b618910"
+      },
+      "public_smoke_final": {
+        "run_id": 35093466385,
+        "status": "PASS",
+        "head_sha": "b5477db18b868d675fa892218e29c2ce9b618910"
+      },
+      "browser_canonical": "PASS_ZERO_CONSOLE_NETWORK_PAGE_ERRORS",
+      "footer_copy": "PASS_V086_SSE_DEPTH",
+      "command_line_public_smoke": "ENVIRONMENT_PATH_FAIL_FETCH_PRIMARY_BROWSER_AND_GITHUB_SMOKE_PASS"
+    },
+    "production_sse_run": {
+      "evidence_file": "qa/v0_8/cn-sse-listing-v086-production.json",
+      "eligible_companies": 1,
+      "candidate_security_codes": 1,
+      "detail_requests": 1,
+      "exact_full_name_matches": 0,
+      "published_references": 0,
+      "real_company": "星宇股份有限公司",
+      "official_candidate": "601799 / 常州星宇车灯股份有限公司",
+      "fail_closed": true
+    },
+    "production_hygiene": {
+      "real_companies": 1,
+      "pending_feedback": 0,
+      "official_references": 0,
+      "official_relations": 0,
+      "official_events": 0,
+      "existing_negative_community_signal_preserved": true
+    }
   },
-  "remaining_human_only": [
-    "Approve or reject public push/deployment of the locally validated v0.8.6-rc.1 SSE listing-depth candidate."
-  ],
-  "next_gate": "v0.8.6-rc.1 SSE listing-depth is locally validated and fail-closed. The next gate is explicit production-release approval; do not push/deploy externally without it. After acceptance, continue equivalent strict SZSE/BSE listing coverage, approved procurement detail paths, additional SAMR/CSRC records, and trustworthy China labor/public-enforcement sources.",
-  "strongest_claim": "v0.8.5-rc.1 is production-deployed and accepted for China-first enterprise investigation: NMPA product relations, SAMR recall events and CSRC administrative-penalty events use strict fail-closed binding; China company pages expose a source-scoped investigation summary across identity/listing/brand-product/regulatory/recall/procurement/labor dimensions with explicit unknown gaps; community evidence stays separate; the real Xingyu company remains unverified at legal-identity level and has zero forced official event matches; local 27/24/310 tests, Worker+D1 restart smoke, production browser, Production E2E, Release CI and race-safe Public smoke pass, and production D1 is clean after QA cleanup.",
+  "remaining_human_only": [],
+  "next_gate": "v0.8.6 SSE listing depth is production-accepted. Continue source depth locally with strict official full-name/identifier binding; prioritize SZSE next, then BSE/procurement/public-enforcement where documented public access permits. A future production release remains a separate gate.",
+  "strongest_claim": "v0.8.6-rc.1 is production-deployed and accepted for China-first enterprise investigation with strict SSE listing/disclosure references added to the existing NMPA/SAMR/CSRC source model. The public China dossier exposes SSE coverage but the real 星宇股份有限公司 remains unbound because official SSE 601799 resolves to 常州星宇车灯股份有限公司, so zero official references were forced. Final CI 35093466380 and public smoke 35093466385 pass; Worker bfb8d01a-df40-4079-a9ff-4bdfdebb035b and Vercel ceyrdo8ip are live; production state remains one real company with no official reference/relation/event rows and existing community evidence preserved.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",

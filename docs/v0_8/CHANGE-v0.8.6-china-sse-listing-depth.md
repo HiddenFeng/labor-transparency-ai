@@ -1,7 +1,7 @@
 # v0.8.6-rc.1 — China SSE listing/disclosure depth
 
 Date: 2026-09-16
-Status: `PASS_LOCAL_RELEASE_CANDIDATE_NOT_PRODUCTION_DEPLOYED`
+Status: `PASS_PRODUCTION_SSE_LISTING_DEPTH_V086`
 
 ## Why this is the next milestone
 
@@ -41,18 +41,23 @@ The second case is intentional negative evidence for the binding rule: the exist
 - source registry parse: `PASS`, 25 sources including `CN_SSE_LISTING`.
 - `git diff --check`: `PASS`.
 
-## Production status and decision gate
+## Production acceptance
 
-This change is intentionally **not yet production-deployed**. Current accepted production remains v0.8.5-rc.1 at main `367501b141beb118dbeb44589221ed45e6f1ebc6` until an explicit production-release decision is made.
+Accepted on 2026-09-16 after the user continued at the explicit production-release gate.
 
-If deployment is approved, the acceptance sequence is:
+- Production source/behavior commit chain includes `e2639a5` (SSE listing depth) and final UI alignment `b5477db18b868d675fa892218e29c2ce9b618910`; `main == origin/main == b5477db18b868d675fa892218e29c2ce9b618910` at final release verification.
+- Release-candidate CI run `35092376390` for the v0.8.6 release chain: `PASS`; follow-up CI run `35093466380` for the footer alignment commit: `PASS`.
+- Public deployment smoke run `35093466385` for `b5477db`: `PASS`.
+- Cloudflare Worker version: `bfb8d01a-df40-4079-a9ff-4bdfdebb035b`.
+- Final Vercel production deployment: `https://workermanifestfellowship-ceyrdo8ip-hiddenfeng.vercel.app`, aliased to `https://workermanifestfellowship.dpdns.org`.
+- Canonical `/api/config`: `version=0.8.6-rc.1`, `domainVersion=0.8.6-rc.1`, `mode=CLOUDFLARE_WORKER_D1`.
+- Canonical production company detail exposes `CN_SSE_LISTING` in `chinaInvestigation.sourceCoverage`, while the real `星宇股份有限公司` remains `NO_VERIFIED_REFERENCE` with `officialReferences=[]`, `officialRelations=[]`, and `officialEvents=[]`.
+- Real production SSE publish pass: 1 eligible China company, 1 candidate code, 1 official detail request, 0 exact `FULL_NAME` matches, 0 references published. The official `601799` company overview is `常州星宇车灯股份有限公司`, so the shortened current company-space name is intentionally not auto-bound.
+- Production browser checks on the canonical domain and company dossier completed with zero browser console/network/page errors. The final footer now identifies v0.8.6 and the SSE listing/disclosure depth rather than stale v0.8.5 copy.
+- Production community state after the SSE pass remains clean: 1 real company, 0 pending feedback, 0 official references, 0 official relations, 0 official events; the existing real negative community ballot/claim is preserved.
+- A direct local Node/curl public-smoke attempt still fails on this Mac's already documented command-line network path, while browser production access and GitHub-hosted public smoke pass. This is retained as an environment-path limitation, not hidden as a product success/failure.
 
-1. push the locally accepted v0.8.6 candidate and require CI to pass;
-2. deploy Cloudflare Worker and Vercel frontend through the existing canonical GitHub/Vercel/Cloudflare path;
-3. verify `/api/config` reports `0.8.6-rc.1` and the canonical company-detail projection exposes the updated SSE source coverage;
-4. run the SSE daily collector against real production company spaces through the controlled Agent path;
-5. verify the current `星宇股份有限公司` still produces zero SSE official references unless its company-space identity is independently corrected by stronger evidence;
-6. clean all QA-only state and record final production evidence before accepting v0.8.6.
+Production gate: `PASS_DEPLOYED_CI_PUBLIC_SMOKE_BROWSER_SSE_FAIL_CLOSED_V086`.
 
 ## Next source-depth work after this milestone
 

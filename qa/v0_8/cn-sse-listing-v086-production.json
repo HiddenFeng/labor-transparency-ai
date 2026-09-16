@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "provider": "CN_SSE_LISTING",
+  "sourceUrl": "https://www.sse.com.cn/assortment/stock/list/share/",
+  "directoryDate": "2026-09-16",
+  "sourceRequests": 2,
+  "eligibleCompanies": 1,
+  "candidateSecurityCodes": 1,
+  "detailRequests": 1,
+  "exactFullNameMatches": 0,
+  "uniqueReferences": 0,
+  "ambiguousCompanies": [],
+  "publishedReferences": 0,
+  "publishRequested": true
+}
