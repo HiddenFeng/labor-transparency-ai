@@ -706,9 +706,44 @@
       "existing_negative_community_signal_preserved": true
     }
   },
+  "candidate_v087_szse_listing_depth": {
+    "status": "PASS_LOCAL_RELEASE_CANDIDATE_NOT_PRODUCTION_DEPLOYED",
+    "runtime_version": "0.8.7-rc.1",
+    "base_production_head": "4dec9f7",
+    "candidate_branch": "agent/china-szse-depth",
+    "change_record": "docs/v0_8/CHANGE-v0.8.7-china-szse-listing-depth.md",
+    "new_source": {
+      "provider": "CN_SZSE_LISTING",
+      "source_of_record": "深圳证券交易所",
+      "reference_lane": "OFFICIAL_SOURCE_REFERENCE",
+      "binding": "EXACT_FULL_LEGAL_NAME_IN_OFFICIAL_SZSE_STOCK_LIST_REPORT",
+      "source_registry_count": 26,
+      "production_publish_performed": false
+    },
+    "real_source_boundary_probe_2026_09_16": {
+      "official_report_rows": 2901,
+      "positive_control": "平安银行股份有限公司 -> exact official full-name row -> 000001 / 平安银行 / 主板 -> 1 bounded reference",
+      "current_real_company": "星宇股份有限公司 -> 0 exact official full-name rows -> 0 references",
+      "fail_closed": true
+    },
+    "local_validation": {
+      "szse_unit_tests": "PASS_5_OF_5",
+      "collector_regression": "PASS_26_OF_26",
+      "sites_app": "PASS_29_OF_29",
+      "cloudflare_backend": "PASS_24_OF_24",
+      "public_smoke_contract": "PASS_8_OF_8",
+      "worker_d1_http_restart": "PASS_0.8.7_RC1",
+      "sites_build": "PASS_17_FILES_0.8.7_RC1",
+      "frontend_privacy_audit": "PASS_0_FORBIDDEN_MATCHES",
+      "source_registry": "PASS_26_SOURCES_INCLUDING_CN_SZSE_LISTING",
+      "git_diff_check": "PASS"
+    },
+    "full_python_release_gate": "REQUIRED_IN_GITHUB_CI_BEFORE_DEPLOYMENT",
+    "production_state": "UNCHANGED_V086_ACCEPTED"
+  },
   "remaining_human_only": [],
-  "next_gate": "v0.8.6 SSE listing depth is production-accepted. Continue source depth locally with strict official full-name/identifier binding; prioritize SZSE next, then BSE/procurement/public-enforcement where documented public access permits. A future production release remains a separate gate.",
-  "strongest_claim": "v0.8.6-rc.1 is production-deployed and accepted for China-first enterprise investigation with strict SSE listing/disclosure references added to the existing NMPA/SAMR/CSRC source model. The public China dossier exposes SSE coverage but the real 星宇股份有限公司 remains unbound because official SSE 601799 resolves to 常州星宇车灯股份有限公司, so zero official references were forced. Final CI 35093466380 and public smoke 35093466385 pass; Worker bfb8d01a-df40-4079-a9ff-4bdfdebb035b and Vercel ceyrdo8ip are live; production state remains one real company with no official reference/relation/event rows and existing community evidence preserved.",
+  "next_gate": "v0.8.7 SZSE listing-depth is locally validated. Integrate the isolated candidate, require GitHub CI/full Python release validation, then use the user's current continuation to deploy only after those gates pass. BSE remains the next listing coverage gap if an official reproducible public interface can be documented safely.",
+  "strongest_claim": "v0.8.6-rc.1 remains accepted production while v0.8.7-rc.1 is a locally validated SZSE listing-depth candidate. The new collector uses the official Shenzhen Stock Exchange A-share report and only emits an OFFICIAL_SOURCE_REFERENCE for one exact full-company-name row; shortened/substrings and duplicate exact rows fail closed. Official probing returned 2,901 rows, with 平安银行股份有限公司/000001 as a positive control and zero exact rows for current 星宇股份有限公司. Local collector/UI/backend/Worker/privacy gates pass; production remains unchanged until GitHub CI and deployment acceptance complete.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",

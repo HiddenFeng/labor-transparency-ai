@@ -12,7 +12,7 @@ import {publicCompanyDetail} from '../../sites-app/src/company-dossier.mjs';
 import {D1StateStore} from './d1-store.mjs';
 import {collectCompanyResearch,selectResearchCompanies,mergeCompanyResearch,queueCompanyResearch,markCompanyResearchStarted,markCompanyResearchFailed,markCompanyResearchDeadLettered} from './company-research.mjs';
 
-const BACKEND_VERSION='0.8.6-rc.1';
+const BACKEND_VERSION='0.8.7-rc.1';
 const COOKIE='ltp_session';
 const BODY_LIMIT=96*1024;
 

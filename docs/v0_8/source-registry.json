@@ -475,6 +475,40 @@
       "schedule": "18:00 Asia/Shanghai daily, one public SSE security directory request plus at most eight candidate detail requests per eligible company",
       "semantic_boundary": "The SSE security directory is candidate discovery only. An OFFICIAL_SOURCE_REFERENCE is created only when the official company overview for the candidate security code exactly matches the existing company-space full name. The reference supports that bounded SSE listing/disclosure relationship only; it does not upgrade GSXT legal identity or imply compliance, labor, product-quality or investment conclusions."
     },
+    "CN_SZSE_LISTING": {
+      "label": "深圳证券交易所股票列表",
+      "authority": "PRIMARY_CHINA_EXCHANGE_LISTING_DISCLOSURE",
+      "access": "KEYLESS_PUBLIC_OFFICIAL_STOCK_LIST_REPORT",
+      "license": "OFFICIAL_PUBLICITY_WITHOUT_PROJECT_ASSUMED_OPEN_LICENSE",
+      "license_url": "https://www.szse.cn/market/product/stock/list/index.html",
+      "source_of_record": "深圳证券交易所",
+      "regions": [
+        "CN"
+      ],
+      "sections": [
+        "business",
+        "listed_company_disclosure"
+      ],
+      "fields": [
+        "security_code",
+        "security_abbreviation",
+        "full_legal_name",
+        "english_name",
+        "board",
+        "listing_date",
+        "industry",
+        "registered_address",
+        "province",
+        "city",
+        "website"
+      ],
+      "state": "AUTOMATED_DAILY_LOCAL_AGENT_SUPPORTED",
+      "binding": "EXACT_FULL_LEGAL_NAME_IN_OFFICIAL_SZSE_STOCK_LIST_REPORT",
+      "request_budget": 1,
+      "implementation": "scripts/community_agent/cn_szse_listing_daily.py",
+      "schedule": "18:00 Asia/Shanghai daily, one official SZSE stock-list report request when at least one China company exists",
+      "semantic_boundary": "The official SZSE stock-list report contains full issuer names and security codes. An OFFICIAL_SOURCE_REFERENCE is created only for one exact full-name match to an existing company space; shortened names, abbreviations and substring matches are rejected, and duplicate exact rows fail closed. The reference is listing/disclosure scope only and does not upgrade GSXT legal identity or imply compliance, labor, product-quality or investment conclusions."
+    },
     "CN_GSXT": {
       "label": "国家企业信用信息公示系统",
       "authority": "PRIMARY_CHINA_GOVERNMENT_ENTERPRISE_CREDIT_PUBLICITY_SYSTEM",

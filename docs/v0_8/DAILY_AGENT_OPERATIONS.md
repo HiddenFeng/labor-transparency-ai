@@ -38,6 +38,8 @@ Collect/publish current official reference/relation/event matches. China compani
 
 `python3 scripts/community_agent/cn_sse_listing_daily.py --publish --output history/daily/YYYY-MM-DD/cn-sse-listing.json`
 
+`python3 scripts/community_agent/cn_szse_listing_daily.py --publish --output history/daily/YYYY-MM-DD/cn-szse-listing.json`
+
 `python3 scripts/community_agent/cn_samr_recall_daily.py --publish --output history/daily/YYYY-MM-DD/cn-samr-recall.json`
 
 `python3 scripts/community_agent/cn_csrc_penalty_daily.py --publish --output history/daily/YYYY-MM-DD/cn-csrc-penalty.json`
@@ -46,7 +48,7 @@ Collect/publish current official reference/relation/event matches. China compani
 
 `python3 scripts/community_agent/jp_nta_daily.py --publish --output history/daily/YYYY-MM-DD/jp-nta.json`
 
-SSE and Japan NTA records are scoped `OFFICIAL_SOURCE_REFERENCE`; NMPA/TED records are scoped `OFFICIAL_SOURCE_RELATION`; SAMR recall and CSRC penalty records are scoped `OFFICIAL_SOURCE_EVENT`. SSE candidate security codes never become evidence until the official company overview returns an exact full-name match, and neither SSE nor Japan NTA references upgrade machine legal identity. A zero-match result remains an explicit coverage result, never proof that no listing/event/relationship exists outside the connected source scope.
+SSE, SZSE and Japan NTA records are scoped `OFFICIAL_SOURCE_REFERENCE`; NMPA/TED records are scoped `OFFICIAL_SOURCE_RELATION`; SAMR recall and CSRC penalty records are scoped `OFFICIAL_SOURCE_EVENT`. SSE candidate security codes never become evidence until the official company overview returns an exact full-name match; SZSE binds only one exact full-name row in the official stock-list report and duplicate exact rows fail closed. None of these exchange/daily-delta references upgrades machine legal identity. A zero-match result remains an explicit coverage result, never proof that no listing/event/relationship exists outside the connected source scope.
 
 ### Command-line network fallback
 
@@ -79,6 +81,7 @@ All local daily evidence goes under:
 Expected files when applicable:
 - `nmpa-udi.json`
 - `cn-sse-listing.json`
+- `cn-szse-listing.json`
 - `cn-samr-recall.json`
 - `cn-csrc-penalty.json`
 - `eu-ted.json`
