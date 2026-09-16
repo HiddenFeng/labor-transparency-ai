@@ -11,7 +11,10 @@ import json
 import sys
 from pathlib import Path
 
-from scripts.community_agent.nmpa_udi_daily import DEFAULT_ORIGIN, http_json, load_agent_token
+if __package__:
+    from .nmpa_udi_daily import DEFAULT_ORIGIN, http_json, load_agent_token
+else:
+    from nmpa_udi_daily import DEFAULT_ORIGIN, http_json, load_agent_token
 
 
 def load_payload(path: str):
