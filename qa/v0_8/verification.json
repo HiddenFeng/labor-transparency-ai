@@ -707,10 +707,10 @@
     }
   },
   "candidate_v087_szse_listing_depth": {
-    "status": "PASS_LOCAL_RELEASE_CANDIDATE_NOT_PRODUCTION_DEPLOYED",
+    "status": "PASS_PRODUCTION_SZSE_LISTING_DEPTH_V087",
     "runtime_version": "0.8.7-rc.1",
     "base_production_head": "4dec9f7",
-    "candidate_branch": "agent/china-szse-depth",
+    "candidate_branch": "agent/china-szse-depth (retired after integration)",
     "change_record": "docs/v0_8/CHANGE-v0.8.7-china-szse-listing-depth.md",
     "new_source": {
       "provider": "CN_SZSE_LISTING",
@@ -718,7 +718,7 @@
       "reference_lane": "OFFICIAL_SOURCE_REFERENCE",
       "binding": "EXACT_FULL_LEGAL_NAME_IN_OFFICIAL_SZSE_STOCK_LIST_REPORT",
       "source_registry_count": 26,
-      "production_publish_performed": false
+      "production_publish_performed": true
     },
     "real_source_boundary_probe_2026_09_16": {
       "official_report_rows": 2901,
@@ -738,12 +738,49 @@
       "source_registry": "PASS_26_SOURCES_INCLUDING_CN_SZSE_LISTING",
       "git_diff_check": "PASS"
     },
-    "full_python_release_gate": "REQUIRED_IN_GITHUB_CI_BEFORE_DEPLOYMENT",
-    "production_state": "UNCHANGED_V086_ACCEPTED"
+    "full_python_release_gate": "PASS_GITHUB_CI_35099735327",
+    "production_state": "PASS_DEPLOYED_CI_PUBLIC_SMOKE_BROWSER_SZSE_FAIL_CLOSED_V087",
+    "release_head": "d402a1e1e79ab1dec555ee52e26a4f2d324c72e3",
+    "production": {
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "worker_version_id": "975f2c7a-bfd6-41fc-a355-230f2a3b29e6",
+      "vercel_deployment": "https://workermanifestfellowship-e1dtesru0-hiddenfeng.vercel.app",
+      "runtime_version_observed": "0.8.7-rc.1",
+      "release_ci": {
+        "run_id": 35099735327,
+        "status": "PASS",
+        "head_sha": "d402a1e1e79ab1dec555ee52e26a4f2d324c72e3"
+      },
+      "public_smoke": {
+        "run_id": 35099735221,
+        "status": "PASS",
+        "head_sha": "d402a1e1e79ab1dec555ee52e26a4f2d324c72e3"
+      },
+      "browser_canonical": "PASS_ZERO_PAGE_NETWORK_CONSOLE_ERRORS",
+      "footer_copy": "PASS_V087_SSE_SZSE_DEPTH",
+      "deployment_wrapper_note": "wrangler whoami can hang on the local CLI network path; direct wrangler deploy used the same production config, secrets file and exact vars, then production was independently verified."
+    },
+    "production_szse_run": {
+      "evidence_file": "qa/v0_8/cn-szse-listing-v087-production.json",
+      "official_report_rows": 2901,
+      "eligible_companies": 1,
+      "exact_full_name_matches": 0,
+      "published_references": 0,
+      "real_company": "星宇股份有限公司",
+      "fail_closed": true
+    },
+    "production_hygiene": {
+      "real_companies": 1,
+      "pending_feedback": 0,
+      "official_references": 0,
+      "official_relations": 0,
+      "official_events": 0,
+      "existing_negative_community_signal_preserved": true
+    }
   },
   "remaining_human_only": [],
-  "next_gate": "v0.8.7 SZSE listing-depth is locally validated. Integrate the isolated candidate, require GitHub CI/full Python release validation, then use the user's current continuation to deploy only after those gates pass. BSE remains the next listing coverage gap if an official reproducible public interface can be documented safely.",
-  "strongest_claim": "v0.8.6-rc.1 remains accepted production while v0.8.7-rc.1 is a locally validated SZSE listing-depth candidate. The new collector uses the official Shenzhen Stock Exchange A-share report and only emits an OFFICIAL_SOURCE_REFERENCE for one exact full-company-name row; shortened/substrings and duplicate exact rows fail closed. Official probing returned 2,901 rows, with 平安银行股份有限公司/000001 as a positive control and zero exact rows for current 星宇股份有限公司. Local collector/UI/backend/Worker/privacy gates pass; production remains unchanged until GitHub CI and deployment acceptance complete.",
+  "next_gate": "v0.8.7 SSE+SZSE listing depth is production-accepted. Shift from exchange-source expansion to a product-level usability/operational audit of the main worker flows; fix concrete defects first. BSE or other source depth should proceed only where it materially improves a currently visible evidence gap through a documented public official path.",
+  "strongest_claim": "v0.8.7-rc.1 is production-deployed and accepted. China company investigation now exposes strict SSE and SZSE listing/disclosure coverage while keeping legal identity, official references/relations/events and community claims separate. The real 星宇股份有限公司 remains fail-closed with zero forced exchange reference because neither provider produces an exact full-name match for the current company-space name. GitHub CI 35099735327 and public smoke 35099735221 pass; Worker 975f2c7a-bfd6-41fc-a355-230f2a3b29e6 and Vercel e1dtesru0 are live; production still has one real company, zero pending feedback and no official reference/relation/event rows, with existing community evidence preserved.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",

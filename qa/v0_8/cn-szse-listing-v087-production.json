@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "provider": "CN_SZSE_LISTING",
+  "sourceUrl": "https://www.szse.cn/market/product/stock/list/index.html",
+  "reportUrl": "https://www.szse.cn/api/report/ShowReport",
+  "sourceDate": "2026-09-16",
+  "sourceRequests": 1,
+  "recordsScanned": 2901,
+  "eligibleCompanies": 1,
+  "exactFullNameMatches": 0,
+  "uniqueReferences": 0,
+  "ambiguousCompanies": [],
+  "publishedReferences": 0,
+  "publishRequested": true
+}
