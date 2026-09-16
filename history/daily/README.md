@@ -6,6 +6,7 @@ Each day uses `history/daily/YYYY-MM-DD/` and may contain:
 
 - `nmpa-udi.json` — bounded NMPA UDI collection metrics only, not the bulk source dataset.
 - `eu-ted.json` — bounded EU TED collection metrics only; specific matching notice URLs remain in official relation records.
+- `jp-nta.json` — bounded Japan NTA Corporate Number daily-delta metrics only; downloaded delta files stay temporary and exact-name references remain separate from machine legal-identity verification.
 - `announcement.json` — public announcement payload actually submitted to the Web API.
 - `run-18.json` — phase-18 database run record payload.
 - `18-operations.md` — what the 18:00 Agent actually completed and what remained.

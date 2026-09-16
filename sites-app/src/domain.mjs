@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 
-export const VERSION = '0.8.4-rc.2';
+export const VERSION = '0.8.4-rc.3';
 export const EVIDENCE_LEVELS = new Set(['E0','E1','E2','E3','E4','E5']);
 export const KINDS = new Set(['product','brand','company_fact','relationship','labour_claim','product_claim']);
 export const DIMENSIONS = new Set(['pay','rest','hours','safety','contract','respect','representation','other']);
@@ -8,6 +8,7 @@ export const RIGHTS = new Set(['own_summary','permission','public_domain','refer
 export const SOURCE_TYPES = new Set(['first_person','company_disclosure','public_record','official_decision','other']);
 export const RELATION_TYPES = new Set(['company_brand','company_product','brand_product','parent_subsidiary','supplier_customer','other']);
 export const COMMUNITY_FEEDBACK_TYPES = new Set(['suggestion','appeal','correction','source_request','other']);
+export const OFFICIAL_REFERENCE_TYPES = new Set(['LEGAL_ENTITY_REGISTRY','DISCLOSURE_REGISTRY','OTHER_OFFICIAL_REFERENCE']);
 export const ADVISORY_CATEGORIES = new Set(['pay','hours_rest','contract','termination','safety','respect','representation','other']);
 export const ADVISORY_URGENCY = new Set(['routine','soon','urgent']);
 export const EMPLOYMENT_STATUS = new Set(['current','former','applicant','contractor','other']);
@@ -77,6 +78,7 @@ export function emptyState(){
     advisoryAdvice: [],
     advisoryDailyReports: [],
     companyResearch: [],
+    officialReferences: [],
     officialRelations: [],
     communityFeedback: [],
     communityFeedbackResponses: [],
@@ -88,7 +90,7 @@ export function emptyState(){
 export function upgradeState(state){
   if (!state || typeof state !== 'object' || Array.isArray(state)) throw new Error('状态文件无效');
   for (const key of ['companies','contributions','reviews','exportReviews','ballots','flags']) if (!Array.isArray(state[key])) state[key]=[];
-  for (const key of ['advisoryCases','advisoryAdvice','advisoryDailyReports','officialRelations','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns']) if (!Array.isArray(state[key])) state[key]=[];
+  for (const key of ['advisoryCases','advisoryAdvice','advisoryDailyReports','officialReferences','officialRelations','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns']) if (!Array.isArray(state[key])) state[key]=[];
   if (!Array.isArray(state.companyResearch)) state.companyResearch=[];
   state.schemaVersion = '0.8';
   state.version = VERSION;
@@ -401,6 +403,48 @@ function boundedRelationAttributes(value){
     n++;
   }
   return out;
+}
+function referenceStableId(item){
+  const parts=[item.provider,item.sourceRecordId,item.companyId,item.referenceType];
+  return `oref_${crypto.createHash('sha256').update(parts.map(x=>String(x||'')).join('\u001f')).digest('hex').slice(0,24)}`;
+}
+function validateOfficialReferenceInput(state,input){
+  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('官方参考需要结构化对象');
+  const company=state.companies.find(x=>x.id===String(input.companyId||'')&&!x.synthetic);
+  if(!company)throw new Error('官方参考必须绑定真实公司空间');
+  const referenceType=String(input.referenceType||'');if(!OFFICIAL_REFERENCE_TYPES.has(referenceType))throw new Error('官方参考类型无效');
+  const provider=safeText(input.provider,{min:2,max:80,field:'官方来源标识'});
+  const sourceRecordId=safeOfficialValue(input.sourceRecordId,180);if(!sourceRecordId)throw new Error('官方记录标识不能为空');
+  const item={
+    companyId:company.id,provider,jurisdiction:safeText(input.jurisdiction||'',{min:0,max:20,field:'司法区'}),referenceType,
+    sourceRecordId,sourceOfRecord:safeText(input.sourceOfRecord,{min:2,max:180,field:'官方来源名称'}),sourceUrl:safeUrl(input.sourceUrl),
+    sourceDate:safeDate(input.sourceDate||'','来源日期'),observedAt:safeText(input.observedAt||nowIso(),{min:10,max:40,field:'观察时间'}),
+    confidence:['HIGH','MEDIUM','LOW_MEDIUM'].includes(input.confidence)?input.confidence:'MEDIUM',
+    bindingBasis:safeText(input.bindingBasis||'',{min:2,max:180,field:'绑定依据'}),
+    scope:safeText(input.scope||'',{min:0,max:500,field:'参考范围'}),caveat:safeText(input.caveat||'',{min:8,max:900,field:'参考边界'}),
+    fields:boundedRelationAttributes(input.fields),tier:'OFFICIAL_SOURCE_REFERENCE',status:'CURRENT'
+  };
+  return {...item,id:referenceStableId(item)};
+}
+export function upsertOfficialReferences(state,input){
+  const rows=Array.isArray(input)?input:Array.isArray(input?.items)?input.items:[];
+  if(!rows.length||rows.length>500)throw new Error('官方参考批次需为1—500条');
+  const at=nowIso();const saved=[];
+  for(const raw of rows){
+    const next={...validateOfficialReferenceInput(state,raw),updatedAt:at};
+    const index=state.officialReferences.findIndex(x=>x.id===next.id);
+    if(index>=0){next.createdAt=state.officialReferences[index].createdAt||at;state.officialReferences[index]=next;}
+    else {next.createdAt=at;state.officialReferences.push(next);}
+    saved.push(next);
+  }
+  return {savedCount:saved.length,items:saved};
+}
+export function publicOfficialReferences(state,companyId){
+  return (state.officialReferences||[]).filter(x=>x.companyId===companyId&&x.status==='CURRENT').map(x=>({
+    id:x.id,tier:'OFFICIAL_SOURCE_REFERENCE',provider:x.provider,jurisdiction:x.jurisdiction,referenceType:x.referenceType,
+    fields:x.fields||{},bindingBasis:x.bindingBasis,confidence:x.confidence,scope:x.scope,caveat:x.caveat,
+    source:{sourceOfRecord:x.sourceOfRecord,url:x.sourceUrl,recordId:x.sourceRecordId,date:x.sourceDate||'',observedAt:x.observedAt},updatedAt:x.updatedAt
+  })).sort((a,b)=>String(b.source.date||b.updatedAt||'').localeCompare(String(a.source.date||a.updatedAt||''))||a.id.localeCompare(b.id));
 }
 function validateOfficialRelationInput(state,input){
   if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('官方关系需要结构化对象');

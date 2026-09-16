@@ -395,6 +395,18 @@ function appendContributionGroup(root,title,rows,empty='暂无公开贡献。'){
   const list=document.createElement('div');list.className='detail-contribution-list';rows.forEach(x=>list.append(contributionDetailCard(x)));sec.append(list);root.append(sec);
 }
 function officialRelationLabel(value){return ({COMPANY_REGISTERS_PRODUCT:'官方登记产品',COMPANY_OWNS_BRAND:'官方记录的公司—品牌关系',BRAND_MARKETS_PRODUCT:'官方记录的品牌—产品关系',COMPANY_PARENT_OF_COMPANY:'官方记录的母公司关系',COMPANY_SUBSIDIARY_OF_COMPANY:'官方记录的子公司关系',PUBLIC_PROCUREMENT_RELATION:'公共采购关系',OTHER_OFFICIAL_RELATION:'其他官方关系'})[value]||value;}
+function appendOfficialReferences(root,rows){
+  if(!rows?.length)return;
+  const sec=dossierSection('官方登记参考','这是官方登记/披露来源中与当前公司空间精确匹配的窄范围参考。它和机器法律身份绑定是不同层级；如果尚未完成全国/全库唯一性确认，页面会明确保留这个边界。');
+  const list=document.createElement('div');list.className='official-relation-list';
+  for(const item of rows){
+    const f=item.fields||{};const card=document.createElement('article');card.className='official-relation-card';
+    card.append(badge('官方登记参考','evidence'),text('strong',f.legalName||f.name||item.source?.recordId||'官方登记记录'),text('small',`${item.source?.sourceOfRecord||item.provider}${item.source?.date?` · ${item.source.date}`:''} · ${item.bindingBasis||'限定匹配'}`));
+    const meta=[f.corporateNumber&&`法人番号 ${f.corporateNumber}`,f.prefectureName&&`都道府县 ${f.prefectureName}`,f.cityName&&`市区町村 ${f.cityName}`,f.assignmentDate&&`指定日 ${f.assignmentDate}`,f.closeDate&&`注销日 ${f.closeDate}`,f.enName&&`英文名 ${f.enName}`].filter(Boolean);if(meta.length)card.append(text('p',meta.join(' · ')));
+    if(item.scope)card.append(text('small',item.scope));card.append(text('p',item.caveat,'method-note'));if(item.source?.url)card.append(link('查看官方来源',item.source.url,'research-source-link'));list.append(card);
+  }
+  sec.append(list);root.append(sec);
+}
 function appendOfficialRelations(root,rows){
   if(!rows?.length)return;
   const sec=dossierSection('官方来源确认的公司 / 品牌 / 产品关系','这里只展示具体官方记录能够直接支持的关系；它不等于产品质量认证、公司整体评价或完整关系网络。');
@@ -422,6 +434,7 @@ function renderCompanyDetail(detail){
   const auto=dossierSection('自动资料与公开来源','这一部分由确定性规则自动整理。法律实体参考、开放知识上下文、来源信号和事件候选具有不同证据层级。');
   auto.append(researchBlock({research:detail.research}));root.append(auto);
 
+  appendOfficialReferences(root,detail.officialReferences||[]);
   appendOfficialRelations(root,detail.officialRelations||[]);
 
   const contrib=detail.contributions||{};

@@ -617,9 +617,9 @@
     "JP_NTA_CORPORATE_NUMBER": {
       "label": "Japan National Tax Agency Corporate Number Publication Site",
       "authority": "PRIMARY_JAPAN_GOVERNMENT_CORPORATE_IDENTIFIER_REGISTRY",
-      "access": "PUBLIC_BULK_DOWNLOAD; WEB_API_REQUIRES_FREE_APPLICATION_ID",
-      "license": "OFFICIAL_PUBLICATION_TERMS_WITH_ATTRIBUTION_NOTICE",
-      "license_url": "https://www.houjin-bangou.nta.go.jp/webapi/",
+      "access": "KEYLESS_PUBLIC_DAILY_DELTA_DOWNLOAD; WEB_API_REQUIRES_FREE_APPLICATION_ID",
+      "license": "PUBLIC_DATA_LICENSE_1.0_WITH_SOURCE_ATTRIBUTION",
+      "license_url": "https://www.houjin-bangou.nta.go.jp/en/riyokiyaku/",
       "source_of_record": "国税庁法人番号公表サイト",
       "regions": [
         "JP"
@@ -634,10 +634,12 @@
         "corporation_type",
         "change_history"
       ],
-      "state": "BULK_ADAPTER_READY_API_REQUIRES_APPLICATION_ID",
-      "binding": "CORPORATE_NUMBER_REQUIRED_AFTER_NAME_SEARCH",
+      "state": "AUTOMATED_DAILY_DELTA_OFFICIAL_REFERENCE_SUPPORTED",
+      "binding": "EXACT_NAME_IN_DAILY_DELTA_ONLY_TO_OFFICIAL_SOURCE_REFERENCE; CORPORATE_NUMBER_OR_FULL_REGISTRY_UNIQUENESS_REQUIRED_FOR_STRONGER_IDENTITY_BINDING",
       "request_budget": 2,
-      "semantic_boundary": "Corporate Number publication supports the published corporate identifier/name/address record only. Public services using the Web API must display the NTA-required source disclaimer."
+      "semantic_boundary": "A daily-delta exact-name match is an OFFICIAL_SOURCE_REFERENCE for that published Corporate Number record only. A daily delta is not a nationwide uniqueness search and does not upgrade company legal identity, or imply labor/product/quality/legal conclusions.",
+      "signature": "Official ZIP includes OpenPGP .asc; NTA key fingerprint F4109E821F0DE67C4BA1947C4BCD87A24D615230. Current collector records signature presence but does not claim cryptographic verification.",
+      "daily_source": "https://www.houjin-bangou.nta.go.jp/download/sabun/index.html"
     },
     "JP_GBIZINFO": {
       "label": "Japan gBizINFO REST API",

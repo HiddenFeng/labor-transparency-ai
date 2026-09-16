@@ -87,13 +87,26 @@ Live API validation confirmed exact procurement notices for `Airbus Defence and 
 
 TED relations support only the company's role in the specific published procurement notice. They do not establish a complete customer/supplier network, product quality, labor quality, legality beyond the notice, or endorsement.
 
+## Japan official-source expansion
+
+`JP_NTA_CORPORATE_NUMBER` is the first automated official registry-reference source that is intentionally weaker than the autonomous identity engine.
+
+Implementation: `scripts/community_agent/jp_nta_daily.py`
+
+The collector uses the Japan National Tax Agency Corporate Number Publication Site's public daily-delta download page. It first reads the official HTML page, obtains the current CSRF token and XML/Unicode file number, and submits the site's normal `event=download` form. It does not call an undocumented private API and does not bypass the Web API's free application-ID requirement.
+
+The 2026-09-16 live download returned `diff_20260916.zip` (about 189 KB), containing `diff_20260916.xml` (about 2.55 MB) and `diff_20260916.xml.asc`. The XML contained 2,273 corporation records in the isolated validation. The official PGP key fingerprint is recorded in source governance; the current collector records signature-file presence but does not claim cryptographic signature verification.
+
+For a company to receive a reference, the project must already contain a Japan company space and the daily delta must contain an exact normalized legal-name match. If one exact name maps to more than one Corporate Number in that delta, every match is withheld as ambiguous. A successful match publishes only `OFFICIAL_SOURCE_REFERENCE / MEDIUM` with bounded Corporate Number/basic-register fields. It does **not** upgrade `MACHINE_VERIFIED_REFERENCE` or the `auto-intelligence-0.8.3` legal-identity state, because a daily delta is not a nationwide uniqueness search.
+
+The current production company set contains no Japan company space, so the production dry-run returns `PASS_NO_ELIGIBLE_COMPANIES` with `sourceRequests=0`. An isolated live official-ZIP test using the real daily record for `株式会社中村工業商会` scanned 2,273 records and produced one bounded exact-name reference without publishing it to production.
+
 ## Other jurisdictions
 
 The source registry currently contains 22 governed sources. Additional official integrations are registered with explicit gates:
 
 - UK Companies House — adapter ready; requires API key;
 - Korea OpenDART — adapter ready; requires certification key;
-- Japan NTA Corporate Number — bulk adapter ready; API requires application ID;
 - Japan gBizINFO — adapter ready; requires use approval.
 
 These remain fail-closed until the required credential/application/reuse conditions are satisfied.

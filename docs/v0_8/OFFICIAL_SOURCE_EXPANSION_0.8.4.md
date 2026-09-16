@@ -43,18 +43,19 @@ Official entry: https://zwfw.samr.gov.cn/wyc/
 - EU TED Search API: implemented keyless daily collector (`scripts/community_agent/eu_ted_daily.py`). It queries a rolling 8-day window for EU/EEA company spaces, uses at most two API requests per eligible company (winner/buyer), and publishes only exact post-filtered participant-name matches as scoped `PUBLIC_PROCUREMENT_RELATION` records. Live API validation on 2026-09-16 returned exact Airbus Defence and Space GmbH award notices; the current real production company set has zero EU/EEA companies, so its daily production path is currently a zero-request no-op.
 - UK Companies House: official REST API; requires API authentication, so adapter is fail-closed until a project credential exists.
 - Korea OpenDART: official FSS disclosure API; requires a certification key.
-- Japan NTA Corporate Number: official bulk downloads are public; Web API requires a free application ID and imposes an attribution statement for public services.
+- Japan NTA Corporate Number: implemented keyless daily-delta collector (`scripts/community_agent/jp_nta_daily.py`). It uses the normal public download page, current CSRF token and XML/Unicode delta ZIP; no undocumented API is used. The collector does nothing when no Japan company space exists. For an eligible company it accepts only exact normalized legal-name matches; if the same exact name maps to multiple Corporate Numbers in the delta, all matches are withheld as ambiguous. A match publishes `OFFICIAL_SOURCE_REFERENCE / MEDIUM`, not `MACHINE_VERIFIED_REFERENCE`, because a daily delta is not a nationwide uniqueness search. The Web API remains gated behind the NTA free application ID process and is not bypassed. Public use cites the NTA source under Public Data License 1.0. Official ZIPs include OpenPGP signatures; the collector records signature presence and expected official fingerprint but currently does not claim cryptographic verification.
 - Japan gBizINFO: official REST API; use application required.
 
 ## Relationship tiers
 
 Automated/project data must keep these separate:
 
-1. `OFFICIAL_SOURCE_RELATION` — a specific official record directly links two scoped entities, e.g. NMPA registrant → product.
-2. `MACHINE_VERIFIED_REFERENCE` — existing fail-closed identity/reference facts.
-3. `OPEN_KNOWLEDGE_CONTEXT` — deterministic contextual binding, not legal identity.
-4. `COMMUNITY_RELATION_CLAIM` — user-contributed relationship at its explicit evidence/status level.
-5. `RELATION_CANDIDATE` — ambiguous or insufficiently bound relationship.
+1. `OFFICIAL_SOURCE_REFERENCE` — a bounded official registry/disclosure reference attached to a company space without necessarily upgrading the identity engine, e.g. an exact-name NTA daily-delta Corporate Number reference.
+2. `OFFICIAL_SOURCE_RELATION` — a specific official record directly links two scoped entities, e.g. NMPA registrant → product or TED company → procurement notice.
+3. `MACHINE_VERIFIED_REFERENCE` — existing fail-closed identity/reference facts from the autonomous intelligence policy.
+4. `OPEN_KNOWLEDGE_CONTEXT` — deterministic contextual binding, not legal identity.
+5. `COMMUNITY_RELATION_CLAIM` — user-contributed relationship at its explicit evidence/status level.
+6. `RELATION_CANDIDATE` — ambiguous or insufficiently bound relationship.
 
 No relationship tier automatically implies labor quality, product quality, legality, ownership beyond the recorded scope, or endorsement.
 

@@ -9,7 +9,7 @@ import {
   reviewQueue, createReceiptCode, hashReceiptCode, addAdvisoryCase, listOwnAdvisory, accessAdvisoryByReceipt,
   advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase,
   addCommunityFeedback, listOwnCommunityFeedback, communityAgentQueue, respondCommunityFeedback,
-  addPublicAnnouncement, publicAnnouncements, recordAgentDailyRun, upsertOfficialRelations
+  addPublicAnnouncement, publicAnnouncements, recordAgentDailyRun, upsertOfficialReferences, upsertOfficialRelations
 } from './domain.mjs';
 import {FileStore} from './storage.mjs';
 import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus,publicResearchHealth} from './research-status.mjs';
@@ -110,7 +110,7 @@ export async function createAppServer(options={}){
         }
       }
 
-      if (req.method==='GET' && url.pathname==='/api/config') return json(res,200,{version:VERSION,mode:'SITES_READY_LOCAL',csrfToken:csrf,cookieSecure:runtime.secureCookie,capabilities:{companies:true,ballots:true,contributions:true,brandContributions:true,officialRelations:true,communityFeedback:true,publicAnnouncements:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,automaticCompanyResearch:false,scheduledCompanyResearch:false,attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导与社区意见仅接收非敏感结构化内容；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
+      if (req.method==='GET' && url.pathname==='/api/config') return json(res,200,{version:VERSION,mode:'SITES_READY_LOCAL',csrfToken:csrf,cookieSecure:runtime.secureCookie,capabilities:{companies:true,ballots:true,contributions:true,brandContributions:true,officialReferences:true,officialRelations:true,communityFeedback:true,publicAnnouncements:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,automaticCompanyResearch:false,scheduledCompanyResearch:false,attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导与社区意见仅接收非敏感结构化内容；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
       if (req.method==='GET' && url.pathname==='/api/health') return json(res,200,{status:'ok',version:VERSION,storage:'local-file-adapter',attachments:false,anonymousAdvisory:true});
       if (req.method==='GET' && url.pathname==='/api/companies') return json(res,200,{items:publicCompanyList(runtime.store.read())});
       if (req.method==='GET' && /^\/api\/companies\/[^/]+$/.test(url.pathname)) { const companyId=decodeURIComponent(url.pathname.split('/').at(-1)); const detail=publicCompanyDetail(runtime.store.read(),companyId); return detail?json(res,200,detail):json(res,404,{error:'公司空间不存在'}); }
@@ -169,7 +169,11 @@ export async function createAppServer(options={}){
       }
       if (req.method==='GET' && url.pathname==='/api/community-agent/state') {
         if (!runtime.communityAgentToken || !safeEqual(authToken(req),runtime.communityAgentToken)) return json(res,403,{error:'需要社区运营 Agent 凭据'});
-        const state=runtime.store.read();return json(res,200,{companies:state.companies.filter(x=>!x.synthetic).map(x=>({id:x.id,name:x.name,region:x.region,website:x.website||''})),pendingFeedback:communityAgentQueue(state),officialRelationCount:state.officialRelations.length,latestAnnouncements:publicAnnouncements(state,7),dailyRuns:state.agentDailyRuns.slice(-14)});
+        const state=runtime.store.read();return json(res,200,{companies:state.companies.filter(x=>!x.synthetic).map(x=>({id:x.id,name:x.name,region:x.region,website:x.website||''})),pendingFeedback:communityAgentQueue(state),officialReferenceCount:state.officialReferences.length,officialRelationCount:state.officialRelations.length,latestAnnouncements:publicAnnouncements(state,7),dailyRuns:state.agentDailyRuns.slice(-14)});
+      }
+      if (req.method==='POST' && url.pathname==='/api/community-agent/official-references') {
+        if (!runtime.communityAgentToken || !safeEqual(authToken(req),runtime.communityAgentToken)) return json(res,403,{error:'需要社区运营 Agent 凭据'});
+        const input=await bodyJson(req);const out=await runtime.store.transaction(s=>upsertOfficialReferences(s,input));return json(res,200,{savedCount:out.savedCount});
       }
       if (req.method==='POST' && url.pathname==='/api/community-agent/official-relations') {
         if (!runtime.communityAgentToken || !safeEqual(authToken(req),runtime.communityAgentToken)) return json(res,403,{error:'需要社区运营 Agent 凭据'});

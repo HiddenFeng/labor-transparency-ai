@@ -3,7 +3,7 @@ import {VERSION, emptyState, seedState, upgradeState, nowIso} from '../../sites-
 const COLLECTIONS = [
   'companies','contributions','reviews','exportReviews','ballots','flags',
   'advisoryCases','advisoryAdvice','advisoryDailyReports','companyResearch',
-  'officialRelations','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns'
+  'officialReferences','officialRelations','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns'
 ];
 
 function sleep(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }

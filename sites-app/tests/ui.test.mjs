@@ -56,7 +56,7 @@ test('company UI exposes usable dossier detail while keeping evidence tiers sepa
   assert.match(js,/查看自动收集的公开来源候选/);
   assert.match(js,/researchPollRemaining=36/);
   assert.match(js,/公开资料会自动开始整理，你不用再做设置/);
-  assert.match(js,/官方来源确认的公司 \/ 品牌 \/ 产品关系/);
+  assert.match(js,/官方登记参考/);assert.match(js,/官方来源确认的公司 \/ 品牌 \/ 产品关系/);
   assert.doesNotMatch(js,/\.records\b/);
   assert.match(css,/\.research-details/);
   assert.match(css,/\.research-preview-list/);

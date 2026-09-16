@@ -24,10 +24,11 @@ Create `history/daily/YYYY-MM-DD/` if missing. Use Beijing calendar date.
 
 1. Read current Agent state:
    `python3 scripts/community_agent/community_api.py state`
-2. Run the approved official relation collectors:
+2. Run the approved official reference/relation collectors:
    - China NMPA UDI: `python3 scripts/community_agent/nmpa_udi_daily.py --publish --output history/daily/YYYY-MM-DD/nmpa-udi.json`
    - EU/EEA TED procurement: `python3 scripts/community_agent/eu_ted_daily.py --publish --output history/daily/YYYY-MM-DD/eu-ted.json`
-   Each collector is fail-closed and only stores exact scoped matches to companies already present in the project. Zero eligible companies or zero matches is a valid completed result.
+   - Japan NTA Corporate Number daily delta: `python3 scripts/community_agent/jp_nta_daily.py --publish --output history/daily/YYYY-MM-DD/jp-nta.json`
+   Each collector is fail-closed and only stores exact scoped matches to companies already present in the project. The Japan daily-delta result is `OFFICIAL_SOURCE_REFERENCE`, not a machine legal-identity upgrade. Zero eligible companies or zero matches is a valid completed result.
 3. Read pending user feedback:
    `python3 scripts/community_agent/community_api.py queue`
 4. For each pending suggestion / appeal / correction / source request:
@@ -40,7 +41,7 @@ Create `history/daily/YYYY-MM-DD/` if missing. Use Beijing calendar date.
 7. Create/update today's public announcement. It must say only what actually changed today, in simple language, and every external factual/data-source item must have a source URL. Use `community_api.py announce <json-file>`.
 8. Write `history/daily/YYYY-MM-DD/18-operations.md` with:
    - source collections attempted and result counts;
-   - official relations added/updated;
+   - official references/relations added/updated;
    - feedback handled (IDs/statuses only, no private message text);
    - code/data fixes actually completed;
    - tests/evidence;

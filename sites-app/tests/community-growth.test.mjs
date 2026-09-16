@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  emptyState,addCompany,addContribution,upsertOfficialRelations,publicOfficialRelations,
+  emptyState,addCompany,addContribution,upsertOfficialReferences,publicOfficialReferences,upsertOfficialRelations,publicOfficialRelations,
   addCommunityFeedback,listOwnCommunityFeedback,communityAgentQueue,respondCommunityFeedback,
   addPublicAnnouncement,publicAnnouncements,recordAgentDailyRun
 } from '../src/domain.mjs';
@@ -25,6 +25,15 @@ test('official source relations are deterministic, idempotent and separate from 
   const rows=publicOfficialRelations(state,company.id);assert.equal(rows.length,1);assert.equal(rows[0].tier,'OFFICIAL_SOURCE_RELATION');assert.equal(rows[0].object.name,'PTCA球囊扩张导管');assert.equal(rows[0].source.sourceOfRecord,'国家药品监督管理局医疗器械唯一标识数据库');
   addContribution(state,{companyId:company.id,kind:'brand',title:'社区品牌线索',description:'社区贡献的品牌线索。',scope:'',periodStart:'',periodEnd:'',direction:'neutral',dimension:'other',productId:'',brandId:'',relationType:'',relation:'',category:'品牌',sources:[],public:true,consent:true,shareConsent:false,rights:'own_summary',rightsNote:'',creditName:''},'owner-b');
   const detail=publicCompanyDetail(state,company.id);assert.equal(detail.officialRelations.length,1);assert.equal(detail.contributions.brands.length,1);assert.equal(detail.officialRelations[0].tier,'OFFICIAL_SOURCE_RELATION');assert.equal(detail.contributions.brands[0].evidence,'E0');
+});
+
+test('official registry references are deterministic and separate from identity engine and relationship lanes',()=>{
+  const {state,company}=stateWithCompany();
+  const payload={items:[{companyId:company.id,provider:'JP_NTA_CORPORATE_NUMBER',jurisdiction:'JP',referenceType:'LEGAL_ENTITY_REGISTRY',sourceRecordId:'1234567890123',sourceOfRecord:'国税庁法人番号公表サイト',sourceUrl:'https://www.houjin-bangou.nta.go.jp/download/sabun/index.html',sourceDate:'2026-09-16',confidence:'MEDIUM',bindingBasis:'EXACT_NAME_IN_OFFICIAL_DAILY_DELTA_NOT_NATIONAL_UNIQUENESS',scope:'日次差分中的精确法人名称匹配。',caveat:'日次差分不是全国全量唯一性检索，因此不自动升级法律主体身份，也不支持劳动或产品质量结论。',fields:{corporateNumber:'1234567890123',legalName:'苏州鼎科医疗技术股份有限公司',prefectureName:'東京都'}}]};
+  const first=upsertOfficialReferences(state,payload);const second=upsertOfficialReferences(state,payload);
+  assert.equal(first.savedCount,1);assert.equal(second.savedCount,1);assert.equal(state.officialReferences.length,1);assert.equal(state.officialRelations.length,0);
+  const refs=publicOfficialReferences(state,company.id);assert.equal(refs.length,1);assert.equal(refs[0].tier,'OFFICIAL_SOURCE_REFERENCE');assert.equal(refs[0].fields.corporateNumber,'1234567890123');assert.equal(refs[0].bindingBasis,'EXACT_NAME_IN_OFFICIAL_DAILY_DELTA_NOT_NATIONAL_UNIQUENESS');
+  const detail=publicCompanyDetail(state,company.id);assert.equal(detail.officialReferences.length,1);assert.equal(detail.officialRelations.length,0);assert.equal(detail.research,null);
 });
 
 test('community feedback is private to owner until agent response and never enters public announcement automatically',()=>{

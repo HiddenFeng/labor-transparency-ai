@@ -32,11 +32,15 @@ Read pending feedback:
 
 `python3 scripts/community_agent/community_api.py queue`
 
-Collect/publish current official relation matches:
+Collect/publish current official reference/relation matches:
 
 `python3 scripts/community_agent/nmpa_udi_daily.py --publish --output history/daily/YYYY-MM-DD/nmpa-udi.json`
 
 `python3 scripts/community_agent/eu_ted_daily.py --publish --output history/daily/YYYY-MM-DD/eu-ted.json`
+
+`python3 scripts/community_agent/jp_nta_daily.py --publish --output history/daily/YYYY-MM-DD/jp-nta.json`
+
+The Japan NTA daily-delta collector writes `OFFICIAL_SOURCE_REFERENCE`, not a machine legal-identity upgrade. When there are no Japan company spaces, it performs zero NTA source requests.
 
 Respond to one feedback item:
 
@@ -59,6 +63,7 @@ All local daily evidence goes under:
 Expected files when applicable:
 - `nmpa-udi.json`
 - `eu-ted.json`
+- `jp-nta.json`
 - `announcement.json`
 - `run-18.json`
 - `18-operations.md`

@@ -1,4 +1,4 @@
-import {publicContribution,publicOfficialRelations} from './domain.mjs';
+import {publicContribution,publicOfficialReferences,publicOfficialRelations} from './domain.mjs';
 import {publicCompanyResearch} from './research-status.mjs';
 
 function groupedContributions(state,companyId){
@@ -26,17 +26,19 @@ export function publicCompanyDetail(state,companyId){
   const researchRecord=(state?.companyResearch||[]).find(x=>x.companyId===companyId);
   const research=publicCompanyResearch(researchRecord);
   const contributions=groupedContributions(state,companyId);
+  const officialReferences=publicOfficialReferences(state,companyId);
   const officialRelations=publicOfficialRelations(state,companyId);
   const contributionCount=Object.values(contributions).reduce((n,rows)=>n+rows.length,0);
-  const updatedAt=[research?.collectedAt,company.updatedAt,company.createdAt,...officialRelations.map(x=>x.updatedAt),...Object.values(contributions).flat().map(x=>x.updatedAt||x.createdAt)].filter(Boolean).sort().at(-1)||null;
+  const updatedAt=[research?.collectedAt,company.updatedAt,company.createdAt,...officialReferences.map(x=>x.updatedAt),...officialRelations.map(x=>x.updatedAt),...Object.values(contributions).flat().map(x=>x.updatedAt||x.createdAt)].filter(Boolean).sort().at(-1)||null;
   return {
     company:{id:company.id,name:company.name,region:company.region,website:company.website||'',synthetic:Boolean(company.synthetic),createdAt:company.createdAt||null},
     community:{positive,negative,participants:ballots.length,boundary:'社区反馈只表示参与者的正向/负向感受，不改变机器资料、来源信号或贡献证据等级。'},
     research,
+    officialReferences,
     officialRelations,
     contributions,
     contributionCount,
     updatedAt,
-    boundary:'公司详情把社区反馈、机器参考事实、官方来源关系、开放知识上下文、公共记录事件候选和用户贡献分层展示；任一层都不能自动扩张成公司整体好坏、违法或产品质量结论。'
+    boundary:'公司详情把社区反馈、机器参考事实、官方登记参考、官方来源关系、开放知识上下文、公共记录事件候选和用户贡献分层展示；任一层都不能自动扩张成公司整体好坏、违法或产品质量结论。'
   };
 }
