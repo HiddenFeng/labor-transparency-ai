@@ -77,9 +77,15 @@ Announcements must not imply that a source record proves company quality, legali
 
 ## LocalAgentRuntime bindings
 
-Pending installation in this phase. After creation record:
+Installed 2026-09-16. The initial conversation messages only bound/read the role instructions; they did not execute scheduled daily collection. Caller-managed direct slots were explicitly released after Runtime discovered each route, without reading or monitoring remote answers.
 
-- 18:00 conversation URL: `PENDING`
-- 18:00 fixed-run ID: `PENDING`
-- 19:00 conversation URL: `PENDING`
-- 19:00 fixed-run ID: `PENDING`
+- 18:00 conversation URL: `https://chatgpt.com/c/6aaa3b01-bf7c-83ea-a3ae-2a33b1e06de3`
+- 18:00 fixed-run ID: `fx_0ae10ddc598947738441`
+- 18:00 first scheduled trigger: `2026-09-16T10:00:00.479Z` = `2026-09-16 18:00:00.479 Asia/Shanghai`
+- 19:00 conversation URL: `https://chatgpt.com/c/6aaa3bc2-5d90-83ea-ac3d-b28f397abdc0`
+- 19:00 fixed-run ID: `fx_061391ba3d304dea8a8d`
+- 19:00 first scheduled trigger: `2026-09-16T11:00:00.495Z` = `2026-09-16 19:00:00.495 Asia/Shanghai`
+- recurrence: `86400` seconds for both tasks.
+- Runtime task status at installation: `READY / enabled=true`.
+
+Two initially-created fixed tasks that rounded the first delay down by less than one second were explicitly stopped before any scheduled occurrence; the IDs above are the corrected ceil-to-next-second tasks and are the only active daily bindings for this feature.
