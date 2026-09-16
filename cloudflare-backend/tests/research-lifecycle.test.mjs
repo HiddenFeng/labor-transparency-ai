@@ -99,7 +99,7 @@ test('scheduler prioritizes queued work, skips fresh completed work, and recover
     {id:'stale',name:'Stale',synthetic:false,createdAt:'2026-09-15T00:00:00Z'}
   ],companyResearch:[
     {id:'research_queued',companyId:'queued',status:'QUEUED',queuedAt:'2026-09-16T01:50:00Z'},
-    {id:'research_fresh',companyId:'fresh',status:'AUTO_READY',collectedAt:'2026-09-16T01:00:00Z',intelligence:{policyVersion:'auto-intelligence-0.8.2',fingerprint:'fresh',facts:[],signals:[],conflicts:[],coverage:{}}},
+    {id:'research_fresh',companyId:'fresh',status:'AUTO_READY',collectedAt:'2026-09-16T01:00:00Z',intelligence:{policyVersion:'auto-intelligence-0.8.3',fingerprint:'fresh',facts:[],signals:[],conflicts:[],coverage:{}}},
     {id:'research_stale',companyId:'stale',status:'COLLECTING',startedAt:'2026-09-16T01:30:00Z',queuedAt:'2026-09-16T01:20:00Z'}
   ]};
   const selected=selectResearchCompanies(state,3,{now});

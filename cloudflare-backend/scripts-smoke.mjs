@@ -36,7 +36,7 @@ async function req(path,{method='GET',body,token,sendCsrf=true,requestOrigin=ori
 }
 
 const cfg=await req('/api/config');
-assert.equal(cfg.status,200);assert.equal(cfg.data.version,'0.8.2-rc.1');assert.equal(cfg.data.mode,'CLOUDFLARE_WORKER_D1');assert.equal(cfg.data.capabilities.unattendedCompanyIntelligence,true);assert.ok(cookie.startsWith('ltp_session='));assert.equal(cfg.headers.get('access-control-allow-origin'),origin);csrf=cfg.data.csrfToken;assert.match(csrf,/^[a-f0-9]{64}$/);
+assert.equal(cfg.status,200);assert.equal(cfg.data.version,'0.8.3-rc.1');assert.equal(cfg.data.mode,'CLOUDFLARE_WORKER_D1');assert.equal(cfg.data.capabilities.unattendedCompanyIntelligence,true);assert.ok(cookie.startsWith('ltp_session='));assert.equal(cfg.headers.get('access-control-allow-origin'),origin);csrf=cfg.data.csrfToken;assert.match(csrf,/^[a-f0-9]{64}$/);
 const researchStatus=await req('/api/research/status');assert.equal(researchStatus.status,200);assert.equal(researchStatus.data.companiesTracked,0);assert.match(researchStatus.data.boundary,/候选/);
 const researchHealth=await req('/api/research/health');assert.equal(researchHealth.status,200);assert.equal(researchHealth.data.unattendedOperation,true);assert.equal(researchHealth.data.selfHealing.manualOperatorRequired,false);assert.equal(researchHealth.data.runtime.companyResearchQueue,false);const baselineRealCompanies=Number(researchHealth.data.realCompanies||0);
 const researchDenied=await req('/api/research-agent/queue',{token:'wrong-research-token'});assert.equal(researchDenied.status,403);
@@ -61,6 +61,8 @@ const queuedHealth=await req('/api/research/health');assert.equal(queuedHealth.s
 
 const contribution=await req('/api/contributions',{method:'POST',body:{companyId,kind:'labour_claim',title:'示例工时记录',description:'用于验证独立部署链路的合成公开线索。',scope:'示例岗位',periodStart:'2026-01-01',periodEnd:'2026-12-31',direction:'negative',dimension:'hours',productId:'',relation:'',category:'',sources:[{url:'https://example.org/evidence',title:'合成公开来源',type:'public_record',publishedAt:'2026-01-01',supports:'仅用于本地自动化测试的合成范围'}],public:true,consent:true,shareConsent:true,rights:'own_summary',rightsNote:'',creditName:'自动化测试'}});
 assert.equal(contribution.status,200);assert.equal(contribution.data.item.evidence,'E0');const cid=contribution.data.item.id;const version=contribution.data.item.version;
+const companyDetail=await req(`/api/companies/${companyId}`);assert.equal(companyDetail.status,200);assert.equal(companyDetail.data.company.id,companyId);assert.equal(companyDetail.data.community.negative,1);assert.equal(companyDetail.data.community.participants,1);assert.equal(companyDetail.data.research.status,'QUEUED');assert.ok(companyDetail.data.contributions.labourClaims.some(x=>x.id===cid));const detailJson=JSON.stringify(companyDetail.data);assert.equal(detailJson.includes('owner'),false);assert.equal(detailJson.includes('rightsNote'),false);assert.match(companyDetail.data.boundary,/社区反馈/);
+const missingDetail=await req('/api/companies/co_missing');assert.equal(missingDetail.status,404);
 
 const reviewQueue=await req('/api/review-queue',{token:reviewToken});assert.equal(reviewQueue.status,200);assert.ok(reviewQueue.data.items.some(x=>x.id===cid));
 const review=await req(`/api/contributions/${cid}/review`,{method:'POST',token:reviewToken,body:{version,decision:'approve',evidence:'E3',rationale:'本地自动化测试核对合成来源、范围与日期，不外推公司整体。',scopeChecked:true,authenticityChecked:true,sourceIds:['S1'],effective:false,decisionReference:''}});

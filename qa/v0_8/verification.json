@@ -1,7 +1,7 @@
 {
-  "version": "0.8.2-rc.1",
+  "version": "0.8.3-rc.1",
   "date": "2026-09-16",
-  "status": "PASS_PRODUCTION_UNATTENDED_COMPANY_INTELLIGENCE_V082",
+  "status": "V083_USABLE_COMPANY_DOSSIER_LOCAL_LIVE_VERIFIED_PRODUCTION_PENDING",
   "git": {
     "branch": "main",
     "public_repository": "https://github.com/HiddenFeng/labor-transparency-ai",
@@ -554,8 +554,8 @@
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
   "remaining_human_only": [],
-  "next_gate": "Expand autonomous source coverage and evidence-scoped company dossier depth only through source-specific deterministic adapters; continue observing real production interactions and repair regressions, while preserving fail-closed identity/legal boundaries.",
-  "strongest_claim": "v0.8.2-rc.1 is production-deployed and externally verified for unattended company intelligence: normal user-created companies are queued, collected, clustered, trust-classified, refreshed/retracted and self-recovered without a named reviewer; only narrowly scoped machine-verifiable reference facts and bounded source signals are published, ambiguity remains candidate/unknown, and real production interaction/migration evidence is preserved.",
+  "next_gate": "Freeze v0.8.3 candidate, pass GitHub candidate CI, deploy the exact clean SHA to canonical Cloudflare/Vercel, observe the existing real Xingyu company self-migrate to auto-intelligence-0.8.3 without private run/review while preserving its real ballot, validate production dossier/browser behavior, then pass GitHub production dossier E2E and clean only QA rows.",
+  "strongest_claim": "v0.8.3-rc.1 is locally and live-source verified, not yet production-accepted: it adds region-applicable unattended research, multilingual bounded open context, evidence-scoped public-record timelines, a safe company-detail API and readable dossier UI while preserving strict legal-identity boundaries and raw-record privacy.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -936,5 +936,105 @@
       "Optional token/subscription sources remain fail-closed until license/access conditions are satisfied.",
       "Mainland-China stable SLA is not claimed."
     ]
+  },
+  "usable_company_dossiers_v083": {
+    "status": "LOCAL_FULL_AND_LIVE_SOURCE_VERIFIED_PRODUCTION_PENDING",
+    "change_record": "docs/v0_8/CHANGE-v0.8.3-usable-company-dossiers.md",
+    "runtime_version": "0.8.3-rc.1",
+    "policy_version": "auto-intelligence-0.8.3",
+    "public_tiers": [
+      "MACHINE_VERIFIED_REFERENCE",
+      "OPEN_KNOWLEDGE_CONTEXT",
+      "SOURCE_SIGNAL",
+      "SOURCE_EVENT_CANDIDATE",
+      "CONTEXT_CANDIDATE"
+    ],
+    "dossier_statuses": [
+      "REFERENCE_READY",
+      "CONTEXT_READY",
+      "SIGNALS_READY",
+      "LIMITED_DATA"
+    ],
+    "region_applicability": {
+      "global": [
+        "GLEIF",
+        "WIKIDATA"
+      ],
+      "us_only": [
+        "SEC_EDGAR",
+        "NLRB_CASES",
+        "OSHA_ENFORCEMENT",
+        "DOL_WHD",
+        "FMCS_F7",
+        "NLRB_VOLUNTARY_RECOGNITION",
+        "FMCS_WORK_STOPPAGES",
+        "OLMS_LM20",
+        "USA_SPENDING"
+      ],
+      "non_us_semantics": "US-only providers become NOT_APPLICABLE, not success/error/absence."
+    },
+    "public_company_detail": {
+      "endpoint": "GET /api/companies/:id",
+      "deep_link": "#company/<id>",
+      "sections": [
+        "community",
+        "automatic evidence tiers",
+        "open context",
+        "public-record timeline",
+        "gaps/unknowns",
+        "source provenance",
+        "public contributions",
+        "freshness"
+      ],
+      "raw_provider_records_public": false
+    },
+    "deterministic_tests": {
+      "cloudflare_autonomy_queue_dossier": "PASS_24",
+      "sites_api_ui": "PASS_21",
+      "python_full": "PASS_291",
+      "public_smoke_contract": "PASS_6",
+      "worker_d1_http": "PASS",
+      "frontend_privacy": "PASS_0_FORBIDDEN_MATCHES"
+    },
+    "live_source_starbucks": {
+      "status": "PASS_LIVE_AUTONOMOUS_COMPANY_DOSSIER",
+      "research_status": "AUTO_READY_WITH_SOURCE_GAPS",
+      "dossier_status": "REFERENCE_READY",
+      "machine_verified_facts": 6,
+      "source_signals": 4,
+      "public_event_candidates": 24,
+      "identity_status": "AUTO_BOUND_REFERENCE",
+      "public_dossier_endpoint": true,
+      "restart_persistence": true,
+      "source_errors": {
+        "WIKIDATA": "SOURCE_TIMEOUT",
+        "SEC_EDGAR": "SOURCE_ACCESS_DENIED",
+        "USA_SPENDING": "SOURCE_NETWORK_OR_RUNTIME_ERROR"
+      }
+    },
+    "live_non_us_probe": {
+      "input_name": "星宇股份有限公司",
+      "region": "中国",
+      "legal_identity_status": "NO_VERIFIED_REFERENCE",
+      "dossier_status": "CONTEXT_READY",
+      "open_context_reference": "Q106240022",
+      "open_context_label": "常州星宇车灯股份有限公司",
+      "binding_basis": "UNIQUE_CORPORATE_SHORTHAND_AND_COUNTRY",
+      "confidence": "LOW_MEDIUM",
+      "applicable_source_success": 2,
+      "source_errors": 0,
+      "sources_not_applicable": 9,
+      "legal_identity_upgraded": false
+    },
+    "browser_local": {
+      "company_detail_deep_link": "PASS",
+      "real_source_xingyu_context": "PASS",
+      "community_evidence_separation": "PASS",
+      "console_errors": 0,
+      "network_errors": 0,
+      "page_errors": 0,
+      "mobile_browser_claim": "NOT_YET_PRODUCTION_VERIFIED_RESPONSIVE_CONTRACT_ONLY"
+    },
+    "production_gate": "PENDING_CANDIDATE_CI_CLEAN_DEPLOY_EXISTING_REAL_RECORD_MIGRATION_BROWSER_E2E_CLEANUP_FINAL_CI_SMOKE"
   }
 }

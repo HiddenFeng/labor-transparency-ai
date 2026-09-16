@@ -259,11 +259,21 @@
   </section>
 </main>
 
+<dialog id="company-detail-dialog" class="company-detail-dialog" aria-labelledby="company-detail-title">
+  <div class="company-detail-shell">
+    <header class="company-detail-header">
+      <div><p class="section-kicker">公司资料</p><h2 id="company-detail-title">正在加载…</h2><p id="company-detail-subtitle" class="meta"></p></div>
+      <button type="button" class="dialog-close" data-company-close aria-label="关闭公司资料">关闭</button>
+    </header>
+    <div id="company-detail-content" class="company-detail-content" aria-live="polite"></div>
+  </div>
+</dialog>
+
 <div id="toast" role="status" aria-live="polite"></div>
 <footer class="site-footer">
   <div><strong>劳动透明计划</strong><p>非商业公益用途 · AI 制作 / AI Agent 管理 · 不替代工会、律师、法院或监管机构。</p></div>
   <div class="footer-links"><button data-tab="method">我们怎么判断信息</button><button data-tab="resources">外部权益资源</button><button data-tab="mine">我的提交</button><button data-tab="review">可选证据审计</button></div>
-  <p class="footer-version"><span id="runtime-status">正在连接服务…</span><br>当前 v0.8.2 为独立前后端 + Queue 无人值守公司情报。</p>
+  <p class="footer-version"><span id="runtime-status">正在连接服务…</span><br>当前 v0.8.3 为无人值守公司资料页 + 地区适配研究 + Queue 自动更新。</p>
 </footer>
 </body>
 </html>

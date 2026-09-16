@@ -27,19 +27,31 @@ test('responsive/reduced-motion CSS is present for public-facing interactions',a
   assert.match(css,/:focus-visible/);
   assert.match(css,/\.issue-grid/);
   assert.match(css,/\.story-rail/);
+  assert.match(css,/\.company-detail-dialog/);
+  assert.match(css,/\.company-detail-top\{grid-template-columns:1fr\}/);
 });
 
-test('company UI exposes automatic research lifecycle and safe candidate-detail presentation',async()=>{
+test('company UI exposes usable dossier detail while keeping evidence tiers separate',async()=>{
+  const html=await fs.readFile(new URL('../public/index.html',import.meta.url),'utf8');
   const js=await fs.readFile(new URL('../public/app.js',import.meta.url),'utf8');
   const css=await fs.readFile(new URL('../public/styles.css',import.meta.url),'utf8');
+  assert.match(html,/id="company-detail-dialog"/);
   assert.match(js,/已进入自动采集队列/);
   assert.match(js,/正在自动采集公开来源/);
   assert.match(js,/自动资料已更新/);
+  assert.match(js,/查看完整资料/);
+  assert.match(js,/当前资料概览/);
+  assert.match(js,/社区声音/);
   assert.match(js,/机器可验证的窄范围参考事实/);
+  assert.match(js,/开放知识上下文（不是工商登记）/);
   assert.match(js,/来源信号（不是公司结论）/);
+  assert.match(js,/公开记录时间线（事件候选）/);
   assert.match(js,/上下文候选（不自动当事实）/);
+  assert.match(js,/当前资料缺口 \/ 未知/);
   assert.match(js,/自动候选聚类/);
-  assert.match(js,/系统自动分流歧义，不依赖指定人员审核/);
+  assert.match(js,/地区不适用/);
+  assert.match(js,/root\.append\(text\('p',detail\.boundary,'detail-boundary'\)\)/);
+  assert.match(js,/\/api\/companies\/\$\{encodeURIComponent\(companyId\)\}/);
   assert.match(js,/\/api\/research\/health/);
   assert.match(js,/查看自动收集的公开来源候选/);
   assert.match(js,/researchPollRemaining=36/);
@@ -48,6 +60,8 @@ test('company UI exposes automatic research lifecycle and safe candidate-detail 
   assert.match(css,/\.research-details/);
   assert.match(css,/\.research-preview-list/);
   assert.match(css,/\.machine-intelligence/);
+  assert.match(css,/\.event-timeline/);
+  assert.match(css,/\.company-dossier-teaser/);
 });
 
 test('system demo records never enter the operational review queue',()=>{

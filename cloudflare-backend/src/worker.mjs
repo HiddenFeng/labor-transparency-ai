@@ -6,10 +6,11 @@ import {
   advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase
 } from '../../sites-app/src/domain.mjs';
 import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus,publicResearchHealth} from '../../sites-app/src/research-status.mjs';
+import {publicCompanyDetail} from '../../sites-app/src/company-dossier.mjs';
 import {D1StateStore} from './d1-store.mjs';
 import {collectCompanyResearch,selectResearchCompanies,mergeCompanyResearch,queueCompanyResearch,markCompanyResearchStarted,markCompanyResearchFailed,markCompanyResearchDeadLettered} from './company-research.mjs';
 
-const BACKEND_VERSION='0.8.2-rc.1';
+const BACKEND_VERSION='0.8.3-rc.1';
 const COOKIE='ltp_session';
 const BODY_LIMIT=96*1024;
 
@@ -234,6 +235,10 @@ async function handleApi(request,env){
   if(request.method==='GET'&&url.pathname==='/api/config') response=json(request,env,200,{version:BACKEND_VERSION,domainVersion:DOMAIN_VERSION,mode:'CLOUDFLARE_WORKER_D1',csrfToken:ctx.csrf,cookieSecure:String(env.LTP_COOKIE_SECURE||'true')!=='false',capabilities:{companies:true,ballots:true,contributions:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,scheduledAdvisory:true,automaticCompanyResearch:researchQueueEnabled(env),unattendedCompanyIntelligence:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导仅接收非敏感结构化问题；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
   else if(request.method==='GET'&&url.pathname==='/api/health') response=json(request,env,200,{status:'ok',version:BACKEND_VERSION,storage:'cloudflare-d1',scheduledAdvisory:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,anonymousAdvisory:true});
   else if(request.method==='GET'&&url.pathname==='/api/companies') response=json(request,env,200,{items:publicCompanyList(await store.read())});
+  else if(request.method==='GET'&&/^\/api\/companies\/[^/]+$/.test(url.pathname)){
+    const companyId=decodeURIComponent(url.pathname.split('/').at(-1));const detail=publicCompanyDetail(await store.read(),companyId);
+    response=detail?json(request,env,200,detail):json(request,env,404,{error:'公司空间不存在'});
+  }
   else if(request.method==='GET'&&url.pathname==='/api/research/coverage') response=json(request,env,200,companyResearchCoverage());
   else if(request.method==='GET'&&url.pathname==='/api/research/status') response=json(request,env,200,publicResearchStatus(await store.read()));
   else if(request.method==='GET'&&url.pathname==='/api/research/health'){

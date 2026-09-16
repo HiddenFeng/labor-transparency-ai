@@ -34,7 +34,7 @@ test('real HTTP contribution -> review -> redistribution -> correction -> persis
   const dataFile=path.join(dir,'state.json');
   let env=await start({dataFile});t.after(()=>env.server.listening&&env.server.close());
   const client=new Client(env.base);const cfg=await client.config();
-  assert.equal(cfg.version,'0.8.2-rc.1');assert.equal(cfg.capabilities.attachments,false);assert.equal(cfg.capabilities.privateSensitiveInfo,false);assert.equal(cfg.capabilities.anonymousAdvisory,true);
+  assert.equal(cfg.version,'0.8.3-rc.1');assert.equal(cfg.capabilities.attachments,false);assert.equal(cfg.capabilities.privateSensitiveInfo,false);assert.equal(cfg.capabilities.anonymousAdvisory,true);
   const researchHealth=await client.request('/api/research/health');assert.equal(researchHealth.status,200);assert.equal(researchHealth.data.status,'LOCAL_REFERENCE_MODE');assert.equal(researchHealth.data.unattendedOperation,true);assert.equal(researchHealth.data.runtime.companyResearchQueue,false);assert.equal(researchHealth.data.selfHealing.manualOperatorRequired,false);
 
   const company=await client.request('/api/companies',{method:'POST',body:{name:'HTTP示例公司',region:'示例地区',website:'https://example.org',consent:true}});
@@ -43,6 +43,8 @@ test('real HTTP contribution -> review -> redistribution -> correction -> persis
 
   const product=await client.request('/api/contributions',{method:'POST',body:{companyId:cid,kind:'product',title:'示例产品',description:'未独立核实的产品线索。',scope:'',periodStart:'',periodEnd:'',direction:'neutral',dimension:'other',productId:'',relation:'',category:'示例',sources:[],public:true,consent:true,shareConsent:false,rights:'reference_only',rightsNote:'',creditName:''}});
   assert.equal(product.status,200);assert.equal(product.data.item.evidence,'E0');
+  const companyDetail=await client.request(`/api/companies/${cid}`);assert.equal(companyDetail.status,200);assert.equal(companyDetail.data.company.id,cid);assert.equal(companyDetail.data.community.positive,1);assert.equal(companyDetail.data.community.participants,1);assert.equal(companyDetail.data.contributions.products.length,1);assert.equal(companyDetail.data.contributions.products[0].title,'示例产品');const detailJson=JSON.stringify(companyDetail.data);assert.equal(detailJson.includes('owner'),false);assert.equal(detailJson.includes('rightsNote'),false);assert.match(companyDetail.data.boundary,/社区反馈/);
+  const missingCompany=await client.request('/api/companies/co_missing');assert.equal(missingCompany.status,404);
   const publicList=await client.request('/api/contributions');assert.equal(publicList.status,200);assert.equal('rights' in publicList.data.items[0],false);assert.equal('owner' in publicList.data.items[0],false);
   const mine=await client.request('/api/contributions?mine=1');assert.equal(mine.status,200);assert.equal(mine.data.items[0].rights,'reference_only');
 

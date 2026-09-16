@@ -43,7 +43,7 @@ jobs:
           assert.equal(configResponse.status,200,'production config must be reachable');
           const config=await configResponse.json();
           assert.equal(config.mode,'CLOUDFLARE_WORKER_D1');
-          assert.equal(config.version,'0.8.2-rc.1');
+          assert.equal(config.version,'0.8.3-rc.1');
           assert.equal(config.capabilities?.automaticCompanyResearch,true);
           assert.equal(config.capabilities?.unattendedCompanyIntelligence,true);
           assert.equal(config.capabilities?.companyResearchQueue,true);
@@ -88,7 +88,11 @@ jobs:
           assert.ok(company.research.intelligence,'autonomous intelligence projection must exist');
           assert.ok(company.research.intelligence.coverage.machineVerifiedFacts>0,'Starbucks should produce at least one narrow machine-verified reference fact');
           assert.ok(company.research.intelligence.coverage.sourceSignals>0,'Starbucks should produce at least one bounded source signal');
+          assert.ok(company.research.intelligence.coverage.publicEventCandidates>0,'Starbucks should produce at least one evidence-scoped public-record event candidate');
           assert.equal(company.research.intelligence.identity.status,'AUTO_BOUND_REFERENCE','Starbucks US QA must satisfy the strict GLEIF name+country rule');
+          assert.equal(company.research.intelligence.policyVersion,'auto-intelligence-0.8.3');
+          assert.equal(company.research.intelligence.dossier?.status,'REFERENCE_READY','machine-bound Starbucks should expose a ready dossier summary');
+          assert.ok(Array.isArray(company.research.intelligence.timeline)&&company.research.intelligence.timeline.length>0,'public-safe event timeline must be present');
           assert.ok(Array.isArray(company.research.intelligence.clusters)&&company.research.intelligence.clusters.length>0,'autonomous candidate clusters must be public-safe and present');
           assert.ok(Array.isArray(company.research.providers)&&company.research.providers.length>=10);
           assert.ok(company.research.providers.some(x=>Array.isArray(x.previews)&&x.previews.length>0),'ordinary public projection must expose a safe candidate preview');
@@ -116,6 +120,15 @@ jobs:
           const afterBallotResponse=await fetch(`${origin}/api/companies`,{headers:{Origin:origin,Cookie:cookie,Accept:'application/json'}});assert.equal(afterBallotResponse.status,200);
           const afterBallot=(await afterBallotResponse.json()).items.find(x=>x.id===companyId);assert.equal(afterBallot.negative,1);assert.equal(afterBallot.participants,1);
 
+          const detailResponse=await fetch(`${origin}/api/companies/${companyId}`,{headers:{Origin:origin,Cookie:cookie,Accept:'application/json'}});
+          assert.equal(detailResponse.status,200,'public company dossier endpoint must be reachable');
+          const detail=await detailResponse.json();
+          assert.equal(detail.company?.id,companyId);assert.equal(detail.community?.negative,1);assert.equal(detail.community?.participants,1);
+          assert.equal(detail.research?.intelligence?.dossier?.status,'REFERENCE_READY');
+          assert.ok(detail.research?.intelligence?.timeline?.length>0,'company dossier must expose the safe event timeline');
+          assert.ok(Array.isArray(detail.contributions?.products));assert.ok(Array.isArray(detail.contributions?.labourClaims));
+          scan(detail);
+
           const result={
             status:'PASS_PRODUCTION_AUTONOMOUS_COMPANY_INTELLIGENCE_AND_INTERACTION',
             runId,
@@ -130,11 +143,14 @@ jobs:
             sourceErrorCount:company.research.sourceErrorCount,
             machineVerifiedFacts:company.research.intelligence.coverage.machineVerifiedFacts,
             sourceSignals:company.research.intelligence.coverage.sourceSignals,
+            publicEventCandidates:company.research.intelligence.coverage.publicEventCandidates,
+            dossierStatus:company.research.intelligence.dossier.status,
             identityStatus:company.research.intelligence.identity.status,
             clusterCount:company.research.intelligence.clusters.length,
             healthStatus:health.status,
             unattendedOperation:health.unattendedOperation,
             userInteraction:{negative:afterBallot.negative,participants:afterBallot.participants},
+            publicDossierEndpoint:true,
             publicProviderCount:company.research.providers.length,
             hasSafePreview:company.research.providers.some(x=>x.previews?.length),
             cleanupRequired:true,

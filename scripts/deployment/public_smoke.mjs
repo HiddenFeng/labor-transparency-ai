@@ -78,6 +78,21 @@ export function validateResearchHealth(label,response,data){
   validateSecurityHeaders(label,response);
 }
 
+export function validateCompanyDetail(label,response,data){
+  assert.equal(response.status,200,`${label}: HTTP status`);
+  assert.match(header(response,'content-type'),/application\/json/i,`${label}: content-type`);
+  assert.ok(data.company?.id&&data.company?.name,`${label}: public company identity container`);
+  assert.ok(data.community&&Number.isInteger(data.community.positive)&&Number.isInteger(data.community.negative),`${label}: community counts`);
+  assert.match(String(data.community?.boundary||''),/社区/,`${label}: community boundary`);
+  assert.ok(data.research?.intelligence?.dossier,`${label}: autonomous dossier projection`);
+  assert.equal(data.research.intelligence.policyVersion,'auto-intelligence-0.8.3',`${label}: current dossier policy`);
+  assert.ok(['REFERENCE_READY','CONTEXT_READY','SIGNALS_READY','LIMITED_DATA'].includes(data.research.intelligence.dossier.status),`${label}: dossier status`);
+  assert.ok(data.contributions&&Array.isArray(data.contributions.products)&&Array.isArray(data.contributions.labourClaims),`${label}: grouped public contributions`);
+  const raw=JSON.stringify(data);for(const forbidden of ['\"owner\"','\"receiptHash\"','\"rightsNote\"','\"records\"','\"sampleRecord\"'])assert.equal(raw.includes(forbidden),false,`${label}: forbidden public field ${forbidden}`);
+  assert.match(String(data.boundary||''),/公司详情/,`${label}: dossier boundary`);
+  validateSecurityHeaders(label,response);
+}
+
 async function request(label,url,options={}){
   let lastError;
   for(let attempt=1;attempt<=3;attempt++){
@@ -134,6 +149,9 @@ export async function runPublicSmoke(env=process.env){
   const primaryHealth=await getJson('primary health',`${primaryOrigin}/api/health`,validateHealth);
   await getJson('primary config',`${primaryOrigin}/api/config`,validateConfig);
   const primaryResearchHealth=await getJson('primary research health',`${primaryOrigin}/api/research/health`,validateResearchHealth);
+  const primaryCompanies=await getJson('primary companies',`${primaryOrigin}/api/companies`,(label,response,data)=>{assert.equal(response.status,200,`${label}: HTTP status`);assert.ok(Array.isArray(data.items),`${label}: items`);validateSecurityHeaders(label,response);});
+  const realCompany=primaryCompanies.items.find(x=>!x.synthetic);
+  if(realCompany) await getJson('primary company dossier',`${primaryOrigin}/api/companies/${encodeURIComponent(realCompany.id)}`,validateCompanyDetail);
 
   await getHtml('vercel fallback root',`${vercelOrigin}/`);
   const vercelHealth=await getJson('vercel fallback health',`${vercelOrigin}/api/health`,validateHealth);

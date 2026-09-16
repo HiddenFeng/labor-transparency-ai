@@ -11,6 +11,7 @@ import {
 } from './domain.mjs';
 import {FileStore} from './storage.mjs';
 import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus,publicResearchHealth} from './research-status.mjs';
+import {publicCompanyDetail} from './company-dossier.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.resolve(__dirname,'../public');
@@ -108,6 +109,7 @@ export async function createAppServer(options={}){
       if (req.method==='GET' && url.pathname==='/api/config') return json(res,200,{version:VERSION,mode:'SITES_READY_LOCAL',csrfToken:csrf,cookieSecure:runtime.secureCookie,capabilities:{companies:true,ballots:true,contributions:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,automaticCompanyResearch:false,scheduledCompanyResearch:false,attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导仅接收非敏感结构化问题；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
       if (req.method==='GET' && url.pathname==='/api/health') return json(res,200,{status:'ok',version:VERSION,storage:'local-file-adapter',attachments:false,anonymousAdvisory:true});
       if (req.method==='GET' && url.pathname==='/api/companies') return json(res,200,{items:publicCompanyList(runtime.store.read())});
+      if (req.method==='GET' && /^\/api\/companies\/[^/]+$/.test(url.pathname)) { const companyId=decodeURIComponent(url.pathname.split('/').at(-1)); const detail=publicCompanyDetail(runtime.store.read(),companyId); return detail?json(res,200,detail):json(res,404,{error:'公司空间不存在'}); }
       if (req.method==='GET' && url.pathname==='/api/research/coverage') return json(res,200,companyResearchCoverage());
       if (req.method==='GET' && url.pathname==='/api/research/status') return json(res,200,publicResearchStatus(runtime.store.read()));
       if (req.method==='GET' && url.pathname==='/api/research/health') { const health=publicResearchHealth(runtime.store.read()); return json(res,200,{...health,status:'LOCAL_REFERENCE_MODE',runtime:{companyResearchQueue:false,scheduledFallback:false},selfHealing:{...health.selfHealing,queue:false,scheduledReenqueue:false}}); }

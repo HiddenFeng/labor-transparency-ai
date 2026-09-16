@@ -1,4 +1,4 @@
-import {buildAutonomousIntelligence,AUTONOMOUS_INTELLIGENCE_POLICY_VERSION} from '../../sites-app/src/autonomous-intelligence.mjs';
+import {buildAutonomousIntelligence,AUTONOMOUS_INTELLIGENCE_POLICY_VERSION,countryCode} from '../../sites-app/src/autonomous-intelligence.mjs';
 
 const UA='LaborTransparencyPublicInterest/0.8.1 (+https://github.com/HiddenFeng/labor-transparency-ai)';
 const MAX_BODY=2_000_000;
@@ -22,6 +22,49 @@ function sqlLit(v){return `'${String(v||'').replaceAll("'","''")}'`;}
 function cleanCompanyQuery(name){
   const s=String(name||'').replace(/\b(corporation|corp\.?|incorporated|inc\.?|llc|ltd\.?|limited|company|co\.?)\b/gi,' ').replace(/\s+/g,' ').trim();
   return s.length>=2?s:String(name||'');
+}
+function companySearchVariants(name){
+  const original=String(name||'').normalize('NFKC').replace(/\s+/g,' ').trim();
+  const variants=[original];
+  const corporateShorthand=original
+    .replace(/集团股份有限公司$/u,'集团股份')
+    .replace(/股份有限公司$/u,'股份')
+    .replace(/有限责任公司$/u,'有限责任')
+    .trim();
+  const suffixStripped=original
+    .replace(/(?:集团)?股份有限公司$/u,'')
+    .replace(/有限责任公司$/u,'')
+    .replace(/有限公司$/u,'')
+    .replace(/股份公司$/u,'')
+    .replace(/集团有限公司$/u,'')
+    .replace(/株式会社$/u,'')
+    .replace(/주식회사$/u,'')
+    .trim();
+  const englishStripped=cleanCompanyQuery(suffixStripped);
+  for(const v of [corporateShorthand,suffixStripped,englishStripped])if(v.length>=2&&!variants.some(x=>norm(x)===norm(v)))variants.push(v);
+  return variants.slice(0,4);
+}
+function wikidataLanguages(company){
+  const code=countryCode(company?.region);
+  const primary=({CN:'zh',HK:'zh',TW:'zh',JP:'ja',KR:'ko',DE:'de',FR:'fr',NL:'nl',BR:'pt',MX:'es'})[code]||'en';
+  return primary==='en'?['en']: [primary,'en'];
+}
+function entityValues(entity,property){
+  return (entity?.claims?.[property]||[]).map(x=>x?.mainsnak?.datavalue?.value).filter(x=>x!==undefined&&x!==null);
+}
+function entityItemIds(entity,property){return entityValues(entity,property).map(x=>x&&typeof x==='object'?x.id:null).filter(Boolean);}
+function entityString(entity,property){return entityValues(entity,property).find(x=>typeof x==='string')||'';}
+function entityTime(entity,property){
+  const v=entityValues(entity,property).find(x=>x&&typeof x==='object'&&x.time);if(!v)return '';
+  const m=String(v.time).match(/^\+?(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);if(!m)return '';
+  return [m[1],m[2]&&m[2]!=='00'?m[2]:null,m[3]&&m[3]!=='00'?m[3]:null].filter(Boolean).join('-');
+}
+function languageValue(map,languages){for(const lang of [...languages,'zh','en'])if(map?.[lang]?.value)return boundedText(map[lang].value,220);return boundedText(Object.values(map||{})[0]?.value,220);}
+function labelForId(labels,id,languages){const e=labels?.[id];return languageValue(e?.labels,languages)||id;}
+function httpsUrl(value){try{const u=new URL(String(value||''));return u.protocol==='https:'?u.href:'';}catch{return '';}}
+function wikipediaUrl(entity,languages){
+  for(const lang of [...languages,'zh','en']){const site=`${lang}wiki`;const title=entity?.sitelinks?.[site]?.title;if(title)return `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title.replaceAll(' ','_'))}`;}
+  return '';
 }
 function boundedText(v,max=500){return String(v??'').slice(0,max);}
 function candidate(provider,externalId,label,extra={}){return {provider,externalId:boundedText(externalId,300),label:boundedText(label,300),...extra};}
@@ -60,8 +103,39 @@ async function gleif(fetchImpl,company){
   return rows.slice(0,5).map(r=>candidate('GLEIF',r?.attributes?.lei||r?.id,r?.attributes?.entity?.legalName?.name||r?.id,{region:boundedText(r?.attributes?.entity?.legalAddress?.country,8),jurisdiction:boundedText(r?.attributes?.entity?.jurisdiction,40),entityStatus:boundedText(r?.attributes?.entity?.status,30),registrationStatus:boundedText(r?.attributes?.registration?.status,30),match: norm(r?.attributes?.entity?.legalName?.name)===norm(company.name)?'EXACT_NAME':'CANDIDATE'}));
 }
 async function wikidata(fetchImpl,company){
-  const p=new URLSearchParams({action:'wbsearchentities',search:company.name,language:'en',uselang:'en',type:'item',limit:'5',format:'json',origin:'*'});const o=await getJson(fetchImpl,`https://www.wikidata.org/w/api.php?${p}`);
-  return (o?.search||[]).slice(0,5).map(r=>candidate('WIKIDATA',r.id,r.label||r.id,{description:boundedText(r.description,300),region:'GLOBAL',match:norm(r.label)===norm(company.name)?'EXACT_NAME':'CANDIDATE'}));
+  const languages=wikidataLanguages(company);const variants=companySearchVariants(company.name);const found=new Map();
+  const searches=[];
+  searches.push([variants[0],languages[0]]);
+  if(variants[1])searches.push([variants[1],languages[0]]);
+  if(languages[1])searches.push([variants[0],languages[1]]);
+  for(const [query,language] of searches.slice(0,3)){
+    const p=new URLSearchParams({action:'wbsearchentities',search:query,language,uselang:language,type:'item',limit:'8',format:'json',origin:'*'});
+    const o=await getJson(fetchImpl,`https://www.wikidata.org/w/api.php?${p}`);
+    for(const r of o?.search||[]){if(!r?.id||found.has(r.id))continue;found.set(r.id,{...r,query,language});if(found.size>=8)break;}
+    if(found.size>=8)break;
+  }
+  const rows=[...found.values()].slice(0,5);if(!rows.length)return [];
+  const entityParams=new URLSearchParams({action:'wbgetentities',ids:rows.map(x=>x.id).join('|'),props:'labels|descriptions|claims|sitelinks',languages:[...new Set([...languages,'zh','en'])].join('|'),languagefallback:'1',format:'json',origin:'*'});
+  const entityData=await getJson(fetchImpl,`https://www.wikidata.org/w/api.php?${entityParams}`);const entities=entityData?.entities||{};
+  const relatedIds=[];for(const e of Object.values(entities))for(const prop of ['P17','P452','P159','P749','P1056','P414','P1454'])relatedIds.push(...entityItemIds(e,prop));
+  const ids=[...new Set(relatedIds)].slice(0,40);let labels={};
+  if(ids.length){const lp=new URLSearchParams({action:'wbgetentities',ids:ids.join('|'),props:'labels',languages:[...new Set([...languages,'zh','en'])].join('|'),languagefallback:'1',format:'json',origin:'*'});labels=(await getJson(fetchImpl,`https://www.wikidata.org/w/api.php?${lp}`))?.entities||{};}
+  return rows.map(r=>{
+    const e=entities[r.id]||{};const label=languageValue(e.labels,languages)||boundedText(r.label||r.id,180);const countryIds=entityItemIds(e,'P17');const countryLabels=countryIds.map(id=>labelForId(labels,id,languages));
+    const fields={
+      description:languageValue(e.descriptions,languages)||boundedText(r.description,300),
+      region:boundedText(countryLabels[0]||'GLOBAL',80),countryLabels:countryLabels.slice(0,4),
+      officialWebsite:httpsUrl(entityString(e,'P856')),inception:entityTime(e,'P571'),
+      industries:entityItemIds(e,'P452').map(id=>labelForId(labels,id,languages)).slice(0,6),
+      headquarters:entityItemIds(e,'P159').map(id=>labelForId(labels,id,languages)).slice(0,6),
+      parents:entityItemIds(e,'P749').map(id=>labelForId(labels,id,languages)).slice(0,6),
+      products:entityItemIds(e,'P1056').map(id=>labelForId(labels,id,languages)).slice(0,8),
+      exchanges:entityItemIds(e,'P414').map(id=>labelForId(labels,id,languages)).slice(0,5),
+      legalForm:labelForId(labels,entityItemIds(e,'P1454')[0],languages),wikipediaUrl:wikipediaUrl(e,languages),
+      searchQuery:boundedText(r.query,160),matchBasis:norm(r.query)===norm(company.name)?'Wikidata full-name search':'Wikidata shortened-name search'
+    };
+    return candidate('WIKIDATA',r.id,label,{...fields,match:norm(label)===norm(company.name)?'EXACT_NAME':'CANDIDATE'});
+  });
 }
 async function sec(fetchImpl,company){
   const o=await getJson(fetchImpl,'https://www.sec.gov/files/company_tickers.json');const target=norm(company.name);const out=[];for(const r of Object.values(o||{})){const label=boundedText(r?.title,300);if(!label)continue;const n=norm(label);if(target===n||target.includes(n)||n.includes(target)){out.push(candidate('SEC_EDGAR',String(r?.cik_str||'').padStart(10,'0'),label,{ticker:boundedText(r?.ticker,40),region:'US',match:target===n?'EXACT_NAME':'CANDIDATE'}));if(out.length>=5)break;}}return out;
@@ -101,23 +175,28 @@ async function runBoundedProviderTasks(tasks,limit=4){
 function researchRecordBase(company,status,at){return {
   id:`research_${company.id}`,companyId:company.id,companyName:boundedText(company.name,160),region:boundedText(company.region,100),
   status,queuedAt:at,startedAt:null,collectedAt:null,failedAt:null,reviewRequired:false,providers:[],candidateCount:0,
-  exactNameCandidateCount:0,sourceSuccessCount:0,sourceErrorCount:0,intelligence:null,failureCount:0,deadLetteredAt:null
+  exactNameCandidateCount:0,sourceSuccessCount:0,sourceErrorCount:0,sourceNotApplicableCount:0,intelligence:null,failureCount:0,deadLetteredAt:null
 };}
+
+function notApplicableProvider(name,reason='REGION_NOT_APPLICABLE'){
+  return {provider:name,status:'NOT_APPLICABLE',candidateCount:0,candidates:[],reason,source:SOURCE_INFO[name]||null};
+}
 
 export async function collectCompanyResearch(company,{fetchImpl=fetch,now=new Date()}={}){
   if(!company||company.synthetic)throw new Error('PUBLIC_REAL_COMPANY_REQUIRED');
-  const tasks=[
+  const globalTasks=[
     ['GLEIF',()=>gleif(fetchImpl,company)],
-    ['WIKIDATA',()=>wikidata(fetchImpl,company)],
-    ['SEC_EDGAR',()=>sec(fetchImpl,company)],
-    ...laborProviderTasks(fetchImpl,company),
-    ['USA_SPENDING',()=>usaSpending(fetchImpl,company)]
+    ['WIKIDATA',()=>wikidata(fetchImpl,company)]
   ];
-  const providers=await runBoundedProviderTasks(tasks,1);
+  const usTasks=[['SEC_EDGAR',()=>sec(fetchImpl,company)],...laborProviderTasks(fetchImpl,company),['USA_SPENDING',()=>usaSpending(fetchImpl,company)]];
+  const globalProviders=await runBoundedProviderTasks(globalTasks,1);
+  const regionalProviders=countryCode(company.region)==='US'?await runBoundedProviderTasks(usTasks,1):usTasks.map(([name])=>notApplicableProvider(name,'US_ONLY_SOURCE'));
+  const providers=[...globalProviders,...regionalProviders];
   const base={...researchRecordBase(company,'REVIEW_REQUIRED',now.toISOString()),queuedAt:null,startedAt:null,collectedAt:now.toISOString(),providers};
   const all=providers.flatMap(x=>x.candidates||[]);
   base.candidateCount=all.length;base.exactNameCandidateCount=all.filter(x=>x.match==='EXACT_NAME').length;
   base.sourceSuccessCount=providers.filter(x=>x.status==='OK').length;base.sourceErrorCount=providers.filter(x=>x.status==='ERROR').length;
+  base.sourceNotApplicableCount=providers.filter(x=>x.status==='NOT_APPLICABLE').length;
   base.intelligence=buildAutonomousIntelligence(company,base,{now});
   base.status=base.sourceErrorCount?'AUTO_READY_WITH_SOURCE_GAPS':'AUTO_READY';
   return base;

@@ -1,5 +1,5 @@
 {
-  "schema": "ltp-company-source-registry-1",
+  "schema": "ltp-company-source-registry-1.1",
   "sources": {
     "GLEIF": {
       "label": "Global Legal Entity Identifier Foundation (GLEIF)",
@@ -75,19 +75,22 @@
         "channels"
       ],
       "fields": [
-        "industry",
-        "products",
-        "brands",
+        "description",
+        "country",
+        "official_website",
         "inception",
+        "industry",
         "headquarters_location",
         "parent_organization",
-        "subsidiary",
-        "official_website"
+        "products_or_output",
+        "exchange",
+        "legal_form",
+        "wikipedia_link"
       ],
-      "state": "CANDIDATE_THEN_AUTOMATED_PARTIAL",
-      "binding": "QID_EXPLICIT_BINDING_REQUIRED",
-      "request_budget": 3,
-      "note": "Contextual source only; must not override an official registry or transform community assertions into legal findings."
+      "state": "AUTOMATED_CONTEXT_WITH_FAIL_CLOSED_BINDING",
+      "binding": "EXACT_NAME_AND_COUNTRY_OR_WEBSITE_DOMAIN_OR_UNIQUE_CORPORATE_SHORTHAND_COUNTRY_ORG_SIGNALS",
+      "request_budget": 5,
+      "note": "Open contextual knowledge only. Multilingual search may deterministically bind OPEN_KNOWLEDGE_CONTEXT, never legal identity. Ambiguous results remain CONTEXT_CANDIDATE and official registries outrank Wikidata."
     },
     "NLRB_CASES": {
       "label": "NLRB case records via LaborData structured mirror",
@@ -662,5 +665,23 @@
       }
     ]
   },
-  "boundary": "Registry status describes adapter/source capability, not a claim that every company has records in every source."
+  "boundary": "Registry status describes adapter/source capability, not a claim that every company has records in every source.",
+  "region_applicability": {
+    "GLOBAL": [
+      "GLEIF",
+      "WIKIDATA"
+    ],
+    "US_ONLY": [
+      "SEC_EDGAR",
+      "NLRB_CASES",
+      "OSHA_ENFORCEMENT",
+      "DOL_WHD",
+      "FMCS_F7",
+      "NLRB_VOLUNTARY_RECOGNITION",
+      "FMCS_WORK_STOPPAGES",
+      "OLMS_LM20",
+      "USA_SPENDING"
+    ],
+    "semantics": "An inapplicable regional source is NOT_APPLICABLE. It is not a success, failure, or evidence of absence."
+  }
 }

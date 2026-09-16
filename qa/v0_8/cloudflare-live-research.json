@@ -1,8 +1,8 @@
 {
-  "status": "PASS_LIVE_AUTONOMOUS_COMPANY_INTELLIGENCE",
-  "version": "0.8.2-rc.1",
+  "status": "PASS_LIVE_AUTONOMOUS_COMPANY_DOSSIER",
+  "version": "0.8.3-rc.1",
   "company": {
-    "id": "co_59bc24f0e9dd544658",
+    "id": "co_2e428b0565cd0610c2",
     "name": "Starbucks Corporation",
     "region": "US"
   },
@@ -14,6 +14,8 @@
   "sourceErrors": 3,
   "machineVerifiedFacts": 6,
   "sourceSignals": 4,
+  "publicEventCandidates": 24,
+  "dossierStatus": "REFERENCE_READY",
   "identityStatus": "AUTO_BOUND_REFERENCE",
   "clusterCount": 6,
   "healthStatus": "DEGRADED_SOURCE_COVERAGE",
@@ -76,8 +78,9 @@
     }
   },
   "publicProjectionSafe": true,
+  "publicDossierEndpoint": true,
   "publicProviderCount": 11,
   "reviewRequired": false,
-  "boundary": "Live Worker Queue consumer automatically derives only narrow machine-verifiable reference facts and bounded source signals. Ambiguous or legally interpretive material remains candidate/unknown without a named reviewer gate.",
+  "boundary": "Live Worker Queue consumer produces an evidence-scoped public dossier. Legal references, open context, source signals and event candidates remain separate; ambiguous or legally interpretive material is not promoted to broad company conclusions.",
   "restartPersistence": true
 }

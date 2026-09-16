@@ -45,7 +45,7 @@ function publicCandidatePreview(provider,candidate){
     match:candidate?.match==='EXACT_NAME'?'EXACT_NAME':'CANDIDATE'
   };
   if(provider==='GLEIF')return {...base,reference:bounded(candidate?.externalId,40),jurisdiction:bounded(candidate?.jurisdiction,40),entityStatus:bounded(candidate?.entityStatus,30),registrationStatus:bounded(candidate?.registrationStatus,30)};
-  if(provider==='WIKIDATA')return {...base,reference:bounded(candidate?.externalId,40),description:bounded(candidate?.description,220)};
+  if(provider==='WIKIDATA')return {...base,reference:bounded(candidate?.externalId,40),description:bounded(candidate?.description,300),countryLabels:(candidate?.countryLabels||[]).slice(0,4).map(v=>bounded(v,120)),officialWebsite:bounded(candidate?.officialWebsite,300),inception:bounded(candidate?.inception,20),industries:(candidate?.industries||[]).slice(0,6).map(v=>bounded(v,180)),headquarters:(candidate?.headquarters||[]).slice(0,6).map(v=>bounded(v,180)),parents:(candidate?.parents||[]).slice(0,6).map(v=>bounded(v,180)),products:(candidate?.products||[]).slice(0,8).map(v=>bounded(v,180)),exchanges:(candidate?.exchanges||[]).slice(0,5).map(v=>bounded(v,180)),legalForm:bounded(candidate?.legalForm,120),wikipediaUrl:bounded(candidate?.wikipediaUrl,300),context:bounded(candidate?.matchBasis,220)};
   if(provider==='SEC_EDGAR')return {...base,reference:bounded(candidate?.externalId,20),ticker:bounded(candidate?.ticker,24)};
   return {...base,matches:Number(candidate?.matches||0)||undefined,context:bounded(candidate?.matchBasis,220)};
 }
@@ -62,13 +62,15 @@ export function publicCompanyResearch(record){
     exactNameCandidateCount:Number(record.exactNameCandidateCount||0),
     sourceSuccessCount:Number(record.sourceSuccessCount||0),
     sourceErrorCount:Number(record.sourceErrorCount||0),
+    sourceNotApplicableCount:Number(record.sourceNotApplicableCount||0),
     reviewRequired:record.reviewRequired!==false,
     intelligence:publicAutonomousIntelligence(record.intelligence),
     providers:(record.providers||[]).map(provider=>({
       provider:bounded(provider.provider,64),
-      status:provider.status==='ERROR'?'ERROR':'OK',
+      status:provider.status==='ERROR'?'ERROR':provider.status==='NOT_APPLICABLE'?'NOT_APPLICABLE':'OK',
       candidateCount:Number(provider.candidateCount||0),
       errorCode:provider.status==='ERROR'?bounded(provider.error||'SOURCE_UNAVAILABLE',80):null,
+      reasonCode:provider.status==='NOT_APPLICABLE'?bounded(provider.reason||'REGION_NOT_APPLICABLE',80):null,
       source:provider.source?{sourceOfRecord:bounded(provider.source.sourceOfRecord,120),official:bounded(provider.source.official,300)}:null,
       previews:(provider.candidates||[]).slice(0,PUBLIC_CANDIDATE_LIMIT).map(candidate=>publicCandidatePreview(provider.provider,candidate))
     })),
@@ -90,9 +92,14 @@ export function publicResearchStatus(state){
     pendingReview:completed.filter(x=>x.reviewRequired).length,
     autonomousReady:completed.filter(x=>x.intelligence&&x.reviewRequired===false).length,
     machineVerifiedFacts:completed.reduce((n,x)=>n+Number(x.intelligence?.coverage?.machineVerifiedFacts||0),0),
+    openContextReferences:completed.reduce((n,x)=>n+Number(x.intelligence?.coverage?.openContextReferences||0),0),
     sourceSignals:completed.reduce((n,x)=>n+Number(x.intelligence?.coverage?.sourceSignals||0),0),
+    publicEventCandidates:completed.reduce((n,x)=>n+Number(x.intelligence?.coverage?.publicEventCandidates||0),0),
+    dossierReady:completed.filter(x=>['REFERENCE_READY','CONTEXT_READY','SIGNALS_READY'].includes(x.intelligence?.dossier?.status)).length,
+    limitedDossiers:completed.filter(x=>x.intelligence?.dossier?.status==='LIMITED_DATA').length,
     conflicts:completed.reduce((n,x)=>n+Number(x.intelligence?.conflicts?.length||0),0),
     sourceErrors:completed.reduce((n,x)=>n+Number(x.sourceErrorCount||0),0),
+    sourcesNotApplicable:completed.reduce((n,x)=>n+Number(x.sourceNotApplicableCount||0),0),
     automation:{health:health.status,queuedTooLong:health.staleQueued,staleCollecting:health.staleCollecting,failedRecords:health.failedRecords,retryDue:health.retryEligibleFailures,deadLetteredRecords:health.deadLetteredRecords,latestDeadLetteredAt:health.latestDeadLetteredAt,legacyPendingMigration:health.missingCurrentPolicy,selfHealing:'Main Queue retries -> DLQ consumer persists exhaustion -> 5-minute/daily fallback re-enqueues missing, stale, failed and outdated-policy work after backoff; no named operator is required for normal recovery.'},
     boundary:PUBLIC_RESEARCH_BOUNDARY
   };

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateHtml,validateHealth,validateConfig,validateResearchHealth,validateSecurityHeaders} from './public_smoke.mjs';
+import {validateHtml,validateHealth,validateConfig,validateResearchHealth,validateCompanyDetail,validateSecurityHeaders} from './public_smoke.mjs';
 
 function response(status=200,headers={}){return new Response('',{status,headers});}
 const security={
@@ -34,6 +34,13 @@ test('research health validator requires autonomous runtime and no named operato
   const r=response(200,{...security,'content-type':'application/json'});
   validateResearchHealth('research-health',r,{status:'DEGRADED_SOURCE_COVERAGE',unattendedOperation:true,missingResearch:0,staleQueued:0,staleCollecting:0,retryEligibleFailures:0,runtime:{companyResearchQueue:true,scheduledFallback:true},selfHealing:{manualOperatorRequired:false}});
   assert.throws(()=>validateResearchHealth('research-health',r,{status:'HEALTHY',unattendedOperation:true,missingResearch:0,staleQueued:0,staleCollecting:0,retryEligibleFailures:0,runtime:{companyResearchQueue:false,scheduledFallback:true},selfHealing:{manualOperatorRequired:false}}),/queue configured/);
+});
+
+test('company dossier validator requires current safe dossier and community separation',()=>{
+  const r=response(200,{...security,'content-type':'application/json'});
+  const detail={company:{id:'co_1',name:'Example'},community:{positive:1,negative:2,boundary:'社区反馈不改变证据等级。'},research:{intelligence:{policyVersion:'auto-intelligence-0.8.3',dossier:{status:'CONTEXT_READY'}}},contributions:{products:[],labourClaims:[]},boundary:'公司详情把社区反馈与自动资料分层展示。'};
+  validateCompanyDetail('company-detail',r,detail);
+  assert.throws(()=>validateCompanyDetail('company-detail',r,{...detail,research:{intelligence:{policyVersion:'auto-intelligence-0.8.2',dossier:{status:'CONTEXT_READY'}}}}),/current dossier policy/);
 });
 
 test('security validator rejects framing regression',()=>{

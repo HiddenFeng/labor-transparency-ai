@@ -4,7 +4,7 @@ import {buildAutonomousIntelligence,publicAutonomousIntelligence,researchAutonom
 import {mergeCompanyResearch} from '../src/company-research.mjs';
 
 const source=(name)=>({sourceOfRecord:name,official:'https://example.org/'+name});
-function record(providers=[]){return {sourceSuccessCount:providers.filter(x=>x.status!=='ERROR').length,sourceErrorCount:providers.filter(x=>x.status==='ERROR').length,providers};}
+function record(providers=[]){return {sourceSuccessCount:providers.filter(x=>x.status==='OK').length,sourceErrorCount:providers.filter(x=>x.status==='ERROR').length,sourceNotApplicableCount:providers.filter(x=>x.status==='NOT_APPLICABLE').length,providers};}
 function provider(name,candidates=[],status='OK'){return {provider:name,status,candidateCount:candidates.length,candidates,error:status==='ERROR'?'SOURCE_TIMEOUT':undefined,source:source(name)};}
 const company={id:'co_test',name:'ACME CORPORATION',region:'US',synthetic:false};
 
@@ -75,14 +75,56 @@ test('labor exact-name records become source signals, never misconduct facts',()
   assert.equal(JSON.stringify(out).includes('违法认定。'),false);
 });
 
-test('Wikidata exact-name matches remain contextual candidates and never become machine facts',()=>{
+test('Wikidata exact-name without country evidence remains contextual candidate and never becomes machine fact',()=>{
   const out=buildAutonomousIntelligence(company,record([
     provider('WIKIDATA',[{provider:'WIKIDATA',externalId:'Q123',label:'ACME CORPORATION',region:'GLOBAL',description:'sample manufacturer',match:'EXACT_NAME'}])
   ]));
   assert.equal(out.facts.length,0);
+  assert.equal(out.contextReferences.length,0);
   assert.equal(out.contextCandidates.length,1);
   assert.equal(out.contextCandidates[0].tier,'CONTEXT_CANDIDATE');
   assert.match(out.contextCandidates[0].caveat,/不自动成为公司/);
+});
+
+test('Wikidata exact name plus matching country can become bounded open-knowledge context but not legal identity',()=>{
+  const out=buildAutonomousIntelligence(company,record([
+    provider('WIKIDATA',[{provider:'WIKIDATA',externalId:'Q123',label:'ACME CORPORATION',region:'美国',countryLabels:['美国'],description:'sample manufacturer',officialWebsite:'https://example.com/',inception:'1999-01-01',industries:['汽车零部件产业'],headquarters:['Fixture City'],products:['电子零件'],match:'EXACT_NAME'}])
+  ]));
+  assert.equal(out.identity.status,'NO_VERIFIED_REFERENCE');
+  assert.equal(out.facts.length,0);
+  assert.equal(out.contextReferences.length,1);
+  assert.equal(out.contextReferences[0].tier,'OPEN_KNOWLEDGE_CONTEXT');
+  assert.equal(out.contextReferences[0].label,'ACME CORPORATION');
+  assert.equal(out.dossier.status,'CONTEXT_READY');
+  assert.match(out.dossier.summary,/开放知识上下文/);
+});
+
+test('Wikidata website-domain match can provide context for shortened non-exact company name without upgrading legal identity',()=>{
+  const cn={id:'co_cn',name:'星宇股份有限公司',region:'中国',website:'https://www.xyl.cn/',synthetic:false};
+  const out=buildAutonomousIntelligence(cn,record([
+    provider('GLEIF',[]),
+    provider('WIKIDATA',[{provider:'WIKIDATA',externalId:'QCN',label:'常州星宇车灯股份有限公司',region:'中华人民共和国',countryLabels:['中华人民共和国'],officialWebsite:'https://www.xyl.cn/',description:'一家研制、生产、销售汽车车灯的专业厂家',products:['汽车灯'],headquarters:['常州'],match:'CANDIDATE'}]),
+    provider('SEC_EDGAR',[],'NOT_APPLICABLE')
+  ]));
+  assert.equal(out.identity.status,'NO_VERIFIED_REFERENCE');
+  assert.equal(out.contextReferences.length,1);
+  assert.equal(out.contextReferences[0].basis,'OFFICIAL_WEBSITE_DOMAIN_MATCH');
+  assert.equal(out.coverage.sourceNotApplicableCount,1);
+  assert.ok(out.dossier.gaps.some(x=>x.code==='REGION_LIMITED_SOURCES'));
+});
+
+test('public event timeline exposes allowlisted procedural fields while preserving event caveats',()=>{
+  const out=buildAutonomousIntelligence(company,record([
+    provider('NLRB_CASES',[{provider:'NLRB_CASES',externalId:'ACME CORPORATION',label:'ACME CORPORATION',region:'CA',matches:1,records:[{case_number:'01-CA-123',name:'ACME CORPORATION',case_type:'C',city:'Oakland',state:'CA',date_filed:'2026-02-03',status:'Open',url:'https://www.nlrb.gov/case/01-CA-123',internal_note:'DO_NOT_EXPOSE'}]}])
+  ]));
+  assert.equal(out.timeline.length,1);
+  assert.equal(out.timeline[0].reference,'01-CA-123');
+  assert.equal(out.timeline[0].date,'2026-02-03');
+  assert.match(out.timeline[0].caveat,/不等于NLRB已认定/);
+  const pub=publicAutonomousIntelligence(out);const raw=JSON.stringify(pub);
+  assert.equal(raw.includes('DO_NOT_EXPOSE'),false);
+  assert.equal(raw.includes('internal_note'),false);
+  assert.equal(pub.timeline[0].reference,'01-CA-123');
 });
 
 test('refresh replacement retracts unsupported machine facts and records fingerprint change',()=>{
@@ -102,7 +144,7 @@ test('refresh replacement retracts unsupported machine facts and records fingerp
 test('public autonomous projection is allowlisted and contains no raw provider records',()=>{
   const out=buildAutonomousIntelligence(company,record([
     provider('GLEIF',[gleifCandidate()]),
-    provider('NLRB_CASES',[{provider:'NLRB_CASES',externalId:'ACME CORPORATION',label:'ACME CORPORATION',region:'CA',matches:1,records:[{case_number:'SECRET-RAW'}]}])
+    provider('NLRB_CASES',[{provider:'NLRB_CASES',externalId:'ACME CORPORATION',label:'ACME CORPORATION',region:'CA',matches:1,records:[{case_number:'01-CA-1',internal_secret:'SECRET-RAW'}]}])
   ]));
   const pub=publicAutonomousIntelligence(out);const raw=JSON.stringify(pub);
   assert.equal(raw.includes('SECRET-RAW'),false);
@@ -110,6 +152,7 @@ test('public autonomous projection is allowlisted and contains no raw provider r
   assert.equal(raw.includes('externalId'),false);
   assert.ok(pub.facts.length>0);
   assert.ok(pub.signals.length>0);
+  assert.equal(pub.timeline[0].reference,'01-CA-1');
 });
 
 test('autonomy health detects recoverable work and current-policy migration without exposing records',()=>{
