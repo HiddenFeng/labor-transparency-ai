@@ -93,7 +93,7 @@ export function publicResearchStatus(state){
     sourceSignals:completed.reduce((n,x)=>n+Number(x.intelligence?.coverage?.sourceSignals||0),0),
     conflicts:completed.reduce((n,x)=>n+Number(x.intelligence?.conflicts?.length||0),0),
     sourceErrors:completed.reduce((n,x)=>n+Number(x.sourceErrorCount||0),0),
-    automation:{health:health.status,queuedTooLong:health.staleQueued,staleCollecting:health.staleCollecting,retryDue:health.retryEligibleFailures,legacyPendingMigration:health.missingCurrentPolicy,selfHealing:'Queue retries plus 5-minute/daily fallback re-enqueue missing, stale and retry-eligible work; no named operator is required for normal recovery.'},
+    automation:{health:health.status,queuedTooLong:health.staleQueued,staleCollecting:health.staleCollecting,failedRecords:health.failedRecords,retryDue:health.retryEligibleFailures,deadLetteredRecords:health.deadLetteredRecords,latestDeadLetteredAt:health.latestDeadLetteredAt,legacyPendingMigration:health.missingCurrentPolicy,selfHealing:'Main Queue retries -> DLQ consumer persists exhaustion -> 5-minute/daily fallback re-enqueues missing, stale, failed and outdated-policy work after backoff; no named operator is required for normal recovery.'},
     boundary:PUBLIC_RESEARCH_BOUNDARY
   };
 }

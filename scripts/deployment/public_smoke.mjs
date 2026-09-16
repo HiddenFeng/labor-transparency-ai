@@ -72,7 +72,9 @@ export function validateResearchHealth(label,response,data){
   assert.equal(Number(data.missingResearch||0),0,`${label}: no company missing research lifecycle`);
   assert.equal(Number(data.staleQueued||0),0,`${label}: no stale queued work`);
   assert.equal(Number(data.staleCollecting||0),0,`${label}: no stale collecting lease`);
+  assert.equal(Number(data.failedRecords||0),0,`${label}: no failed research records`);
   assert.equal(Number(data.retryEligibleFailures||0),0,`${label}: no retry-due failures`);
+  assert.equal(Number(data.missingCurrentPolicy||0),0,`${label}: no stale autonomous-policy records`);
   validateSecurityHeaders(label,response);
 }
 

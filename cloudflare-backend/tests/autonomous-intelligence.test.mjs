@@ -118,14 +118,17 @@ test('autonomy health detects recoverable work and current-policy migration with
     companies:[{id:'a',synthetic:false},{id:'b',synthetic:false},{id:'demo',synthetic:true}],
     companyResearch:[
       {companyId:'a',status:'AUTO_READY_WITH_SOURCE_GAPS',collectedAt:'2026-09-16T11:00:00Z',sourceErrorCount:1,intelligence:{policyVersion:AUTONOMOUS_INTELLIGENCE_POLICY_VERSION}},
-      {companyId:'orphan',status:'COLLECTION_FAILED',failedAt:'2026-09-16T10:00:00Z'}
+      {companyId:'orphan',status:'COLLECTION_FAILED',failedAt:'2026-09-16T10:00:00Z',deadLetteredAt:'2026-09-16T10:05:00Z'}
     ]
   };
   const h=researchAutonomyHealth(state,{now});
   assert.equal(h.status,'RECOVERY_NEEDED');
   assert.equal(h.realCompanies,2);
   assert.equal(h.missingResearch,1);
+  assert.equal(h.failedRecords,1);
   assert.equal(h.retryEligibleFailures,1);
+  assert.equal(h.deadLetteredRecords,1);
+  assert.equal(h.latestDeadLetteredAt,'2026-09-16T10:05:00Z');
   assert.equal(h.sourceGapRecords,1);
   assert.equal(h.missingCurrentPolicy,0);
   assert.equal(h.selfHealing.manualOperatorRequired,false);
