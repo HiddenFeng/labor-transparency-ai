@@ -519,8 +519,8 @@
     "edgeone_real_name_verification": "REQUIRED_BEFORE_ADD_CUSTOM_DOMAIN_UI_ENABLES"
   },
   "remaining_human_only": [],
-  "next_gate": "Deploy the Queue-driven user-added-company research build to the canonical Cloudflare/Vercel production path, then verify a real public company create -> QUEUE_SENT -> Queue consumer collection -> safe public display cycle and remove QA records.",
-  "strongest_claim": "v0.8.1-rc.2 retains the verified non-China-cloud public deployment and now has a locally/prod-like verified Queue-driven user-company automatic research loop: public company creation durably writes QUEUED and dispatches a Cloudflare Queue message, a single-concurrency Queue consumer collects independent source candidates with per-source failure isolation/timeouts, D1 persists lifecycle/results, and the ordinary company API/UI exposes only allowlisted candidate previews. Production deployment of the Queue binding/consumer is the remaining gate; candidates are not auto-published as facts.",
+  "next_gate": "Queue-driven user-added-company automatic research is production-verified. Continue routine source-quality, entity-binding/review, monitoring, and product development; no human deployment gate remains for this capability.",
+  "strongest_claim": "v0.8.1-rc.2 retains the verified non-China-cloud public deployment and now has a production-verified Queue-driven user-company automatic research loop: public company creation durably writes QUEUED and returns researchDispatch=QUEUE_SENT, a single-concurrency Cloudflare Queue consumer collects independent source candidates with per-source failure isolation/timeouts, D1 persists lifecycle/results, and the ordinary company API/UI exposes only allowlisted candidate previews. Production GitHub-hosted E2E, release-candidate CI, and public semantic smoke all pass; candidates are not auto-published as facts.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -605,7 +605,7 @@
     "mainland_boundary": "External PASS proves the tested global public path and security contracts from GitHub-hosted infrastructure; it does not establish a Mainland-China SLA."
   },
   "user_added_company_auto_research": {
-    "status": "QUEUE_IMPLEMENTED_LOCAL_AND_PRODUCTION_LIKE_VERIFIED_PRODUCTION_QUEUE_BINDING_PENDING",
+    "status": "PASS_PRODUCTION_QUEUE_AUTO_RESEARCH_AND_SAFE_PUBLIC_DISPLAY",
     "change_record": "docs/v0_8/CHANGE-v0.8.1-user-company-auto-research.md",
     "lifecycle": [
       "QUEUED",
@@ -653,7 +653,7 @@
       "restartPersistence": true
     },
     "evidence_boundary": "Source search results remain candidates. Entity binding and independent review are still required before a candidate can support a published company fact.",
-    "production_gate": "PENDING_CANONICAL_WORKER_QUEUE_BINDING_DEPLOY_AND_REAL_PUBLIC_CREATE_QUEUE_DISPLAY_QA",
+    "production_gate": "PASS",
     "queue": {
       "name": "labor-transparency-company-research",
       "dead_letter_queue": "labor-transparency-company-research-dlq",
@@ -662,7 +662,9 @@
       "max_concurrency": 1,
       "max_retries": 5,
       "retry_delay_seconds": 60,
-      "create_dispatch_result": "QUEUE_SENT"
+      "create_dispatch_result": "QUEUE_SENT",
+      "production_binding": "PASS_1_PRODUCER_1_CONSUMER",
+      "worker_version": "404aa2f4-d78d-4e2b-b651-8e8632ce9929"
     },
     "bounded_live_queue_test": {
       "status": "PASS_LIVE_AUTOMATIC_QUEUE_COMPANY_RESEARCH_AND_SAFE_DISPLAY_PROJECTION",
@@ -681,6 +683,46 @@
       "public_projection_safe": true,
       "public_provider_count": 11,
       "restart_persistence": true
+    },
+    "production_e2e": {
+      "commit": "db833415f8dea2af101bc90990af2154a118ae0d",
+      "run_id": 35042968391,
+      "status": "PASS_PRODUCTION_USER_CREATE_TO_QUEUE_TO_SAFE_DISPLAY",
+      "qa_company_name": "Starbucks Corporation",
+      "qa_region": "ISOLATED_PRIVACY_SAFE_RUN_CODE",
+      "created_at": "2026-09-16T01:09:46.564Z",
+      "queue_started_at": "2026-09-16T01:09:51.139Z",
+      "queue_claim_delay_seconds": 4.575,
+      "research_status": "REVIEW_REQUIRED_WITH_SOURCE_GAPS",
+      "candidate_count": 11,
+      "source_success_count": 9,
+      "source_error_count": 2,
+      "source_errors": {
+        "SEC_EDGAR": "SOURCE_ACCESS_DENIED",
+        "USA_SPENDING": "SOURCE_TIMEOUT"
+      },
+      "public_projection_safe": true,
+      "private_research_run_endpoint_called": false,
+      "cleanup": {
+        "qa_company_deleted": true,
+        "qa_research_deleted": true,
+        "rows_deleted": 2,
+        "non_qa_company_records_preserved": true
+      }
+    },
+    "external_validation": {
+      "release_candidate_ci": {
+        "run_id": 35042968419,
+        "status": "PASS"
+      },
+      "public_semantic_smoke": {
+        "run_id": 35042968366,
+        "status": "PASS"
+      },
+      "production_queue_e2e": {
+        "run_id": 35042968391,
+        "status": "PASS"
+      }
     }
   }
 }
