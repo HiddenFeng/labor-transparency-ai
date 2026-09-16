@@ -2,7 +2,7 @@
 
 Date: 2026-09-16
 
-Status: `LOCAL_FULL_AND_LIVE_SOURCE_VERIFIED / PRODUCTION_DEPLOYMENT_PENDING`
+Status: `PASS_PRODUCTION_USABLE_COMPANY_DOSSIERS`
 
 ## Product problem
 
@@ -95,9 +95,9 @@ Real non-US source probe:
 
 A local browser deep-link dossier using that real-source record displayed the existing negative community feedback, open context, public contribution, gaps and region applicability with zero page/console/network errors. AgentDock did not conclusively provide a true narrow mobile viewport in the attached external browser, so responsive behavior is currently covered by CSS/UI contracts rather than claimed as production mobile-browser evidence.
 
-## Production gate
+## Production acceptance
 
-Do not claim v0.8.3 production acceptance until all of the following happen on the canonical stack:
+The production gate was closed on 2026-09-16 against runtime commit `bb6ff338ffe3bcf6723d65d2dd5f89b97d1c437b` on the canonical non-Tencent stack. Acceptance required all of the following:
 
 1. candidate GitHub CI passes;
 2. the exact clean candidate commit is deployed to Cloudflare Worker/D1/Queue and the canonical Vercel project;
@@ -106,3 +106,17 @@ Do not claim v0.8.3 production acceptance until all of the following happen on t
 5. GitHub-hosted production E2E validates Queue -> dossier -> event timeline -> company-detail API -> normal ballot mutation;
 6. QA company/research/ballot rows created by the E2E are precisely removed after evidence capture;
 7. final release CI and public semantic smoke pass.
+
+### Acceptance evidence
+
+All seven conditions above passed. GitHub-hosted evidence for the exact runtime commit is:
+
+- release-candidate CI: run `35056094843` — PASS;
+- production Queue/dossier E2E: run `35056094846` — PASS;
+- public non-Tencent semantic smoke: run `35056094856` — PASS.
+
+The existing non-QA production company `星宇股份有限公司 / 中国` self-migrated to `auto-intelligence-0.8.3` through normal scheduled refresh/Queue processing. Its current machine state is `AUTO_READY / CONTEXT_READY`; strict legal identity remains `NO_VERIFIED_REFERENCE`, while the bounded open-context reference is `Q106240022 常州星宇车灯股份有限公司` through `UNIQUE_CORPORATE_SHORTHAND_AND_COUNTRY`. Its existing real community ballot remains present. Canonical-browser validation opened the public `#company/<id>` dossier and showed the open-context official website, encyclopedia link and Wikidata provenance with zero console/network/page errors.
+
+Post-E2E remote D1 inspection found zero QA company/research/ballot rows and preserved the non-QA company plus its ballot. The machine-readable acceptance artifact is `qa/v0_8/usable-company-dossiers-v083-production.json`.
+
+This acceptance does **not** widen the claim boundary: global source coverage is still partial, open-knowledge context is not official legal identity, event candidates do not establish misconduct/liability/company-wide labor conditions, and no stable Mainland-China availability SLA is claimed.

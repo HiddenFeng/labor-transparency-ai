@@ -1,0 +1,70 @@
+{
+  "schema": "ltp-production-acceptance-v1",
+  "release": "0.8.3-rc.1",
+  "policy": "auto-intelligence-0.8.3",
+  "date": "2026-09-16",
+  "status": "PASS_PRODUCTION_USABLE_COMPANY_DOSSIERS",
+  "runtime_sha": "bb6ff338ffe3bcf6723d65d2dd5f89b97d1c437b",
+  "external_validation": {
+    "release_ci": {
+      "run_id": 35056094843,
+      "status": "PASS"
+    },
+    "production_e2e": {
+      "run_id": 35056094846,
+      "status": "PASS"
+    },
+    "public_smoke": {
+      "run_id": 35056094856,
+      "status": "PASS"
+    }
+  },
+  "deterministic_validation": {
+    "python": "291/291 PASS",
+    "cloudflare": "24/24 PASS",
+    "sites_api_ui": "21/21 PASS",
+    "public_smoke_contract": "6/6 PASS",
+    "privacy_forbidden_matches": 0,
+    "worker_d1_restart": "PASS"
+  },
+  "live_source_starbucks": {
+    "status": "PASS_LIVE_AUTONOMOUS_COMPANY_DOSSIER",
+    "dossier": "REFERENCE_READY",
+    "machine_verified_facts": 6,
+    "source_signals": 4,
+    "public_event_candidates": 24,
+    "identity": "AUTO_BOUND_REFERENCE",
+    "public_detail_api": true,
+    "restart_persistence": true
+  },
+  "production_real_company": {
+    "name": "星宇股份有限公司",
+    "region": "中国",
+    "research_status": "AUTO_READY",
+    "dossier_status": "CONTEXT_READY",
+    "legal_identity": "NO_VERIFIED_REFERENCE",
+    "open_context_reference": "Q106240022",
+    "open_context_label": "常州星宇车灯股份有限公司",
+    "basis": "UNIQUE_CORPORATE_SHORTHAND_AND_COUNTRY",
+    "real_ballots_preserved": 1
+  },
+  "production_browser": {
+    "canonical_deep_link": "PASS",
+    "official_website_link": "PASS",
+    "encyclopedia_link": "PASS",
+    "wikidata_source_link": "PASS",
+    "console_errors": 0,
+    "network_errors": 0,
+    "page_errors": 0
+  },
+  "production_d1_hygiene": {
+    "qa_rows_remaining": 0,
+    "real_company_rows_preserved": 1,
+    "real_ballot_rows_preserved": 1
+  },
+  "boundaries": [
+    "No broad company good/bad, liability, misconduct, labor-condition or product-quality conclusion is machine-inferred.",
+    "Open knowledge and event records retain their own evidence tier; unsupported identity remains unknown.",
+    "Mainland-China stable SLA is not claimed."
+  ]
+}
