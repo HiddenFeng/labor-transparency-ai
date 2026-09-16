@@ -629,7 +629,7 @@
     "status": "PASS_LOCAL_RELEASE_CANDIDATE_NOT_PRODUCTION_DEPLOYED",
     "runtime_version": "0.8.6-rc.1",
     "base_production_main_sha": "367501b141beb118dbeb44589221ed45e6f1ebc6",
-    "candidate_branch": "agent/china-source-depth",
+    "candidate_origin": "developed and validated on temporary agent/china-source-depth worktree; branch/worktree retired after local main fast-forward",
     "candidate_code_commit": "e2639a5",
     "local_main_integration": "FAST_FORWARD_COMPLETE_LOCAL_ONLY; origin/main and production remain 367501b until explicit release approval",
     "change_record": "docs/v0_8/CHANGE-v0.8.6-china-sse-listing-depth.md",
