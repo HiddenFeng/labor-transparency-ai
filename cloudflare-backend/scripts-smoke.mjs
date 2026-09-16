@@ -6,6 +6,7 @@ const reviewToken=String(process.env.LTP_SMOKE_REVIEW_TOKEN||'review-local-only'
 const exportToken=String(process.env.LTP_SMOKE_EXPORT_TOKEN||'export-local-only');
 const agentToken=String(process.env.LTP_SMOKE_AGENT_TOKEN||'advisory-local-only');
 const researchToken=String(process.env.LTP_SMOKE_RESEARCH_TOKEN||'research-local-only');
+const communityToken=String(process.env.LTP_SMOKE_COMMUNITY_TOKEN||'community-local-only');
 let cookie='';let csrf='';
 
 async function createIsolatedCompany(i,suffix){
@@ -36,7 +37,7 @@ async function req(path,{method='GET',body,token,sendCsrf=true,requestOrigin=ori
 }
 
 const cfg=await req('/api/config');
-assert.equal(cfg.status,200);assert.equal(cfg.data.version,'0.8.3-rc.1');assert.equal(cfg.data.mode,'CLOUDFLARE_WORKER_D1');assert.equal(cfg.data.capabilities.unattendedCompanyIntelligence,true);assert.ok(cookie.startsWith('ltp_session='));assert.equal(cfg.headers.get('access-control-allow-origin'),origin);csrf=cfg.data.csrfToken;assert.match(csrf,/^[a-f0-9]{64}$/);
+assert.equal(cfg.status,200);assert.equal(cfg.data.version,'0.8.4-rc.1');assert.equal(cfg.data.mode,'CLOUDFLARE_WORKER_D1');assert.equal(cfg.data.capabilities.unattendedCompanyIntelligence,true);assert.equal(cfg.data.capabilities.communityFeedback,true);assert.equal(cfg.data.capabilities.officialRelations,true);assert.equal(cfg.data.capabilities.publicAnnouncements,true);assert.ok(cookie.startsWith('ltp_session='));assert.equal(cfg.headers.get('access-control-allow-origin'),origin);csrf=cfg.data.csrfToken;assert.match(csrf,/^[a-f0-9]{64}$/);
 const researchStatus=await req('/api/research/status');assert.equal(researchStatus.status,200);assert.equal(researchStatus.data.companiesTracked,0);assert.match(researchStatus.data.boundary,/候选/);
 const researchHealth=await req('/api/research/health');assert.equal(researchHealth.status,200);assert.equal(researchHealth.data.unattendedOperation,true);assert.equal(researchHealth.data.selfHealing.manualOperatorRequired,false);assert.equal(researchHealth.data.runtime.companyResearchQueue,false);const baselineRealCompanies=Number(researchHealth.data.realCompanies||0);
 const researchDenied=await req('/api/research-agent/queue',{token:'wrong-research-token'});assert.equal(researchDenied.status,403);
@@ -61,7 +62,17 @@ const queuedHealth=await req('/api/research/health');assert.equal(queuedHealth.s
 
 const contribution=await req('/api/contributions',{method:'POST',body:{companyId,kind:'labour_claim',title:'示例工时记录',description:'用于验证独立部署链路的合成公开线索。',scope:'示例岗位',periodStart:'2026-01-01',periodEnd:'2026-12-31',direction:'negative',dimension:'hours',productId:'',relation:'',category:'',sources:[{url:'https://example.org/evidence',title:'合成公开来源',type:'public_record',publishedAt:'2026-01-01',supports:'仅用于本地自动化测试的合成范围'}],public:true,consent:true,shareConsent:true,rights:'own_summary',rightsNote:'',creditName:'自动化测试'}});
 assert.equal(contribution.status,200);assert.equal(contribution.data.item.evidence,'E0');const cid=contribution.data.item.id;const version=contribution.data.item.version;
+const feedback=await req('/api/community-feedback',{method:'POST',body:{type:'source_request',companyId,message:'本地自动化测试：希望增加官方产品来源。',consent:true}});assert.equal(feedback.status,200);const feedbackId=feedback.data.item.id;
+const deniedCommunity=await req('/api/community-agent/queue',{token:'wrong-community-token'});assert.equal(deniedCommunity.status,403);
+const communityQueue=await req('/api/community-agent/queue',{token:communityToken,requestOrigin:'',credentials:false});assert.equal(communityQueue.status,200);assert.ok(communityQueue.data.items.some(x=>x.id===feedbackId));
+const feedbackReply=await req(`/api/community-agent/feedback/${feedbackId}/respond`,{method:'POST',token:communityToken,requestOrigin:'',sendCsrf:false,credentials:false,body:{decision:'planned',answer:'已进入官方来源扩展计划。',actions:['每日检查 NMPA UDI 官方增量']}});assert.equal(feedbackReply.status,200);
+const relation=await req('/api/community-agent/official-relations',{method:'POST',token:communityToken,requestOrigin:'',sendCsrf:false,credentials:false,body:{items:[{companyId,provider:'CN_NMPA_UDI',jurisdiction:'CN',relationType:'COMPANY_REGISTERS_PRODUCT',objectType:'product',objectName:'示例医疗器械',objectExternalId:'06972253600013',sourceRecordId:'UDI-SMOKE-1',sourceOfRecord:'国家药品监督管理局医疗器械唯一标识数据库',sourceUrl:'https://udi.nmpa.gov.cn/',sourceDate:'2026-09-15',confidence:'HIGH',scope:'本地自动化测试的特定 UDI 记录。',caveat:'该官方记录只支持这条具体登记关系，不代表产品整体质量或公司的完整产品目录。',attributes:{udiDi:'06972253600013',model:'SMOKE-M1'}}]}});assert.equal(relation.status,200);assert.equal(relation.data.savedCount,1);
+const announcement=await req('/api/community-agent/announcements',{method:'POST',token:communityToken,requestOrigin:'',sendCsrf:false,credentials:false,body:{day:'2026-09-16',title:'今天更新了什么',summary:'本地自动化测试新增官方来源关系。',items:['接入 NMPA UDI 官方关系能力'],sources:[{label:'NMPA UDI',url:'https://udi.nmpa.gov.cn/'}]}});assert.equal(announcement.status,200);
+const dailyCommunityRun=await req('/api/community-agent/daily-run',{method:'POST',token:communityToken,requestOrigin:'',sendCsrf:false,credentials:false,body:{day:'2026-09-16',phase:'18',status:'COMPLETED',summary:'本地自动化测试完成来源、意见与公告。',metrics:{relations:1,feedback:1},logRef:'history/daily/2026-09-16/18-operations.md'}});assert.equal(dailyCommunityRun.status,200);
+const announcementPublic=await req('/api/announcements?limit=3');assert.equal(announcementPublic.status,200);assert.equal(announcementPublic.data.items[0].title,'今天更新了什么');
+const feedbackMine=await req('/api/community-feedback');assert.equal(feedbackMine.status,200);assert.equal(feedbackMine.data.items.find(x=>x.id===feedbackId).response.decision,'planned');
 const companyDetail=await req(`/api/companies/${companyId}`);assert.equal(companyDetail.status,200);assert.equal(companyDetail.data.company.id,companyId);assert.equal(companyDetail.data.community.negative,1);assert.equal(companyDetail.data.community.participants,1);assert.equal(companyDetail.data.research.status,'QUEUED');assert.ok(companyDetail.data.contributions.labourClaims.some(x=>x.id===cid));const detailJson=JSON.stringify(companyDetail.data);assert.equal(detailJson.includes('owner'),false);assert.equal(detailJson.includes('rightsNote'),false);assert.match(companyDetail.data.boundary,/社区反馈/);
+assert.equal(companyDetail.data.officialRelations.length,1);assert.equal(companyDetail.data.officialRelations[0].object.externalId,'06972253600013');
 const missingDetail=await req('/api/companies/co_missing');assert.equal(missingDetail.status,404);
 
 const reviewQueue=await req('/api/review-queue',{token:reviewToken});assert.equal(reviewQueue.status,200);assert.ok(reviewQueue.data.items.some(x=>x.id===cid));
@@ -80,4 +91,4 @@ const access=await req('/api/advisory/access',{method:'POST',body:{receiptCode:r
 const reports=await req('/api/advisory/reports?limit=5');assert.equal(reports.status,200);assert.ok(reports.data.items.length>=1);const publicReports=JSON.stringify(reports.data);assert.equal(publicReports.includes(receipt),false);assert.equal(publicReports.includes('最近排班和实际工时持续变化'),false);
 
 const health=await req('/api/health',{requestOrigin:''});assert.equal(health.status,200);assert.equal(health.data.storage,'cloudflare-d1');
-console.log(JSON.stringify({status:'PASS',backend:cfg.data.version,cors:true,csrf:true,d1:true,companyFlow:true,automaticResearchQueue:true,unattendedCompanyIntelligence:true,researchHealthContract:true,queuedCompanies:queuedStatus.data.queued,reviewExportCorrection:true,advisoryAgentReport:true,receiptPublicLeak:false,concurrentWrites:4}));
+console.log(JSON.stringify({status:'PASS',backend:cfg.data.version,cors:true,csrf:true,d1:true,companyFlow:true,automaticResearchQueue:true,unattendedCompanyIntelligence:true,researchHealthContract:true,communityAgent:true,officialRelations:true,communityFeedback:true,publicAnnouncements:true,queuedCompanies:queuedStatus.data.queued,reviewExportCorrection:true,advisoryAgentReport:true,receiptPublicLeak:false,concurrentWrites:4}));

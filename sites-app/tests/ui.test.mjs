@@ -55,13 +55,25 @@ test('company UI exposes usable dossier detail while keeping evidence tiers sepa
   assert.match(js,/\/api\/research\/health/);
   assert.match(js,/查看自动收集的公开来源候选/);
   assert.match(js,/researchPollRemaining=36/);
-  assert.match(js,/公司空间已创建，并已自动进入公开资料采集队列/);
+  assert.match(js,/公开资料会自动开始整理，你不用再做设置/);
+  assert.match(js,/官方来源确认的公司 \/ 品牌 \/ 产品关系/);
   assert.doesNotMatch(js,/\.records\b/);
   assert.match(css,/\.research-details/);
   assert.match(css,/\.research-preview-list/);
   assert.match(css,/\.machine-intelligence/);
   assert.match(css,/\.event-timeline/);
   assert.match(css,/\.company-dossier-teaser/);
+});
+
+test('contribution UI is low-friction with progressive disclosure and daily feedback loop',async()=>{
+  const html=await fs.readFile(new URL('../public/index.html',import.meta.url),'utf8');
+  const js=await fs.readFile(new URL('../public/app.js',import.meta.url),'utf8');
+  const css=await fs.readFile(new URL('../public/styles.css',import.meta.url),'utf8');
+  assert.match(html,/不用填报告/);assert.match(html,/1 选公司/);assert.match(html,/一句话说重点/);assert.match(html,/我有公开来源、时间或更多细节（可选）/);
+  assert.match(html,/今天平台更新了什么/);assert.match(html,/一句话就够/);assert.match(html,/每天 18:00/);assert.match(html,/19:00/);
+  assert.doesNotMatch(html,/name="rights"/);assert.doesNotMatch(html,/name="shareConsent"/);assert.doesNotMatch(html,/name="rightsNote"/);
+  assert.match(js,/rights:sourceUrl\?'reference_only':'own_summary'/);assert.match(js,/\/api\/community-feedback/);assert.match(js,/\/api\/announcements/);
+  assert.match(css,/\.progressive-details/);assert.match(css,/\.feedback-quick-grid/);assert.match(css,/\.official-relation-card/);
 });
 
 test('system demo records never enter the operational review queue',()=>{

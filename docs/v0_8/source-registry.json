@@ -1,5 +1,5 @@
 {
-  "schema": "ltp-company-source-registry-1.1",
+  "schema": "ltp-company-source-registry-1.2",
   "sources": {
     "GLEIF": {
       "label": "Global Legal Entity Identifier Foundation (GLEIF)",
@@ -407,6 +407,264 @@
       "binding": "OS_ID_EXPLICIT_BINDING_REQUIRED",
       "request_budget": 2,
       "note": "A facility/contributor match is a supply-chain candidate until provenance and relationship scope are reviewed."
+    },
+    "CN_NMPA_UDI": {
+      "label": "China NMPA Medical Device Unique Device Identification Database",
+      "authority": "PRIMARY_CHINA_GOVERNMENT_PRODUCT_REGISTRY",
+      "access": "KEYLESS_PUBLIC_RSS_AND_BULK_DOWNLOAD; AUTHORIZED_API_OPTIONAL",
+      "license": "PUBLIC_GOVERNMENT_DATA_WITHOUT_PROJECT_ASSUMED_OPEN_LICENSE",
+      "license_url": "https://udi.nmpa.gov.cn/toDetail.html?CatalogId=3&infoId=40",
+      "source_of_record": "国家药品监督管理局医疗器械唯一标识数据库",
+      "regions": [
+        "CN"
+      ],
+      "sections": [
+        "identity",
+        "products",
+        "relationships"
+      ],
+      "fields": [
+        "udi_di",
+        "product_name",
+        "trade_name",
+        "model",
+        "device_category",
+        "classification_code",
+        "unified_social_credit_code",
+        "registration_or_filing_number",
+        "registrant_name",
+        "registrant_english_name",
+        "product_description",
+        "version_time",
+        "version_status"
+      ],
+      "state": "AUTOMATED_DAILY_LOCAL_AGENT_SUPPORTED",
+      "binding": "EXACT_REGISTRANT_NAME_OR_UNIFIED_SOCIAL_CREDIT_CODE_REQUIRED",
+      "request_budget": 2,
+      "semantic_boundary": "An NMPA UDI record supports a specific registrant/filing-to-medical-device relationship and product identifier. It does not establish general product quality, safety across all uses, or the complete product portfolio of the company.",
+      "note": "Use official RSS/bulk release. Do not republish the bulk dataset wholesale; retain bounded matched records plus source provenance."
+    },
+    "CN_GSXT": {
+      "label": "国家企业信用信息公示系统",
+      "authority": "PRIMARY_CHINA_GOVERNMENT_ENTERPRISE_CREDIT_PUBLICITY_SYSTEM",
+      "access": "PUBLIC_QUERY_UI",
+      "license": "OFFICIAL_PUBLICITY_WITHOUT_PROJECT_ASSUMED_OPEN_LICENSE",
+      "license_url": "https://www.gsxt.gov.cn/",
+      "source_of_record": "国家市场监督管理总局 / 国家企业信用信息公示系统",
+      "regions": [
+        "CN"
+      ],
+      "sections": [
+        "identity",
+        "business",
+        "enforcement"
+      ],
+      "fields": [
+        "enterprise_name",
+        "unified_social_credit_code",
+        "registration_status",
+        "registered_address",
+        "business_scope",
+        "abnormal_operations",
+        "serious_illegal_dishonesty"
+      ],
+      "state": "OFFICIAL_LOOKUP_ONLY_NO_UNDOCUMENTED_AUTOMATION",
+      "binding": "EXACT_NAME_OR_UNIFIED_SOCIAL_CREDIT_CODE",
+      "request_budget": 0,
+      "semantic_boundary": "Use as an official verification/navigation source. Do not bypass CAPTCHA, anti-bot controls, login, or undocumented access mechanisms."
+    },
+    "CN_CNIPA_TRADEMARK": {
+      "label": "中国国家知识产权局商标网上查询",
+      "authority": "PRIMARY_CHINA_GOVERNMENT_TRADEMARK_QUERY",
+      "access": "PUBLIC_QUERY_UI",
+      "license": "OFFICIAL_PUBLICITY_WITHOUT_PROJECT_ASSUMED_OPEN_LICENSE",
+      "license_url": "https://sbj.cnipa.gov.cn/",
+      "source_of_record": "国家知识产权局商标局",
+      "regions": [
+        "CN"
+      ],
+      "sections": [
+        "brands",
+        "relationships"
+      ],
+      "fields": [
+        "trademark_name",
+        "application_or_registration_number",
+        "applicant_or_owner",
+        "class",
+        "status"
+      ],
+      "state": "OFFICIAL_LOOKUP_ONLY_NO_UNDOCUMENTED_AUTOMATION",
+      "binding": "EXACT_OWNER_AND_REGISTRATION_REFERENCE_REQUIRED",
+      "request_budget": 0,
+      "semantic_boundary": "A trademark record supports a specific mark/application/owner relationship. It does not prove current consumer use, product quality, or complete brand ownership without the recorded status/scope."
+    },
+    "CN_SAMR_QUERY_HUB": {
+      "label": "国家市场监督管理总局政务服务平台 · 我要查",
+      "authority": "PRIMARY_CHINA_GOVERNMENT_QUERY_DIRECTORY",
+      "access": "PUBLIC_QUERY_UI_DIRECTORY",
+      "license": "OFFICIAL_PUBLIC_SERVICE",
+      "license_url": "https://zwfw.samr.gov.cn/wyc/",
+      "source_of_record": "国家市场监督管理总局",
+      "regions": [
+        "CN"
+      ],
+      "sections": [
+        "identity",
+        "products",
+        "certification",
+        "recalls"
+      ],
+      "fields": [
+        "official_query_navigation"
+      ],
+      "state": "OFFICIAL_NAVIGATION_ONLY",
+      "binding": "SOURCE_SPECIFIC",
+      "request_budget": 0,
+      "semantic_boundary": "Directory/navigation only until a documented source-specific data interface is separately approved."
+    },
+    "EU_TED": {
+      "label": "EU Tenders Electronic Daily (TED) Search API",
+      "authority": "PRIMARY_EU_GOVERNMENT_PROCUREMENT_DATA",
+      "access": "KEYLESS_PUBLIC_SEARCH_API",
+      "license": "EU_PUBLIC_PROCUREMENT_OPEN_DATA",
+      "license_url": "https://docs.ted.europa.eu/api/latest/search.html",
+      "source_of_record": "Publications Office of the European Union / TED",
+      "regions": [
+        "EU",
+        "EEA"
+      ],
+      "sections": [
+        "business",
+        "supply_chain",
+        "relationships"
+      ],
+      "fields": [
+        "notice_id",
+        "buyer",
+        "winner_or_supplier",
+        "contract_title",
+        "cpv",
+        "place",
+        "value",
+        "publication_date"
+      ],
+      "state": "ADAPTER_READY_KEYLESS",
+      "binding": "EXACT_PARTICIPANT_NAME_OR_OFFICIAL_IDENTIFIER_REQUIRED",
+      "request_budget": 2,
+      "semantic_boundary": "A procurement notice supports only the specific public-procurement event/relationship represented by the notice."
+    },
+    "UK_COMPANIES_HOUSE": {
+      "label": "UK Companies House API",
+      "authority": "PRIMARY_UK_GOVERNMENT_COMPANY_REGISTRY",
+      "access": "PUBLIC_API_REQUIRES_API_KEY",
+      "license": "UK_PUBLIC_REGISTER_TERMS",
+      "license_url": "https://developer.company-information.service.gov.uk/get-started",
+      "source_of_record": "Companies House",
+      "regions": [
+        "GB"
+      ],
+      "sections": [
+        "identity",
+        "ownership",
+        "business"
+      ],
+      "fields": [
+        "company_number",
+        "company_name",
+        "status",
+        "registered_office",
+        "officers",
+        "persons_with_significant_control",
+        "filings"
+      ],
+      "state": "ADAPTER_READY_REQUIRES_TOKEN",
+      "binding": "COMPANY_NUMBER_REQUIRED_AFTER_NAME_SEARCH",
+      "request_budget": 3,
+      "semantic_boundary": "Registry/disclosure fields are scoped to the Companies House record and filing status; they do not imply labor or product-quality conclusions."
+    },
+    "KR_OPENDART": {
+      "label": "Korea Financial Supervisory Service OpenDART API",
+      "authority": "PRIMARY_KOREA_REGULATORY_DISCLOSURE_API",
+      "access": "PUBLIC_API_REQUIRES_CERTIFICATION_KEY",
+      "license": "OFFICIAL_PUBLIC_DISCLOSURE_TERMS",
+      "license_url": "https://opendart.fss.or.kr/guide/main.do",
+      "source_of_record": "금융감독원 전자공시시스템 OpenDART",
+      "regions": [
+        "KR"
+      ],
+      "sections": [
+        "identity",
+        "business",
+        "ownership",
+        "relationships"
+      ],
+      "fields": [
+        "corp_code",
+        "corp_name",
+        "stock_code",
+        "address",
+        "disclosures",
+        "major_shareholders"
+      ],
+      "state": "ADAPTER_READY_REQUIRES_TOKEN",
+      "binding": "CORP_CODE_REQUIRED_AFTER_NAME_SEARCH",
+      "request_budget": 3,
+      "semantic_boundary": "Disclosure facts are limited to the specific filing/company record and must not be generalized beyond the filing scope."
+    },
+    "JP_NTA_CORPORATE_NUMBER": {
+      "label": "Japan National Tax Agency Corporate Number Publication Site",
+      "authority": "PRIMARY_JAPAN_GOVERNMENT_CORPORATE_IDENTIFIER_REGISTRY",
+      "access": "PUBLIC_BULK_DOWNLOAD; WEB_API_REQUIRES_FREE_APPLICATION_ID",
+      "license": "OFFICIAL_PUBLICATION_TERMS_WITH_ATTRIBUTION_NOTICE",
+      "license_url": "https://www.houjin-bangou.nta.go.jp/webapi/",
+      "source_of_record": "国税庁法人番号公表サイト",
+      "regions": [
+        "JP"
+      ],
+      "sections": [
+        "identity"
+      ],
+      "fields": [
+        "corporate_number",
+        "name",
+        "address",
+        "corporation_type",
+        "change_history"
+      ],
+      "state": "BULK_ADAPTER_READY_API_REQUIRES_APPLICATION_ID",
+      "binding": "CORPORATE_NUMBER_REQUIRED_AFTER_NAME_SEARCH",
+      "request_budget": 2,
+      "semantic_boundary": "Corporate Number publication supports the published corporate identifier/name/address record only. Public services using the Web API must display the NTA-required source disclaimer."
+    },
+    "JP_GBIZINFO": {
+      "label": "Japan gBizINFO REST API",
+      "authority": "PRIMARY_JAPAN_GOVERNMENT_BUSINESS_INFORMATION_AGGREGATOR",
+      "access": "PUBLIC_API_REQUIRES_USE_APPLICATION",
+      "license": "OFFICIAL_API_TERMS",
+      "license_url": "https://info.gbiz.go.jp/",
+      "source_of_record": "デジタル庁 / gBizINFO",
+      "regions": [
+        "JP"
+      ],
+      "sections": [
+        "identity",
+        "business",
+        "procurement",
+        "subsidies"
+      ],
+      "fields": [
+        "corporate_number",
+        "name",
+        "location",
+        "procurement",
+        "subsidies",
+        "certifications"
+      ],
+      "state": "ADAPTER_READY_REQUIRES_APPROVAL",
+      "binding": "CORPORATE_NUMBER_REQUIRED",
+      "request_budget": 3,
+      "semantic_boundary": "gBizINFO data remains field- and program-specific; public awards/subsidies/certifications are not broad company ratings."
     }
   },
   "sections": {

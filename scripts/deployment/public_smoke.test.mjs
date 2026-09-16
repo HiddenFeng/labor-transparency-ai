@@ -24,7 +24,7 @@ test('health validator pins Worker D1 privacy contract',()=>{
 
 test('config validator requires secure session and disabled sensitive-data capability',()=>{
   const r=response(200,{...security,'content-type':'application/json','set-cookie':'ltp_session=abc; HttpOnly; Secure; SameSite=Strict; Path=/'});
-  const capabilities={attachments:false,privateSensitiveInfo:false,anonymousAdvisory:true,automaticCompanyResearch:true,unattendedCompanyIntelligence:true,companyResearchQueue:true};
+  const capabilities={attachments:false,privateSensitiveInfo:false,anonymousAdvisory:true,automaticCompanyResearch:true,unattendedCompanyIntelligence:true,companyResearchQueue:true,communityFeedback:true,officialRelations:true,publicAnnouncements:true};
   validateConfig('config',r,{mode:'CLOUDFLARE_WORKER_D1',cookieSecure:true,csrfToken:'x'.repeat(64),capabilities});
   const insecure=response(200,{...security,'content-type':'application/json','set-cookie':'ltp_session=abc; Path=/'});
   assert.throws(()=>validateConfig('config',insecure,{mode:'CLOUDFLARE_WORKER_D1',cookieSecure:true,csrfToken:'x'.repeat(64),capabilities}),/HttpOnly/);
@@ -38,7 +38,7 @@ test('research health validator requires autonomous runtime and no named operato
 
 test('company dossier validator requires current safe dossier and community separation',()=>{
   const r=response(200,{...security,'content-type':'application/json'});
-  const detail={company:{id:'co_1',name:'Example'},community:{positive:1,negative:2,boundary:'社区反馈不改变证据等级。'},research:{intelligence:{policyVersion:'auto-intelligence-0.8.3',dossier:{status:'CONTEXT_READY'}}},contributions:{products:[],labourClaims:[]},boundary:'公司详情把社区反馈与自动资料分层展示。'};
+  const detail={company:{id:'co_1',name:'Example'},community:{positive:1,negative:2,boundary:'社区反馈不改变证据等级。'},research:{intelligence:{policyVersion:'auto-intelligence-0.8.3',dossier:{status:'CONTEXT_READY'}}},officialRelations:[],contributions:{products:[],labourClaims:[]},boundary:'公司详情把社区反馈与自动资料分层展示。'};
   validateCompanyDetail('company-detail',r,detail);
   assert.throws(()=>validateCompanyDetail('company-detail',r,{...detail,research:{intelligence:{policyVersion:'auto-intelligence-0.8.2',dossier:{status:'CONTEXT_READY'}}}}),/current dossier policy/);
 });

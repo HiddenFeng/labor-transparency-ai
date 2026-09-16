@@ -21,6 +21,7 @@ LTP_REVIEW_TOKEN=review-local-only
 LTP_EXPORT_TOKEN=export-local-only
 LTP_ADVISORY_AGENT_TOKEN=advisory-local-only
 LTP_RESEARCH_AGENT_TOKEN=research-local-only
+LTP_COMMUNITY_AGENT_TOKEN=community-local-only
 ENV
 
 cd "$BACKEND"
@@ -53,4 +54,4 @@ const base=process.argv[2];const c=await (await fetch(base+'/api/companies')).js
 NODE
 )"
 [[ "$BEFORE" == "$AFTER" ]] || { echo "persistence mismatch before=$BEFORE after=$AFTER" >&2; exit 2; }
-echo "{\"status\":\"PASS\",\"worker\":\"0.8.3-rc.1\",\"restartPersistence\":true,\"state\":$AFTER}"
+echo "{\"status\":\"PASS\",\"worker\":\"0.8.4-rc.1\",\"restartPersistence\":true,\"state\":$AFTER}"

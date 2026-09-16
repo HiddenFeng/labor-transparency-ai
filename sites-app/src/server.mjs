@@ -7,7 +7,9 @@ import {
   VERSION, addCompany, addContribution, updateContribution, withdrawContribution, setBallot,
   flagContribution, reviewContribution, approveExport, listContributions, showcase, publicDataset,
   reviewQueue, createReceiptCode, hashReceiptCode, addAdvisoryCase, listOwnAdvisory, accessAdvisoryByReceipt,
-  advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase
+  advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase,
+  addCommunityFeedback, listOwnCommunityFeedback, communityAgentQueue, respondCommunityFeedback,
+  addPublicAnnouncement, publicAnnouncements, recordAgentDailyRun, upsertOfficialRelations
 } from './domain.mjs';
 import {FileStore} from './storage.mjs';
 import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus,publicResearchHealth} from './research-status.mjs';
@@ -80,9 +82,10 @@ export async function createRuntime(options={}){
   const reviewToken = options.reviewToken || process.env.LTP_SITES_REVIEW_TOKEN || '';
   const exportToken = options.exportToken || process.env.LTP_SITES_EXPORT_TOKEN || '';
   const advisoryAgentToken = options.advisoryAgentToken || process.env.LTP_SITES_ADVISORY_AGENT_TOKEN || '';
+  const communityAgentToken = options.communityAgentToken || process.env.LTP_SITES_COMMUNITY_AGENT_TOKEN || '';
   const secureCookie = options.secureCookie ?? process.env.LTP_SITES_SECURE_COOKIE === 'true';
   const store = options.store || await new FileStore(dataFile,{seed}).init();
-  return {store,sessionSecret,reviewToken,exportToken,advisoryAgentToken,secureCookie};
+  return {store,sessionSecret,reviewToken,exportToken,advisoryAgentToken,communityAgentToken,secureCookie};
 }
 
 export async function createAppServer(options={}){
@@ -99,23 +102,27 @@ export async function createAppServer(options={}){
       if (fresh) res.setHeader('Set-Cookie',`${COOKIE}=${encodeURIComponent(session)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=2592000${runtime.secureCookie?'; Secure':''}`);
 
       const trustedAdvisoryAgent = url.pathname.startsWith('/api/advisory-agent/') && runtime.advisoryAgentToken && safeEqual(authToken(req),runtime.advisoryAgentToken);
-      if (url.pathname.startsWith('/api/') && !['GET','HEAD'].includes(req.method) && !trustedAdvisoryAgent) {
+      const trustedCommunityAgent = url.pathname.startsWith('/api/community-agent/') && runtime.communityAgentToken && safeEqual(authToken(req),runtime.communityAgentToken);
+      if (url.pathname.startsWith('/api/') && !['GET','HEAD'].includes(req.method) && !trustedAdvisoryAgent && !trustedCommunityAgent) {
         if (!sameOrigin(req)) return json(res,403,{error:'跨站请求未获允许'});
         if (!safeEqual(req.headers['x-ltp-csrf'],csrf)) {
           return json(res,403,{error:'请求校验失败，请刷新页面后重试'});
         }
       }
 
-      if (req.method==='GET' && url.pathname==='/api/config') return json(res,200,{version:VERSION,mode:'SITES_READY_LOCAL',csrfToken:csrf,cookieSecure:runtime.secureCookie,capabilities:{companies:true,ballots:true,contributions:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,automaticCompanyResearch:false,scheduledCompanyResearch:false,attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导仅接收非敏感结构化问题；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
+      if (req.method==='GET' && url.pathname==='/api/config') return json(res,200,{version:VERSION,mode:'SITES_READY_LOCAL',csrfToken:csrf,cookieSecure:runtime.secureCookie,capabilities:{companies:true,ballots:true,contributions:true,brandContributions:true,officialRelations:true,communityFeedback:true,publicAnnouncements:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,automaticCompanyResearch:false,scheduledCompanyResearch:false,attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导与社区意见仅接收非敏感结构化内容；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
       if (req.method==='GET' && url.pathname==='/api/health') return json(res,200,{status:'ok',version:VERSION,storage:'local-file-adapter',attachments:false,anonymousAdvisory:true});
       if (req.method==='GET' && url.pathname==='/api/companies') return json(res,200,{items:publicCompanyList(runtime.store.read())});
       if (req.method==='GET' && /^\/api\/companies\/[^/]+$/.test(url.pathname)) { const companyId=decodeURIComponent(url.pathname.split('/').at(-1)); const detail=publicCompanyDetail(runtime.store.read(),companyId); return detail?json(res,200,detail):json(res,404,{error:'公司空间不存在'}); }
       if (req.method==='GET' && url.pathname==='/api/research/coverage') return json(res,200,companyResearchCoverage());
       if (req.method==='GET' && url.pathname==='/api/research/status') return json(res,200,publicResearchStatus(runtime.store.read()));
+      if (req.method==='GET' && url.pathname==='/api/announcements') return json(res,200,{items:publicAnnouncements(runtime.store.read(),Number(url.searchParams.get('limit')||30))});
+      if (req.method==='GET' && url.pathname==='/api/community-feedback') return json(res,200,{items:listOwnCommunityFeedback(runtime.store.read(),owner)});
       if (req.method==='GET' && url.pathname==='/api/research/health') { const health=publicResearchHealth(runtime.store.read()); return json(res,200,{...health,status:'LOCAL_REFERENCE_MODE',runtime:{companyResearchQueue:false,scheduledFallback:false},selfHealing:{...health.selfHealing,queue:false,scheduledReenqueue:false}}); }
       if (req.method==='POST' && url.pathname==='/api/companies') {
         const input=await bodyJson(req); const out=await runtime.store.transaction(s=>addCompany(s,input,owner)); return json(res,200,out);
       }
+      if (req.method==='POST' && url.pathname==='/api/community-feedback') { const input=await bodyJson(req); const item=await runtime.store.transaction(s=>addCommunityFeedback(s,input,owner)); return json(res,200,{item:{id:item.id,type:item.type,companyId:item.companyId,status:item.status,createdAt:item.createdAt}}); }
       const ballot=url.pathname.match(/^\/api\/companies\/([^/]+)\/ballot$/);
       if (req.method==='POST' && ballot) { const input=await bodyJson(req); const out=await runtime.store.transaction(s=>setBallot(s,ballot[1],owner,input.direction??null)); return json(res,200,out); }
       if (req.method==='GET' && url.pathname==='/api/contributions') return json(res,200,{items:listContributions(runtime.store.read(),{owner,mine:url.searchParams.get('mine')==='1',companyId:url.searchParams.get('companyId')||''})});
@@ -155,6 +162,31 @@ export async function createAppServer(options={}){
         if (!runtime.advisoryAgentToken || !safeEqual(authToken(req),runtime.advisoryAgentToken)) return json(res,403,{error:'需要匿名辅导 Agent 运营凭据'});
         const input=await bodyJson(req); const out=await runtime.store.transaction(s=>runAdvisoryAgent(s,{day:input.day||'',timeZone:input.timeZone||'Asia/Shanghai',agent:'daily-advisory-agent'}));
         return json(res,200,{processedCount:out.processedCount,report:out.report});
+      }
+      if (req.method==='GET' && url.pathname==='/api/community-agent/queue') {
+        if (!runtime.communityAgentToken || !safeEqual(authToken(req),runtime.communityAgentToken)) return json(res,403,{error:'需要社区运营 Agent 凭据'});
+        return json(res,200,{items:communityAgentQueue(runtime.store.read())});
+      }
+      if (req.method==='GET' && url.pathname==='/api/community-agent/state') {
+        if (!runtime.communityAgentToken || !safeEqual(authToken(req),runtime.communityAgentToken)) return json(res,403,{error:'需要社区运营 Agent 凭据'});
+        const state=runtime.store.read();return json(res,200,{companies:state.companies.filter(x=>!x.synthetic).map(x=>({id:x.id,name:x.name,region:x.region,website:x.website||''})),pendingFeedback:communityAgentQueue(state),officialRelationCount:state.officialRelations.length,latestAnnouncements:publicAnnouncements(state,7),dailyRuns:state.agentDailyRuns.slice(-14)});
+      }
+      if (req.method==='POST' && url.pathname==='/api/community-agent/official-relations') {
+        if (!runtime.communityAgentToken || !safeEqual(authToken(req),runtime.communityAgentToken)) return json(res,403,{error:'需要社区运营 Agent 凭据'});
+        const input=await bodyJson(req);const out=await runtime.store.transaction(s=>upsertOfficialRelations(s,input));return json(res,200,{savedCount:out.savedCount});
+      }
+      const feedbackResponse=url.pathname.match(/^\/api\/community-agent\/feedback\/([^/]+)\/respond$/);
+      if (req.method==='POST' && feedbackResponse) {
+        if (!runtime.communityAgentToken || !safeEqual(authToken(req),runtime.communityAgentToken)) return json(res,403,{error:'需要社区运营 Agent 凭据'});
+        const input=await bodyJson(req);const out=await runtime.store.transaction(s=>respondCommunityFeedback(s,feedbackResponse[1],input,'daily-community-agent'));return json(res,200,{id:out.id,feedbackId:out.feedbackId,decision:out.decision,createdAt:out.createdAt});
+      }
+      if (req.method==='POST' && url.pathname==='/api/community-agent/announcements') {
+        if (!runtime.communityAgentToken || !safeEqual(authToken(req),runtime.communityAgentToken)) return json(res,403,{error:'需要社区运营 Agent 凭据'});
+        const input=await bodyJson(req);const out=await runtime.store.transaction(s=>addPublicAnnouncement(s,input,'daily-community-agent'));return json(res,200,{id:out.id,day:out.day,updatedAt:out.updatedAt});
+      }
+      if (req.method==='POST' && url.pathname==='/api/community-agent/daily-run') {
+        if (!runtime.communityAgentToken || !safeEqual(authToken(req),runtime.communityAgentToken)) return json(res,403,{error:'需要社区运营 Agent 凭据'});
+        const input=await bodyJson(req);const out=await runtime.store.transaction(s=>recordAgentDailyRun(s,input,'daily-community-agent'));return json(res,200,{id:out.id,day:out.day,phase:out.phase,status:out.status,updatedAt:out.updatedAt});
       }
       if (req.method==='GET' && url.pathname==='/api/review-queue') {
         if (!runtime.reviewToken || !safeEqual(authToken(req),runtime.reviewToken)) return json(res,403,{error:'需要审核员凭据'});

@@ -52,6 +52,9 @@ export function validateConfig(label,response,data){
   assert.equal(data.capabilities?.automaticCompanyResearch,true,`${label}: automatic company research`);
   assert.equal(data.capabilities?.unattendedCompanyIntelligence,true,`${label}: unattended company intelligence`);
   assert.equal(data.capabilities?.companyResearchQueue,true,`${label}: company research queue`);
+  assert.equal(data.capabilities?.communityFeedback,true,`${label}: community feedback`);
+  assert.equal(data.capabilities?.officialRelations,true,`${label}: official relationship layer`);
+  assert.equal(data.capabilities?.publicAnnouncements,true,`${label}: public announcements`);
   assert.ok(typeof data.csrfToken==='string'&&data.csrfToken.length>=32,`${label}: csrf token`);
   const cookie=header(response,'set-cookie');
   assert.match(cookie,/ltp_session=/i,`${label}: session cookie`);
@@ -88,6 +91,7 @@ export function validateCompanyDetail(label,response,data){
   assert.equal(data.research.intelligence.policyVersion,'auto-intelligence-0.8.3',`${label}: current dossier policy`);
   assert.ok(['REFERENCE_READY','CONTEXT_READY','SIGNALS_READY','LIMITED_DATA'].includes(data.research.intelligence.dossier.status),`${label}: dossier status`);
   assert.ok(data.contributions&&Array.isArray(data.contributions.products)&&Array.isArray(data.contributions.labourClaims),`${label}: grouped public contributions`);
+  assert.ok(Array.isArray(data.officialRelations),`${label}: official relation projection`);
   const raw=JSON.stringify(data);for(const forbidden of ['\"owner\"','\"receiptHash\"','\"rightsNote\"','\"records\"','\"sampleRecord\"'])assert.equal(raw.includes(forbidden),false,`${label}: forbidden public field ${forbidden}`);
   assert.match(String(data.boundary||''),/公司详情/,`${label}: dossier boundary`);
   validateSecurityHeaders(label,response);

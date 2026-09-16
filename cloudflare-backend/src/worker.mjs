@@ -3,14 +3,16 @@ import {
   VERSION as DOMAIN_VERSION, addCompany, addContribution, updateContribution, withdrawContribution, setBallot,
   flagContribution, reviewContribution, approveExport, listContributions, showcase, publicDataset,
   reviewQueue, createReceiptCode, hashReceiptCode, addAdvisoryCase, listOwnAdvisory, accessAdvisoryByReceipt,
-  advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase
+  advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase,
+  addCommunityFeedback, listOwnCommunityFeedback, communityAgentQueue, respondCommunityFeedback,
+  addPublicAnnouncement, publicAnnouncements, recordAgentDailyRun, upsertOfficialRelations
 } from '../../sites-app/src/domain.mjs';
 import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus,publicResearchHealth} from '../../sites-app/src/research-status.mjs';
 import {publicCompanyDetail} from '../../sites-app/src/company-dossier.mjs';
 import {D1StateStore} from './d1-store.mjs';
 import {collectCompanyResearch,selectResearchCompanies,mergeCompanyResearch,queueCompanyResearch,markCompanyResearchStarted,markCompanyResearchFailed,markCompanyResearchDeadLettered} from './company-research.mjs';
 
-const BACKEND_VERSION='0.8.3-rc.1';
+const BACKEND_VERSION='0.8.4-rc.1';
 const COOKIE='ltp_session';
 const BODY_LIMIT=96*1024;
 
@@ -99,14 +101,25 @@ function responseWithSession(response,ctx,env){
 }
 function trustedAdvisoryAgent(request,url,env){return url.pathname.startsWith('/api/advisory-agent/')&&env.LTP_ADVISORY_AGENT_TOKEN&&safeEqual(authToken(request),env.LTP_ADVISORY_AGENT_TOKEN);}
 function trustedResearchAgent(request,url,env){return url.pathname.startsWith('/api/research-agent/')&&env.LTP_RESEARCH_AGENT_TOKEN&&safeEqual(authToken(request),env.LTP_RESEARCH_AGENT_TOKEN);}
+function trustedCommunityAgent(request,url,env){return url.pathname.startsWith('/api/community-agent/')&&env.LTP_COMMUNITY_AGENT_TOKEN&&safeEqual(authToken(request),env.LTP_COMMUNITY_AGENT_TOKEN);}
 function mutationAuthorized(request,url,env,ctx){
   if(['GET','HEAD','OPTIONS'].includes(request.method))return true;
-  if(trustedAdvisoryAgent(request,url,env)||trustedResearchAgent(request,url,env))return true;
+  if(trustedAdvisoryAgent(request,url,env)||trustedResearchAgent(request,url,env)||trustedCommunityAgent(request,url,env))return true;
   if(!isAllowedOrigin(request,env))return false;
   return safeEqual(request.headers.get('x-ltp-csrf'),ctx.csrf);
 }
 function storeFor(env){return new D1StateStore(env.DB,{seed:String(env.LTP_SEED||'false')==='true'});}
 function researchQueueEnabled(env){return Boolean(env?.COMPANY_RESEARCH_QUEUE)&&String(env.LTP_RESEARCH_QUEUE_DISPATCH||'true')!=='false';}
+function communityAgentState(state){
+  const companies=(state.companies||[]).filter(x=>!x.synthetic).map(x=>({id:x.id,name:x.name,region:x.region,website:x.website||''}));
+  return {
+    companies,
+    pendingFeedback:communityAgentQueue(state),
+    officialRelationCount:Number(state.officialRelations?.length||0),
+    latestAnnouncements:publicAnnouncements(state,7),
+    dailyRuns:(state.agentDailyRuns||[]).slice().sort((a,b)=>b.day.localeCompare(a.day)||b.phase.localeCompare(a.phase)).slice(0,14).map(x=>({day:x.day,phase:x.phase,status:x.status,summary:x.summary,metrics:x.metrics||{},logRef:x.logRef||'',updatedAt:x.updatedAt}))
+  };
+}
 
 export async function createCompanyWithAutoResearch(store,input,owner,{now=new Date()}={}){
   return store.transaction(state=>{
@@ -232,7 +245,7 @@ async function handleApi(request,env){
   if(!mutationAuthorized(request,url,env,ctx))return responseWithSession(json(request,env,403,{error:'跨站请求或请求校验未获允许'}),ctx,env);
 
   let response;
-  if(request.method==='GET'&&url.pathname==='/api/config') response=json(request,env,200,{version:BACKEND_VERSION,domainVersion:DOMAIN_VERSION,mode:'CLOUDFLARE_WORKER_D1',csrfToken:ctx.csrf,cookieSecure:String(env.LTP_COOKIE_SECURE||'true')!=='false',capabilities:{companies:true,ballots:true,contributions:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,scheduledAdvisory:true,automaticCompanyResearch:researchQueueEnabled(env),unattendedCompanyIntelligence:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导仅接收非敏感结构化问题；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
+  if(request.method==='GET'&&url.pathname==='/api/config') response=json(request,env,200,{version:BACKEND_VERSION,domainVersion:DOMAIN_VERSION,mode:'CLOUDFLARE_WORKER_D1',csrfToken:ctx.csrf,cookieSecure:String(env.LTP_COOKIE_SECURE||'true')!=='false',capabilities:{companies:true,ballots:true,contributions:true,brandContributions:true,officialRelations:true,communityFeedback:true,publicAnnouncements:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,scheduledAdvisory:true,automaticCompanyResearch:researchQueueEnabled(env),unattendedCompanyIntelligence:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导与社区意见仅接收非敏感结构化内容；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
   else if(request.method==='GET'&&url.pathname==='/api/health') response=json(request,env,200,{status:'ok',version:BACKEND_VERSION,storage:'cloudflare-d1',scheduledAdvisory:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,anonymousAdvisory:true});
   else if(request.method==='GET'&&url.pathname==='/api/companies') response=json(request,env,200,{items:publicCompanyList(await store.read())});
   else if(request.method==='GET'&&/^\/api\/companies\/[^/]+$/.test(url.pathname)){
@@ -241,6 +254,8 @@ async function handleApi(request,env){
   }
   else if(request.method==='GET'&&url.pathname==='/api/research/coverage') response=json(request,env,200,companyResearchCoverage());
   else if(request.method==='GET'&&url.pathname==='/api/research/status') response=json(request,env,200,publicResearchStatus(await store.read()));
+  else if(request.method==='GET'&&url.pathname==='/api/announcements') response=json(request,env,200,{items:publicAnnouncements(await store.read(),Number(url.searchParams.get('limit')||30))});
+  else if(request.method==='GET'&&url.pathname==='/api/community-feedback') response=json(request,env,200,{items:listOwnCommunityFeedback(await store.read(),ctx.owner)});
   else if(request.method==='GET'&&url.pathname==='/api/research/health'){
     const health=publicResearchHealth(await store.read());const queueConfigured=researchQueueEnabled(env);const scheduledFallback=String(env.LTP_RESEARCH_SCHEDULED||'false')==='true';
     response=json(request,env,200,{...health,status:queueConfigured?health.status:'RECOVERY_NEEDED',runtime:{companyResearchQueue:queueConfigured,scheduledFallback},selfHealing:{...health.selfHealing,queue:queueConfigured,scheduledReenqueue:scheduledFallback}});
@@ -249,6 +264,9 @@ async function handleApi(request,env){
     const input=await bodyJson(request);const out=await createCompanyWithAutoResearch(store,input,ctx.owner);
     const researchDispatch=await dispatchCompanyResearch(env,out,{reason:out.duplicate?'DUPLICATE_RETRY':'USER_CREATE'});
     response=json(request,env,200,{...out,researchDispatch});
+  }
+  else if(request.method==='POST'&&url.pathname==='/api/community-feedback'){
+    const input=await bodyJson(request);const item=await store.transaction(s=>addCommunityFeedback(s,input,ctx.owner));response=json(request,env,200,{item:{id:item.id,type:item.type,companyId:item.companyId,status:item.status,createdAt:item.createdAt}});
   }
   else {
     const ballot=url.pathname.match(/^\/api\/companies\/([^/]+)\/ballot$/);
@@ -259,6 +277,7 @@ async function handleApi(request,env){
     const advisoryAdvice=url.pathname.match(/^\/api\/advisory-agent\/cases\/([^/]+)\/advice$/);
     const review=url.pathname.match(/^\/api\/contributions\/([^/]+)\/review$/);
     const approve=url.pathname.match(/^\/api\/contributions\/([^/]+)\/approve-export$/);
+    const feedbackResponse=url.pathname.match(/^\/api\/community-agent\/feedback\/([^/]+)\/respond$/);
     if(request.method==='POST'&&ballot){const input=await bodyJson(request);response=json(request,env,200,await store.transaction(s=>setBallot(s,ballot[1],ctx.owner,input.direction??null)));}
     else if(request.method==='GET'&&url.pathname==='/api/contributions') response=json(request,env,200,{items:listContributions(await store.read(),{owner:ctx.owner,mine:url.searchParams.get('mine')==='1',companyId:url.searchParams.get('companyId')||''})});
     else if(request.method==='POST'&&url.pathname==='/api/contributions'){const input=await bodyJson(request);const out=await store.transaction(s=>addContribution(s,input,ctx.owner));const item={...out};delete item.owner;response=json(request,env,200,{item});}
@@ -295,6 +314,30 @@ async function handleApi(request,env){
     else if(request.method==='POST'&&url.pathname==='/api/research-agent/run'){
       if(!env.LTP_RESEARCH_AGENT_TOKEN||!safeEqual(authToken(request),env.LTP_RESEARCH_AGENT_TOKEN))response=json(request,env,403,{error:'需要公司研究 Agent 运营凭据'});
       else {const input=await bodyJson(request);response=json(request,env,200,await runResearchBatch(store,env,{maxCompanies:input.maxCompanies}));}
+    }
+    else if(request.method==='GET'&&url.pathname==='/api/community-agent/state'){
+      if(!env.LTP_COMMUNITY_AGENT_TOKEN||!safeEqual(authToken(request),env.LTP_COMMUNITY_AGENT_TOKEN))response=json(request,env,403,{error:'需要社区运营 Agent 凭据'});
+      else response=json(request,env,200,communityAgentState(await store.read()));
+    }
+    else if(request.method==='GET'&&url.pathname==='/api/community-agent/queue'){
+      if(!env.LTP_COMMUNITY_AGENT_TOKEN||!safeEqual(authToken(request),env.LTP_COMMUNITY_AGENT_TOKEN))response=json(request,env,403,{error:'需要社区运营 Agent 凭据'});
+      else response=json(request,env,200,{items:communityAgentQueue(await store.read())});
+    }
+    else if(request.method==='POST'&&url.pathname==='/api/community-agent/official-relations'){
+      if(!env.LTP_COMMUNITY_AGENT_TOKEN||!safeEqual(authToken(request),env.LTP_COMMUNITY_AGENT_TOKEN))response=json(request,env,403,{error:'需要社区运营 Agent 凭据'});
+      else {const input=await bodyJson(request);const out=await store.transaction(s=>upsertOfficialRelations(s,input));response=json(request,env,200,{savedCount:out.savedCount});}
+    }
+    else if(request.method==='POST'&&feedbackResponse){
+      if(!env.LTP_COMMUNITY_AGENT_TOKEN||!safeEqual(authToken(request),env.LTP_COMMUNITY_AGENT_TOKEN))response=json(request,env,403,{error:'需要社区运营 Agent 凭据'});
+      else {const input=await bodyJson(request);const out=await store.transaction(s=>respondCommunityFeedback(s,feedbackResponse[1],input,'daily-community-agent'));response=json(request,env,200,{id:out.id,feedbackId:out.feedbackId,decision:out.decision,createdAt:out.createdAt});}
+    }
+    else if(request.method==='POST'&&url.pathname==='/api/community-agent/announcements'){
+      if(!env.LTP_COMMUNITY_AGENT_TOKEN||!safeEqual(authToken(request),env.LTP_COMMUNITY_AGENT_TOKEN))response=json(request,env,403,{error:'需要社区运营 Agent 凭据'});
+      else {const input=await bodyJson(request);const out=await store.transaction(s=>addPublicAnnouncement(s,input,'daily-community-agent'));response=json(request,env,200,{id:out.id,day:out.day,updatedAt:out.updatedAt});}
+    }
+    else if(request.method==='POST'&&url.pathname==='/api/community-agent/daily-run'){
+      if(!env.LTP_COMMUNITY_AGENT_TOKEN||!safeEqual(authToken(request),env.LTP_COMMUNITY_AGENT_TOKEN))response=json(request,env,403,{error:'需要社区运营 Agent 凭据'});
+      else {const input=await bodyJson(request);const out=await store.transaction(s=>recordAgentDailyRun(s,input,'daily-community-agent'));response=json(request,env,200,{id:out.id,day:out.day,phase:out.phase,status:out.status,updatedAt:out.updatedAt});}
     }
     else if(request.method==='GET'&&url.pathname==='/api/review-queue'){
       if(!env.LTP_REVIEW_TOKEN||!safeEqual(authToken(request),env.LTP_REVIEW_TOKEN))response=json(request,env,403,{error:'需要审核员凭据'});else response=json(request,env,200,{items:reviewQueue(await store.read())});

@@ -156,6 +156,7 @@ async function loadHomeLive(){
     await loadCompanies();
     const preview=$('#home-community-preview');if(preview){preview.replaceChildren();const visible=state.companies.filter(x=>!x.synthetic).slice(0,3);const rows=visible.length?visible:state.companies.slice(0,2);if(!rows.length)preview.append(text('p','还没有公司空间。第一条公开线索可以从一个公司讨论空间开始。','meta'));rows.forEach(co=>preview.append(companyCard(co,{actions:false})))}
     const reports=await api('/api/advisory/reports?limit=1');const home=$('#home-daily-report');if(home){home.replaceChildren();if(!reports.items.length)home.append(text('strong','暂无日报'),text('span','有新记录后会在这里显示聚合状态。'));else{const r=reports.items[0];home.append(text('strong',`收到 ${r.receivedCount} · 已建议 ${r.advisedCount} · 待处理 ${r.pendingCount}`),text('span',r.statement))}}
+    await loadCommunityUpdates();
   }catch(e){/* home remains useful as static public guide even when API is unavailable */}
 }
 
@@ -170,7 +171,7 @@ function armResearchPolling({reset=false}={}){
   },10000);
 }
 async function loadCompanies({fromPoll=false}={}){
-  const d=await api('/api/companies');state.companies=d.items;renderCompanySelect();renderAdvisoryCompanySelect();renderCompanies();
+  const d=await api('/api/companies');state.companies=d.items;renderCompanySelect();renderAdvisoryCompanySelect();renderFeedbackCompanySelect();renderCompanies();
   if(!fromPoll&&hasActiveCompanyResearch()&&researchPollRemaining===0)researchPollRemaining=36;
   armResearchPolling();
 }
@@ -183,6 +184,36 @@ function renderAdvisoryCompanySelect(){
   const select=$('#advisory-company-select');if(!select)return;const current=select.value;select.replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent='不关联 / 暂不明确';select.append(empty);
   for(const co of state.companies){const o=document.createElement('option');o.value=co.id;o.textContent=`${co.name} · ${co.region}`;select.append(o)}
   if([...select.options].some(x=>x.value===current))select.value=current;
+}
+function renderFeedbackCompanySelect(){
+  const select=$('#feedback-company-select');if(!select)return;const current=select.value;select.replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent='不关联公司';select.append(empty);
+  for(const co of state.companies.filter(x=>!x.synthetic)){const o=document.createElement('option');o.value=co.id;o.textContent=`${co.name} · ${co.region}`;select.append(o)}
+  if([...select.options].some(x=>x.value===current))select.value=current;
+}
+function renderAnnouncements(items){
+  const root=$('#home-announcements');if(!root)return;root.replaceChildren();
+  if(!items?.length){root.append(text('p','还没有公开更新记录。','meta'));return}
+  for(const item of items.slice(0,4)){
+    const card=cardBase(item.title,item.day);card.classList.add('announcement-card');card.append(text('p',item.summary));
+    if(item.items?.length){const ul=document.createElement('ul');item.items.forEach(x=>ul.append(text('li',x)));card.append(ul)}
+    if(item.sources?.length){const links=document.createElement('div');links.className='inline-links';item.sources.forEach(x=>links.append(link(x.label,x.url)));card.append(links)}
+    root.append(card);
+  }
+}
+function feedbackDecisionLabel(value){return ({answered:'已答复',accepted:'已采纳',planned:'已进入计划',declined:'暂不采纳',needs_more_info:'需要更多信息'})[value]||value;}
+function renderFeedbackMine(items){
+  const root=$('#community-feedback-mine');if(!root)return;root.replaceChildren();
+  if(!items?.length){root.append(text('p','还没有提交意见。','meta'));return}
+  for(const item of items.slice(0,6)){
+    const row=document.createElement('article');row.className='feedback-item';row.append(text('strong',item.message),text('small',item.company?`${item.company.name} · ${readableDate(item.createdAt)}`:readableDate(item.createdAt)));
+    if(item.response){row.append(badge(feedbackDecisionLabel(item.response.decision),'evidence'),text('p',item.response.answer));if(item.response.actions?.length)row.append(text('small',`处理：${item.response.actions.join('；')}`))}
+    else row.append(badge('等待每日 Agent 处理','pending'));
+    root.append(row);
+  }
+}
+async function loadCommunityUpdates(){
+  const [announcements,feedback]=await Promise.all([api('/api/announcements?limit=4'),api('/api/community-feedback')]);
+  renderAnnouncements(announcements.items||[]);renderFeedbackMine(feedback.items||[]);
 }
 function researchPreviewMeta(preview){
   const parts=[];
@@ -347,6 +378,19 @@ function appendContributionGroup(root,title,rows,empty='暂无公开贡献。'){
   const sec=dossierSection(title);if(!rows?.length){sec.append(text('p',empty,'meta'));root.append(sec);return}
   const list=document.createElement('div');list.className='detail-contribution-list';rows.forEach(x=>list.append(contributionDetailCard(x)));sec.append(list);root.append(sec);
 }
+function officialRelationLabel(value){return ({COMPANY_REGISTERS_PRODUCT:'官方登记产品',COMPANY_OWNS_BRAND:'官方记录的公司—品牌关系',BRAND_MARKETS_PRODUCT:'官方记录的品牌—产品关系',COMPANY_PARENT_OF_COMPANY:'官方记录的母公司关系',COMPANY_SUBSIDIARY_OF_COMPANY:'官方记录的子公司关系',PUBLIC_PROCUREMENT_RELATION:'公共采购关系',OTHER_OFFICIAL_RELATION:'其他官方关系'})[value]||value;}
+function appendOfficialRelations(root,rows){
+  if(!rows?.length)return;
+  const sec=dossierSection('官方来源确认的公司 / 品牌 / 产品关系','这里只展示具体官方记录能够直接支持的关系；它不等于产品质量认证、公司整体评价或完整关系网络。');
+  const list=document.createElement('div');list.className='official-relation-list';
+  for(const item of rows){
+    const card=document.createElement('article');card.className='official-relation-card';
+    card.append(badge('官方来源关系','evidence'),text('strong',`${item.subject?.name||'公司'} → ${item.object?.name||'记录对象'}`),text('small',`${officialRelationLabel(item.relationType)} · ${item.source?.sourceOfRecord||item.provider}${item.source?.date?` · ${item.source.date}`:''}`));
+    const attrs=item.object?.attributes||{};const meta=[attrs.tradeName&&`商品名 ${attrs.tradeName}`,attrs.model&&`型号 ${attrs.model}`,attrs.registrationOrFilingNumber&&`注册/备案号 ${attrs.registrationOrFilingNumber}`,attrs.udiDi&&`UDI-DI ${attrs.udiDi}`].filter(Boolean);if(meta.length)card.append(text('p',meta.join(' · ')));
+    if(item.scope)card.append(text('small',item.scope));card.append(text('p',item.caveat,'method-note'));if(item.source?.url)card.append(link('查看官方来源',item.source.url,'research-source-link'));list.append(card);
+  }
+  sec.append(list);root.append(sec);
+}
 function renderCompanyDetail(detail){
   const root=$('#company-detail-content');root.replaceChildren();
   $('#company-detail-title').textContent=detail.company.name;
@@ -362,10 +406,13 @@ function renderCompanyDetail(detail){
   const auto=dossierSection('自动资料与公开来源','这一部分由确定性规则自动整理。法律实体参考、开放知识上下文、来源信号和事件候选具有不同证据层级。');
   auto.append(researchBlock({research:detail.research}));root.append(auto);
 
+  appendOfficialRelations(root,detail.officialRelations||[]);
+
   const contrib=detail.contributions||{};
   appendContributionGroup(root,'公开公司资料贡献',contrib.companyFacts,'还没有用户补充的公开公司资料。');
+  appendContributionGroup(root,'品牌线索',contrib.brands,'还没有社区补充的品牌线索。');
   appendContributionGroup(root,'产品与服务线索',contrib.products,'还没有公开产品/服务线索。');
-  appendContributionGroup(root,'公司 / 产品关系线索',contrib.relationships,'还没有公开关系线索。');
+  appendContributionGroup(root,'社区关系线索',contrib.relationships,'还没有社区补充的公司 / 品牌 / 产品关系线索。');
   appendContributionGroup(root,'劳动实践主张',contrib.labourClaims,'还没有公开劳动实践贡献。没有记录不代表没有相关经历。');
   appendContributionGroup(root,'产品体验主张',contrib.productClaims,'还没有公开产品体验主张。');
   root.append(text('p',detail.boundary,'detail-boundary'));
@@ -418,15 +465,27 @@ async function loadResearchCoverage(){
 }
 
 function contributionPayload(form){
-  const f=new FormData(form),sourceUrl=String(f.get('sourceUrl')||'').trim();const sources=sourceUrl?[{url:sourceUrl,title:String(f.get('sourceTitle')||'').trim(),type:String(f.get('sourceType')||'other'),publishedAt:'',supports:String(f.get('sourceSupports')||'').trim()}]:[];
-  return {companyId:String(f.get('companyId')||''),kind:String(f.get('kind')||'product'),title:String(f.get('title')||''),description:String(f.get('description')||''),scope:String(f.get('scope')||''),periodStart:String(f.get('periodStart')||''),periodEnd:String(f.get('periodEnd')||''),direction:String(f.get('direction')||'neutral'),dimension:String(f.get('dimension')||'other'),productId:String(f.get('productId')||''),relation:String(f.get('relation')||''),category:'',sources,public:true,consent:f.get('consent')==='on',shareConsent:f.get('shareConsent')==='on',rights:String(f.get('rights')||'reference_only'),rightsNote:String(f.get('rightsNote')||''),creditName:String(f.get('creditName')||'')};
+  const f=new FormData(form);const summary=String(f.get('summary')||'').trim();let rawKind=String(f.get('kind')||'product');let kind=rawKind;let direction=String(f.get('direction')||'neutral');
+  if(rawKind==='labour_positive'){kind='labour_claim';direction='positive'}else if(rawKind==='labour_negative'){kind='labour_claim';direction='negative'}
+  if(kind==='product_claim'&&direction==='neutral')throw new Error('产品体验请选择正向或负向；如果只是补充产品资料，请选择“一个产品 / 服务”。');
+  const sourceUrl=String(f.get('sourceUrl')||'').trim();const sourceTitle=String(f.get('sourceTitle')||'').trim()||'公开来源';const sourceSupports=String(f.get('sourceSupports')||'').trim()||summary;
+  const sources=sourceUrl?[{url:sourceUrl,title:sourceTitle,type:String(f.get('sourceType')||'other'),publishedAt:'',supports:sourceSupports}]:[];
+  const first=summary.split(/[。！？\n]/).find(Boolean)||summary;const title=first.slice(0,120);
+  return {companyId:String(f.get('companyId')||''),kind,title,description:summary,scope:String(f.get('scope')||''),periodStart:String(f.get('periodStart')||''),periodEnd:String(f.get('periodEnd')||''),direction,dimension:String(f.get('dimension')||'other'),productId:String(f.get('productId')||''),brandId:String(f.get('brandId')||''),relationType:String(f.get('relationType')||''),relation:String(f.get('relation')||''),category:kind==='brand'?'品牌':'',sources,public:true,consent:true,shareConsent:false,rights:sourceUrl?'reference_only':'own_summary',rightsNote:'',creditName:String(f.get('creditName')||'')};
 }
-function resetContributionForm(){state.editId='';const form=$('#contribution-form');form?.reset();const t=$('#contribution-title');if(t)t.textContent='补充一条可以被核对的信息';$('#cancel-edit')?.classList.add('hidden');renderCompanySelect()}
+function resetContributionForm(){state.editId='';const form=$('#contribution-form');form?.reset();const t=$('#contribution-title');if(t)t.textContent='说一句你知道的';$('#cancel-edit')?.classList.add('hidden');const more=$('#contribution-more');if(more)more.open=false;renderCompanySelect()}
 async function loadMine(){
   try{const d=await api('/api/contributions?mine=1');state.mine=d.items;const root=$('#mine-list');root.replaceChildren();if(!d.items.length){root.append(text('p','这个浏览器还没有提交公开线索。','meta'));return}for(const item of d.items){const c=cardBase(item.title,`${evidenceLabel(item.evidence)} · ${statusLabel(item.status)} · v${item.version}`);const b=document.createElement('div');b.className='badges';b.append(badge(evidenceLabel(item.evidence),'evidence'),badge(statusLabel(item.status),item.status==='PENDING'?'pending':''));c.append(b,text('p',item.description));const a=document.createElement('div');a.className='card-actions';for(const [action,label,cls] of [['edit','修改','secondary'],['flag','提交纠错','secondary'],['withdraw','撤回','danger']]){const btn=document.createElement('button');btn.className=cls;btn.dataset.mineAction=action;btn.dataset.id=item.id;btn.textContent=label;a.append(btn)}c.append(a);root.append(c)}}catch(e){toast(e.message,true)}
 }
 function editContribution(id){
-  const item=state.mine.find(x=>x.id===id);if(!item)return;state.editId=id;switchTab('contribute');const form=$('#contribution-form');for(const key of ['companyId','kind','title','description','scope','periodStart','periodEnd','direction','dimension','productId','relation','rights','rightsNote','creditName'])if(form.elements[key])form.elements[key].value=item[key]||'';form.elements.shareConsent.checked=!!item.shareConsent;form.elements.consent.checked=true;const s=item.sources?.[0];if(s){form.elements.sourceUrl.value=s.url;form.elements.sourceTitle.value=s.title;form.elements.sourceType.value=s.type;form.elements.sourceSupports.value=s.supports}$('#contribution-title').textContent='修改这条公开线索';$('#cancel-edit').classList.remove('hidden')
+  const item=state.mine.find(x=>x.id===id);if(!item)return;state.editId=id;switchTab('contribute');const form=$('#contribution-form');
+  form.elements.companyId.value=item.companyId||'';
+  let uiKind=item.kind;if(item.kind==='labour_claim')uiKind=item.direction==='positive'?'labour_positive':'labour_negative';form.elements.kind.value=uiKind;
+  form.elements.summary.value=item.description||item.title||'';
+  for(const key of ['scope','periodStart','periodEnd','direction','dimension','productId','brandId','relationType','relation','creditName'])if(form.elements[key])form.elements[key].value=item[key]||'';
+  const s=item.sources?.[0];if(s){form.elements.sourceUrl.value=s.url;form.elements.sourceTitle.value=s.title;form.elements.sourceType.value=s.type;form.elements.sourceSupports.value=s.supports}
+  const more=$('#contribution-more');if(more)more.open=Boolean(s||item.scope||item.periodStart||item.periodEnd||item.relation||item.relationType||item.dimension!=='other');
+  $('#contribution-title').textContent='修改这句话';$('#cancel-edit').classList.remove('hidden')
 }
 
 function advisoryPayload(form){const f=new FormData(form);return {category:String(f.get('category')||'other'),companyId:String(f.get('companyId')||''),region:String(f.get('region')||''),employmentStatus:String(f.get('employmentStatus')||'other'),summary:String(f.get('summary')||''),desiredOutcome:String(f.get('desiredOutcome')||''),tried:String(f.get('tried')||''),urgency:String(f.get('urgency')||'routine'),privacyConfirmed:f.get('privacyConfirmed')==='on',consent:f.get('consent')==='on'}}
@@ -466,8 +525,9 @@ $('#company-detail-dialog')?.addEventListener('cancel',e=>{e.preventDefault();cl
 $('#company-detail-dialog')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeCompanyDetail()});
 
 $('#company-search')?.addEventListener('input',renderCompanies);
-$('#company-form')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget;const f=new FormData(form);try{const d=await api('/api/companies',{method:'POST',body:{name:String(f.get('name')||''),region:String(f.get('region')||''),website:String(f.get('website')||''),consent:f.get('consent')==='on'}});const autoQueued=d.researchQueued===true||['QUEUED','COLLECTING'].includes(d.research?.status);toast(d.duplicate?'这个公司空间已经存在；已有研究状态会继续保留。':autoQueued?'公司空间已创建，并已自动进入公开资料采集队列。':'公司空间已创建；当前运行模式未声明自动研究队列。');form.reset();if(autoQueued)researchPollRemaining=36;await loadCompanies();if(autoQueued)armResearchPolling({reset:true})}catch(err){toast(err.message,true)}});
-$('#contribution-form')?.addEventListener('submit',async e=>{e.preventDefault();try{const body=contributionPayload(e.currentTarget);if(state.editId)await api(`/api/contributions/${state.editId}`,{method:'PATCH',body});else await api('/api/contributions',{method:'POST',body});toast(state.editId?'已修改；这条信息重新回到未核实状态':'已作为未核实公开线索保存，后续可进入独立复核。');resetContributionForm();switchTab('mine')}catch(err){toast(err.message,true)}});
+$('#company-form')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget;const f=new FormData(form);try{const d=await api('/api/companies',{method:'POST',body:{name:String(f.get('name')||''),region:String(f.get('region')||''),website:String(f.get('website')||''),consent:true}});const autoQueued=d.researchQueued===true||['QUEUED','COLLECTING'].includes(d.research?.status);toast(d.duplicate?'这个公司空间已经有了，你可以直接补充资料。':autoQueued?'已创建。公开资料会自动开始整理，你不用再做设置。':'已创建公司空间。');form.reset();if(autoQueued)researchPollRemaining=36;await loadCompanies();if(d.company?.id&&$('#company-select'))$('#company-select').value=d.company.id;if(autoQueued)armResearchPolling({reset:true})}catch(err){toast(err.message,true)}});
+$('#contribution-form')?.addEventListener('submit',async e=>{e.preventDefault();try{const body=contributionPayload(e.currentTarget);if(state.editId)await api(`/api/contributions/${state.editId}`,{method:'PATCH',body});else await api('/api/contributions',{method:'POST',body});toast(state.editId?'已修改。系统会把它重新当作未核实线索。':'已保存。你不需要再补一大堆字段；有更多资料时随时回来补。');resetContributionForm();switchTab('mine')}catch(err){toast(err.message,true)}});
+$('#community-feedback-form')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget;const f=new FormData(form);try{await api('/api/community-feedback',{method:'POST',body:{type:String(f.get('type')||'suggestion'),companyId:String(f.get('companyId')||''),message:String(f.get('message')||''),consent:true}});toast('收到了。每天 18:00 Agent 会统一处理，19:00 会再检查一次有没有遗漏。');form.reset();renderFeedbackCompanySelect();await loadCommunityUpdates()}catch(err){toast(err.message,true)}});
 $('#advisory-form')?.addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget;try{const d=await api('/api/advisory',{method:'POST',body:advisoryPayload(form)});showReceipt(d.receiptCode);toast('已经记录。请保存回执码；你的个案正文不会进入公开日报。');form.reset();renderAdvisoryCompanySelect();await loadAdvisory()}catch(err){toast(err.message,true)}});
 $('#advisory-access-form')?.addEventListener('submit',async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const root=$('#advisory-access-result');root.replaceChildren();try{const d=await api('/api/advisory/access',{method:'POST',body:{receiptCode:String(f.get('receiptCode')||'').trim()}});root.append(adviceBlock(d.item));toast('已找到这条匿名辅导')}catch(err){toast(err.message,true)}});
 $('#review-auth')?.addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.currentTarget);state.reviewToken=String(f.get('reviewToken')||'');state.exportToken=String(f.get('exportToken')||'');loadReview()});

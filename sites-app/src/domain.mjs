@@ -1,11 +1,13 @@
 import crypto from 'node:crypto';
 
-export const VERSION = '0.8.3-rc.1';
+export const VERSION = '0.8.4-rc.1';
 export const EVIDENCE_LEVELS = new Set(['E0','E1','E2','E3','E4','E5']);
-export const KINDS = new Set(['product','company_fact','relationship','labour_claim','product_claim']);
+export const KINDS = new Set(['product','brand','company_fact','relationship','labour_claim','product_claim']);
 export const DIMENSIONS = new Set(['pay','rest','hours','safety','contract','respect','representation','other']);
 export const RIGHTS = new Set(['own_summary','permission','public_domain','reference_only']);
 export const SOURCE_TYPES = new Set(['first_person','company_disclosure','public_record','official_decision','other']);
+export const RELATION_TYPES = new Set(['company_brand','company_product','brand_product','parent_subsidiary','supplier_customer','other']);
+export const COMMUNITY_FEEDBACK_TYPES = new Set(['suggestion','appeal','correction','source_request','other']);
 export const ADVISORY_CATEGORIES = new Set(['pay','hours_rest','contract','termination','safety','respect','representation','other']);
 export const ADVISORY_URGENCY = new Set(['routine','soon','urgent']);
 export const EMPLOYMENT_STATUS = new Set(['current','former','applicant','contractor','other']);
@@ -74,14 +76,19 @@ export function emptyState(){
     advisoryCases: [],
     advisoryAdvice: [],
     advisoryDailyReports: [],
-    companyResearch: []
+    companyResearch: [],
+    officialRelations: [],
+    communityFeedback: [],
+    communityFeedbackResponses: [],
+    publicAnnouncements: [],
+    agentDailyRuns: []
   };
 }
 
 export function upgradeState(state){
   if (!state || typeof state !== 'object' || Array.isArray(state)) throw new Error('状态文件无效');
   for (const key of ['companies','contributions','reviews','exportReviews','ballots','flags']) if (!Array.isArray(state[key])) state[key]=[];
-  for (const key of ['advisoryCases','advisoryAdvice','advisoryDailyReports']) if (!Array.isArray(state[key])) state[key]=[];
+  for (const key of ['advisoryCases','advisoryAdvice','advisoryDailyReports','officialRelations','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns']) if (!Array.isArray(state[key])) state[key]=[];
   if (!Array.isArray(state.companyResearch)) state.companyResearch=[];
   state.schemaVersion = '0.8';
   state.version = VERSION;
@@ -147,7 +154,7 @@ function sourceInput(raw, index){
 
 export function validateContributionInput(state, input){
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('贡献需要结构化对象');
-  const allowed = new Set(['companyId','kind','title','description','scope','periodStart','periodEnd','direction','dimension','productId','relation','category','sources','public','consent','shareConsent','rights','rightsNote','creditName']);
+  const allowed = new Set(['companyId','kind','title','description','scope','periodStart','periodEnd','direction','dimension','productId','brandId','relationType','relation','category','sources','public','consent','shareConsent','rights','rightsNote','creditName']);
   for (const k of Object.keys(input)) if (!allowed.has(k)) throw new Error('不接受未定义字段或用户指定证据等级/审核状态');
   const company = state.companies.find(x => x.id === input.companyId);
   if (!company) throw new Error('公司空间不存在');
@@ -172,6 +179,13 @@ export function validateContributionInput(state, input){
   } else if (kind === 'product_claim') {
     throw new Error('产品体验主张必须指定产品');
   }
+  const brandId = input.brandId || '';
+  if (brandId) {
+    const brand = state.contributions.find(x => x.id === brandId && x.kind === 'brand' && x.companyId === company.id && x.status !== 'WITHDRAWN');
+    if (!brand) throw new Error('品牌必须来自同一公司空间');
+  }
+  const relationType = input.relationType || (kind === 'relationship' ? 'other' : '');
+  if (relationType && !RELATION_TYPES.has(relationType)) throw new Error('关系类型无效');
   if (input.shareConsent === true && rights === 'permission' && !input.rightsNote) throw new Error('请说明允许再分发的授权依据');
   const sources = input.sources || [];
   if (!Array.isArray(sources) || sources.length > 10) throw new Error('最多10个来源');
@@ -181,7 +195,7 @@ export function validateContributionInput(state, input){
     title: safeText(input.title,{min:2,max:120,field:'标题'}),
     description: safeText(input.description,{min:2,max:2000,field:'说明'}),
     scope: safeText(input.scope || '',{min:0,max:300,field:'适用范围'}),
-    periodStart, periodEnd, direction, dimension, productId,
+    periodStart, periodEnd, direction, dimension, productId, brandId, relationType,
     relation: safeText(input.relation || '',{min:0,max:80,field:'关系'}),
     category: safeText(input.category || '',{min:0,max:80,field:'类别'}),
     sources: sources.map(sourceInput),
@@ -306,7 +320,7 @@ export function publicContribution(item, owner=''){
   const out = {
     id:item.id, companyId:item.companyId, kind:item.kind, title:item.title, description:item.description,
     scope:item.scope, periodStart:item.periodStart, periodEnd:item.periodEnd, direction:item.direction,
-    dimension:item.dimension, productId:item.productId, relation:item.relation, category:item.category,
+    dimension:item.dimension, productId:item.productId, brandId:item.brandId||'', relationType:item.relationType||'', relation:item.relation, category:item.category,
     sources:item.sources.map(({id,url,title,type,publishedAt,supports})=>({id,url,title,type,publishedAt,supports})),
     public:item.public, creditName:item.creditName || '匿名贡献者',
     version:item.version, evidence:item.evidence, status:item.status, exportApproved:item.exportApproved,
@@ -364,6 +378,120 @@ export function publicDataset(state){
   };
 }
 
+
+const OFFICIAL_RELATION_TYPES = new Set(['COMPANY_REGISTERS_PRODUCT','COMPANY_OWNS_BRAND','BRAND_MARKETS_PRODUCT','COMPANY_PARENT_OF_COMPANY','COMPANY_SUBSIDIARY_OF_COMPANY','PUBLIC_PROCUREMENT_RELATION','OTHER_OFFICIAL_RELATION']);
+function safeOfficialValue(value,max=800){
+  const text=String(value??'').trim();if(text.length>max)throw new Error('官方结构化字段过长');if(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/.test(text))throw new Error('官方结构化字段包含无效控制字符');return text;
+}
+function relationStableId(item){
+  const parts=[item.provider,item.sourceRecordId,item.companyId,item.relationType,item.objectType,item.objectExternalId,item.objectName];
+  return `orel_${crypto.createHash('sha256').update(parts.map(x=>String(x||'')).join('\u001f')).digest('hex').slice(0,24)}`;
+}
+function boundedRelationAttributes(value){
+  if(!value||typeof value!=='object'||Array.isArray(value)) return {};
+  const out={};let n=0;
+  for(const [key,raw] of Object.entries(value)){
+    if(n>=20)break;
+    if(!/^[A-Za-z0-9_]{1,64}$/.test(key))continue;
+    if(typeof raw==='string')out[key]=safeOfficialValue(raw,800);
+    else if(typeof raw==='number'&&Number.isFinite(raw))out[key]=raw;
+    else if(typeof raw==='boolean')out[key]=raw;
+    else if(Array.isArray(raw))out[key]=raw.slice(0,12).map(x=>safeOfficialValue(x,240));
+    else continue;
+    n++;
+  }
+  return out;
+}
+function validateOfficialRelationInput(state,input){
+  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('官方关系需要结构化对象');
+  const company=state.companies.find(x=>x.id===String(input.companyId||'')&&!x.synthetic);
+  if(!company)throw new Error('官方关系必须绑定真实公司空间');
+  const relationType=String(input.relationType||'');if(!OFFICIAL_RELATION_TYPES.has(relationType))throw new Error('官方关系类型无效');
+  const provider=safeText(input.provider,{min:2,max:80,field:'官方来源标识'});
+  const sourceRecordId=safeOfficialValue(input.sourceRecordId,180);if(!sourceRecordId)throw new Error('官方记录标识不能为空');
+  const item={
+    companyId:company.id,provider,jurisdiction:safeText(input.jurisdiction||'',{min:0,max:20,field:'司法区'}),
+    relationType,subjectType:'company',subjectName:company.name,
+    objectType:String(input.objectType||''),objectName:safeText(input.objectName,{min:2,max:240,field:'官方关系对象'}),
+    objectExternalId:safeOfficialValue(input.objectExternalId||'',180),
+    sourceRecordId,sourceOfRecord:safeText(input.sourceOfRecord,{min:2,max:180,field:'官方来源名称'}),sourceUrl:safeUrl(input.sourceUrl),
+    sourceDate:safeDate(input.sourceDate||'','来源日期'),observedAt:safeText(input.observedAt||nowIso(),{min:10,max:40,field:'观察时间'}),
+    confidence:['HIGH','MEDIUM','LOW_MEDIUM'].includes(input.confidence)?input.confidence:'HIGH',
+    scope:safeText(input.scope||'',{min:0,max:500,field:'关系范围'}),
+    caveat:safeText(input.caveat||'',{min:8,max:900,field:'关系边界'}),
+    attributes:boundedRelationAttributes(input.attributes),tier:'OFFICIAL_SOURCE_RELATION',status:'CURRENT'
+  };
+  if(!['product','brand','company','contract','other'].includes(item.objectType))throw new Error('官方关系对象类型无效');
+  return {...item,id:relationStableId(item)};
+}
+export function upsertOfficialRelations(state,input){
+  const rows=Array.isArray(input)?input:Array.isArray(input?.items)?input.items:[];
+  if(!rows.length||rows.length>500)throw new Error('官方关系批次需为1—500条');
+  const at=nowIso();const saved=[];
+  for(const raw of rows){
+    const next={...validateOfficialRelationInput(state,raw),updatedAt:at};
+    const index=state.officialRelations.findIndex(x=>x.id===next.id);
+    if(index>=0){next.createdAt=state.officialRelations[index].createdAt||at;state.officialRelations[index]=next;}
+    else {next.createdAt=at;state.officialRelations.push(next);}
+    saved.push(next);
+  }
+  return {savedCount:saved.length,items:saved};
+}
+export function publicOfficialRelations(state,companyId){
+  return (state.officialRelations||[]).filter(x=>x.companyId===companyId&&x.status==='CURRENT').map(x=>({
+    id:x.id,tier:'OFFICIAL_SOURCE_RELATION',provider:x.provider,jurisdiction:x.jurisdiction,relationType:x.relationType,
+    subject:{type:x.subjectType,name:x.subjectName},object:{type:x.objectType,name:x.objectName,externalId:x.objectExternalId,attributes:x.attributes||{}},
+    source:{sourceOfRecord:x.sourceOfRecord,url:x.sourceUrl,recordId:x.sourceRecordId,date:x.sourceDate||'',observedAt:x.observedAt},
+    confidence:x.confidence,scope:x.scope,caveat:x.caveat,updatedAt:x.updatedAt
+  })).sort((a,b)=>String(b.source.date||b.updatedAt||'').localeCompare(String(a.source.date||a.updatedAt||''))||a.id.localeCompare(b.id));
+}
+
+function latestFeedbackResponse(state,feedbackId){return (state.communityFeedbackResponses||[]).filter(x=>x.feedbackId===feedbackId).sort((a,b)=>b.createdAt.localeCompare(a.createdAt))[0]||null;}
+export function addCommunityFeedback(state,input,owner){
+  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('意见需要结构化对象');
+  const type=String(input.type||'suggestion');if(!COMMUNITY_FEEDBACK_TYPES.has(type))throw new Error('意见类型无效');
+  const companyId=String(input.companyId||'');if(companyId&&!state.companies.some(x=>x.id===companyId))throw new Error('关联公司空间不存在');
+  if(input.consent!==true)throw new Error('请确认提交边界');
+  const cutoff=Date.now()-24*60*60*1000;const recent=(state.communityFeedback||[]).filter(x=>x.owner===owner&&new Date(x.createdAt).getTime()>=cutoff).length;
+  if(recent>=10)throw new Error('同一匿名会话24小时内最多提交10条意见，请先等待现有意见处理');
+  const at=nowIso();const item={id:id('fb'),owner,type,companyId,message:safeAdvisoryText(input.message,{min:4,max:1600,field:'意见内容'}),status:'RECEIVED',createdAt:at,updatedAt:at};
+  state.communityFeedback.push(item);return item;
+}
+function feedbackProjection(state,item){
+  const response=latestFeedbackResponse(state,item.id);const company=state.companies.find(x=>x.id===item.companyId);
+  return {id:item.id,type:item.type,company:company?{id:company.id,name:company.name,region:company.region}:null,message:item.message,status:item.status,createdAt:item.createdAt,updatedAt:item.updatedAt,response:response?{decision:response.decision,answer:response.answer,actions:response.actions,createdAt:response.createdAt}:null};
+}
+export function listOwnCommunityFeedback(state,owner){return (state.communityFeedback||[]).filter(x=>x.owner===owner).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)).map(x=>feedbackProjection(state,x));}
+export function communityAgentQueue(state){return (state.communityFeedback||[]).filter(x=>!['ANSWERED','CLOSED'].includes(x.status)).sort((a,b)=>a.createdAt.localeCompare(b.createdAt)).map(x=>feedbackProjection(state,x));}
+export function respondCommunityFeedback(state,feedbackId,input,agent='community-agent'){
+  const item=(state.communityFeedback||[]).find(x=>x.id===feedbackId);if(!item)throw new Error('意见不存在');
+  const decision=String(input?.decision||'answered');if(!['answered','accepted','planned','declined','needs_more_info'].includes(decision))throw new Error('意见处理决定无效');
+  const answer=safeText(input?.answer||'',{min:4,max:2200,field:'意见答复'});
+  const actions=Array.isArray(input?.actions)?input.actions.slice(0,8).map(x=>safeText(String(x),{min:2,max:300,field:'处理动作'})):[];
+  const at=nowIso();const response={id:id('fbr'),feedbackId:item.id,decision,answer,actions,agent:safeText(agent,{min:2,max:80,field:'处理Agent'}),createdAt:at};
+  state.communityFeedbackResponses.push(response);item.status=decision==='needs_more_info'?'NEEDS_MORE_INFO':'ANSWERED';item.updatedAt=at;return response;
+}
+function announcementSource(raw,index){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('公告来源需要结构化对象');
+  return {id:`AS${index+1}`,label:safeText(raw.label,{min:2,max:180,field:'公告来源名称'}),url:safeUrl(raw.url)};
+}
+export function addPublicAnnouncement(state,input,agent='community-agent'){
+  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('公告需要结构化对象');
+  const day=safeDate(input.day||new Date().toISOString().slice(0,10),'公告日期');
+  const items=Array.isArray(input.items)?input.items.slice(0,12).map(x=>safeText(String(x),{min:2,max:500,field:'公告事项'})):[];
+  const sources=Array.isArray(input.sources)?input.sources.slice(0,12).map(announcementSource):[];
+  const key=`announcement:${day}`;let row=(state.publicAnnouncements||[]).find(x=>x.key===key);const at=nowIso();
+  const next={id:row?.id||id('ann'),key,day,title:safeText(input.title||`${day} 每日更新`,{min:2,max:120,field:'公告标题'}),summary:safeText(input.summary,{min:4,max:1600,field:'公告摘要'}),items,sources,agent:safeText(agent,{min:2,max:80,field:'公告Agent'}),createdAt:row?.createdAt||at,updatedAt:at};
+  if(row)Object.assign(row,next);else state.publicAnnouncements.push(next);return next;
+}
+export function publicAnnouncements(state,limit=30){return (state.publicAnnouncements||[]).slice().sort((a,b)=>b.day.localeCompare(a.day)||b.updatedAt.localeCompare(a.updatedAt)).slice(0,Math.max(1,Math.min(100,Number(limit)||30))).map(x=>({id:x.id,day:x.day,title:x.title,summary:x.summary,items:x.items||[],sources:x.sources||[],updatedAt:x.updatedAt}));}
+export function recordAgentDailyRun(state,input,agent='community-agent'){
+  const day=safeDate(input?.day||new Date().toISOString().slice(0,10),'运行日期');const phase=String(input?.phase||'18');if(!['18','19'].includes(phase))throw new Error('Agent运行阶段无效');
+  const key=`${day}:${phase}`;let row=(state.agentDailyRuns||[]).find(x=>x.key===key);const at=nowIso();
+  const metrics=input?.metrics&&typeof input.metrics==='object'&&!Array.isArray(input.metrics)?boundedRelationAttributes(input.metrics):{};
+  const next={id:row?.id||id('adr'),key,day,phase,status:['COMPLETED','PARTIAL','FAILED'].includes(input?.status)?input.status:'COMPLETED',summary:safeText(input?.summary||'',{min:4,max:1800,field:'每日Agent摘要'}),metrics,logRef:safeText(input?.logRef||'',{min:0,max:240,field:'工作记录引用'}),agent:safeText(agent,{min:2,max:80,field:'运行Agent'}),createdAt:row?.createdAt||at,updatedAt:at};
+  if(row)Object.assign(row,next);else state.agentDailyRuns.push(next);return next;
+}
 
 function advisoryCompany(state, companyId){
   if (!companyId) return null;

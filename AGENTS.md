@@ -8,6 +8,8 @@ The GitHub account holder and any infrastructure account holder remain the legal
 
 - `agents/PROJECT_MANAGER_AGENT.md` — canonical routine project operator and release manager.
 - `agents/SOCIAL_ANNOUNCEMENT_AGENT.md` — public information, announcements, release notes and social copy.
+- `agents/DAILY_COMMUNITY_AGENT.md` — Beijing 18:00 official-source/community operations pass invoked by LocalAgentRuntime.
+- `agents/DAILY_COMMUNITY_REVIEW_AGENT.md` — Beijing 19:00 independent review/continuation pass.
 
 ## Non-negotiable invariants
 
@@ -25,6 +27,8 @@ The GitHub account holder and any infrastructure account holder remain the legal
 12. Advisory public reports may contain aggregate counts only; individual case text, company association, owner/session identifiers, receipt hashes/codes and private advice stay non-public.
 13. Company-research automation must remain useful without collapsing evidence tiers. Production does not depend on a named reviewer. `MACHINE_VERIFIED_REFERENCE` is reserved for narrow fail-closed source-of-record fields (initial identity root: GLEIF); `OPEN_KNOWLEDGE_CONTEXT` may bind only under deterministic context rules and is never equivalent to legal identity; `SOURCE_SIGNAL` and `SOURCE_EVENT_CANDIDATE` preserve each public record's procedural meaning; ambiguous `CONTEXT_CANDIDATE` data stays candidate/unknown. Research adapters must be region-applicable: a US-only source skipped for a non-US company is `NOT_APPLICABLE`, not success, failure, or evidence of absence. The public product must expose a coherent company dossier (community voice, known context, evidence-scoped events, gaps, freshness, provenance and public contributions) rather than making users interpret provider/debug status. A search hit is never a broad company fact, legal conclusion or quality rating. Independent human review may exist as optional audit, not a production availability gate.
 14. The current production deployment is GitHub + Vercel + Cloudflare Worker/D1 + project DNS. Tencent Cloud / EdgeOne is historical optional PoC evidence only. Do not request, enter or treat Tencent real-name, identity-document, account-completion or payment-method steps as required project work. Reactivation requires a new explicit user decision and a corresponding deployment-policy update.
+15. Official company/brand/product relationships and community relationship claims are distinct data lanes. `OFFICIAL_SOURCE_RELATION` requires a specific approved official record and narrow scope; user-contributed brands/products/relationships remain contribution evidence with their own E-level/status. Do not promote a community claim to an official relationship because it is popular or plausible.
+16. Daily community operations follow `docs/v0_8/DAILY_AGENT_OPERATIONS.md`. LocalAgentRuntime invokes the 18:00 and 19:00 Beijing-time Agents; the platform does not monitor whether an Agent is actively working between invocations. User suggestions/appeals remain private to the submitting session and trusted community Agent interface. Public announcements report only completed non-sensitive work, aggregate themes and source links—never private feedback/advisory text or credentials.
 
 ## Git/release policy
 

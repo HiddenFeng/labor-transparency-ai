@@ -20,8 +20,8 @@ class Client {
   async config(){const r=await this.request('/api/config');assert.equal(r.status,200);this.csrf=r.data.csrfToken;return r.data}
 }
 
-async function start({dataFile,secret='S'.repeat(64),reviewToken='review-secret',exportToken='export-secret',advisoryAgentToken='advisory-agent-secret',seed=false}={}){
-  const runtime=await createRuntime({dataFile,sessionSecret:secret,reviewToken,exportToken,advisoryAgentToken,seed});
+async function start({dataFile,secret='S'.repeat(64),reviewToken='review-secret',exportToken='export-secret',advisoryAgentToken='advisory-agent-secret',communityAgentToken='community-agent-secret',seed=false}={}){
+  const runtime=await createRuntime({dataFile,sessionSecret:secret,reviewToken,exportToken,advisoryAgentToken,communityAgentToken,seed});
   const {server}=await createAppServer({runtime});
   await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve)});
   const {port}=server.address();
@@ -34,7 +34,7 @@ test('real HTTP contribution -> review -> redistribution -> correction -> persis
   const dataFile=path.join(dir,'state.json');
   let env=await start({dataFile});t.after(()=>env.server.listening&&env.server.close());
   const client=new Client(env.base);const cfg=await client.config();
-  assert.equal(cfg.version,'0.8.3-rc.1');assert.equal(cfg.capabilities.attachments,false);assert.equal(cfg.capabilities.privateSensitiveInfo,false);assert.equal(cfg.capabilities.anonymousAdvisory,true);
+  assert.equal(cfg.version,'0.8.4-rc.1');assert.equal(cfg.capabilities.attachments,false);assert.equal(cfg.capabilities.privateSensitiveInfo,false);assert.equal(cfg.capabilities.anonymousAdvisory,true);assert.equal(cfg.capabilities.communityFeedback,true);assert.equal(cfg.capabilities.officialRelations,true);assert.equal(cfg.capabilities.publicAnnouncements,true);
   const researchHealth=await client.request('/api/research/health');assert.equal(researchHealth.status,200);assert.equal(researchHealth.data.status,'LOCAL_REFERENCE_MODE');assert.equal(researchHealth.data.unattendedOperation,true);assert.equal(researchHealth.data.runtime.companyResearchQueue,false);assert.equal(researchHealth.data.selfHealing.manualOperatorRequired,false);
 
   const company=await client.request('/api/companies',{method:'POST',body:{name:'HTTP示例公司',region:'示例地区',website:'https://example.org',consent:true}});
@@ -43,7 +43,18 @@ test('real HTTP contribution -> review -> redistribution -> correction -> persis
 
   const product=await client.request('/api/contributions',{method:'POST',body:{companyId:cid,kind:'product',title:'示例产品',description:'未独立核实的产品线索。',scope:'',periodStart:'',periodEnd:'',direction:'neutral',dimension:'other',productId:'',relation:'',category:'示例',sources:[],public:true,consent:true,shareConsent:false,rights:'reference_only',rightsNote:'',creditName:''}});
   assert.equal(product.status,200);assert.equal(product.data.item.evidence,'E0');
+  const feedback=await client.request('/api/community-feedback',{method:'POST',body:{type:'source_request',companyId:cid,message:'希望增加这个公司的中国官方产品来源。',consent:true}});assert.equal(feedback.status,200);const feedbackId=feedback.data.item.id;
+  const feedbackMinePending=await client.request('/api/community-feedback');assert.equal(feedbackMinePending.status,200);assert.equal(feedbackMinePending.data.items[0].status,'RECEIVED');
+  const deniedCommunityAgent=await client.request('/api/community-agent/queue',{token:'wrong-token'});assert.equal(deniedCommunityAgent.status,403);
+  const communityQueue=await client.request('/api/community-agent/queue',{token:'community-agent-secret'});assert.equal(communityQueue.status,200);assert.ok(communityQueue.data.items.some(x=>x.id===feedbackId));
+  const response=await client.request(`/api/community-agent/feedback/${feedbackId}/respond`,{method:'POST',token:'community-agent-secret',origin:'',body:{decision:'planned',answer:'已加入官方来源扩展计划。',actions:['每日检查 NMPA UDI 官方增量']}});assert.equal(response.status,200);
+  const announcement=await client.request('/api/community-agent/announcements',{method:'POST',token:'community-agent-secret',origin:'',body:{day:'2026-09-16',title:'今天更新了什么',summary:'新增官方来源关系测试。',items:['接入 NMPA UDI'],sources:[{label:'NMPA UDI',url:'https://udi.nmpa.gov.cn/'}]}});assert.equal(announcement.status,200);
+  const officialRelation=await client.request('/api/community-agent/official-relations',{method:'POST',token:'community-agent-secret',origin:'',body:{items:[{companyId:cid,provider:'CN_NMPA_UDI',jurisdiction:'CN',relationType:'COMPANY_REGISTERS_PRODUCT',objectType:'product',objectName:'示例医疗器械',objectExternalId:'06972253600013',sourceRecordId:'UDI-KEY-1',sourceOfRecord:'国家药品监督管理局医疗器械唯一标识数据库',sourceUrl:'https://udi.nmpa.gov.cn/',sourceDate:'2026-09-15',confidence:'HIGH',scope:'特定 UDI 注册/备案记录。',caveat:'该官方记录只支持这条具体产品登记关系，不代表产品整体质量或公司的完整产品目录。',attributes:{udiDi:'06972253600013',model:'M-1'}}]}});assert.equal(officialRelation.status,200);assert.equal(officialRelation.data.savedCount,1);
+  const dailyRun=await client.request('/api/community-agent/daily-run',{method:'POST',token:'community-agent-secret',origin:'',body:{day:'2026-09-16',phase:'18',status:'COMPLETED',summary:'完成来源增量、意见处理与公告。',metrics:{relations:1},logRef:'history/daily/2026-09-16/18-operations.md'}});assert.equal(dailyRun.status,200);
+  const announcements=await client.request('/api/announcements?limit=3');assert.equal(announcements.status,200);assert.equal(announcements.data.items[0].title,'今天更新了什么');
+  const feedbackMineAnswered=await client.request('/api/community-feedback');assert.equal(feedbackMineAnswered.data.items[0].response.decision,'planned');assert.equal(feedbackMineAnswered.data.items[0].response.answer,'已加入官方来源扩展计划。');
   const companyDetail=await client.request(`/api/companies/${cid}`);assert.equal(companyDetail.status,200);assert.equal(companyDetail.data.company.id,cid);assert.equal(companyDetail.data.community.positive,1);assert.equal(companyDetail.data.community.participants,1);assert.equal(companyDetail.data.contributions.products.length,1);assert.equal(companyDetail.data.contributions.products[0].title,'示例产品');const detailJson=JSON.stringify(companyDetail.data);assert.equal(detailJson.includes('owner'),false);assert.equal(detailJson.includes('rightsNote'),false);assert.match(companyDetail.data.boundary,/社区反馈/);
+  assert.equal(companyDetail.data.officialRelations.length,1);assert.equal(companyDetail.data.officialRelations[0].tier,'OFFICIAL_SOURCE_RELATION');assert.equal(companyDetail.data.officialRelations[0].object.externalId,'06972253600013');
   const missingCompany=await client.request('/api/companies/co_missing');assert.equal(missingCompany.status,404);
   const publicList=await client.request('/api/contributions');assert.equal(publicList.status,200);assert.equal('rights' in publicList.data.items[0],false);assert.equal('owner' in publicList.data.items[0],false);
   const mine=await client.request('/api/contributions?mine=1');assert.equal(mine.status,200);assert.equal(mine.data.items[0].rights,'reference_only');

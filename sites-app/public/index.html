@@ -118,6 +118,25 @@
       <div id="home-community-preview" class="cards soft-cards"></div>
     </section>
 
+    <section class="home-band updates-band reveal" aria-labelledby="updates-title">
+      <div class="section-head editorial-head">
+        <div><p class="section-kicker">每天都说清楚做了什么</p><h2 id="updates-title">今天平台更新了什么？</h2><p>公开新增来源、修正、功能与资料变化。每条公告都附来源；不会把用户私密意见原文放进公告。</p></div>
+        <button class="secondary" data-tab="contribute">我也想补充资料</button>
+      </div>
+      <div id="home-announcements" class="cards soft-cards"><p class="meta">还没有公开更新记录。</p></div>
+      <div class="feedback-quick-grid">
+        <form id="community-feedback-form" class="panel quick-feedback-form">
+          <p class="section-kicker">一句话就够</p><h3>资料不对、想让平台查什么，或有个建议？</h3>
+          <label>最接近哪一种<select name="type"><option value="suggestion">我有建议</option><option value="source_request">希望增加资料 / 来源</option><option value="correction">发现资料可能不对</option><option value="appeal">对处理结果有申诉</option><option value="other">其他</option></select></label>
+          <label>关联公司（可选）<select name="companyId" id="feedback-company-select"><option value="">不关联公司</option></select></label>
+          <label class="wide">直接说重点<textarea name="message" required minlength="4" maxlength="1600" placeholder="例如：希望补充中国官方商标来源。不要写姓名、电话、邮箱、证件号或其他敏感信息。"></textarea></label>
+          <p class="meta wide">提交后每天 18:00 的项目 Agent 会统一处理；19:00 会再次复核当天是否有遗漏。你不用准备完整报告。</p>
+          <button class="primary wide" type="submit">提交这句话</button>
+        </form>
+        <div class="panel"><p class="section-kicker">我的意见</p><h3>处理结果会回到这里</h3><p class="meta">同一浏览器可以看到自己提交过的意见和 Agent 答复；这些内容默认不公开。</p><div id="community-feedback-mine" class="feedback-mine"></div></div>
+      </div>
+    </section>
+
     <section class="home-band daily-band reveal" aria-labelledby="daily-title">
       <div class="daily-card">
         <div><p class="section-kicker">匿名辅导公开日报</p><h2 id="daily-title">个案不公开，但项目会公开“我们收到了多少求助”。</h2><p>每日只发布聚合数量和小样本合并后的类别，不公开个案正文、公司关联、回执码或个人标识。</p></div>
@@ -198,40 +217,43 @@
   </section>
 
   <section class="tab-panel hidden" data-panel="contribute">
-    <div class="page-hero small-page-hero"><div><p class="section-kicker">提交公开线索</p><h1>你提供的是“线索”，不是一句未经核实就会被当成事实的话。</h1><p>公开贡献可以从 E0（未独立核实）开始，不要求你上传敏感附件。后续证据等级由独立复核决定。</p></div></div>
-    <div class="two-col">
-      <form id="company-form" class="panel form-grid human-form compact-form">
-        <h2 class="span-2">先创建一个公司讨论空间</h2>
-        <label>公司名称<input name="name" required minlength="2" maxlength="120"></label>
-        <label>地区<input name="region" required maxlength="120"></label>
-        <label class="span-2">公开官网（可选，仅 HTTPS）<input name="website" type="url" placeholder="https://example.org"></label>
-        <label class="check span-2"><input type="checkbox" name="consent" required> 我理解：创建公司空间只是方便讨论和归档，不等于对公司作出事实评级。</label>
-        <button class="primary span-2" type="submit">创建公司空间</button>
+    <div class="page-hero small-page-hero"><div><p class="section-kicker">轻松补充公开资料</p><h1>不用填报告。<br>一句话也可以成为有用线索。</h1><p>默认只问最必要的内容。来源、时间、范围等都可以以后再补；系统会一直把未核实线索和已验证资料分开。</p></div></div>
+    <div class="contribution-onboarding"><span>1 选公司</span><span>2 选你想补什么</span><span>3 说一句重点</span><strong>完成</strong></div>
+    <div class="two-col contribution-layout">
+      <form id="company-form" class="panel quick-company-form">
+        <p class="section-kicker">找不到公司？</p><h2>两项就能创建讨论空间</h2>
+        <label>公司名称<input name="name" required minlength="2" maxlength="120" placeholder="例如：某某科技有限公司"></label>
+        <label>国家 / 地区<input name="region" required maxlength="120" placeholder="例如：中国、美国、日本"></label>
+        <details class="progressive-details"><summary>我知道公开官网（可选）</summary><label>公开官网<input name="website" type="url" placeholder="https://example.org"></label></details>
+        <p class="meta">创建讨论空间只为了归档资料，不等于平台评价这家公司好或坏。</p>
+        <button class="secondary" type="submit">创建公司空间</button>
       </form>
-      <form id="contribution-form" class="panel form-grid human-form">
-        <div class="form-title span-2"><div><p class="form-step">公开线索</p><h2 id="contribution-title">补充一条可以被核对的信息</h2></div><button type="button" class="text-button hidden" id="cancel-edit">取消编辑</button></div>
-        <label>公司<select name="companyId" id="company-select" required></select></label>
-        <label>这条信息是什么<select name="kind" required><option value="product">产品</option><option value="company_fact">公司资料</option><option value="relationship">公司 / 产品关系</option><option value="labour_claim">具体劳动实践</option><option value="product_claim">产品体验主张</option></select></label>
-        <label class="span-2">给它一个清楚的标题<input name="title" required minlength="2" maxlength="120"></label>
-        <label class="span-2">具体说明<textarea name="description" required minlength="2" maxlength="2000"></textarea></label>
-        <label>方向<select name="direction"><option value="neutral">中性 / 不适用</option><option value="positive">正向</option><option value="negative">负向</option></select></label>
-        <label>劳动领域<select name="dimension"><option value="other">其他</option><option value="pay">薪酬</option><option value="rest">休息</option><option value="hours">工时</option><option value="safety">安全</option><option value="contract">合同</option><option value="respect">尊重</option><option value="representation">代表权</option></select></label>
-        <label class="span-2">这条信息适用于哪里 / 谁<input name="scope" maxlength="300" placeholder="例如：某厂区、某岗位、某业务线"></label>
-        <label>起始日期<input name="periodStart" type="date"></label><label>结束日期<input name="periodEnd" type="date"></label>
-        <label>产品 ID（仅产品体验需要）<input name="productId" maxlength="80"></label>
-        <label>关系 / 类别（可选）<input name="relation" maxlength="80"></label>
-        <fieldset class="span-2 source-box"><legend>支持来源（未核实线索可不填）</legend>
-          <label>公开 URL<input name="sourceUrl" type="url" placeholder="https://..."></label>
-          <label>来源标题<input name="sourceTitle" maxlength="200"></label>
-          <label>类型<select name="sourceType"><option value="other">其他</option><option value="first_person">第一人称</option><option value="company_disclosure">公司披露</option><option value="public_record">公共记录</option><option value="official_decision">正式决定</option></select></label>
-          <label class="span-2">它具体支持什么<input name="sourceSupports" maxlength="1000"></label>
-        </fieldset>
-        <label>权利状态<select name="rights"><option value="reference_only">仅供参考，不授权再分发</option><option value="own_summary">本人原创摘要</option><option value="permission">已获许可</option><option value="public_domain">公共领域</option></select></label>
-        <label>公开署名（可选）<input name="creditName" maxlength="40" placeholder="默认匿名贡献者"></label>
-        <label class="span-2">授权说明（选择“已获许可”时必填）<input name="rightsNote" maxlength="500"></label>
-        <label class="check span-2"><input type="checkbox" name="shareConsent"> 我另行同意在通过独立隐私/权利复核后，以公益许可再分发这条结构化摘要。</label>
-        <label class="check span-2"><input type="checkbox" name="consent" required> 我确认这是公开贡献，并已移除私人联系方式、身份证明和敏感附件信息。</label>
-        <button class="primary span-2" type="submit">保存为未核实公开线索</button>
+      <form id="contribution-form" class="panel quick-contribution-form">
+        <div class="form-title"><div><p class="form-step">公开线索</p><h2 id="contribution-title">说一句你知道的</h2></div><button type="button" class="text-button hidden" id="cancel-edit">取消编辑</button></div>
+        <label>是哪家公司？<select name="companyId" id="company-select" required></select></label>
+        <label>你想补充什么？<select name="kind" required>
+          <option value="product">一个产品 / 服务</option><option value="brand">一个品牌</option><option value="company_fact">一条公司资料</option><option value="relationship">公司 / 品牌 / 产品之间的关系</option><option value="labour_positive">工作中做得不错的地方</option><option value="labour_negative">工作中存在的问题</option><option value="product_claim">产品体验（需要在更多信息里选正/负）</option>
+        </select></label>
+        <label class="wide">一句话说重点<textarea name="summary" required minlength="2" maxlength="1600" placeholder="例如：这个品牌属于这家公司。或者：过去三个月经常临时加班，没有提前通知。"></textarea></label>
+        <details class="progressive-details wide" id="contribution-more"><summary>我有公开来源、时间或更多细节（可选）</summary>
+          <div class="progressive-grid">
+            <label>公开来源 URL<input name="sourceUrl" type="url" placeholder="https://..."></label>
+            <label>来源叫什么<input name="sourceTitle" maxlength="200" placeholder="留空时会显示“公开来源”"></label>
+            <label>来源类型<select name="sourceType"><option value="other">普通公开页面</option><option value="company_disclosure">公司公开披露</option><option value="public_record">政府 / 公共记录</option><option value="official_decision">正式决定</option><option value="first_person">第一人称公开材料</option></select></label>
+            <label>它支持哪句话<input name="sourceSupports" maxlength="1000" placeholder="留空时默认支持你上面写的这句话"></label>
+            <label>适用于哪里 / 谁<input name="scope" maxlength="300" placeholder="例如：某厂区、某岗位、某业务线"></label>
+            <label>劳动领域<select name="dimension"><option value="other">不确定 / 其他</option><option value="pay">薪酬</option><option value="rest">休息</option><option value="hours">工时</option><option value="safety">安全</option><option value="contract">合同</option><option value="respect">尊重</option><option value="representation">代表权</option></select></label>
+            <label>开始日期<input name="periodStart" type="date"></label><label>结束日期<input name="periodEnd" type="date"></label>
+            <label>关系类型<select name="relationType"><option value="">不确定 / 不适用</option><option value="company_brand">公司拥有 / 使用品牌</option><option value="company_product">公司生产 / 提供产品</option><option value="brand_product">品牌对应产品</option><option value="parent_subsidiary">母子公司</option><option value="supplier_customer">供应 / 客户关系</option><option value="other">其他关系</option></select></label>
+            <label>关系补充<input name="relation" maxlength="80" placeholder="例如：母公司、品牌所有者"></label>
+            <label>方向（产品体验才需要）<select name="direction"><option value="neutral">不适用</option><option value="positive">正向</option><option value="negative">负向</option></select></label>
+            <label>公开署名（可选）<input name="creditName" maxlength="40" placeholder="默认匿名贡献者"></label>
+            <input type="hidden" name="productId" value=""><input type="hidden" name="brandId" value="">
+          </div>
+        </details>
+        <div class="privacy-mini wide">不要写姓名、电话、邮箱、身份证件、详细住址或其他敏感个人信息。公开来源只填你有权分享的公开链接。</div>
+        <button class="primary wide" type="submit">就这样提交</button>
+        <p class="meta wide">提交后先标为“未核实线索”。你随时可以在“我的提交”里修改、纠错或撤回。</p>
       </form>
     </div>
   </section>
@@ -273,7 +295,7 @@
 <footer class="site-footer">
   <div><strong>劳动透明计划</strong><p>非商业公益用途 · AI 制作 / AI Agent 管理 · 不替代工会、律师、法院或监管机构。</p></div>
   <div class="footer-links"><button data-tab="method">我们怎么判断信息</button><button data-tab="resources">外部权益资源</button><button data-tab="mine">我的提交</button><button data-tab="review">可选证据审计</button></div>
-  <p class="footer-version"><span id="runtime-status">正在连接服务…</span><br>当前 v0.8.3 为无人值守公司资料页 + 地区适配研究 + Queue 自动更新。</p>
+  <p class="footer-version"><span id="runtime-status">正在连接服务…</span><br>当前 v0.8.4 为简化社区贡献 + 官方关系数据 + 每日 Agent 运营。</p>
 </footer>
 </body>
 </html>

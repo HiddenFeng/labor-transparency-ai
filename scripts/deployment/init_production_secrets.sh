@@ -17,4 +17,5 @@ ensure_secret LTP_REVIEW_TOKEN b64
 ensure_secret LTP_EXPORT_TOKEN b64
 ensure_secret LTP_ADVISORY_AGENT_TOKEN b64
 ensure_secret LTP_RESEARCH_AGENT_TOKEN b64
+ensure_secret LTP_COMMUNITY_AGENT_TOKEN b64
 echo "Production secret file is complete and protected; values were not printed."
