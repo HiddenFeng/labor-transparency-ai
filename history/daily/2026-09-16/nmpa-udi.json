@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "provider": "CN_NMPA_UDI",
+  "feed": {
+    "title": "UDID_DAY_UPDATE_20260915.zip",
+    "pubDate": "Tue, 15 Sep 2026 15:36:35 +0000",
+    "sourceUrl": "https://udid.nmpa.gov.cn/attachments/attachment/download.html?path=A2E0C4E371D356DC134BE4F49B806211AF5D12A4AF10DF794B9D5B6A834F097A7E9BADA6887348972993AE1513274B03EB3D302AAB281B11E3EDB5CBF4CC0183"
+  },
+  "companiesConsidered": 1,
+  "recordsScanned": 8350,
+  "matchedDevices": 0,
+  "uniqueRelations": 0,
+  "matchedCompanies": 0,
+  "publishedRelations": 0,
+  "publishRequested": true
+}

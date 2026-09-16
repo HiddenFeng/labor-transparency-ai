@@ -1,0 +1,29 @@
+{
+  "day": "2026-09-16",
+  "phase": "18",
+  "status": "COMPLETED",
+  "summary": "Completed the Beijing 18:00 bounded community-operations pass: all five currently approved daily collectors were attempted under applicability rules, the feedback queue was empty, the only real China company dossier/source gaps were inspected, no unsupported official record was created, relevant local tests passed, and the sourced public announcement was updated. Zero matches are retained as bounded source results. The live company-detail API still does not expose the local v0.8.5 officialEvents/chinaInvestigation projection, so that deployment-alignment item is explicitly left for the 19:00 independent review.",
+  "metrics": {
+    "real_companies": 1,
+    "pending_feedback": 0,
+    "nmpa_records_scanned": 8350,
+    "nmpa_published_relations": 0,
+    "samr_index_records": 84,
+    "samr_published_events": 0,
+    "csrc_search_requests": 1,
+    "csrc_published_events": 0,
+    "eu_eligible_companies": 0,
+    "eu_published_relations": 0,
+    "jp_eligible_companies": 0,
+    "jp_published_references": 0,
+    "official_reference_count": 0,
+    "official_relation_count": 0,
+    "official_event_count": 0,
+    "daily_collector_tests_passed": 16,
+    "sites_tests_passed": 27,
+    "cloudflare_tests_passed": 24,
+    "site_build_files": 17,
+    "announcement_revision": 65
+  },
+  "logRef": "history/daily/2026-09-16/18-operations.md"
+}
