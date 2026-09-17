@@ -216,25 +216,27 @@ def relation_from_device(company: dict, row: dict[str, str], source_url: str) ->
     }
 
 
-def parse_relations(xml_file, companies: Iterable[dict], source_url: str) -> tuple[list[dict], dict]:
+def parse_relations_files(xml_files: Iterable[Path], companies: Iterable[dict], source_url: str) -> tuple[list[dict], dict]:
     by_name = company_index(companies)
     relations = []
     scanned = 0
     matched_devices = 0
     matched_companies = set()
-    for event, elem in ET.iterparse(xml_file, events=("end",)):
-        if elem.tag != "device":
-            continue
-        scanned += 1
-        row = text_map(elem)
-        company = by_name.get(normalize_name(row.get("ylqxzcrbarmc", "")))
-        if company:
-            relation = relation_from_device(company, row, source_url)
-            if relation:
-                relations.append(relation)
-                matched_devices += 1
-                matched_companies.add(company["id"])
-        elem.clear()
+    xml_files = list(xml_files)
+    for xml_file in xml_files:
+        for event, elem in ET.iterparse(xml_file, events=("end",)):
+            if elem.tag != "device":
+                continue
+            scanned += 1
+            row = text_map(elem)
+            company = by_name.get(normalize_name(row.get("ylqxzcrbarmc", "")))
+            if company:
+                relation = relation_from_device(company, row, source_url)
+                if relation:
+                    relations.append(relation)
+                    matched_devices += 1
+                    matched_companies.add(company["id"])
+            elem.clear()
     # Deterministic dedupe in case one release repeats the same device record.
     seen = set()
     unique = []
@@ -246,19 +248,27 @@ def parse_relations(xml_file, companies: Iterable[dict], source_url: str) -> tup
         unique.append(rel)
     return unique, {
         "recordsScanned": scanned,
+        "xmlParts": len(xml_files),
         "matchedDevices": matched_devices,
         "uniqueRelations": len(unique),
         "matchedCompanies": len(matched_companies),
     }
 
 
-def extract_xml_from_zip(zip_path: Path, target_dir: Path) -> Path:
+def parse_relations(xml_file, companies: Iterable[dict], source_url: str) -> tuple[list[dict], dict]:
+    return parse_relations_files([Path(xml_file)], companies, source_url)
+
+
+def extract_xmls_from_zip(zip_path: Path, target_dir: Path) -> list[Path]:
     with zipfile.ZipFile(zip_path) as archive:
-        xml_names = [name for name in archive.namelist() if name.lower().endswith(".xml")]
-        if len(xml_names) != 1:
-            raise RuntimeError(f"expected one XML in NMPA daily ZIP, got {len(xml_names)}")
-        archive.extract(xml_names[0], target_dir)
-        return target_dir / xml_names[0]
+        xml_names = sorted(name for name in archive.namelist() if name.lower().endswith(".xml"))
+        if not xml_names:
+            raise RuntimeError("expected at least one XML in NMPA daily ZIP, got 0")
+        paths = []
+        for name in xml_names:
+            archive.extract(name, target_dir)
+            paths.append(target_dir / name)
+        return paths
 
 
 def publish_relations(origin: str, token: str, relations: list[dict]) -> int:
@@ -285,7 +295,7 @@ def run(args) -> dict:
     with tempfile.TemporaryDirectory(prefix="ltp-nmpa-udi-") as temp:
         temp_dir = Path(temp)
         if args.xml_file:
-            xml_path = Path(args.xml_file)
+            xml_paths = [Path(args.xml_file)]
         else:
             if args.zip_file:
                 zip_path = Path(args.zip_file)
@@ -295,8 +305,8 @@ def run(args) -> dict:
                 source_url = feed["link"]
                 zip_path = temp_dir / "daily.zip"
                 zip_path.write_bytes(http_bytes(source_url, timeout=90))
-            xml_path = extract_xml_from_zip(zip_path, temp_dir)
-        relations, metrics = parse_relations(xml_path, companies, args.source_url or feed["link"])
+            xml_paths = extract_xmls_from_zip(zip_path, temp_dir)
+        relations, metrics = parse_relations_files(xml_paths, companies, args.source_url or feed["link"])
         published = 0
         if args.publish and relations:
             token = load_agent_token()

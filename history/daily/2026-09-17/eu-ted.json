@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "provider": "EU_TED",
+  "eligibleCompanies": 0,
+  "requests": 0,
+  "noticesReturned": 0,
+  "exactRelations": 0,
+  "uniqueRelations": 0,
+  "errors": [],
+  "windowStart": "2026-09-10",
+  "windowEnd": "2026-09-17",
+  "publishedRelations": 0,
+  "publishRequested": true
+}

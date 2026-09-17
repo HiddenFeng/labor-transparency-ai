@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "provider": "CN_CSRC_PENALTY",
+  "eligibleCompanies": 2,
+  "searchRequests": 2,
+  "searchResults": 0,
+  "detailRequests": 0,
+  "uniqueEvents": 0,
+  "errors": [],
+  "publishedEvents": 0,
+  "publishRequested": true
+}

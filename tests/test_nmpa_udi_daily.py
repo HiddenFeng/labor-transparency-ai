@@ -1,5 +1,6 @@
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 from scripts.community_agent import nmpa_udi_daily as nmpa
@@ -49,6 +50,35 @@ class NmpaUdiDailyTests(unittest.TestCase):
         self.assertEqual(item["link"], "https://udid.nmpa.gov.cn/file.zip")
         with self.assertRaises(RuntimeError):
             nmpa.latest_feed_item(b'''<rss><channel><item><title>x</title><link>http://example.test/x.zip</link></item></channel></rss>''')
+
+    def test_multi_part_daily_zip_scans_all_xml_parts_and_dedupes(self):
+        matching = '''<?xml version="1.0" encoding="UTF-8"?>
+<udid><devices><device>
+<zxxsdycpbs>06972253600013</zxxsdycpbs><cpmctymc>测试器械</cpmctymc>
+<ylqxzcrbarmc>苏州鼎科医疗技术股份有限公司</ylqxzcrbarmc>
+<deviceRecordKey>KEY-1</deviceRecordKey><versionTime>2026-09-16</versionTime>
+</device></devices></udid>'''
+        unmatched = '''<?xml version="1.0" encoding="UTF-8"?>
+<udid><devices><device>
+<zxxsdycpbs>00000000000002</zxxsdycpbs><cpmctymc>其他器械</cpmctymc>
+<ylqxzcrbarmc>另一家公司</ylqxzcrbarmc><deviceRecordKey>KEY-2</deviceRecordKey>
+</device></devices></udid>'''
+        companies = [{"id": "co_match", "name": "苏州鼎科医疗技术股份有限公司", "region": "中国", "synthetic": False}]
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            zip_path = root / "daily.zip"
+            with zipfile.ZipFile(zip_path, "w") as archive:
+                archive.writestr("UDID_INCREMENTAL_DOWNLOAD_PART2_Of_2_2026-09-16.xml", matching)
+                archive.writestr("UDID_INCREMENTAL_DOWNLOAD_PART1_Of_2_2026-09-16.xml", matching.replace("</devices>", unmatched.split("<devices>", 1)[1].split("</devices>", 1)[0] + "</devices>"))
+            paths = nmpa.extract_xmls_from_zip(zip_path, root / "out")
+            rows, metrics = nmpa.parse_relations_files(paths, companies, "https://udi.nmpa.gov.cn/example.zip")
+        self.assertEqual(len(paths), 2)
+        self.assertEqual(metrics["xmlParts"], 2)
+        self.assertEqual(metrics["recordsScanned"], 3)
+        self.assertEqual(metrics["matchedDevices"], 2)
+        self.assertEqual(metrics["matchedCompanies"], 1)
+        self.assertEqual(metrics["uniqueRelations"], 1)
+        self.assertEqual(len(rows), 1)
 
 
 if __name__ == "__main__":

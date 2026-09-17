@@ -1,0 +1,29 @@
+{
+  "day": "2026-09-17",
+  "phase": "18",
+  "status": "COMPLETED",
+  "summary": "Completed the Beijing 18:00 bounded community-operations pass for two real China companies. All seven currently approved daily collectors were ultimately completed under strict applicability/binding rules; the feedback queue was empty; both production China dossiers/gaps were inspected; no official reference, relation or event was added. The NMPA collector initially failed closed because the official daily ZIP contained two XML parts instead of one; a small multi-part compatibility fix was implemented, covered by regression tests, and the real release was rerun successfully across 13,086 records with zero exact matches. The sourced daily announcement was published without exposing private feedback or broadening zero matches into absence claims.",
+  "metrics": {
+    "real_companies": 2,
+    "pending_feedback": 0,
+    "nmpa_xml_parts": 2,
+    "nmpa_records_scanned": 13086,
+    "nmpa_published_relations": 0,
+    "sse_candidate_codes": 1,
+    "sse_published_references": 0,
+    "szse_records_scanned": 2901,
+    "szse_published_references": 0,
+    "samr_index_records": 84,
+    "samr_published_events": 0,
+    "csrc_search_requests": 2,
+    "csrc_published_events": 0,
+    "eu_eligible_companies": 0,
+    "jp_eligible_companies": 0,
+    "official_reference_count": 0,
+    "official_relation_count": 0,
+    "official_event_count": 0,
+    "collector_tests_passed": 27,
+    "announcement_revision": 91
+  },
+  "logRef": "history/daily/2026-09-17/18-operations.md"
+}

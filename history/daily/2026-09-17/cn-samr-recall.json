@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "provider": "CN_SAMR_RECALL",
+  "eligibleCompanies": 2,
+  "indexRequests": 4,
+  "detailRequests": 0,
+  "indexRecords": 84,
+  "exactTitleMatches": 0,
+  "detailAccepted": 0,
+  "detailRejected": 0,
+  "uniqueEvents": 0,
+  "errors": [],
+  "publishedEvents": 0,
+  "publishRequested": true
+}

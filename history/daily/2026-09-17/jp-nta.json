@@ -1,0 +1,11 @@
+{
+  "status": "PASS_NO_ELIGIBLE_COMPANIES",
+  "provider": "JP_NTA_CORPORATE_NUMBER",
+  "eligibleCompanies": 0,
+  "sourceRequests": 0,
+  "recordsScanned": 0,
+  "matchedCompanies": 0,
+  "uniqueReferences": 0,
+  "publishedReferences": 0,
+  "publishRequested": true
+}
