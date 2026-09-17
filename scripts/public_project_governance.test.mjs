@@ -26,10 +26,10 @@ test('privacy, security and branding rules reject sensitive GitHub intake, feder
 
 test('README and contribution guidance separate accepted production from local candidates',async()=>{
   const readme=await read('README.md'),contributing=await read('CONTRIBUTING.md'),release=await read('RELEASE_POLICY.md');
-  assert.match(readme,/Reference production/);assert.match(readme,/v0\.8\.8-rc\.1/);assert.match(readme,/Phase O local candidate/);assert.match(readme,/尚未进入 Reference Instance production acceptance/);assert.match(readme,/Docker Hub base-image 拉取路径超时/);
+  assert.match(readme,/Reference production/);assert.match(readme,/v0\.8\.8-rc\.1/);assert.match(readme,/v0\.9\.0-rc\.1/);assert.match(readme,/Phase O local candidate/);assert.match(readme,/尚未进入 Reference Instance production acceptance/);assert.match(readme,/Docker Hub base-image 拉取路径超时/);
   assert.doesNotMatch(contributing,/当前版本仍是本地合成数据验收环境/);assert.match(contributing,/公开仓库\/Issue 也不是私密案件入口/);assert.match(release,/Local Candidate \/ Locally Validated/);assert.match(release,/Accepted Production/);
 });
 
 test('machine release-readiness report passes without claiming production deployment',async()=>{
-  const result=await publicReleaseReadiness();assert.equal(result.status,'PUBLIC_GOVERNANCE_READY_SOURCE_CANDIDATE',JSON.stringify(result.failures));assert.equal(result.acceptedProduction,'v0.8.8-rc.1');assert.equal(result.phaseOCandidateProductionAccepted,false);assert.equal(result.forbiddenTracked.length,0);assert.match(result.dockerContainerE2E,/BLOCKED/);
+  const result=await publicReleaseReadiness();assert.equal(result.status,'PUBLIC_GOVERNANCE_READY_SOURCE_CANDIDATE',JSON.stringify(result.failures));assert.equal(result.version,'v0.9.0-rc.1');assert.equal(result.acceptedProduction,'v0.8.8-rc.1');assert.equal(result.phaseOCandidateProductionAccepted,false);assert.equal(result.forbiddenTracked.length,0);assert.match(result.dockerContainerE2E,/BLOCKED/);assert.equal(result.nextGate,'VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI_BEFORE_REFERENCE_PRODUCTION_RELEASE_GATE');
 });

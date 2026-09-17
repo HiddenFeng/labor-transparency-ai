@@ -9,14 +9,17 @@ const root=path.resolve(here,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const json=p=>JSON.parse(read(p));
 
-test('single live continuity route matches the current runtime version',()=>{
+test('single live continuity route distinguishes source candidate from accepted production',()=>{
   const versions=['sites-app/package.json','cloudflare-backend/package.json','deploy/frontend/package.json']
     .map(p=>json(p).version);
   assert.equal(new Set(versions).size,1,`runtime package versions diverged: ${versions.join(', ')}`);
-  const version=versions[0];
+  const candidateVersion=versions[0];
   const continuity=read('PROJECT_CONTINUITY.md');
   assert.match(continuity,/Status: `CURRENT_CANONICAL_CONTINUITY`/);
-  assert.ok(continuity.includes(`Accepted product runtime at this continuity update: \`${version}\``));
+  assert.ok(continuity.includes(`Active source/runtime candidate at this continuity update: \`${candidateVersion}\``));
+  const accepted=continuity.match(/Accepted product runtime at this continuity update: `([^`]+)`/);
+  assert.ok(accepted?.[1],'continuity must name the independently accepted production runtime');
+  assert.notEqual(accepted[1],'UNKNOWN');
   assert.ok(continuity.includes('CHANGE-v0.8.8-production-usability-hardening.md'));
   assert.ok(continuity.includes('qa/v0_8/verification.json'));
   for(const required of ['用户真实意图','需求与架构为什么一步步变成现在这样','当前真实系统架构','当前生产接受状态','已经反复发生过的错误','当前 NEXT_GATE','每个 Agent 的项目治理写回规则','可复制的固定接管指令']){

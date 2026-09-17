@@ -3,8 +3,9 @@
 Date: 2026-09-17
 Impact: `PROJECT_INTENT_DELTA + ARCHITECTURE_DELTA + PRODUCT_BEHAVIOR_DELTA`
 Production impact in this work round: `NONE_UNTIL_SEPARATE_DEPLOYMENT_ACCEPTANCE`
-Status: `LOCAL_IMPLEMENTATION_VALIDATED`
-Current next gate: `REFERENCE_PRODUCTION_RELEASE_PREP`
+Status: `REFERENCE_PRODUCTION_RELEASE_PREP_LOCAL_PASS`
+Current source/runtime candidate: `0.9.0-rc.1`
+Current next gate: `VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI` after local release-prep validation
 
 ## PROBLEM
 
@@ -571,3 +572,90 @@ No production Cloudflare/Vercel deploy was run, no manual production auto-resear
 The accepted Reference Instance production remains `v0.8.8-rc.1`.
 
 Because Phase O materially changes product behavior and architecture, a future Reference Instance promotion must first create a **new source/runtime version identity**; deploying the new code while continuing to call it the same accepted `0.8.8-rc.1` would make release/smoke evidence ambiguous. The next gate is therefore `REFERENCE_PRODUCTION_RELEASE_PREP`, followed only after a versioned candidate passes by the separate deploy -> production smoke -> manual post-deploy E2E -> exact cleanup -> acceptance gate.
+
+## REFERENCE PRODUCTION RELEASE PREP RESULT — v0.9.0-rc.1
+
+Status: `LOCAL_RELEASE_PREP_PASS / SOURCE_PUBLICATION_AND_CI_PENDING / PRODUCTION_NOT_DEPLOYED`
+
+### CURRENT
+
+- accepted Reference production remains `v0.8.8-rc.1`;
+- current canonical source before this local prep is `main@a8eca854f28fbd23deab8ce3b35be2470ec1fdcc`;
+- current production `/api/config` still reports `0.8.8-rc.1 / CLOUDFLARE_WORKER_D1` with no browser page/network/console error;
+- trusted production state now has 2 real companies (`富士康`, `星宇股份有限公司`) and no pending feedback/correction/appeal/source request;
+- the new real `富士康` company completed Queue research in about four seconds and reached `AUTO_READY / CANDIDATES_ONLY` with 2 applicable source successes, 0 source errors and 9 `NOT_APPLICABLE` sources; `exactNameCandidateCount=0` and legal identity stayed `NO_VERIFIED_REFERENCE`;
+- the current 18:00/19:00 LocalAgentRuntime tasks remain enabled, unblocked and `WAITING_NEXT_RUN`.
+
+### PROPOSED
+
+Assign Phase O the distinct source/runtime candidate identity **`v0.9.0-rc.1`** and prepare it for Reference Production promotion without changing current production acceptance. Package/runtime constants, local version assertions, release documentation and machine governance now distinguish:
+
+`source/runtime candidate = v0.9.0-rc.1`
+
+from:
+
+`accepted Reference production = v0.8.8-rc.1`.
+
+The separate release record is `docs/v0_8/RELEASE-CANDIDATE-v0.9.0-rc.1.md`.
+
+### PRESERVE
+
+- the historical v0.8.8 acceptance evidence remains unchanged;
+- candidate/abbreviation/context similarity cannot upgrade company identity;
+- `0 match` does not mean absence and unsupported jurisdictions remain `NOT_APPLICABLE`;
+- community, worker perspective, concrete labour evidence, official lanes, machine references and source signals remain separate;
+- Queue remains the new-company main path; Cron remains recovery/refresh;
+- production E2E remains post-deploy manual-only and version-aware;
+- QA cleanup, privacy, anonymous-advisory, federation and no-Tencent-gate boundaries remain unchanged.
+
+### VALIDATION
+
+The first combined governance run after the version assignment produced **`14/16 PASS`**. Two failures were retained:
+
+1. `project_continuity.test.mjs` assumed the checked-out package version must equal the accepted production runtime;
+2. `public_release_readiness.mjs` likewise treated package/source version as `acceptedProduction` and required the public docs to call it the current production baseline.
+
+Those assumptions were valid only while candidate and accepted production happened to share a version. They contradict the existing release policy once a versioned undeployed candidate exists. The fix did not weaken acceptance: the machine contract was strengthened to require both an explicit source/runtime candidate and a separately recoverable accepted production version. The affected continuity/public-governance rerun then passed **`7/7`**, with readiness reporting:
+
+- `version=v0.9.0-rc.1`;
+- `acceptedProduction=v0.8.8-rc.1`;
+- `phaseOCandidateProductionAccepted=false`;
+- `nextGate=VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI_BEFORE_REFERENCE_PRODUCTION_RELEASE_GATE`.
+
+Other decisive checks:
+
+- `sites-app`: `31/31 PASS`;
+- `cloudflare-backend`: `24/24 PASS`;
+- `sites-app` build: `PASS`, 20 files, manifest `0.9.0-rc.1`;
+- local Worker+D1 HTTP/restart smoke: `PASS` with backend/worker `0.9.0-rc.1`, Queue/autonomous research, official/community/advisory/privacy contracts and restart persistence;
+- public smoke contract: `9/9 PASS`, including manual-only/version-aware production E2E semantics;
+- normal frontend release-prep build: `PASS`, privacy audit `forbiddenMatches=0`;
+- independent same-origin build: `PASS`, privacy audit `forbiddenMatches=0`;
+- independent mode + remote upstream API: expected fail-closed rejection `PASS`;
+- `git diff --check`: `PASS`.
+
+### ROLLBACK / ABORT CONDITION
+
+- do not deploy if the versioned source candidate has not first been published and passed its decisive CI;
+- if source publication CI fails, retain the failure and stop before Reference production deployment;
+- if production preflight exposes a higher-priority feedback/privacy/security/core-path incident, pause release promotion and resolve that incident first;
+- if candidate and accepted-production identities are again collapsed, treat release evidence as invalid until corrected;
+- any evidence-lane, privacy, Queue, manual-E2E or exact-cleanup regression aborts promotion.
+
+### NEXT GATE
+
+`VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI`.
+
+This local release-prep milestone does not authorize or claim production deployment. After a versioned source publication passes CI, Reference production still requires the separate `REFERENCE_PRODUCTION_RELEASE_GATE`: deploy -> production smoke -> manual post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance.
+
+### REQUEST WORK RECORD — dcnew_21a79410c864480ea219
+
+- Goal/scope: cold-start takeover from current repository/runtime evidence, verify higher-priority production/community/daily-operation signals, then advance the existing Phase O `REFERENCE_PRODUCTION_RELEASE_PREP` gate without publishing or deploying production.
+- Authoritative/current material inspected: `AGENTS.md`, `PROJECT_CONTINUITY.md`, latest v0.8.8 accepted QA section, this active change, release policy, current Git/runtime packages, canonical production config/company dossier, trusted community state/feedback queue, and current LocalAgentRuntime fixed-run projection.
+- Runtime finding: accepted production remains `v0.8.8-rc.1`; current production has 2 real companies; `富士康` is real user data, not QA residue, and its Queue research completed with fail-closed identity semantics; feedback queue is empty and 18:00/19:00 tasks are unblocked.
+- Implementation/result: assigned `v0.9.0-rc.1` to the Phase O source/runtime candidate, synchronized runtime assertions and local smoke contracts, fixed machine governance so source candidate and accepted production are modeled independently, and added the dedicated release record `docs/v0_8/RELEASE-CANDIDATE-v0.9.0-rc.1.md`.
+- Evidence/result locations: this change record, `PROJECT_CONTINUITY.md`, `RELEASE_POLICY.md`, `README.md`, `qa/v0_8/verification.json -> candidate_v090_phase_o_reference_release_prep`, and the v0.9 release record above.
+- Checks: `sites-app 31/31`, backend `24/24`, local Worker+D1 smoke PASS, public smoke contract `9/9`, final governance/public-smoke aggregate `16/16`, release readiness PASS, normal/independent frontend privacy audits 0 forbidden matches, remote-upstream independent-mode rejection PASS, QA JSON parse PASS, `git diff --check` PASS.
+- Retained failure: the first post-version governance aggregate was `14/16`; both failures were retained and resolved by separating candidate and accepted-production state rather than changing production acceptance.
+- Current conclusion: `REFERENCE_PRODUCTION_RELEASE_PREP_LOCAL_PASS`; no production deployment or production data mutation was performed by this release-prep work.
+- Unresolved/next: `VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI`; source publication is a separate external action, and Reference production deployment remains a later independent release gate.

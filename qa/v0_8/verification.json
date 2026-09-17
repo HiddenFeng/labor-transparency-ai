@@ -779,8 +779,8 @@
     }
   },
   "remaining_human_only": [],
-  "next_gate": "v0.8.8 usability hardening is production-accepted and the audited core worker flows are usable. Continue only high-value product/source growth from concrete user needs or verified coverage gaps; BSE remains optional until a documented reproducible official public path exists. No current production blocker requires user action.",
-  "strongest_claim": "v0.8.8-rc.1 is production-deployed and accepted as a fully usable current baseline for the audited core flows. Homepage/guidance, company discovery/detail, anonymous advisory, low-friction contribution, personal submissions, resource navigation and runtime status were browser-validated; Mainland China official help routes are now present. Production auto-research E2E is correctly post-deploy/manual and run 35104087790 passed on the real Queue consumer; its exact three QA rows were removed under the D1 write lock and production returned to one real company with existing community evidence preserved. Release CI 35103315352 and post-deploy public smoke 35104628662 pass; Worker a7f6e635-a5b5-4bff-9171-b47a0ba8b26e and Vercel hx68r01vs are live.",
+  "next_gate": "Phase O Reference release-prep is locally passing as source/runtime candidate v0.9.0-rc.1 while accepted Reference production remains v0.8.8-rc.1. The next gate is VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI; only a published candidate with decisive CI success may proceed to the separate deploy -> production smoke -> manual post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance gate.",
+  "strongest_claim": "Accepted Reference production remains v0.8.8-rc.1 and current direct checks show no evidenced core outage: canonical /api/config still reports the accepted runtime with expected privacy/capability boundaries; trusted production state now contains two real companies with no pending feedback; the real 富士康 company completed Queue research to AUTO_READY/CANDIDATES_ONLY in about four seconds while exact-name identity remained unresolved and nine non-applicable sources stayed NOT_APPLICABLE; current 18:00/19:00 LocalAgentRuntime tasks are waiting for their next fixed runs with no blocker. Separately, Phase O has a locally validated v0.9.0-rc.1 release-prep candidate with candidate and accepted-production identities machine-separated. It is not source-published under that version, deployed or production-accepted yet.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -1953,5 +1953,69 @@
       "real_company": "星宇股份有限公司",
       "existing_real_community_evidence_preserved": true
     }
+  },
+  "candidate_v090_phase_o_reference_release_prep": {
+    "status": "PASS_LOCAL_REFERENCE_RELEASE_PREP_V090",
+    "runtime_version": "0.9.0-rc.1",
+    "accepted_reference_production": "0.8.8-rc.1",
+    "base_source_head": "a8eca854f28fbd23deab8ce3b35be2470ec1fdcc",
+    "change_record": "docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md",
+    "release_record": "docs/v0_8/RELEASE-CANDIDATE-v0.9.0-rc.1.md",
+    "production_deployed": false,
+    "source_publication_ci": "PENDING_NOT_RUN_FOR_LOCAL_VERSIONED_CANDIDATE",
+    "production_preflight": {
+      "canonical_runtime_version": "0.8.8-rc.1",
+      "canonical_mode": "CLOUDFLARE_WORKER_D1",
+      "browser_config": "PASS_ZERO_PAGE_NETWORK_CONSOLE_ERRORS",
+      "real_companies": 2,
+      "real_company_names": [
+        "富士康",
+        "星宇股份有限公司"
+      ],
+      "pending_feedback": 0,
+      "official_references": 0,
+      "official_relations": 0,
+      "official_events": 0,
+      "new_real_company_queue_evidence": {
+        "company": "富士康",
+        "research_status": "AUTO_READY",
+        "intelligence_status": "CANDIDATES_ONLY",
+        "queued_at": "2026-09-17T02:42:43.501Z",
+        "collected_at": "2026-09-17T02:42:47.015Z",
+        "approx_queue_to_collection_seconds": 4,
+        "candidate_count": 7,
+        "exact_name_candidate_count": 0,
+        "source_success_count": 2,
+        "source_error_count": 0,
+        "source_not_applicable_count": 9,
+        "legal_identity_status": "NO_VERIFIED_REFERENCE",
+        "subject_binding": "PASS_FAIL_CLOSED_CANDIDATES_NOT_PROMOTED"
+      },
+      "latest_daily_runs": "PASS_2026_09_16_PHASE_18_AND_19_COMPLETED",
+      "scheduled_agents": "PASS_18_AND_19_WAITING_NEXT_RUN_NO_BLOCKER"
+    },
+    "local_validation": {
+      "sites_app": "PASS_31_OF_31",
+      "cloudflare_backend": "PASS_24_OF_24",
+      "sites_build": "PASS_20_FILES_0.9.0_RC1",
+      "worker_d1_http_restart": "PASS_0.9.0_RC1",
+      "public_smoke_contract": "PASS_9_OF_9",
+      "continuity_and_public_governance_after_dual_version_fix": "PASS_7_OF_7",
+      "release_readiness": "PUBLIC_GOVERNANCE_READY_SOURCE_CANDIDATE",
+      "release_readiness_candidate": "v0.9.0-rc.1",
+      "release_readiness_accepted_production": "v0.8.8-rc.1",
+      "normal_frontend_build": "PASS_8_FILES",
+      "normal_frontend_privacy_audit": "PASS_0_FORBIDDEN_MATCHES",
+      "independent_frontend_build": "PASS_8_FILES_SAME_ORIGIN",
+      "independent_frontend_privacy_audit": "PASS_0_FORBIDDEN_MATCHES",
+      "independent_remote_upstream_guard": "PASS_EXPECTED_REJECTION",
+      "git_diff_check": "PASS"
+    },
+    "retained_failures": [
+      "Initial post-version combined governance run was 14/16 PASS because continuity/readiness incorrectly equated package/source version with accepted production version.",
+      "The acceptance standard was not weakened; machine governance was changed to require explicit source/runtime candidate and accepted-production versions independently, after which the affected suite passed 7/7."
+    ],
+    "next_gate": "VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI_BEFORE_REFERENCE_PRODUCTION_RELEASE_GATE",
+    "strongest_claim": "Phase O now has a locally validated v0.9.0-rc.1 Reference release-prep candidate while accepted production remains v0.8.8-rc.1. Current production checks show no higher-priority feedback/privacy/security/core-path blocker, and a real newly created 富士康 company completed Queue research with fail-closed subject binding. This evidence does not claim v0.9.0-rc.1 source publication, CI, production deployment or production acceptance."
   }
 }

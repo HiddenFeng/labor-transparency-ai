@@ -1,6 +1,6 @@
 {
   "name": "labor-transparency-cloudflare-backend",
-  "version": "0.8.8-rc.1",
+  "version": "0.9.0-rc.1",
   "private": true,
   "type": "module",
   "scripts": {
