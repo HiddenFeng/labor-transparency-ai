@@ -20,7 +20,8 @@ test('single live continuity route distinguishes source candidate from accepted 
   const accepted=continuity.match(/Accepted product runtime at this continuity update: `([^`]+)`/);
   assert.ok(accepted?.[1],'continuity must name the independently accepted production runtime');
   assert.notEqual(accepted[1],'UNKNOWN');
-  assert.ok(continuity.includes('CHANGE-v0.8.8-production-usability-hardening.md'));
+  assert.ok(continuity.includes('CHANGE-federated-public-interest-network-and-product-labor-signals.md'));
+  assert.ok(continuity.includes('candidate_v090_phase_o_reference_production_acceptance'));
   assert.ok(continuity.includes('qa/v0_8/verification.json'));
   for(const required of ['用户真实意图','需求与架构为什么一步步变成现在这样','当前真实系统架构','当前生产接受状态','已经反复发生过的错误','当前 NEXT_GATE','每个 Agent 的项目治理写回规则','可复制的固定接管指令']){
     assert.ok(continuity.includes(required),`continuity missing cold-start section: ${required}`);
@@ -35,7 +36,7 @@ test('optional local handoff cannot compete with canonical continuity',()=>{
   assert.equal(handoff.current_continuity,'PROJECT_CONTINUITY.md');
   assert.equal(handoff.current_governance,'AGENTS.md');
   assert.equal(handoff.current_evidence_ledger,'qa/v0_8/verification.json');
-  assert.equal(handoff.current_accepted_change,'docs/v0_8/CHANGE-v0.8.8-production-usability-hardening.md');
+  assert.equal(handoff.current_accepted_change,'docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md');
   for(const p of [handoff.current_continuity,handoff.current_governance,handoff.current_evidence_ledger,handoff.current_accepted_change]){
     assert.ok(fs.existsSync(path.join(root,p)),`missing handoff target: ${p}`);
   }

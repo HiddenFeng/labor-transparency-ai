@@ -2037,5 +2037,104 @@
     ],
     "next_gate": "REFERENCE_PRODUCTION_RELEASE_GATE",
     "strongest_claim": "Phase O v0.9.0-rc.1 is published at canonical main@35dff048c1c89df4312335b62f9fedc95d5a527f and both decisive source CI and public smoke passed. Accepted production remains v0.8.8-rc.1; current production checks show no higher-priority feedback/privacy/security/core-path blocker, and the real 富士康 company retained fail-closed subject binding. This evidence does not claim v0.9.0-rc.1 production deployment or production acceptance."
+  },
+  "candidate_v090_phase_o_reference_production_acceptance": {
+    "status": "PASS_DEPLOYED_BROWSER_SMOKE_MANUAL_E2E_EXACT_CLEANUP_V090",
+    "runtime_version": "0.9.0-rc.1",
+    "accepted_reference_production": "0.9.0-rc.1",
+    "accepted_head": "93222cba64a203dd72d7d7b4ac57274f70c6ffea",
+    "change_record": "docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md",
+    "release_record": "docs/v0_8/RELEASE-CANDIDATE-v0.9.0-rc.1.md",
+    "source_repair": {
+      "commit": "93222cba64a203dd72d7d7b4ac57274f70c6ffea",
+      "purpose": "remove stale v0.8.8 public footer copy and make post-deploy public smoke exact-version-aware without weakening privacy/security/evidence assertions",
+      "local_validation": {
+        "public_smoke_contract": "PASS_9_OF_9",
+        "sites_app": "PASS_31_OF_31",
+        "frontend_build": "PASS_8_FILES",
+        "privacy_audit": "PASS_0_FORBIDDEN_MATCHES",
+        "git_diff_check": "PASS"
+      },
+      "release_candidate_ci": {
+        "run_id": 35258813226,
+        "event": "push",
+        "status": "SUCCESS",
+        "head_sha": "93222cba64a203dd72d7d7b4ac57274f70c6ffea"
+      },
+      "public_smoke": {
+        "run_id": 35258813340,
+        "event": "push",
+        "status": "SUCCESS",
+        "head_sha": "93222cba64a203dd72d7d7b4ac57274f70c6ffea"
+      }
+    },
+    "production": {
+      "canonical_domain": "https://workermanifestfellowship.dpdns.org",
+      "worker_version_id": "36f77442-2fdc-4917-9f27-384d804c813e",
+      "vercel_deployment": "https://workermanifestfellowship-bgkwzhjhr-hiddenfeng.vercel.app",
+      "runtime_version_observed": "0.9.0-rc.1",
+      "browser_smoke": "PASS_CORRECTED_FOOTER_PHASE_O_ZERO_PAGE_NETWORK_CONSOLE_ERRORS",
+      "postdeploy_auto_research_e2e": {
+        "run_id": 35259826835,
+        "event": "workflow_dispatch",
+        "status": "PASS",
+        "head_sha": "93222cba64a203dd72d7d7b4ac57274f70c6ffea",
+        "artifact_status": "PASS_PRODUCTION_AUTONOMOUS_COMPANY_INTELLIGENCE_AND_INTERACTION",
+        "qa_company_id": "co_73c201af0e6945a9a5",
+        "qa_region": "US · production-auto-research-e2e-g74sgib",
+        "research_dispatch": "QUEUE_SENT",
+        "research_status": "AUTO_READY_WITH_SOURCE_GAPS",
+        "dossier_status": "REFERENCE_READY",
+        "identity_status": "AUTO_BOUND_REFERENCE",
+        "candidate_count": 15,
+        "source_success_count": 9,
+        "source_error_count": 2,
+        "machine_verified_facts": 6,
+        "source_signals": 4,
+        "public_event_candidates": 24
+      }
+    },
+    "production_qa_cleanup": {
+      "status": "PASS_EXACT_3_ROWS_REMOVED_UNDER_WRITE_LOCK",
+      "qa_company_id": "co_73c201af0e6945a9a5",
+      "qa_region": "US · production-auto-research-e2e-g74sgib",
+      "rows_deleted": 3,
+      "collections": [
+        "companies",
+        "companyResearch",
+        "ballots"
+      ],
+      "related_rows_before_cleanup": 3,
+      "residual_qa_rows": 0,
+      "revision_before": 97,
+      "revision_after": 98,
+      "active_locks_after": 0,
+      "non_qa_records_preserved": true
+    },
+    "production_hygiene": {
+      "companies": 2,
+      "companyResearch": 2,
+      "contributions": 2,
+      "ballots": 3,
+      "real_company_names": [
+        "富士康",
+        "星宇股份有限公司"
+      ],
+      "research_health": "HEALTHY",
+      "missing_research": 0,
+      "stale_queued": 0,
+      "stale_collecting": 0,
+      "failed_records": 0,
+      "dead_lettered_records": 0,
+      "source_gap_records": 0,
+      "queue_enabled": true,
+      "scheduled_recovery_enabled": true
+    },
+    "retained_failures": [
+      "The first local Node public-smoke attempt failed in the Mac network path before any semantic/version assertion; an independent canonical browser path was healthy, so this was retained as local-path evidence rather than promoted to a production outage.",
+      "The first global npx/wrangler provenance attempt hit the known local miniflare ENOTEMPTY cache collision; the bounded retry used an isolated npm cache and succeeded. This was retained as local tooling evidence rather than a production failure."
+    ],
+    "next_gate": "REAL_USER_OR_OPERATIONS_EVIDENCE_FIRST",
+    "strongest_claim": "Reference production v0.9.0-rc.1 is accepted for the currently implemented Reference Instance scope: the exact source head passed CI/public smoke, the corrected frontend was deployed, canonical browser smoke passed, manual post-deploy Queue E2E passed, exactly three QA rows were removed under the production write lock with residual=0, real data remained, and post-cleanup research health is HEALTHY. This does not claim a real public multi-node federation network, Docker container E2E, Mainland-China stable-access SLA, complete global coverage, official/legal adjudication authority, or sensitive private-case intake."
   }
 }

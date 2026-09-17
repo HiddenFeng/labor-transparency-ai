@@ -1,16 +1,16 @@
 # Reference Production Release Candidate — v0.9.0-rc.1
 
 Date: 2026-09-17
-Status: `VERSIONED_SOURCE_CANDIDATE_PUBLISHED_CI_PASS / PRODUCTION_NOT_DEPLOYED`
+Status: `REFERENCE_PRODUCTION_ACCEPTED`
 Active change: `docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md`
-Accepted Reference production: `v0.8.8-rc.1`
+Accepted Reference production: `v0.9.0-rc.1`
 Candidate source/runtime: `v0.9.0-rc.1`
 
 ## Status
 
-`v0.9.0-rc.1` is the first versioned Reference Production release-prep candidate for Phase O. It assigns a distinct source/runtime identity to the already locally validated Phase O behavior and architecture instead of deploying materially different code under the accepted `v0.8.8-rc.1` identity.
+`v0.9.0-rc.1` began as the first versioned Reference Production release-prep candidate for Phase O, assigning a distinct source/runtime identity to the locally validated Phase O behavior and architecture instead of deploying materially different code under the earlier `v0.8.8-rc.1` identity.
 
-The versioned source candidate is now published at canonical `main@35dff048c1c89df4312335b62f9fedc95d5a527f` and its decisive source CI passed. This record still does **not** claim Reference Instance deployment, production acceptance, or a stable public federation network.
+The versioned source candidate was published at canonical `main@35dff048c1c89df4312335b62f9fedc95d5a527f`; the release gate was later reconciled against a live v0.9 deployment, a bounded smoke/footer repair was published at `main@93222cba64a203dd72d7d7b4ac57274f70c6ffea`, and the full post-deploy smoke -> manual E2E -> exact QA cleanup chain passed. `v0.9.0-rc.1` is therefore now the accepted Reference production baseline. This acceptance still does **not** claim a stable public multi-node federation network or any of the known non-production gaps below.
 
 ## Reference production preflight
 
@@ -101,14 +101,24 @@ The existing non-blocking gaps remain:
 - no trustworthy cross-instance worker/community aggregate is claimed without anti-Sybil design;
 - broader company/labour/court/arbitration/product/factory/supply-chain coverage remains partial.
 
-## Upgrade / rollback boundary
+## Reference production acceptance
 
-Source publication and decisive CI are complete. No production deploy occurred in that gate.
+The independent production gate is complete.
 
-Next gate: `REFERENCE_PRODUCTION_RELEASE_GATE`.
+- accepted source/release head: `main@93222cba64a203dd72d7d7b4ac57274f70c6ffea`;
+- exact-head release CI run `35258813226`: `success`;
+- exact-head public smoke run `35258813340`: `success`;
+- observed Cloudflare Worker deployment version: `36f77442-2fdc-4917-9f27-384d804c813e`, runtime `0.9.0-rc.1`;
+- corrected Vercel production deployment: `workermanifestfellowship-bgkwzhjhr-hiddenfeng.vercel.app`, canonical alias retained;
+- canonical browser smoke: corrected footer + Phase O product/labor-signal surface + runtime `0.9.0-rc.1`, zero page/network/console errors;
+- manual post-deploy auto-research E2E run `35259826835`: `success`, `workflow_dispatch`, head `93222cba64a203dd72d7d7b4ac57274f70c6ffea`;
+- E2E artifact status: `PASS_PRODUCTION_AUTONOMOUS_COMPANY_INTELLIGENCE_AND_INTERACTION`; QA company `co_73c201af0e6945a9a5`, QA region `US · production-auto-research-e2e-g74sgib`, research `AUTO_READY_WITH_SOURCE_GAPS`, dossier `REFERENCE_READY`, identity `AUTO_BOUND_REFERENCE`;
+- exact cleanup preflight: only company + companyResearch + ballot matched the QA identity;
+- controlled cleanup: production `ltp_write_lock`, revision `97 -> 98`, exactly 3 QA rows deleted, `residual=0`, lock released;
+- post-cleanup production: 2 real companies, 2 companyResearch records, real data preserved; canonical research health `HEALTHY`; canonical config still `0.9.0-rc.1 / CLOUDFLARE_WORKER_D1`.
 
-The production gate remains separate:
+Acceptance status: `PASS_DEPLOYED_BROWSER_SMOKE_MANUAL_E2E_EXACT_CLEANUP_V090`.
 
-`deploy -> production smoke -> manual post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance`.
+There is no remaining v0.9 release gate. Future material source/runtime changes require their own bounded change/release evidence. Until real user/operations evidence justifies new work, the project returns to the existing priority order rather than inventing a new version or framework.
 
-Rollback/abort before acceptance if source/runtime versions diverge, privacy/evidence semantics regress, production preflight exposes a higher-priority incident, or the candidate cannot preserve the current v0.8.8 accepted core paths.
+Rollback after acceptance only for a real regression/incident supported by production evidence; do not downgrade the accepted ledger merely because a local CLI path times out.

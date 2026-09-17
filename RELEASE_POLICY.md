@@ -1,6 +1,6 @@
 # Release / Production Status Policy
 
-本项目同时存在历史版本、当前 accepted production、以及尚未部署的本地 candidate。公开说明必须明确区分，不能因为代码已经存在就把 candidate 写成“已上线”。
+本项目同时存在历史版本、当前 accepted production、以及可能仅完成本地/source 验证的能力或未来 candidate。公开说明必须明确区分，不能因为代码已经存在就把未完成独立生产 gate 的能力写成“已上线”。
 
 ## 状态词
 
@@ -10,17 +10,17 @@
 
 ### Local Candidate / Locally Validated
 
-代码、测试或本地集成已经通过，但没有完成 reference production 的独立 release/deploy/production acceptance。当前 Phase O 的产品与劳工信号、独立实例、signed federation、mirrors/peer pull 和 self-host release contract 都属于这一类，除非最新 `PROJECT_CONTINUITY.md` 明确升级状态。
+代码、测试或本地集成已经通过，但没有完成 reference production 的独立 release/deploy/production acceptance。当前 `v0.9.0-rc.1` 本身已经完成 Reference production acceptance；但其中的独立实例 bootstrap、signed federation、mirrors/peer pull、self-host/container 相关能力只有在最新 `PROJECT_CONTINUITY.md` 明确记录对应生产/公网证据时，才能升级为“已上线的多节点/容器能力”。
 
-当前 Phase O source/runtime candidate：`v0.9.0-rc.1`。该 versioned source candidate 已发布到 canonical `main` 并通过其决定性 source CI，但仍未部署/接受为 Reference production。它与下面的 accepted production `v0.8.8-rc.1` 是两个独立状态；package/source version 不能自动覆盖生产接受版本。
+当前没有比 `v0.9.0-rc.1` 更高的新 Reference runtime candidate。未来 candidate 即使已经发布到 canonical `main` 或通过 source CI，也不能自动覆盖下面的 accepted production；package/source version 与生产接受状态始终独立验证。
 
 ### Accepted Production
 
 已经按当前 release gate 部署到 Reference Instance，并有对应 production smoke/E2E/cleanup/QA 证据。当前 accepted production baseline 为：
 
-`v0.8.8-rc.1`
+`v0.9.0-rc.1`
 
-当前事实以 `PROJECT_CONTINUITY.md` 与 `qa/v0_8/verification.json` 最新接受段为准，而不是仅看 package version 或 README 文案。
+该状态来自独立的 exact-head CI/public smoke、canonical browser smoke、手动 post-deploy E2E 与 exact QA cleanup/residual=0 证据。当前事实以 `PROJECT_CONTINUITY.md` 与 `qa/v0_8/verification.json` 最新接受段为准，而不是仅看 package version 或 README 文案。
 
 ### Stable source release
 

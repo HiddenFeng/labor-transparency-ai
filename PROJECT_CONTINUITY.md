@@ -2,8 +2,8 @@
 
 Status: `CURRENT_CANONICAL_CONTINUITY`
 Continuity schema: `LTP-CONTINUITY-1`
-Accepted product runtime at this continuity update: `0.8.8-rc.1`
-Active source/runtime candidate at this continuity update: `0.9.0-rc.1` (`VERSIONED_SOURCE_CANDIDATE_PUBLISHED_CI_PASS`, production not deployed/accepted)
+Accepted product runtime at this continuity update: `0.9.0-rc.1`
+Active source/runtime candidate at this continuity update: `0.9.0-rc.1` (`REFERENCE_PRODUCTION_ACCEPTED`, accepted head `93222cba64a203dd72d7d7b4ac57274f70c6ffea`)
 Canonical production: `https://workermanifestfellowship.dpdns.org`
 Repository: `https://github.com/HiddenFeng/labor-transparency-ai`
 
@@ -21,7 +21,7 @@ Repository: `https://github.com/HiddenFeng/labor-transparency-ai`
 
 最终目标不是“抓取最多数据”或“给公司打一个好坏分”，而是让劳动者得到**可理解、可追溯、不会把猜测冒充事实、不会为了自动化牺牲隐私的实用信息和行动入口**。
 
-当前已接受的产品基线是 `v0.8.8-rc.1`。它已经是**审计过的核心流程可用生产基线**，而不是“全球全部企业数据完成”或“中国大陆稳定访问 SLA 完成”。目前没有必须由用户立即决策的生产阻塞项。
+当前已接受的产品基线是 `v0.9.0-rc.1`。它已完成独立 source CI / production browser smoke / 手动 post-deploy Queue E2E / 精确 QA cleanup(residual=0) 的生产验收，因此是**审计过的当前 Reference Instance 核心流程可用生产基线**；但这仍不等于“公网多节点联邦网络已上线”“全球全部企业数据完成”“Docker container E2E 已完成”或“中国大陆稳定访问 SLA 完成”。目前没有必须由用户立即决策的生产阻塞项。
 
 ## 1. 权威顺序：发生冲突时按这个顺序判断
 
@@ -164,11 +164,11 @@ v0.8.7 后不再机械增加来源，而是以普通劳动者身份走生产核�
 
 根本原因：**把项目生命力从单一运营者/单一站点中解耦，同时不能把“去中心化”变成更大规模的隐私复制，也不能把情绪动员伪装成事实判断。**
 
-当前 active change：`docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md`；独立实例边界说明：`docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md`。Phase O **`v0.9.0-rc.1` versioned source candidate** 已发布到 canonical `main@35dff048c1c89df4312335b62f9fedc95d5a527f`；`Validate release candidate (no deployment)` run `35185637735` 与 `Public non-Tencent deployment smoke` run `35185637750` 均成功。accepted production 仍是 `v0.8.8-rc.1`，该源码/CI milestone 不等于生产部署或验收；当前必须经过单独的 `REFERENCE_PRODUCTION_RELEASE_GATE` 才能改变 production acceptance。
+当前 active change：`docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md`；独立实例边界说明：`docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md`。Phase O `v0.9.0-rc.1` 已完成独立 Reference production release gate：修复/验收 head `93222cba64a203dd72d7d7b4ac57274f70c6ffea` 的 release CI `35258813226` 与 public smoke `35258813340` 成功，canonical browser smoke 成功，手动 post-deploy auto-research E2E `35259826835` 成功；对应 QA company/research/ballot 仅 3 行，在生产 `ltp_write_lock` 下精确清理，revision `97 -> 98`、residual=0、2 个真实公司与真实研究记录保留。`v0.9.0-rc.1` 因此是当前 accepted production；这不升级为“公网多节点联邦已上线”或“所有 self-host/container 能力均已生产验证”。
 
 ## 4. 当前真实系统架构
 
-当前**已接受生产实例**的运行拓扑没有因 Phase O 自动改变；它现在应理解为 reference instance。上游目标架构是 `Software + Standards + Public Evidence Contract -> independent instances`。P0 independent bootstrap 与第一版 signed public-evidence snapshot/delta transport 已在本地两个独立实例间验证，但尚未作为 reference production 或公开多节点网络部署/验收。
+当前已接受生产实例是 Phase O `v0.9.0-rc.1` Reference Instance：既有 Vercel + Cloudflare Worker/D1 + Queue/Cron 主链继续运行，产品与劳工信号入口以及 worker/community/claim 分层语义已进入 accepted production scope。上游目标架构仍是 `Software + Standards + Public Evidence Contract -> independent instances`。P0 independent bootstrap、signed public-evidence snapshot/delta、content-addressed mirror、显式 peer trust/pull 与 self-host release contract 仍主要是**源码/本地验证能力**；它们尚未形成真实公网多节点网络，也不能因为 Reference Instance 已接受 v0.9 就把这些外部运营能力写成已上线。
 
 ```text
 普通访问者（reference instance）
@@ -230,26 +230,27 @@ Queue 失败
 
 ## 6. 当前生产接受状态（快照；接管时仍需重验）
 
-当前接受证据位于 `docs/v0_8/CHANGE-v0.8.8-production-usability-hardening.md` 和 `qa/v0_8/verification.json -> candidate_v088_production_usability_hardening`。
+最新接受证据位于 `docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md`、`docs/v0_8/RELEASE-CANDIDATE-v0.9.0-rc.1.md` 和 `qa/v0_8/verification.json -> candidate_v090_phase_o_reference_production_acceptance`。旧 `candidate_v088_production_usability_hardening` 仍保留为 v0.8.8 的历史接受证据，但不再是最新生产基线。
 
-接受快照：
+当前接受快照：
 
-- runtime：`0.8.8-rc.1`；
-- release feature head：`cf1067a4d30485baf22258072d51bb3fc5348c5e`；
-- v0.8.8 acceptance evidence commit：`ea2120afee05b6c3fbb59494f92ec8baaf8f65c7`；
-- Worker version：`a7f6e635-a5b5-4bff-9171-b47a0ba8b26e`；
-- Vercel deployment：`workermanifestfellowship-hx68r01vs-hiddenfeng.vercel.app`；
-- release CI `35103315352`：PASS；
-- post-deploy auto-research E2E `35104087790`：PASS；
-- post-deploy public semantic smoke `35104628662`：PASS；
-- E2E QA company/research/ballot 精确 3 行已在 `ltp_write_lock` 下删除，revision `77 -> 78`，残留 0；
-- 接受时生产回到 1 个真实公司 `星宇股份有限公司`，现有真实社区证据保留；pending feedback / official references / official relations / official events 均为 0；
-- 核心浏览器流程：home/guidance、company list/detail、anonymous advisory、contribution/company creation、我的提交、resource directory、runtime status 已验证；
-- production capabilities 中 attachments=false、privateSensitiveInfo=false。
+- runtime：`0.9.0-rc.1`；
+- accepted source/release head：`93222cba64a203dd72d7d7b4ac57274f70c6ffea`；
+- Worker version：`36f77442-2fdc-4917-9f27-384d804c813e`；
+- Vercel deployment：`workermanifestfellowship-bgkwzhjhr-hiddenfeng.vercel.app`；canonical alias 仍是 `workermanifestfellowship.dpdns.org`；
+- exact-head release CI `35258813226`：PASS；
+- exact-head push public smoke `35258813340`：PASS；
+- canonical browser smoke：新 footer + Phase O 产品/劳工信号入口 + runtime `0.9.0-rc.1`，page/network/console errors 均为 0；
+- 手动 post-deploy auto-research E2E `35259826835`：PASS，事件为 `workflow_dispatch`，head 精确为 `93222c...`；真实 Queue consumer 达到 `AUTO_READY_WITH_SOURCE_GAPS`，dossier=`REFERENCE_READY`，identity=`AUTO_BOUND_REFERENCE`；
+- E2E QA company `co_73c201af0e6945a9a5` / region `US · production-auto-research-e2e-g74sgib` 在清理前只关联 company、companyResearch、ballot 共 3 行；
+- 生产 `ltp_write_lock` 下精确清理这 3 行，revision `97 -> 98`，第二次独立只读验证 `residual=0`、`active_locks=0`；
+- 清理后真实生产保留 **2 家真实公司**（`富士康`、`星宇股份有限公司`）、2 条 companyResearch、2 条 contribution；canonical `/api/research/health`=`HEALTHY`，missing/stale/failed/dead-lettered/source-gap 均为 0，Queue 与 scheduled recovery 均启用；
+- canonical `/api/config` 清理后仍为 version/domainVersion=`0.9.0-rc.1`、mode=`CLOUDFLARE_WORKER_D1`，attachments=false、privateSensitiveInfo=false；
+- release 前 aggregate-only 社区状态显示 pending feedback=0、official reference/relation/event=`0/0/0`；没有反馈/隐私/安全/核心故障抢占该验收。
 
-2026-09-17 Reference release-prep 前再次通过真实浏览器读取 canonical `/api/config`，确认 version/domainVersion=`0.8.8-rc.1`、mode=`CLOUDFLARE_WORKER_D1`、核心 capability 仍启用，且该读取无 page/network/console error。同期 trusted production state 已有 **2 家真实公司**（`富士康`、`星宇股份有限公司`），pending feedback=0；新增真实公司 `富士康` 的 Queue 研究从 queuedAt `02:42:43.501Z` 到 collectedAt `02:42:47.015Z` 后进入 `AUTO_READY / CANDIDATES_ONLY`，2 个适用来源成功、0 error、9 个来源 `NOT_APPLICABLE`，`exactNameCandidateCount=0`，法律主体保持 `NO_VERIFIED_REFERENCE`，证明新公司主链正常且没有因简称/上下文相似强绑主体。该生产事实是当前运行证据，不改写 v0.8.8 接受时“1 家真实公司”的历史 hygiene 快照。
+保留的失败证据：第一次本机 Node public smoke 在到达语义断言前因本机网络路径失败；独立 canonical browser 同时可达，因此该失败没有被升级成生产故障。第一次全局 `npx/wrangler` 只读取证也撞到已知 `miniflare ENOTEMPTY` cache 冲突；使用隔离 npm cache 的有限重试成功。两者都保留为本地路径/工具失败，不被改写成成功，也不用于否定独立生产证据。
 
-最大可辩护结论：**当前生产是已审计核心流程可用的基线。** 不能扩大为全球资料完整、中国大陆稳定 SLA、正式法律代理、自动外部申诉或敏感私密信息服务。
+最大可辩护结论：**当前 `v0.9.0-rc.1` Reference production 已完成独立发布验收，核心生产流程与本轮 Phase O Reference 产品范围可用。** 不能扩大为真实公网多节点联邦网络、Docker container E2E、全球资料完整、中国大陆稳定 SLA、正式法律/监管代理、自动外部申诉或敏感私密信息服务。
 
 ## 7. 当前用户流程与产品完成度
 
@@ -268,21 +269,19 @@ Queue 失败
 - 18:00/19:00 日常 Agent 运营链；
 - 当前全球公网部署和外部 smoke。
 
-当前还有一个**已分配 `v0.9.0-rc.1` source/runtime identity、正在 Reference Production release prep、尚未生产验收**的 active candidate：
+Phase O 现在必须按**Reference production 已接受范围**与**仍属本地/source-only 的独立实例/联邦范围**分别理解：
 
-- 产品与劳工信号页：公开产品卡片同时展示彼此独立的 `WORKER_PERSPECTIVE_SIGNAL`、`GENERAL_COMMUNITY_SIGNAL`、具体 `labour_claim` 证据；包含“劳工愤怒榜 / 劳工支持榜 / 证据较强的劳动实践 / 社区关注”视图，所有榜单都有非事实/非产品质量结论边界；
-- worker perspective ballot 与旧 community ballot 同 collection 但使用独立复合键，旧 community 记录无需迁移且不会被 worker signal 覆盖；
-- local reference server 与 Cloudflare Worker 都已有 `/api/product-market` 候选接口和独立 worker/community/evidence 投影；
-- `LTP_INDEPENDENT_INSTANCE=true` 构建模式要求 same-origin API，配置远程 API/proxy 时失败关闭；P0 bootstrap 还能生成自己的稳定 instance ID / Ed25519 key / Secrets / FileStore 并 localhost same-origin 独立启动；
-- signed public-evidence federation v1 已在两个本地独立实例间通过：只同步现有 public redistribution gate 已批准的 contribution，支持 canonical full snapshot + delta、Ed25519 签名、source-key pinning、幂等、chain continuity、correction/retraction/tombstone；导入 evidence 与 source tracker 使用独立 collections，不自动再转发；
+- 已进入 accepted Reference production：产品与劳工信号页，公开产品卡片彼此独立展示 `WORKER_PERSPECTIVE_SIGNAL`、`GENERAL_COMMUNITY_SIGNAL` 与具体 `labour_claim` 证据；包含“劳工愤怒榜 / 劳工支持榜 / 证据较强的劳动实践 / 社区关注”视图，并保留“不是事实/产品质量/道德总分”的边界；
+- 已进入 accepted Reference production：worker perspective ballot 与旧 community ballot 同 collection、独立复合键，旧 community 记录无需迁移且不会被 worker signal 覆盖；Cloudflare Worker `/api/product-market` 与独立 worker/community/evidence 投影已随 v0.9 runtime 接受；
+- 仍主要是本地/source capability：`LTP_INDEPENDENT_INSTANCE=true` 构建模式要求 same-origin API、远程 upstream API/proxy 配置失败关闭；P0 bootstrap 可生成稳定 instance ID / Ed25519 key / Secrets / FileStore 并 localhost same-origin 独立启动；
+- 仍主要是本地/source capability：signed public-evidence federation v1 已在两个本地独立实例间通过，只同步现有 public redistribution gate 已批准的 contribution，支持 canonical full snapshot + delta、Ed25519 签名、source-key pinning、幂等、chain continuity、correction/retraction/tombstone；导入 evidence 与 source tracker 使用独立 collections，不自动再转发；
 - tombstone 只继续公开 hash/version/root/history proof，不继续公开已撤正文；FileStore 导入必须显式 `--service-stopped`；
-- `/api/federation/evidence` 是只读公共 provenance 投影；当前没有远程 federation 写接口；
+- `/api/federation/evidence` 是只读公共 provenance 投影；当前没有远程 federation 写接口；Reference production 接受 v0.9 不等于存在真实跨实例同步网络；
 - content-addressed multi-mirror 已本地验证：source-signed snapshot 可封装为 `sourcePathId/snapshotRoot` package，byte-identical 复制到多个 mirror root，每次读取重新验证文件 hash + source signature；删除一个镜像、破坏第二个镜像后可从第三个恢复，全部损坏时失败关闭；
 - mirror index/manifest 只作传输定位，不是证据 authority；minimal signed peer descriptor + explicit trust + pull 已本地验证，可从 descriptor latest root 反向补齐缺失 snapshot 链并跨损坏镜像恢复，但仍没有真实外部 Git/object-storage/IPFS 镜像、availability monitoring、中心/自动 peer registry 或周期性 crawler；
 - self-host release contract 已本地验证：code-only release 与实例持久数据分离，真实 Caddy Host/Origin/CSRF/security flow、health/preflight、停服 backup/restore、release replacement 通过；Dockerfile/Compose 配置可解析，但 Docker Hub base-image 拉取超时使真实 container build/run 仍是明确 gap；
-- public governance/release readiness 已完成：根目录 mission/operating/governance/privacy/security/non-commercial/operator/brand/attribution/conduct/release policy 与 GitHub Issue/PR 模板已建立；`public-site` 的 LICENSE/data-license/contributing 副本受自动一致性检查；machine readiness 当前为 `PUBLIC_GOVERNANCE_READY_SOURCE_CANDIDATE`；
-- clean source candidate 已作为 commit `ec453528b3e4cb89bb6f6c0d06db211092b878f4` 推送 canonical GitHub `main`。该 SHA 的 `Validate release candidate (no deployment)` run `35181683052`、`Public non-Tencent deployment smoke` run `35181683073` 与 GitHub Pages run `35181683098` 均 `success`；其中 public smoke 只证明当前已部署 Reference Instance 公开路径仍健康，**不证明 Phase O 已部署**；
-- 以上由 `docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md` 与 `docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md` 管理，**不是 accepted production capability**，直到单独 version/release/deploy/production acceptance 完成。
+- public governance 已建立 mission/operating/governance/privacy/security/non-commercial/operator/brand/attribution/conduct/release policy 与 GitHub Issue/PR 模板，`public-site` 的 LICENSE/data-license/contributing 副本受自动一致性检查；机器 release-readiness 必须把当前 v0.9 accepted production 与仍未生产化的 federation/self-host gaps 同时表达；
+- v0.9 的 source publication 历史仍保留（包括 `35dff048...` 及此前 source-only CI），但当前生产接受只以最新 acceptance ledger、`93222c...`、post-deploy E2E 与 exact cleanup 证据为准；不能再用早期 source-only 阶段否定已经完成的生产验收，也不能反过来用生产验收覆盖仍未完成的公网联邦/container gaps。
 
 明确仍不是当前能力：
 
@@ -402,16 +401,16 @@ Queue 失败
 
 ### R25. 把 source release / main 分支更新写成 production deploy
 
-规则：GitHub 源码更新、tag/release、self-host code release 与 Reference Instance production acceptance 是不同状态。Phase O 未完成单独 release -> deploy -> production smoke/acceptance 前，必须保持 `phaseOCandidateProductionAccepted=false`，不能因为 main/Release 已公开就宣称 Reference Instance 已运行该 candidate。
+规则：GitHub 源码更新、tag/release、self-host code release 与 Reference Instance production acceptance 是不同状态。Phase O 之所以现在可以写 `phaseOCandidateProductionAccepted=true`，不是因为 main/Release 已公开，而是因为另行完成了 runtime 验证、canonical browser smoke、手动 post-deploy E2E、exact QA cleanup/residual=0 与 QA/continuity 写回。以后任何新 source/runtime delta 都必须重新走与影响范围匹配的 release gate，不能把 v0.9 的接受证据复用为未来版本的生产证明。
 
 ## 9. 当前真实 blockers / gaps / next gate
 
 ### 当前没有的 blocker
 
-- 没有一个已知核心生产流程阻塞当前已接受 v0.8.8 reference instance；
+- 没有一个已知核心生产流程阻塞当前已接受 v0.9.0-rc.1 reference instance；
 - 没有必须用户立刻补充的云账号/付款/实名步骤；
-- v0.8.8 没有待完成 release gate；
-- Phase O 本地 candidate 已具备可继续推进的明确路径，不需要用生产部署来证明本地实现存在。
+- v0.9.0-rc.1 没有待完成 release gate；
+- 当前没有证据支持为了“继续推进”立刻制造新版本、新框架、新 collector 或公网联邦服务。
 
 ### 仍然存在但不是当前 blocker 的 gap
 
@@ -427,16 +426,15 @@ Queue 失败
 
 ### 当前 NEXT_GATE
 
-在任何真实用户反馈、纠错、隐私/安全事件或生产故障仍拥有最高抢占优先级的前提下，用户当前已明确授权的结构性主线是 Phase O：
+`v0.9.0-rc.1` 的 Reference production release gate 已完成；当前没有一个预先制造出来的“下一版本 gate”。接下来的工作选择回到证据驱动的运营优先级：
 
-1. clean Phase O source candidate `ec453528b3e4cb89bb6f6c0d06db211092b878f4` 及治理提交 `a8eca854f28fbd23deab8ce3b35be2470ec1fdcc` 已在 canonical `main`，其既有 CI/public smoke/Pages 证据均成功；accepted Reference Instance production 仍保持 `v0.8.8-rc.1`；
-2. 2026-09-17 release-prep preflight 已重新检查真实 production/config、feedback、真实新公司 Queue/dossier 与 18:00/19:00 LocalAgentRuntime 调度：没有反馈/申诉/隐私安全/核心生产故障抢占项；真实 `富士康` 新公司研究主链成功且主体歧义正确 fail-closed；
-3. Phase O 已分配新的 source/runtime candidate identity **`v0.9.0-rc.1`**，不再允许用 `0.8.8-rc.1` 表示 materially different candidate。机器治理必须同时表达 `candidate=0.9.0-rc.1` 与 `accepted production=0.8.8-rc.1`，不得再把 package version 自动当成生产接受版本；
-4. versioned source candidate `35dff048c1c89df4312335b62f9fedc95d5a527f` 已发布到 canonical `main`；`Validate release candidate (no deployment)` run `35185637735` 与独立 public smoke run `35185637750` 均 `success`。本次 source publication 没有触发 manual-only production auto-research E2E，也没有改变生产 runtime；
-5. 当前下一 gate 是 **REFERENCE_PRODUCTION_RELEASE_GATE**：deploy -> production smoke -> 手动 post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance。该 gate 是独立生产动作；任何失败必须保留，不能修改验收标准；
-6. 真实外部 Git/object-storage/IPFS mirrors、自动 peer availability、Docker registry/build 仍可后续补，但不能抢占真实用户反馈/安全/生产故障。跨实例 community/worker aggregate 继续等待 anti-Sybil 设计。
+1. **真实用户反馈 / 纠错 / 申诉 / 隐私安全**：一旦出现，立即抢占其他深化；当前最近一次 aggregate-only preflight 为 pending feedback=0；
+2. **生产故障 / 核心路径**：canonical config/research health 当前正常，Queue + scheduled recovery 正常；本机 curl/wrangler/Node 网络失败仍必须独立交叉验证，不能直接升级为事故；
+3. **北京时间 18:00 / 19:00 日常运营结果**：按现有 fixed tasks、history/daily 与 `agentDailyRuns` 继续；只有运行契约变更才改 `DAILY_AGENT_OPERATIONS.md`；
+4. **已验证且能明显提升用户效用的 coverage gap**：例如只有在存在合法、公开、可复现、无需绕过 CAPTCHA/login/反自动化的官方接口时，才补 BSE 或其他来源；
+5. **Phase O 未生产化部分**：真实外部 Git/object-storage/IPFS mirror、peer availability、Docker container build/run、anti-Sybil 跨实例 aggregate 等仍是 gap，但不是因为 v0.9 已接受就自动成为下一项工作。只有真实 operator/用户需求或新的可验证价值证据出现时再推进。
 
-不要因为长期联邦方向已经确定就大爆炸重构目录、创建第二套数据模型或提前实现无人使用的服务。每一阶段必须先证明独立用户价值和边界。
+任何新的行为/架构/数据语义/source/runtime delta 都必须建立在当前 accepted `v0.9.0-rc.1` 上，使用现有 change record / release gate 做增量验证；不得复用 v0.9 的 acceptance 证据直接宣称未来改动已生产接受。不要为了“Agent 还在工作”创建新框架、新版本、新 collector、新平行治理体系或重复全量验收。
 
 ## 10. 任意 Agent 的强制接管流程
 
@@ -514,7 +512,7 @@ Queue 失败
 1. `AGENTS.md`
 2. `PROJECT_CONTINUITY.md`
 3. `qa/v0_8/verification.json` 的最新接受段
-4. `docs/v0_8/CHANGE-v0.8.8-production-usability-hardening.md`
+4. `docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md` + `docs/v0_8/RELEASE-CANDIDATE-v0.9.0-rc.1.md`
 5. 当前 Git/runtime
 
 根据工作再读：

@@ -16,8 +16,8 @@
 
 | 层级 | 当前状态 |
 | --- | --- |
-| **Reference production** | `v0.8.8-rc.1`，当前 accepted production baseline；以 `PROJECT_CONTINUITY.md` + `qa/v0_8/verification.json` 最新接受证据为准 |
-| **Phase O local candidate** | `v0.9.0-rc.1` versioned source candidate 已发布到 canonical `main@35dff048c1c89df4312335b62f9fedc95d5a527f` 并通过决定性 CI；产品与劳工信号、独立实例 bootstrap、signed public-evidence federation、content-addressed mirrors、显式 peer trust/pull、self-host release contract 均已验证，**尚未进入 Reference Instance production acceptance** |
+| **Reference production** | `v0.9.0-rc.1`，当前 accepted production baseline；已完成 exact-head CI/public smoke、canonical browser smoke、手动 post-deploy Queue E2E 与 exact QA cleanup/residual=0；以 `PROJECT_CONTINUITY.md` + `qa/v0_8/verification.json` 最新接受证据为准 |
+| **Phase O scope** | 产品与劳工信号、worker/community/claim 分层与 `/api/product-market` 已进入 Reference production；独立实例 bootstrap、signed public-evidence federation、content-addressed mirrors、显式 peer trust/pull、self-host release contract 仍主要是本地/source capability，**不等于真实公网多节点网络已上线** |
 | **Self-host code release** | code-only release、外置持久实例目录、Caddy、health/preflight、停服 backup/restore、release replacement 已验证 |
 | **Docker/Compose** | 配置可解析；本机真实 image build/run **尚未完成**，因为 Docker Hub base-image 拉取路径超时 |
 | **Public federation network** | 协议/本地运行链已验证；没有声称真实公网自治网络、公共 peer registry 或 IPFS 网络已经上线 |
@@ -165,9 +165,9 @@ node --test scripts/deployment/public_smoke.test.mjs
 node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 ```
 
-当前生产仍以 `v0.8.8-rc.1` accepted evidence 为准；Phase O 当前 source/runtime candidate 为 `v0.9.0-rc.1`，versioned source publication + CI 已通过，下一 gate 才是独立的 `REFERENCE_PRODUCTION_RELEASE_GATE`：deploy -> production smoke -> 手动 post-deploy E2E -> 精确 QA cleanup -> production acceptance。
+当前生产以 `v0.9.0-rc.1` accepted evidence 为准：exact-head CI/public smoke、canonical browser smoke、手动 post-deploy Queue E2E 与精确 QA cleanup/residual=0 均已完成。当前没有预先制造的下一版本 gate；后续按真实反馈/生产/18:00–19:00 运营/高价值 coverage evidence 决定下一项工作。
 
-## 当前 v0.8.8 核心能力
+## 当前 v0.9 Reference 核心能力
 
 当前公司资料产品建立在无人值守 Queue/D1 链上：列表提供简洁摘要，详情页将社区声音、机器参考事实、开放知识上下文、官方 reference/relation/event、公共记录事件候选、用户贡献、资料缺口、来源覆盖与更新时间分层展示。研究按司法区选择适用来源；不适用来源明确为 `NOT_APPLICABLE`。China-first 路径已经加入 source-scoped 调查索引、严格 SSE/SZSE 主体绑定、NMPA/SAMR/CSRC bounded collectors、北京时间 18:00/19:00 日常运营，以及中国大陆官方劳动/法律/欠薪帮助资源。Python back office 继续只作可选离线审计，不是生产可用性依赖。
 

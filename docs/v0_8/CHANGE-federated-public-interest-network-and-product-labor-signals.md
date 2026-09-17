@@ -2,10 +2,34 @@
 
 Date: 2026-09-17
 Impact: `PROJECT_INTENT_DELTA + ARCHITECTURE_DELTA + PRODUCT_BEHAVIOR_DELTA`
-Production impact in this work round: `NONE_UNTIL_SEPARATE_DEPLOYMENT_ACCEPTANCE`
-Status: `VERSIONED_SOURCE_CANDIDATE_PUBLISHED_CI_PASS / PRODUCTION_NOT_DEPLOYED`
+Production impact in this work round: `REFERENCE_PRODUCTION_ACCEPTED_2026_09_18`
+Status: `PRODUCTION_ACCEPTED_V090`
 Current source/runtime candidate: `0.9.0-rc.1`
-Current next gate: `REFERENCE_PRODUCTION_RELEASE_GATE` after successful versioned source publication + CI
+Current next gate: `REAL_USER_OR_OPERATIONS_EVIDENCE_FIRST`
+
+## CURRENT ACCEPTANCE TRANSITION — 2026-09-18
+
+### CURRENT
+
+Canonical production was directly observed running `0.9.0-rc.1` while continuity/QA still named `v0.8.8-rc.1` as accepted production. The deployed public UI also contained stale static `v0.8.8` footer prose, and the public-smoke validator hard-coded an `0.8.x` backend version. Deployment alone was not accepted as production evidence.
+
+### PROPOSED
+
+Reconcile the existing deployment without redundant Worker redeploy: remove stale footer prose, make post-deploy smoke optionally require an exact expected version, publish the bounded repair through normal source CI, deploy only the corrected frontend, then complete canonical browser smoke -> manual post-deploy Queue E2E -> exact QA cleanup/residual=0 before promoting v0.9 to accepted production.
+
+### PRESERVE
+
+No change to evidence lanes, fail-closed subject binding, `0 match` semantics, `NOT_APPLICABLE`, privacy/sensitive-data boundaries, Queue-first research, Cron recovery/refresh, named-reviewer independence, source registry semantics, or the rule that local CLI/network failure alone cannot prove a production outage. Production E2E remains manual/post-deploy and QA cleanup remains exact under the production write lock.
+
+### VALIDATION
+
+Accepted result: source repair `main@93222cba64a203dd72d7d7b4ac57274f70c6ffea`; release CI `35258813226=success`; public smoke `35258813340=success`; corrected Vercel frontend deployed; canonical browser smoke shows v0.9 + Phase O surface with zero page/network/console errors; manual production E2E `35259826835=success`; exact preflight matched only company/companyResearch/ballot for QA company `co_73c201af0e6945a9a5`; guarded cleanup advanced D1 revision `97 -> 98`, deleted exactly 3 QA rows, left residual=0 and active_locks=0, preserved both real companies/research records, and post-cleanup canonical research health is `HEALTHY`.
+
+### ROLLBACK / ABORT CONDITION
+
+Rollback or revoke acceptance only on independently evidenced production regression, source/runtime mismatch, privacy/evidence semantic regression, Queue/core-path degradation, failed manual E2E, non-exact cleanup, or unexpected mutation of real records. Do not downgrade accepted production because a local Node/wrangler path times out.
+
+Work record: `history/subagents/dcnew_1831358125434c708183.md`.
 
 ## PROBLEM
 
