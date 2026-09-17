@@ -31,5 +31,5 @@ test('README and contribution guidance separate accepted production from local c
 });
 
 test('machine release-readiness report passes without claiming production deployment',async()=>{
-  const result=await publicReleaseReadiness();assert.equal(result.status,'PUBLIC_GOVERNANCE_READY_SOURCE_CANDIDATE',JSON.stringify(result.failures));assert.equal(result.version,'v0.9.0-rc.1');assert.equal(result.acceptedProduction,'v0.8.8-rc.1');assert.equal(result.phaseOCandidateProductionAccepted,false);assert.equal(result.forbiddenTracked.length,0);assert.match(result.dockerContainerE2E,/BLOCKED/);assert.equal(result.nextGate,'VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI_BEFORE_REFERENCE_PRODUCTION_RELEASE_GATE');
+  const result=await publicReleaseReadiness();assert.equal(result.status,'PUBLIC_GOVERNANCE_READY_SOURCE_CANDIDATE',JSON.stringify(result.failures));assert.equal(result.version,'v0.9.0-rc.1');assert.equal(result.acceptedProduction,'v0.8.8-rc.1');assert.equal(result.phaseOCandidateProductionAccepted,false);assert.equal(result.sourcePublicationPassed,true);assert.equal(result.forbiddenTracked.length,0);assert.match(result.dockerContainerE2E,/BLOCKED/);assert.equal(result.nextGate,'REFERENCE_PRODUCTION_RELEASE_GATE');
 });

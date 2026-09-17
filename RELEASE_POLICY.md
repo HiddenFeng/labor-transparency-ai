@@ -12,7 +12,7 @@
 
 代码、测试或本地集成已经通过，但没有完成 reference production 的独立 release/deploy/production acceptance。当前 Phase O 的产品与劳工信号、独立实例、signed federation、mirrors/peer pull 和 self-host release contract 都属于这一类，除非最新 `PROJECT_CONTINUITY.md` 明确升级状态。
 
-当前 Phase O source/runtime release-prep candidate：`v0.9.0-rc.1`。它与下面的 accepted production `v0.8.8-rc.1` 是两个独立状态；package/source version 不能自动覆盖生产接受版本。
+当前 Phase O source/runtime candidate：`v0.9.0-rc.1`。该 versioned source candidate 已发布到 canonical `main` 并通过其决定性 source CI，但仍未部署/接受为 Reference production。它与下面的 accepted production `v0.8.8-rc.1` 是两个独立状态；package/source version 不能自动覆盖生产接受版本。
 
 ### Accepted Production
 

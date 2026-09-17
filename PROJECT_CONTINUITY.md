@@ -3,7 +3,7 @@
 Status: `CURRENT_CANONICAL_CONTINUITY`
 Continuity schema: `LTP-CONTINUITY-1`
 Accepted product runtime at this continuity update: `0.8.8-rc.1`
-Active source/runtime candidate at this continuity update: `0.9.0-rc.1` (`REFERENCE_PRODUCTION_RELEASE_PREP_LOCAL_PASS`, not source-published under this version and not production accepted)
+Active source/runtime candidate at this continuity update: `0.9.0-rc.1` (`VERSIONED_SOURCE_CANDIDATE_PUBLISHED_CI_PASS`, production not deployed/accepted)
 Canonical production: `https://workermanifestfellowship.dpdns.org`
 Repository: `https://github.com/HiddenFeng/labor-transparency-ai`
 
@@ -164,7 +164,7 @@ v0.8.7 后不再机械增加来源，而是以普通劳动者身份走生产核�
 
 根本原因：**把项目生命力从单一运营者/单一站点中解耦，同时不能把“去中心化”变成更大规模的隐私复制，也不能把情绪动员伪装成事实判断。**
 
-当前 active change：`docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md`；独立实例边界说明：`docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md`。Phase O 已从 source-only candidate 进入 **`v0.9.0-rc.1` Reference Production release-prep candidate**；accepted production 仍是 `v0.8.8-rc.1`，版本化候选尚未发布/部署，必须先完成 source publication + CI，再经过单独 production release/acceptance。
+当前 active change：`docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md`；独立实例边界说明：`docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md`。Phase O **`v0.9.0-rc.1` versioned source candidate** 已发布到 canonical `main@35dff048c1c89df4312335b62f9fedc95d5a527f`；`Validate release candidate (no deployment)` run `35185637735` 与 `Public non-Tencent deployment smoke` run `35185637750` 均成功。accepted production 仍是 `v0.8.8-rc.1`，该源码/CI milestone 不等于生产部署或验收；当前必须经过单独的 `REFERENCE_PRODUCTION_RELEASE_GATE` 才能改变 production acceptance。
 
 ## 4. 当前真实系统架构
 
@@ -432,8 +432,8 @@ Queue 失败
 1. clean Phase O source candidate `ec453528b3e4cb89bb6f6c0d06db211092b878f4` 及治理提交 `a8eca854f28fbd23deab8ce3b35be2470ec1fdcc` 已在 canonical `main`，其既有 CI/public smoke/Pages 证据均成功；accepted Reference Instance production 仍保持 `v0.8.8-rc.1`；
 2. 2026-09-17 release-prep preflight 已重新检查真实 production/config、feedback、真实新公司 Queue/dossier 与 18:00/19:00 LocalAgentRuntime 调度：没有反馈/申诉/隐私安全/核心生产故障抢占项；真实 `富士康` 新公司研究主链成功且主体歧义正确 fail-closed；
 3. Phase O 已分配新的 source/runtime candidate identity **`v0.9.0-rc.1`**，不再允许用 `0.8.8-rc.1` 表示 materially different candidate。机器治理必须同时表达 `candidate=0.9.0-rc.1` 与 `accepted production=0.8.8-rc.1`，不得再把 package version 自动当成生产接受版本；
-4. 当前下一 gate 是 **VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI**：完成本地 release-prep/change/release-note/QA evidence 后，将 versioned candidate 作为独立 source publication 提交 canonical repo 并观察决定性 CI。source publication 仍不等于 production deploy；
-5. 只有 versioned source candidate 的 CI 通过后，才进入 **REFERENCE_PRODUCTION_RELEASE_GATE**：deploy -> production smoke -> 手动 post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance。任何失败必须保留，不能修改验收标准；
+4. versioned source candidate `35dff048c1c89df4312335b62f9fedc95d5a527f` 已发布到 canonical `main`；`Validate release candidate (no deployment)` run `35185637735` 与独立 public smoke run `35185637750` 均 `success`。本次 source publication 没有触发 manual-only production auto-research E2E，也没有改变生产 runtime；
+5. 当前下一 gate 是 **REFERENCE_PRODUCTION_RELEASE_GATE**：deploy -> production smoke -> 手动 post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance。该 gate 是独立生产动作；任何失败必须保留，不能修改验收标准；
 6. 真实外部 Git/object-storage/IPFS mirrors、自动 peer availability、Docker registry/build 仍可后续补，但不能抢占真实用户反馈/安全/生产故障。跨实例 community/worker aggregate 继续等待 anti-Sybil 设计。
 
 不要因为长期联邦方向已经确定就大爆炸重构目录、创建第二套数据模型或提前实现无人使用的服务。每一阶段必须先证明独立用户价值和边界。

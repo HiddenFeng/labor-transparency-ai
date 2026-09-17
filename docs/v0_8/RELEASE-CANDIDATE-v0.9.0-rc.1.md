@@ -1,7 +1,7 @@
 # Reference Production Release Candidate — v0.9.0-rc.1
 
 Date: 2026-09-17
-Status: `LOCAL_RELEASE_PREP_PASS / SOURCE_PUBLICATION_AND_CI_PENDING / PRODUCTION_NOT_DEPLOYED`
+Status: `VERSIONED_SOURCE_CANDIDATE_PUBLISHED_CI_PASS / PRODUCTION_NOT_DEPLOYED`
 Active change: `docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md`
 Accepted Reference production: `v0.8.8-rc.1`
 Candidate source/runtime: `v0.9.0-rc.1`
@@ -10,7 +10,7 @@ Candidate source/runtime: `v0.9.0-rc.1`
 
 `v0.9.0-rc.1` is the first versioned Reference Production release-prep candidate for Phase O. It assigns a distinct source/runtime identity to the already locally validated Phase O behavior and architecture instead of deploying materially different code under the accepted `v0.8.8-rc.1` identity.
 
-This record does **not** claim source publication/CI for `v0.9.0-rc.1`, Reference Instance deployment, production acceptance, or a stable public federation network.
+The versioned source candidate is now published at canonical `main@35dff048c1c89df4312335b62f9fedc95d5a527f` and its decisive source CI passed. This record still does **not** claim Reference Instance deployment, production acceptance, or a stable public federation network.
 
 ## Reference production preflight
 
@@ -81,6 +81,15 @@ The first combined governance run after assigning `0.9.0-rc.1` returned `14/16 P
 
 Those were release-governance model defects exposed by the required source/production version split, not production failures. The acceptance standard was not weakened. The machine contract was corrected to track `source/runtime candidate` and `accepted production` independently, documentation was synchronized, and the affected continuity/governance suite then passed `7/7` with readiness explicitly reporting `v0.9.0-rc.1` versus `v0.8.8-rc.1`.
 
+## Versioned source publication / CI evidence
+
+- published branch/head: `main@35dff048c1c89df4312335b62f9fedc95d5a527f`;
+- `Validate release candidate (no deployment)` run `35185637735`: `success`;
+- `Public non-Tencent deployment smoke` run `35185637750`: `success`;
+- the push-triggered CI has no production credentials and performs no Reference Instance deployment;
+- `Manual production auto-research E2E` remains `workflow_dispatch` only and was not triggered by this source publication;
+- canonical production remained `v0.8.8-rc.1` when rechecked before publication.
+
 ## Known gaps
 
 The existing non-blocking gaps remain:
@@ -94,11 +103,11 @@ The existing non-blocking gaps remain:
 
 ## Upgrade / rollback boundary
 
-No production deploy is allowed from this local prep alone.
+Source publication and decisive CI are complete. No production deploy occurred in that gate.
 
-Next gate: `VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI`.
+Next gate: `REFERENCE_PRODUCTION_RELEASE_GATE`.
 
-If the versioned source candidate is published and its decisive CI fails, stop before production deployment and retain the failure. If CI passes, the later `REFERENCE_PRODUCTION_RELEASE_GATE` remains separate:
+The production gate remains separate:
 
 `deploy -> production smoke -> manual post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance`.
 

@@ -779,8 +779,8 @@
     }
   },
   "remaining_human_only": [],
-  "next_gate": "Phase O Reference release-prep is locally passing as source/runtime candidate v0.9.0-rc.1 while accepted Reference production remains v0.8.8-rc.1. The next gate is VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI; only a published candidate with decisive CI success may proceed to the separate deploy -> production smoke -> manual post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance gate.",
-  "strongest_claim": "Accepted Reference production remains v0.8.8-rc.1 and current direct checks show no evidenced core outage: canonical /api/config still reports the accepted runtime with expected privacy/capability boundaries; trusted production state now contains two real companies with no pending feedback; the real 富士康 company completed Queue research to AUTO_READY/CANDIDATES_ONLY in about four seconds while exact-name identity remained unresolved and nine non-applicable sources stayed NOT_APPLICABLE; current 18:00/19:00 LocalAgentRuntime tasks are waiting for their next fixed runs with no blocker. Separately, Phase O has a locally validated v0.9.0-rc.1 release-prep candidate with candidate and accepted-production identities machine-separated. It is not source-published under that version, deployed or production-accepted yet.",
+  "next_gate": "Phase O v0.9.0-rc.1 versioned source candidate is published at canonical main@35dff048c1c89df4312335b62f9fedc95d5a527f and its decisive source CI/public smoke passed. Accepted Reference production remains v0.8.8-rc.1. The next gate is the separate REFERENCE_PRODUCTION_RELEASE_GATE: deploy -> production smoke -> manual post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance.",
+  "strongest_claim": "Accepted Reference production remains v0.8.8-rc.1 and current direct checks show no evidenced core outage: canonical /api/config still reports the accepted runtime with expected privacy/capability boundaries; trusted production state contains two real companies with no pending feedback; current 18:00/19:00 LocalAgentRuntime tasks are enabled and unblocked. Separately, Phase O v0.9.0-rc.1 is now a published versioned source candidate at main@35dff048c1c89df4312335b62f9fedc95d5a527f with source CI run 35185637735 and public smoke run 35185637750 both successful. This does not claim v0.9.0-rc.1 production deployment or production acceptance.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",
@@ -1955,14 +1955,34 @@
     }
   },
   "candidate_v090_phase_o_reference_release_prep": {
-    "status": "PASS_LOCAL_REFERENCE_RELEASE_PREP_V090",
+    "status": "PASS_VERSIONED_SOURCE_CANDIDATE_PUBLICATION_CI_V090",
     "runtime_version": "0.9.0-rc.1",
     "accepted_reference_production": "0.8.8-rc.1",
     "base_source_head": "a8eca854f28fbd23deab8ce3b35be2470ec1fdcc",
     "change_record": "docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md",
     "release_record": "docs/v0_8/RELEASE-CANDIDATE-v0.9.0-rc.1.md",
     "production_deployed": false,
-    "source_publication_ci": "PENDING_NOT_RUN_FOR_LOCAL_VERSIONED_CANDIDATE",
+    "source_publication_ci": {
+      "status": "PASS_VERSIONED_SOURCE_CANDIDATE_PUBLICATION_CI",
+      "published_branch": "main",
+      "published_head": "35dff048c1c89df4312335b62f9fedc95d5a527f",
+      "release_candidate_ci": {
+        "run_id": 35185637735,
+        "workflow": "Validate release candidate (no deployment)",
+        "event": "push",
+        "status": "SUCCESS",
+        "completed_at": "2026-09-17T05:26:23Z"
+      },
+      "public_smoke": {
+        "run_id": 35185637750,
+        "workflow": "Public non-Tencent deployment smoke",
+        "event": "push",
+        "status": "SUCCESS",
+        "completed_at": "2026-09-17T05:25:05Z"
+      },
+      "manual_production_e2e_triggered_by_publication": false,
+      "production_deployed": false
+    },
     "production_preflight": {
       "canonical_runtime_version": "0.8.8-rc.1",
       "canonical_mode": "CLOUDFLARE_WORKER_D1",
@@ -2015,7 +2035,7 @@
       "Initial post-version combined governance run was 14/16 PASS because continuity/readiness incorrectly equated package/source version with accepted production version.",
       "The acceptance standard was not weakened; machine governance was changed to require explicit source/runtime candidate and accepted-production versions independently, after which the affected suite passed 7/7."
     ],
-    "next_gate": "VERSIONED_SOURCE_CANDIDATE_PUBLICATION_AND_CI_BEFORE_REFERENCE_PRODUCTION_RELEASE_GATE",
-    "strongest_claim": "Phase O now has a locally validated v0.9.0-rc.1 Reference release-prep candidate while accepted production remains v0.8.8-rc.1. Current production checks show no higher-priority feedback/privacy/security/core-path blocker, and a real newly created 富士康 company completed Queue research with fail-closed subject binding. This evidence does not claim v0.9.0-rc.1 source publication, CI, production deployment or production acceptance."
+    "next_gate": "REFERENCE_PRODUCTION_RELEASE_GATE",
+    "strongest_claim": "Phase O v0.9.0-rc.1 is published at canonical main@35dff048c1c89df4312335b62f9fedc95d5a527f and both decisive source CI and public smoke passed. Accepted production remains v0.8.8-rc.1; current production checks show no higher-priority feedback/privacy/security/core-path blocker, and the real 富士康 company retained fail-closed subject binding. This evidence does not claim v0.9.0-rc.1 production deployment or production acceptance."
   }
 }

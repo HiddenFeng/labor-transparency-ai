@@ -17,7 +17,7 @@
 | 层级 | 当前状态 |
 | --- | --- |
 | **Reference production** | `v0.8.8-rc.1`，当前 accepted production baseline；以 `PROJECT_CONTINUITY.md` + `qa/v0_8/verification.json` 最新接受证据为准 |
-| **Phase O local candidate** | `v0.9.0-rc.1` Reference Production release-prep candidate；产品与劳工信号、独立实例 bootstrap、signed public-evidence federation、content-addressed mirrors、显式 peer trust/pull、self-host release contract 均已本地验证，**尚未进入 Reference Instance production acceptance** |
+| **Phase O local candidate** | `v0.9.0-rc.1` versioned source candidate 已发布到 canonical `main@35dff048c1c89df4312335b62f9fedc95d5a527f` 并通过决定性 CI；产品与劳工信号、独立实例 bootstrap、signed public-evidence federation、content-addressed mirrors、显式 peer trust/pull、self-host release contract 均已验证，**尚未进入 Reference Instance production acceptance** |
 | **Self-host code release** | code-only release、外置持久实例目录、Caddy、health/preflight、停服 backup/restore、release replacement 已验证 |
 | **Docker/Compose** | 配置可解析；本机真实 image build/run **尚未完成**，因为 Docker Hub base-image 拉取路径超时 |
 | **Public federation network** | 协议/本地运行链已验证；没有声称真实公网自治网络、公共 peer registry 或 IPFS 网络已经上线 |
@@ -165,7 +165,7 @@ node --test scripts/deployment/public_smoke.test.mjs
 node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 ```
 
-当前生产仍以 `v0.8.8-rc.1` accepted evidence 为准；Phase O 当前 source/runtime candidate 为 `v0.9.0-rc.1`，仍需 versioned source publication + CI，再单独执行 deploy -> production smoke/acceptance。
+当前生产仍以 `v0.8.8-rc.1` accepted evidence 为准；Phase O 当前 source/runtime candidate 为 `v0.9.0-rc.1`，versioned source publication + CI 已通过，下一 gate 才是独立的 `REFERENCE_PRODUCTION_RELEASE_GATE`：deploy -> production smoke -> 手动 post-deploy E2E -> 精确 QA cleanup -> production acceptance。
 
 ## 当前 v0.8.8 核心能力
 
