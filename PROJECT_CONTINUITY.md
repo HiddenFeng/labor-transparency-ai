@@ -280,7 +280,8 @@ Queue 失败
 - mirror index/manifest 只作传输定位，不是证据 authority；minimal signed peer descriptor + explicit trust + pull 已本地验证，可从 descriptor latest root 反向补齐缺失 snapshot 链并跨损坏镜像恢复，但仍没有真实外部 Git/object-storage/IPFS 镜像、availability monitoring、中心/自动 peer registry 或周期性 crawler；
 - self-host release contract 已本地验证：code-only release 与实例持久数据分离，真实 Caddy Host/Origin/CSRF/security flow、health/preflight、停服 backup/restore、release replacement 通过；Dockerfile/Compose 配置可解析，但 Docker Hub base-image 拉取超时使真实 container build/run 仍是明确 gap；
 - public governance/release readiness 已完成：根目录 mission/operating/governance/privacy/security/non-commercial/operator/brand/attribution/conduct/release policy 与 GitHub Issue/PR 模板已建立；`public-site` 的 LICENSE/data-license/contributing 副本受自动一致性检查；machine readiness 当前为 `PUBLIC_GOVERNANCE_READY_SOURCE_CANDIDATE`；
-- 以上由 `docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md` 与 `docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md` 管理，**不是 accepted production capability**，直到单独 release/deploy/production acceptance 完成。
+- clean source candidate 已作为 commit `ec453528b3e4cb89bb6f6c0d06db211092b878f4` 推送 canonical GitHub `main`。该 SHA 的 `Validate release candidate (no deployment)` run `35181683052`、`Public non-Tencent deployment smoke` run `35181683073` 与 GitHub Pages run `35181683098` 均 `success`；其中 public smoke 只证明当前已部署 Reference Instance 公开路径仍健康，**不证明 Phase O 已部署**；
+- 以上由 `docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md` 与 `docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md` 管理，**不是 accepted production capability**，直到单独 version/release/deploy/production acceptance 完成。
 
 明确仍不是当前能力：
 
@@ -427,11 +428,11 @@ Queue 失败
 
 在任何真实用户反馈、纠错、隐私/安全事件或生产故障仍拥有最高抢占优先级的前提下，用户当前已明确授权的结构性主线是 Phase O：
 
-1. 保持 accepted Reference Instance production `v0.8.8-rc.1` 不动；Phase O 仍是本地验证/source candidate，公开 GitHub 源码或 release 不能自动改变 production acceptance；
-2. 下一独立 milestone 是 **CLEAN_SOURCE_RELEASE_CANDIDATE**：做精确 Git staging，排除 `.ltp-instance`/backup/Secret/其他 direct-conversation logs，生成可审计 release note/manifest，运行 governance/privacy/license/CI 决定性检查，并准备/发布一个明确标注“source candidate / production not deployed”的 GitHub source revision；
-3. source candidate 必须保留当前 README/治理状态表与 Docker Hub 外部 container-E2E gap，不得为了“stable”字样把未验证项改写成通过；如果创建 tag/GitHub Release，release note 必须按 `RELEASE_POLICY.md` 区分 Reference production、self-host/local candidate 与 known gaps；
-4. source 发布后先看 GitHub CI/public-smoke 真实结果。只有 source CI 成功并且用户/项目另行选择 Reference Instance 升级，才进入独立的 **REFERENCE_PRODUCTION_RELEASE_GATE**（version/release -> deploy -> post-deploy smoke/E2E/cleanup/acceptance）；
-5. 真实外部 Git/object-storage/IPFS mirrors、自动 peer availability、Docker registry/build 仍可后续补，但不能为了制造“去中心化完成度”抢占真实用户反馈/安全/生产故障。跨实例 community/worker aggregate 继续等待 anti-Sybil 设计。
+1. clean source candidate `ec453528b3e4cb89bb6f6c0d06db211092b878f4` 已推 canonical `main`，GitHub CI/public smoke/Pages 均成功；accepted Reference Instance production 仍保持 `v0.8.8-rc.1`，Phase O 仍未 production accepted；
+2. 下一 gate 是 **REFERENCE_PRODUCTION_RELEASE_PREP**：先重新检查当前真实 feedback/correction/privacy/security/生产状态；若没有更高优先级信号且继续推广 Phase O，必须先给这次实质行为/架构变更分配一个**新的 source/runtime version**，不能继续用与旧生产相同的 `0.8.8-rc.1` 版本号部署不同代码；
+3. production prep 必须同步 package/runtime/version expectation、change/release note/QA candidate，重新跑决定性 CI，并明确 Reference Instance 升级范围；source commit/tag 与 production deploy 仍分开；
+4. 只有新的版本化 candidate 通过 release prep 后，才进入 **REFERENCE_PRODUCTION_RELEASE_GATE**：deploy -> production smoke -> 手动 post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance。任何失败保留，不修改验收标准；
+5. 真实外部 Git/object-storage/IPFS mirrors、自动 peer availability、Docker registry/build 仍可后续补，但不能抢占真实用户反馈/安全/生产故障。跨实例 community/worker aggregate 继续等待 anti-Sybil 设计。
 
 不要因为长期联邦方向已经确定就大爆炸重构目录、创建第二套数据模型或提前实现无人使用的服务。每一阶段必须先证明独立用户价值和边界。
 

@@ -99,3 +99,21 @@ A later Git tag/GitHub Release must follow `RELEASE_POLICY.md` and state clearly
 - all `history/subagents/` direct-conversation work logs, including this request's internal handoff record;
 - generated build/dist directories ignored by the repository;
 - any unrelated collaboration artifact not required by this Phase O source candidate.
+
+## Post-publish evidence
+
+The source candidate was committed as:
+
+`ec453528b3e4cb89bb6f6c0d06db211092b878f4` — `feat: publish Phase O public-interest source candidate`
+
+and pushed to canonical GitHub `main`.
+
+For that exact SHA, GitHub completed:
+
+- `Validate release candidate (no deployment)` — run `35181683052` — `success`;
+- `Public non-Tencent deployment smoke` — run `35181683073` — `success`;
+- `Deploy public-interest site to GitHub Pages` — run `35181683098` — `success`.
+
+The public smoke result validates the currently deployed Reference Instance path; it does not state that Phase O is deployed. No Cloudflare/Vercel production runtime deployment or manual production auto-research E2E was performed in this source-candidate gate.
+
+Reference Instance accepted production therefore remains `v0.8.8-rc.1`. A production promotion must first assign a new source/runtime version identity and pass a separate deployment/acceptance gate.

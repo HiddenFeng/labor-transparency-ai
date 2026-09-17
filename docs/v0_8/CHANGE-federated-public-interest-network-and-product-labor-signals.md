@@ -4,7 +4,7 @@ Date: 2026-09-17
 Impact: `PROJECT_INTENT_DELTA + ARCHITECTURE_DELTA + PRODUCT_BEHAVIOR_DELTA`
 Production impact in this work round: `NONE_UNTIL_SEPARATE_DEPLOYMENT_ACCEPTANCE`
 Status: `LOCAL_IMPLEMENTATION_VALIDATED`
-Current next gate: `CLEAN_SOURCE_RELEASE_CANDIDATE`
+Current next gate: `REFERENCE_PRODUCTION_RELEASE_PREP`
 
 ## PROBLEM
 
@@ -520,4 +520,54 @@ All GitHub YAML files were also parsed successfully with Ruby YAML on this machi
 
 Strongest defensible governance claim: **the repository now has a machine-checked, public GitHub-facing governance/operating package that lets an external contributor/operator understand the non-commercial license, reference-vs-independent responsibility model, privacy/security boundaries, branding/official-identity limits, contribution paths and release status without relying on private project history.** This does not make the Phase O candidate production accepted or create a legal entity.
 
-The next gate is `CLEAN_SOURCE_RELEASE_CANDIDATE`: stage only the intended Phase O + governance/release files, explicitly exclude runtime/private artifacts and `history/subagents/`, generate an auditable source release note/manifest, push the source revision with “production not deployed” status, observe GitHub CI/public smoke, and only then consider a separate Reference Instance production release gate.
+At this checkpoint the next gate was `CLEAN_SOURCE_RELEASE_CANDIDATE`: stage only the intended Phase O + governance/release files, explicitly exclude runtime/private artifacts and `history/subagents/`, generate an auditable source release note/manifest, push the source revision with “production not deployed” status, observe GitHub CI/public smoke, and only then consider a separate Reference Instance production release gate.
+
+## CLEAN SOURCE CANDIDATE PUBLICATION RESULT — 2026-09-17
+
+The Phase O source candidate has now been published to canonical GitHub `main` without deploying the Reference Instance runtime.
+
+### Source revision
+
+- base before candidate commit: `0035b2e8a35f09a6014b14622e730847232235e7`;
+- published source commit: `ec453528b3e4cb89bb6f6c0d06db211092b878f4` (`feat: publish Phase O public-interest source candidate`);
+- canonical remote: `HiddenFeng/labor-transparency-ai`, branch `main`;
+- 77 precisely staged source/governance/release-evidence paths;
+- `history/subagents/`, `.ltp-instance`, backups, generated Secret/state files and unrelated collaboration logs were excluded;
+- source release note: `docs/v0_8/SOURCE-RELEASE-CANDIDATE-phase-o-2026-09-17.md`;
+- machine manifest: `qa/v0_8/source-release-candidate-phase-o-2026-09-17.json`;
+- source package/runtime version deliberately remained `0.8.8-rc.1` for this source-only commit; the manifest explicitly records `phaseOCandidateProductionAccepted=false` and no production action in this gate.
+
+### Staged / local verification
+
+Before commit/push:
+
+- staged path list matched the machine manifest exactly;
+- forbidden staged runtime/private paths: zero;
+- real-secret signature scan: zero matches;
+- Phase O/self-host/governance/public-smoke Node aggregate: `25/25 PASS`;
+- `sites-app`: `31/31 PASS`;
+- `cloudflare-backend`: `24/24 PASS`;
+- project `.venv` Python tests completed successfully. A first monolithic run was terminated by the local 180s command timeout with all executed tests still passing; the unfinished modules were then rerun explicitly: `test_platform 64/64`, `test_publication 17/17`, `test_research 67/67`, `test_resilience 3/3`, `test_runtime_backup 9/9`, `test_scheduler_cli 3/3`, `test_security 14/14`, all `PASS`;
+- build / independent frontend / privacy / Compose / GitHub YAML / cached diff checks: `PASS`.
+
+The system Python lacked FastAPI/httpx/cryptography, so it was not misreported as a project test failure; the project `.venv` had the required CI-equivalent dependencies and was used for the complete Python verification.
+
+### GitHub push evidence for `ec45352...`
+
+All push-triggered GitHub workflows for the candidate SHA completed successfully:
+
+- `Validate release candidate (no deployment)` run `35181683052`: `success`;
+- `Public non-Tencent deployment smoke` run `35181683073`: `success`;
+- `Deploy public-interest site to GitHub Pages` run `35181683098`: `success`.
+
+The CI run included successful `web_candidate` and `cloudflare_backend` jobs; Python 3.9 and 3.13 verification matrices also completed under the release-candidate workflow. The Pages run updated the read-only/public documentation surface because `public-site/CONTRIBUTING.md` changed.
+
+The public smoke success means the **currently deployed Reference Instance** still satisfies its public semantic/security contract after the source push. It does **not** mean the Phase O code from `ec45352...` was deployed to Vercel/Cloudflare production.
+
+No production Cloudflare/Vercel deploy was run, no manual production auto-research E2E was dispatched, and no production data/QA mutation was made by this source-candidate gate.
+
+### Next production boundary
+
+The accepted Reference Instance production remains `v0.8.8-rc.1`.
+
+Because Phase O materially changes product behavior and architecture, a future Reference Instance promotion must first create a **new source/runtime version identity**; deploying the new code while continuing to call it the same accepted `0.8.8-rc.1` would make release/smoke evidence ambiguous. The next gate is therefore `REFERENCE_PRODUCTION_RELEASE_PREP`, followed only after a versioned candidate passes by the separate deploy -> production smoke -> manual post-deploy E2E -> exact cleanup -> acceptance gate.
