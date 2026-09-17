@@ -1,0 +1,38 @@
+name: Public-interest feature request
+description: Propose a non-commercial public-interest feature or governance improvement.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This project is non-commercial source-available infrastructure. Do not propose paid ranking/deletion, employer surveillance, worker blacklisting, private-data federation or features that collapse sentiment into factual evidence.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Public-interest problem
+      description: What worker/community problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: preserve
+    attributes:
+      label: Privacy / evidence / federation boundaries to preserve
+      description: Explain what must remain local/private/unknown and how evidence vs sentiment stays separate.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope confirmation
+      options:
+        - label: This request does not require commercializing the project or selling ranking/deletion/data access.
+          required: true
+        - label: This request does not require uploading real private worker evidence to a public GitHub issue.
+          required: true

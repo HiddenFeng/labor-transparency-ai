@@ -2,7 +2,7 @@ import {ISSUE_GUIDES, RIGHTS_PRIMER, PUBLIC_CASES, RESOURCE_GROUPS, RESOURCE_DIS
 
 const runtimeConfig=globalThis.__LTP_CONFIG__||{};
 const API_BASE=String(runtimeConfig.apiBase||'').replace(/\/$/,'');
-const state={csrf:'',companies:[],mine:[],advisory:[],lane:'community_positive',editId:'',reviewToken:'',exportToken:'',resourceGroup:'all',focusIssue:'',activeCompanyId:''};
+const state={csrf:'',companies:[],mine:[],advisory:[],lane:'community_positive',productLane:'all',editId:'',reviewToken:'',exportToken:'',resourceGroup:'all',focusIssue:'',activeCompanyId:''};
 let researchPollTimer=null;
 let researchPollRemaining=0;
 const $=(s,r=document)=>r.querySelector(s);
@@ -54,6 +54,7 @@ function switchTab(name,{scroll=true}={}){
   $$('[data-tab]').forEach(x=>x.classList.toggle('nav-active',x.dataset.tab===name));
   if(name==='home')loadHomeLive();
   if(name==='discover')loadDiscover();
+  if(name==='products')loadProductMarket();
   if(name==='mine')loadMine();
   if(name==='advisory')loadAdvisory();
   if(name==='rights')renderRights();
@@ -143,7 +144,7 @@ async function boot(){
   renderEditorial();renderHomeResourceStrip();
   try{
     const cfg=await api('/api/config');state.csrf=cfg.csrfToken;
-    const rt=$('#runtime-status');if(rt)rt.textContent=`服务已连接 · ${cfg.version} · 匿名辅导开启 / 敏感私密信息与附件关闭`;
+    const rt=$('#runtime-status');if(rt)rt.textContent=`服务已连接 · ${cfg.version}${cfg.instance?.name?` · 实例：${cfg.instance.name}`:''} · 匿名辅导开启 / 敏感私密信息与附件关闭`;
     await loadHomeLive();
     const requested=(location.hash||'#home').slice(1);
     if(requested.startsWith('company/')){switchTab('discover',{scroll:false});const companyId=decodeURIComponent(requested.slice('company/'.length));if(companyId)await openCompanyDetail(companyId,{updateHash:true});}
@@ -354,14 +355,14 @@ function researchTeaser(co){
   box.append(text('small',`更新 ${readableDate(d?.updatedAt||r.collectedAt)} · 适用来源成功 ${r.sourceSuccessCount||0}${r.sourceErrorCount?` · 暂不可用 ${r.sourceErrorCount}`:''}${r.sourceNotApplicableCount?` · 地区不适用 ${r.sourceNotApplicableCount}`:''}`));
   return box;
 }
-function openContributionForCompany(companyId){
+function openContributionForCompany(companyId,{labourClaim=false}={}){
   if(!companyId)return;
   if($('#company-detail-dialog')?.open)closeCompanyDetail({updateHash:false});
   switchTab('contribute');
   const select=$('#company-select');
   if(select&&[...select.options].some(x=>x.value===companyId))select.value=companyId;
   const form=$('#contribution-form');
-  if(form){form.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});setTimeout(()=>select?.focus(),0)}
+  if(form){if(labourClaim&&form.elements.kind)form.elements.kind.value='labour_negative';form.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});setTimeout(()=>labourClaim?form.elements.kind?.focus():select?.focus(),0);if(labourClaim)toast('已切到劳动实践线索；如果是正向经历，可把类型改成“工作中做得不错的地方”。')}
 }
 function companyShareUrl(companyId){return `${location.origin}${location.pathname}#company/${encodeURIComponent(companyId)}`;}
 async function copyCompanyShareUrl(companyId){
@@ -462,8 +463,18 @@ function renderCompanyDetail(detail){
   const dossier=detail.research?.intelligence?.dossier;intro.append(text('h3',dossier?'当前资料概览':'公司空间已建立'));
   intro.append(text('p',dossier?.summary||'自动资料仍在生成或当前来源不足；这不会阻止社区反馈和公开线索继续累积。'));
   if(detail.company.website)intro.append(link('公司空间登记的公开官网',detail.company.website,'detail-official-link'));
-  const community=document.createElement('aside');community.className='company-community-panel';community.append(text('strong','社区声音'),text('span',`正向 ${detail.community.positive}`),text('span',`负向 ${detail.community.negative}`),text('span',`参与 ${detail.community.participants}`),text('small',detail.community.boundary));
+  const community=document.createElement('aside');community.className='company-community-panel';community.append(text('strong','社区总体印象'),text('span',`正向 ${detail.community.positive}`),text('span',`负向 ${detail.community.negative}`),text('span',`参与 ${detail.community.participants}`),text('small',detail.community.boundary));
   const actions=document.createElement('div');actions.className='card-actions';const contribute=document.createElement('button');contribute.className='primary';contribute.type='button';contribute.dataset.companyContribute=detail.company.id;contribute.textContent='补充这家公司资料';const share=document.createElement('button');share.className='secondary';share.type='button';share.dataset.companyShare=detail.company.id;share.textContent='复制资料链接';actions.append(contribute,share);for(const [dir,label] of [['positive','留下正向反馈'],['negative','留下负向反馈'],[null,'撤回我的反馈']]){const btn=document.createElement('button');btn.className='secondary';btn.textContent=label;btn.dataset.ballot=dir||'';btn.dataset.company=detail.company.id;btn.dataset.detailBallot='1';actions.append(btn)}community.append(actions);top.append(intro,community);root.append(top);
+
+  const worker=dossierSection('劳动者视角与实际劳动主张','这里专门承载劳动相关参与者的自报感受与具体劳动实践证据；它与普通社区对公司的整体印象分开。');worker.classList.add('worker-perspective-section');
+  const workerMetrics=document.createElement('div');workerMetrics.className='product-signals';workerMetrics.append(
+    productSignalMetric('劳动者视角',`正 ${detail.workerPerspective?.positive||0} · 负 ${detail.workerPerspective?.negative||0}`,`自报劳动相关参与 ${detail.workerPerspective?.participants||0}`,'worker'),
+    productSignalMetric('具体劳动主张',`${detail.labourEvidence?.claimCount||0} 条`,`正向 ${detail.labourEvidence?.positiveClaims||0} · 负向 ${detail.labourEvidence?.negativeClaims||0}`,'evidence'),
+    productSignalMetric('当前最强证据',detail.labourEvidence?.strongestEvidence?evidenceLabel(detail.labourEvidence.strongestEvidence):'暂无较强证据','只适用于具体主张，不合成企业总分','evidence')
+  );worker.append(workerMetrics);
+  const workerActions=document.createElement('div');workerActions.className='worker-signal-actions';workerActions.append(text('span','我有劳动相关经历（自报）'));
+  for(const [dir,label] of [['positive','待遇体验较好'],['negative','待遇体验较差'],[null,'撤回劳动者信号']]){const btn=document.createElement('button');btn.type='button';btn.className='secondary';btn.dataset.workerBallot=dir||'';btn.dataset.company=detail.company.id;btn.dataset.detailWorkerBallot='1';btn.textContent=label;workerActions.append(btn)}
+  const claimButton=document.createElement('button');claimButton.type='button';claimButton.className='primary';claimButton.dataset.companyContribute=detail.company.id;claimButton.dataset.labourClaim='1';claimButton.textContent='提交具体劳动实践线索';workerActions.append(claimButton);worker.append(workerActions,text('p',detail.workerPerspective?.boundary||'劳动者视角为自报信号。','method-note'),text('p',detail.labourEvidence?.boundary||'具体主张证据保持独立。','method-note'));root.append(worker);
 
   appendChinaInvestigation(root,detail.chinaInvestigation);
 
@@ -501,6 +512,43 @@ function renderCompanies(){
 }
 async function loadDiscover(){
   try{await loadCompanies();const d=await api(`/api/showcase?lane=${encodeURIComponent(state.lane)}`);$('#lane-method').textContent=d.method.replace('社区正负','社区正向/负向反馈').replace('E3+具体正向劳动主张','已核对范围与来源的具体正向劳动主张');const root=$('#showcase');root.replaceChildren();if(!d.items.length){root.append(text('p','当前这个分区还没有符合条件的公司。没有记录不代表某家公司好或坏。','meta'));return}for(const x of d.items){const live=state.companies.find(co=>co.id===x.company.id);const c=companyCard({...x.company,positive:x.positive,negative:x.negative,participants:x.participants,products:x.products,research:live?.research||null},{actions:false});for(const claim of x.verifiedPositiveClaims)c.append(text('p',`有较强证据的正向实践：${claim.title} · ${evidenceLabel(claim.evidence)}`));root.append(c)}}catch(e){toast(e.message,true)}
+}
+
+function productSignalMetric(title,value,note,kind=''){
+  const box=document.createElement('div');box.className=`product-signal ${kind}`.trim();box.append(text('strong',title),text('span',value),text('small',note));return box;
+}
+function productMarketCard(item){
+  const card=document.createElement('article');card.className='product-card';
+  const top=document.createElement('div');top.className='product-card-top';
+  const heading=document.createElement('div');heading.append(text('span',item.product.category||'产品 / 服务','product-category'),text('h3',item.product.title),text('p',`${item.company.name} · ${item.company.region}`,'product-company'));
+  const evidence=badge(evidenceLabel(item.product.evidence),'evidence');top.append(heading,evidence);card.append(top);
+  if(item.product.description)card.append(text('p',item.product.description,'product-description'));
+  const signals=document.createElement('div');signals.className='product-signals';
+  signals.append(
+    productSignalMetric('劳动者视角',`正 ${item.workerPerspective.positive} · 负 ${item.workerPerspective.negative}`,`自报劳动相关参与 ${item.workerPerspective.participants}`,'worker'),
+    productSignalMetric('社区总体印象',`正 ${item.community.positive} · 负 ${item.community.negative}`,`普通社区参与 ${item.community.participants}`,'community'),
+    productSignalMetric('具体劳动证据',item.labourEvidence.strongestEvidence?`${evidenceLabel(item.labourEvidence.strongestEvidence)}`:'暂无较强证据',`公开主张 ${item.labourEvidence.claimCount} · 已验证正向 ${item.labourEvidence.verifiedPositiveClaims.length} · 负向 ${item.labourEvidence.verifiedNegativeClaims.length}`,'evidence')
+  );
+  card.append(signals);
+  const claims=[...item.labourEvidence.verifiedNegativeClaims.map(x=>({...x,_label:'已验证负向'})),...item.labourEvidence.verifiedPositiveClaims.map(x=>({...x,_label:'已验证正向'}))].slice(0,3);
+  if(claims.length){const list=document.createElement('div');list.className='product-evidence-list';for(const claim of claims){const row=document.createElement('div');row.append(badge(claim._label,claim.direction==='negative'?'negative':'evidence'),text('strong',claim.title),text('small',`${evidenceLabel(claim.evidence)}${claim.scope?` · ${claim.scope}`:''}`));list.append(row)}card.append(list)}
+  const workerActions=document.createElement('div');workerActions.className='worker-signal-actions';workerActions.append(text('span','如果你有劳动相关经历（自报）'));
+  for(const [dir,label] of [['positive','待遇体验较好'],['negative','待遇体验较差'],[null,'撤回劳动者信号']]){const btn=document.createElement('button');btn.type='button';btn.className='secondary';btn.dataset.workerBallot=dir||'';btn.dataset.company=item.company.id;btn.textContent=label;workerActions.append(btn)}card.append(workerActions);
+  const actions=document.createElement('div');actions.className='card-actions';
+  const detail=document.createElement('button');detail.type='button';detail.className='secondary';detail.dataset.companyDetail=item.company.id;detail.textContent='查看公司完整证据';
+  const claim=document.createElement('button');claim.type='button';claim.className='primary';claim.dataset.companyContribute=item.company.id;claim.dataset.labourClaim='1';claim.textContent='提交劳动实践线索';actions.append(detail,claim);card.append(actions);
+  card.append(text('p',item.boundary,'method-note'));
+  return card;
+}
+async function loadProductMarket(){
+  const root=$('#product-market');if(!root)return;
+  try{
+    const d=await api(`/api/product-market?lane=${encodeURIComponent(state.productLane)}`);
+    $('#product-market-method').textContent=`${d.method} ${d.boundary}`;
+    root.replaceChildren();
+    if(!d.items.length){root.append(text('p','当前这个分区还没有公开产品或对应信号。没有记录不代表相关公司待遇好或坏。','meta'));return}
+    for(const item of d.items)root.append(productMarketCard(item));
+  }catch(e){root.replaceChildren(text('p',`产品页读取失败：${e.message}`,'meta'));toast(e.message,true)}
 }
 
 const coverageStatusLabel={
@@ -574,7 +622,7 @@ async function loadReview(){
 
 document.addEventListener('click',async e=>{
   const detail=e.target.closest('[data-company-detail]');if(detail){await openCompanyDetail(detail.dataset.companyDetail);return}
-  const contribute=e.target.closest('[data-company-contribute]');if(contribute){openContributionForCompany(contribute.dataset.companyContribute);return}
+  const contribute=e.target.closest('[data-company-contribute]');if(contribute){openContributionForCompany(contribute.dataset.companyContribute,{labourClaim:contribute.dataset.labourClaim==='1'});return}
   const share=e.target.closest('[data-company-share]');if(share){await copyCompanyShareUrl(share.dataset.companyShare);return}
   const close=e.target.closest('[data-company-close]');if(close){closeCompanyDetail();return}
   const tab=e.target.closest('[data-tab]');if(tab){e.preventDefault();switchTab(tab.dataset.tab);return}
@@ -582,6 +630,8 @@ document.addEventListener('click',async e=>{
   const rf=e.target.closest('[data-resource-group]');if(rf){state.resourceGroup=rf.dataset.resourceGroup;renderResourceFilters();renderResources();return}
   const tagButton=e.target.closest('[data-resource-tags]');if(tagButton){state.resourceGroup='all';renderResourceFilters();switchTab('resources');renderResources(tagButton.dataset.resourceTags.split(',').filter(Boolean));return}
   const lane=e.target.closest('[data-lane]');if(lane){state.lane=lane.dataset.lane;$$('[data-lane]').forEach(x=>x.classList.toggle('lane-active',x===lane));loadDiscover();return}
+  const productLane=e.target.closest('[data-product-lane]');if(productLane){state.productLane=productLane.dataset.productLane;$$('[data-product-lane]').forEach(x=>x.classList.toggle('lane-active',x===productLane));loadProductMarket();return}
+  const workerBallot=e.target.closest('[data-worker-ballot]');if(workerBallot){try{await api(`/api/companies/${workerBallot.dataset.company}/ballot`,{method:'POST',body:{direction:workerBallot.dataset.workerBallot||null,signalType:'worker'}});toast('劳动者视角信号已更新；它是自报感受，不会自动升级成事实或证据。');if(workerBallot.dataset.detailWorkerBallot==='1'&&state.activeCompanyId===workerBallot.dataset.company)await openCompanyDetail(workerBallot.dataset.company,{updateHash:false});else await loadProductMarket()}catch(err){toast(err.message,true)}return}
   const ballot=e.target.closest('[data-ballot]');if(ballot){try{await api(`/api/companies/${ballot.dataset.company}/ballot`,{method:'POST',body:{direction:ballot.dataset.ballot||null}});toast('你的社区反馈已更新；它不会改变证据等级。');await loadCompanies();if(ballot.dataset.detailBallot==='1'&&state.activeCompanyId===ballot.dataset.company)await openCompanyDetail(ballot.dataset.company,{updateHash:false});else if(location.hash==='#discover')loadDiscover()}catch(err){toast(err.message,true)}return}
   const mine=e.target.closest('[data-mine-action]');if(mine){try{if(mine.dataset.mineAction==='edit')return editContribution(mine.dataset.id);if(mine.dataset.mineAction==='withdraw'){if(!confirm('确认撤回这条公开线索？'))return;await api(`/api/contributions/${mine.dataset.id}/withdraw`,{method:'POST',body:{}});toast('已撤回');loadMine();return}if(mine.dataset.mineAction==='flag'){const reason=prompt('请具体说明哪里需要纠正（不要写私人联系方式）：');if(!reason)return;await api(`/api/contributions/${mine.dataset.id}/flag`,{method:'POST',body:{reason}});toast('纠错已进入复核队列');loadMine();return}}catch(err){toast(err.message,true)}return}
   const rev=e.target.closest('[data-review-action]');if(rev){const card=rev.closest('.card');try{if(rev.dataset.reviewAction==='review'){const val=n=>card.querySelector(`[data-review-field="${n}"]`);const queue=await api('/api/review-queue',{token:state.reviewToken});const item=queue.items.find(x=>x.id===rev.dataset.id);const body={version:Number(rev.dataset.version),decision:val('decision').value,evidence:val('evidence').value,rationale:val('rationale').value,scopeChecked:val('scopeChecked').checked,authenticityChecked:val('authenticityChecked').checked,sourceIds:(item?.sources||[]).map(x=>x.id),effective:false,decisionReference:''};await api(`/api/contributions/${rev.dataset.id}/review`,{method:'POST',body,token:state.reviewToken});toast('审核已保存；证据等级仍只适用于具体主张。')}else{await api(`/api/contributions/${rev.dataset.id}/approve-export`,{method:'POST',body:{version:Number(rev.dataset.version),privacyChecked:true,rightsChecked:true,reason:'独立检查结构化摘要的隐私与再分发权利边界。'},token:state.exportToken});toast('已通过独立再分发复核')}}catch(err){toast(err.message,true)}loadReview();return}

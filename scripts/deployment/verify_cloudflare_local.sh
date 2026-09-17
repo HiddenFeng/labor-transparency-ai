@@ -44,13 +44,13 @@ start
 LTP_SMOKE_BASE="$BASE" LTP_SMOKE_ORIGIN="$ORIGIN" node "$BACKEND/scripts-smoke.mjs"
 curl -fsS "$BASE/__scheduled" | grep -q 'Ran scheduled event'
 BEFORE="$(node - "$BASE" <<'NODE'
-const base=process.argv[2];const c=await (await fetch(base+'/api/companies')).json();const r=await (await fetch(base+'/api/advisory/reports?limit=10')).json();console.log(JSON.stringify({companies:c.items.length,reports:r.items.length,advised:r.items[0]?.advisedCount||0}));
+const base=process.argv[2];const c=await (await fetch(base+'/api/companies')).json();const r=await (await fetch(base+'/api/advisory/reports?limit=10')).json();const p=await (await fetch(base+'/api/product-market?lane=all')).json();console.log(JSON.stringify({companies:c.items.length,reports:r.items.length,advised:r.items[0]?.advisedCount||0,workerPositive:c.items.reduce((n,x)=>n+Number(x.workerPerspective?.positive||0),0),workerNegative:c.items.reduce((n,x)=>n+Number(x.workerPerspective?.negative||0),0),products:p.items?.length||0}));
 NODE
 )"
 kill "$PID" 2>/dev/null || true; wait "$PID" 2>/dev/null || true; PID=""
 start
 AFTER="$(node - "$BASE" <<'NODE'
-const base=process.argv[2];const c=await (await fetch(base+'/api/companies')).json();const r=await (await fetch(base+'/api/advisory/reports?limit=10')).json();console.log(JSON.stringify({companies:c.items.length,reports:r.items.length,advised:r.items[0]?.advisedCount||0}));
+const base=process.argv[2];const c=await (await fetch(base+'/api/companies')).json();const r=await (await fetch(base+'/api/advisory/reports?limit=10')).json();const p=await (await fetch(base+'/api/product-market?lane=all')).json();console.log(JSON.stringify({companies:c.items.length,reports:r.items.length,advised:r.items[0]?.advisedCount||0,workerPositive:c.items.reduce((n,x)=>n+Number(x.workerPerspective?.positive||0),0),workerNegative:c.items.reduce((n,x)=>n+Number(x.workerPerspective?.negative||0),0),products:p.items?.length||0}));
 NODE
 )"
 [[ "$BEFORE" == "$AFTER" ]] || { echo "persistence mismatch before=$BEFORE after=$AFTER" >&2; exit 2; }

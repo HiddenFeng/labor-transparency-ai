@@ -1,0 +1,50 @@
+services:
+  app:
+    build:
+      context: ../..
+      dockerfile: deploy/self-host/Dockerfile
+      args:
+        LTP_IMAGE_REVISION: ${LTP_IMAGE_REVISION:-local}
+    image: labor-transparency-self-host:${LTP_IMAGE_REVISION:-local}
+    environment:
+      LTP_INSTANCE_NAME: ${LTP_INSTANCE_NAME:?Set LTP_INSTANCE_NAME in deploy/self-host/.env}
+      LTP_INSTANCE_OPERATOR: ${LTP_INSTANCE_OPERATOR:-}
+      LTP_INSTANCE_PUBLIC_URL: ${LTP_INSTANCE_PUBLIC_URL:-}
+      LTP_SELF_HOST_SECURE_COOKIE: ${LTP_SELF_HOST_SECURE_COOKIE:-true}
+      LTP_SELF_HOST_ALLOWED_HOSTS: ${LTP_SELF_HOST_ALLOWED_HOSTS:-}
+      LTP_SELF_HOST_CONTAINER: "true"
+      LTP_INSTANCE_DIR: /var/lib/ltp/instance
+      HOST: 0.0.0.0
+      PORT: "8787"
+    expose:
+      - "8787"
+    volumes:
+      - ltp_instance_data:/var/lib/ltp
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "scripts/instance/healthcheck.mjs", "--url", "http://127.0.0.1:8787"]
+      interval: 20s
+      timeout: 7s
+      start_period: 10s
+      retries: 3
+
+  proxy:
+    image: caddy:2-alpine
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      LTP_SITE_ADDRESS: ${LTP_SITE_ADDRESS:-:80}
+    ports:
+      - "${LTP_HTTP_BIND:-127.0.0.1:8080}:80"
+      - "${LTP_HTTPS_BIND:-127.0.0.1:8443}:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+volumes:
+  ltp_instance_data:
+  caddy_data:
+  caddy_config:

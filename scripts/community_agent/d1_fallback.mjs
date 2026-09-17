@@ -20,7 +20,8 @@ const CONFIG='wrangler.production.jsonc';
 const ALL_COLLECTIONS=[
   'companies','contributions','reviews','exportReviews','ballots','flags',
   'advisoryCases','advisoryAdvice','advisoryDailyReports','companyResearch',
-  'officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns'
+  'officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns',
+  'federatedEvidence','federationImports'
 ];
 const MUTABLE=new Set(['officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns']);
 

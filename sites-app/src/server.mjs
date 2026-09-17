@@ -5,13 +5,14 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {
   VERSION, addCompany, addContribution, updateContribution, withdrawContribution, setBallot,
-  flagContribution, reviewContribution, approveExport, listContributions, showcase, publicDataset,
+  flagContribution, reviewContribution, approveExport, listContributions, showcase, productMarket, publicLabourSignalSummary, publicDataset,
   reviewQueue, createReceiptCode, hashReceiptCode, addAdvisoryCase, listOwnAdvisory, accessAdvisoryByReceipt,
   advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase,
   addCommunityFeedback, listOwnCommunityFeedback, communityAgentQueue, respondCommunityFeedback,
   addPublicAnnouncement, publicAnnouncements, recordAgentDailyRun, upsertOfficialReferences, upsertOfficialRelations, upsertOfficialEvents
 } from './domain.mjs';
 import {FileStore} from './storage.mjs';
+import {publicFederatedEvidence} from './federation.mjs';
 import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus,publicResearchHealth} from './research-status.mjs';
 import {publicCompanyDetail} from './company-dossier.mjs';
 
@@ -61,18 +62,46 @@ function sameOrigin(req){
   if (!origin) return false;
   try { return new URL(origin).host === req.headers.host; } catch { return false; }
 }
+function requestHostname(req){
+  try{return new URL(`http://${String(req.headers.host||'')}`).hostname.toLowerCase()}catch{return ''}
+}
 function publicCompanyList(state){
   const researchByCompany=new Map((state.companyResearch||[]).map(x=>[x.companyId,x]));
   return state.companies.map(company=>{
-    const ballots=state.ballots.filter(x=>x.companyId===company.id);
+    const signals=publicLabourSignalSummary(state,company.id);
     const products=state.contributions.filter(x=>x.companyId===company.id&&x.kind==='product'&&x.public&&x.status!=='WITHDRAWN'&&x.status!=='REJECTED');
     return {id:company.id,name:company.name,region:company.region,website:company.website,synthetic:company.synthetic,
-      positive:ballots.filter(x=>x.direction==='positive').length,
-      negative:ballots.filter(x=>x.direction==='negative').length,
-      participants:ballots.length,
+      positive:signals.community.positive,
+      negative:signals.community.negative,
+      participants:signals.community.participants,
+      workerPerspective:signals.workerPerspective,
       research:publicCompanyResearch(researchByCompany.get(company.id)),
       products:products.map(x=>({id:x.id,title:x.title,evidence:x.evidence,status:x.status,description:x.description}))};
   });
+}
+
+function normalizeInstanceInfo(raw){
+  if(!raw)return null;
+  if(typeof raw!=='object'||Array.isArray(raw))throw new Error('实例配置无效');
+  const id=String(raw.id||raw.instanceId||'').trim();
+  const name=String(raw.name||raw.instanceName||'').trim();
+  const mode=String(raw.mode||raw.instanceMode||'independent').trim();
+  if(!/^[A-Za-z0-9._:-]{6,120}$/.test(id))throw new Error('实例 ID 无效');
+  if(name.length<2||name.length>120)throw new Error('实例名称无效');
+  if(mode!=='independent')throw new Error('当前独立启动器只接受 independent 实例');
+  const operator=String(raw.operator||'').trim().slice(0,160);
+  const publicUrl=String(raw.publicUrl||'').trim();
+  if(publicUrl){
+    let u;try{u=new URL(publicUrl)}catch{throw new Error('实例公开 URL 无效')}
+    if(u.protocol!=='https:'||u.username||u.password)throw new Error('实例公开 URL 仅接受无凭据 HTTPS 地址');
+  }
+  const publicKey=raw.publicKey&&typeof raw.publicKey==='object'&&!Array.isArray(raw.publicKey)?{
+    algorithm:String(raw.publicKey.algorithm||'').trim(),
+    encoding:String(raw.publicKey.encoding||'').trim(),
+    value:String(raw.publicKey.value||'').trim()
+  }:null;
+  if(publicKey&&(!/^[A-Za-z0-9_-]{2,32}$/.test(publicKey.algorithm)||publicKey.encoding!=='spki-der-base64'||!/^[A-Za-z0-9+/=]{40,500}$/.test(publicKey.value)))throw new Error('实例公钥配置无效');
+  return {id,name,mode,operator,publicUrl,publicKey,referenceProductionDependency:false};
 }
 
 export async function createRuntime(options={}){
@@ -84,8 +113,10 @@ export async function createRuntime(options={}){
   const advisoryAgentToken = options.advisoryAgentToken || process.env.LTP_SITES_ADVISORY_AGENT_TOKEN || '';
   const communityAgentToken = options.communityAgentToken || process.env.LTP_SITES_COMMUNITY_AGENT_TOKEN || '';
   const secureCookie = options.secureCookie ?? process.env.LTP_SITES_SECURE_COOKIE === 'true';
+  const allowedHosts = Array.isArray(options.allowedHosts)?options.allowedHosts.map(x=>String(x||'').trim().toLowerCase()).filter(Boolean):[];
+  const instance = normalizeInstanceInfo(options.instance||null);
   const store = options.store || await new FileStore(dataFile,{seed}).init();
-  return {store,sessionSecret,reviewToken,exportToken,advisoryAgentToken,communityAgentToken,secureCookie};
+  return {store,sessionSecret,reviewToken,exportToken,advisoryAgentToken,communityAgentToken,secureCookie,allowedHosts,instance};
 }
 
 export async function createAppServer(options={}){
@@ -93,6 +124,7 @@ export async function createAppServer(options={}){
   const server = http.createServer(async(req,res)=>{
     Object.entries(securityHeaders()).forEach(([k,v])=>res.setHeader(k,v));
     try {
+      if(runtime.allowedHosts?.length&&!runtime.allowedHosts.includes(requestHostname(req)))return json(res,403,{error:'请求 Host 未获允许'});
       const url=new URL(req.url,`http://${req.headers.host||'127.0.0.1'}`);
       const cookies=parseCookies(req.headers.cookie||'');
       let session=cookies[COOKIE]; let fresh=false;
@@ -110,8 +142,8 @@ export async function createAppServer(options={}){
         }
       }
 
-      if (req.method==='GET' && url.pathname==='/api/config') return json(res,200,{version:VERSION,mode:'SITES_READY_LOCAL',csrfToken:csrf,cookieSecure:runtime.secureCookie,capabilities:{companies:true,ballots:true,contributions:true,brandContributions:true,officialReferences:true,officialRelations:true,officialEvents:true,communityFeedback:true,publicAnnouncements:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,automaticCompanyResearch:false,scheduledCompanyResearch:false,attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导与社区意见仅接收非敏感结构化内容；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
-      if (req.method==='GET' && url.pathname==='/api/health') return json(res,200,{status:'ok',version:VERSION,storage:'local-file-adapter',attachments:false,anonymousAdvisory:true});
+      if (req.method==='GET' && url.pathname==='/api/config') return json(res,200,{version:VERSION,mode:runtime.instance?'INDEPENDENT_LOCAL_INSTANCE':'SITES_READY_LOCAL',instance:runtime.instance,csrfToken:csrf,cookieSecure:runtime.secureCookie,capabilities:{companies:true,ballots:true,workerPerspectiveSignals:true,productMarket:true,contributions:true,brandContributions:true,officialReferences:true,officialRelations:true,officialEvents:true,communityFeedback:true,publicAnnouncements:true,review:true,publicData:true,federatedPublicEvidence:true,anonymousAdvisory:true,advisoryDailyReports:true,automaticCompanyResearch:false,scheduledCompanyResearch:false,attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导与社区意见仅接收非敏感结构化内容；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
+      if (req.method==='GET' && url.pathname==='/api/health') return json(res,200,{status:'ok',version:VERSION,storage:'local-file-adapter',instance:runtime.instance?{id:runtime.instance.id,mode:runtime.instance.mode}:null,attachments:false,anonymousAdvisory:true});
       if (req.method==='GET' && url.pathname==='/api/companies') return json(res,200,{items:publicCompanyList(runtime.store.read())});
       if (req.method==='GET' && /^\/api\/companies\/[^/]+$/.test(url.pathname)) { const companyId=decodeURIComponent(url.pathname.split('/').at(-1)); const detail=publicCompanyDetail(runtime.store.read(),companyId); return detail?json(res,200,detail):json(res,404,{error:'公司空间不存在'}); }
       if (req.method==='GET' && url.pathname==='/api/research/coverage') return json(res,200,companyResearchCoverage());
@@ -124,7 +156,7 @@ export async function createAppServer(options={}){
       }
       if (req.method==='POST' && url.pathname==='/api/community-feedback') { const input=await bodyJson(req); const item=await runtime.store.transaction(s=>addCommunityFeedback(s,input,owner)); return json(res,200,{item:{id:item.id,type:item.type,companyId:item.companyId,status:item.status,createdAt:item.createdAt}}); }
       const ballot=url.pathname.match(/^\/api\/companies\/([^/]+)\/ballot$/);
-      if (req.method==='POST' && ballot) { const input=await bodyJson(req); const out=await runtime.store.transaction(s=>setBallot(s,ballot[1],owner,input.direction??null)); return json(res,200,out); }
+      if (req.method==='POST' && ballot) { const input=await bodyJson(req); const out=await runtime.store.transaction(s=>setBallot(s,ballot[1],owner,input.direction??null,input.signalType||'community')); return json(res,200,out); }
       if (req.method==='GET' && url.pathname==='/api/contributions') return json(res,200,{items:listContributions(runtime.store.read(),{owner,mine:url.searchParams.get('mine')==='1',companyId:url.searchParams.get('companyId')||''})});
       if (req.method==='POST' && url.pathname==='/api/contributions') { const input=await bodyJson(req); const out=await runtime.store.transaction(s=>addContribution(s,input,owner)); return json(res,200,{item:{...out,owner:undefined}}); }
       const contribution=url.pathname.match(/^\/api\/contributions\/([^/]+)$/);
@@ -134,6 +166,8 @@ export async function createAppServer(options={}){
       const flag=url.pathname.match(/^\/api\/contributions\/([^/]+)\/flag$/);
       if (req.method==='POST' && flag) { const input=await bodyJson(req); const out=await runtime.store.transaction(s=>flagContribution(s,flag[1],owner,input.reason)); return json(res,200,{id:out.id,status:out.status}); }
       if (req.method==='GET' && url.pathname==='/api/showcase') return json(res,200,showcase(runtime.store.read(),url.searchParams.get('lane')||'community_positive'));
+      if (req.method==='GET' && url.pathname==='/api/product-market') return json(res,200,productMarket(runtime.store.read(),url.searchParams.get('lane')||'all'));
+      if (req.method==='GET' && url.pathname==='/api/federation/evidence') return json(res,200,publicFederatedEvidence(runtime.store.read(),{sourceInstanceId:url.searchParams.get('sourceInstanceId')||'',includeTombstones:url.searchParams.get('includeTombstones')!=='0'}));
       if (req.method==='GET' && url.pathname==='/api/public-data') return json(res,200,publicDataset(runtime.store.read()));
       if (req.method==='POST' && url.pathname==='/api/advisory') {
         const input=await bodyJson(req); const receiptCode=createReceiptCode(); const receiptHash=hashReceiptCode(receiptCode);

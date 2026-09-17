@@ -1,0 +1,7 @@
+{$LTP_SITE_ADDRESS} {
+	encode zstd gzip
+
+	reverse_proxy app:8787
+
+	header -Server
+}

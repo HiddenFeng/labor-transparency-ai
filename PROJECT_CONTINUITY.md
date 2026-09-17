@@ -151,10 +151,26 @@ v0.8.7 后不再机械增加来源，而是以普通劳动者身份走生产核�
 
 当前原则因此明确：**没有具体用户痛点、生产故障或验证过的覆盖缺口，就不要为了“继续推进”制造新框架、新 collector、新版本或低价值文档。**
 
+### Phase O — 2026-09-17：从单一中心运营转向公益上游 + 独立实例 + 公共证据协作网络
+
+用户明确改变长期架构目标：项目不再以“由上游长期承载全球用户、数据和地区运营”的中心化全球平台为终局，而要成为**非商业公益的 source-available 软件/标准上游 + 独立实例 + 公共证据协作网络**。当前公网部署保留为 reference instance；其他社区应拥有自己的数据库、Secret、用户/会话、日志、审核和部署责任，Fork 不得默认连接参考实例生产 API/数据库。
+
+联邦对象也被明确收窄为**公开且有传播/再分发权利的证据与事实**，而不是用户数据库。匿名/假名身份、投票关联、私人反馈/辅导、联系方式、IP、原始敏感材料不因“去中心化”而跨实例复制；可审计历史必须支持纠正、撤回、tombstone 与依法删除，而不是把私人内容永久不可删除地固化。
+
+同时用户新增“产品与劳工信号”消费入口：产品可带出所属公司的劳动者视角、普通社区印象和具体劳动主张/证据，形成“劳工愤怒榜 / 劳工支持榜 / 证据视图 / 社区关注”等消费者参考入口。但三条 lane 必须物理/语义分离：自报劳动者情绪不是雇佣身份验证，社区印象不是劳动事实，具体主张的证据等级只支持该主张；任何榜单都不能升级为企业道德/违法总分、产品质量分或平台强制抵制/购买指令。
+
+第一阶段采用增量迁移，不做大爆炸重构：保留既有 v0.8.8 数据/证据模型，在同一 ballot collection 中用独立复合键增加 worker-perspective lane；产品市场只读取公开产品及公开信号/证据；独立实例构建模式失败关闭远程 upstream API/proxy。当前 P0 bootstrap 已完成本地验证：新 Fork 可生成自己的稳定 `instance.id`、Ed25519 实例密钥、私有运行 Secrets 与本地 FileStore 数据目录，并通过 localhost same-origin 启动现有核心应用；实例身份与数据在重启后保持，且公开 config/health 不暴露私钥或运营 token。第一版 signed public-evidence federation 也已本地跑通：只从现有 `publicDataset` 的独立再分发批准记录生成签名 full snapshot + delta，两个独立实例可完成 verify/import、key pinning、幂等、链连续性、correction/retraction/tombstone；用户/session/投票身份、私有 feedback/advisory 和未审查再分发条款的 official/machine/provider lanes 不进入 v1。content-addressed 多镜像、显式 peer trust/pull 与 self-host release contract 都已在本地验证；公开治理、README、GitHub issue/PR 与 release-readiness 包也已完成机器检查，使第三方可以直接理解许可、隐私、安全、品牌和 operator 责任。真实外部 Git/object-storage/IPFS 镜像、自动 peer crawler、完整 container E2E、下游公网证书/监控/异地备份和跨实例 aggregate 仍是后续阶段，不得写成当前已完成能力。
+
+根本原因：**把项目生命力从单一运营者/单一站点中解耦，同时不能把“去中心化”变成更大规模的隐私复制，也不能把情绪动员伪装成事实判断。**
+
+当前 active change：`docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md`；独立实例边界说明：`docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md`。该 candidate 当前只改变本地代码/治理；accepted production 仍是 v0.8.8-rc.1，部署必须经过单独 release/production acceptance。
+
 ## 4. 当前真实系统架构
 
+当前**已接受生产实例**的运行拓扑没有因 Phase O 自动改变；它现在应理解为 reference instance。上游目标架构是 `Software + Standards + Public Evidence Contract -> independent instances`。P0 independent bootstrap 与第一版 signed public-evidence snapshot/delta transport 已在本地两个独立实例间验证，但尚未作为 reference production 或公开多节点网络部署/验收。
+
 ```text
-普通访问者
+普通访问者（reference instance）
   -> https://workermanifestfellowship.dpdns.org
   -> Vercel 静态前端
   -> 同源 /api/* rewrite
@@ -205,7 +221,9 @@ Queue 失败
 | `OFFICIAL_SOURCE_REFERENCE` | 特定官方登记/披露参考 | 自动升级 machine legal identity |
 | `OFFICIAL_SOURCE_RELATION` | 特定官方记录支持特定关系 | 完整产品/客户/供应链 |
 | `OFFICIAL_SOURCE_EVENT` | 特定官方监管/召回等事件 | 公司总评分、其他期间/地点行为 |
-| Community E0+ | 用户/社区的观点、经历、线索、贡献 | 官方事实或总体员工意见 |
+| `GENERAL_COMMUNITY_SIGNAL` | 本实例普通社区对公司的去重正/负整体印象与关注 | 劳动者总体意见、劳动事实、违法或产品质量 |
+| `WORKER_PERSPECTIVE_SIGNAL` | 自报劳动相关参与者对待遇的正/负感受 | 雇佣身份验证、具体劳动事实、证据等级 |
+| Community E0+ / `labour_claim` | 用户/社区的观点、经历、线索与具体劳动主张；E-level 只约束具体主张 | 自动变成官方事实、公司总分或所有员工意见 |
 
 `0 match` 只等于“在该来源/窗口/绑定规则下未产生记录”，永远不自动等于“不存在”。`NOT_APPLICABLE` 不是成功、失败，也不是“没有记录”。
 
@@ -248,6 +266,21 @@ Queue 失败
 - official reference/relation/event 独立 lanes；
 - 18:00/19:00 日常 Agent 运营链；
 - 当前全球公网部署和外部 smoke。
+
+当前还有一个**仅本地已验证、尚未生产验收**的 active candidate：
+
+- 产品与劳工信号页：公开产品卡片同时展示彼此独立的 `WORKER_PERSPECTIVE_SIGNAL`、`GENERAL_COMMUNITY_SIGNAL`、具体 `labour_claim` 证据；包含“劳工愤怒榜 / 劳工支持榜 / 证据较强的劳动实践 / 社区关注”视图，所有榜单都有非事实/非产品质量结论边界；
+- worker perspective ballot 与旧 community ballot 同 collection 但使用独立复合键，旧 community 记录无需迁移且不会被 worker signal 覆盖；
+- local reference server 与 Cloudflare Worker 都已有 `/api/product-market` 候选接口和独立 worker/community/evidence 投影；
+- `LTP_INDEPENDENT_INSTANCE=true` 构建模式要求 same-origin API，配置远程 API/proxy 时失败关闭；P0 bootstrap 还能生成自己的稳定 instance ID / Ed25519 key / Secrets / FileStore 并 localhost same-origin 独立启动；
+- signed public-evidence federation v1 已在两个本地独立实例间通过：只同步现有 public redistribution gate 已批准的 contribution，支持 canonical full snapshot + delta、Ed25519 签名、source-key pinning、幂等、chain continuity、correction/retraction/tombstone；导入 evidence 与 source tracker 使用独立 collections，不自动再转发；
+- tombstone 只继续公开 hash/version/root/history proof，不继续公开已撤正文；FileStore 导入必须显式 `--service-stopped`；
+- `/api/federation/evidence` 是只读公共 provenance 投影；当前没有远程 federation 写接口；
+- content-addressed multi-mirror 已本地验证：source-signed snapshot 可封装为 `sourcePathId/snapshotRoot` package，byte-identical 复制到多个 mirror root，每次读取重新验证文件 hash + source signature；删除一个镜像、破坏第二个镜像后可从第三个恢复，全部损坏时失败关闭；
+- mirror index/manifest 只作传输定位，不是证据 authority；minimal signed peer descriptor + explicit trust + pull 已本地验证，可从 descriptor latest root 反向补齐缺失 snapshot 链并跨损坏镜像恢复，但仍没有真实外部 Git/object-storage/IPFS 镜像、availability monitoring、中心/自动 peer registry 或周期性 crawler；
+- self-host release contract 已本地验证：code-only release 与实例持久数据分离，真实 Caddy Host/Origin/CSRF/security flow、health/preflight、停服 backup/restore、release replacement 通过；Dockerfile/Compose 配置可解析，但 Docker Hub base-image 拉取超时使真实 container build/run 仍是明确 gap；
+- public governance/release readiness 已完成：根目录 mission/operating/governance/privacy/security/non-commercial/operator/brand/attribution/conduct/release policy 与 GitHub Issue/PR 模板已建立；`public-site` 的 LICENSE/data-license/contributing 副本受自动一致性检查；machine readiness 当前为 `PUBLIC_GOVERNANCE_READY_SOURCE_CANDIDATE`；
+- 以上由 `docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md` 与 `docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md` 管理，**不是 accepted production capability**，直到单独 release/deploy/production acceptance 完成。
 
 明确仍不是当前能力：
 
@@ -327,13 +360,56 @@ Queue 失败
 
 规则：12333/12348/欠薪等正式外部服务可能需要身份/联系方式；这些只提交给对应官方服务。本站匿名辅导和公开贡献仍不得收这些敏感数据。
 
+### R16. 把“去中心化/永久保存”理解成复制所有用户和私人材料
+
+规则：联邦默认只面向有公开传播/再分发权利的公共证据。用户/session 关联、投票身份链接、私人反馈/辅导、联系方式、IP、原始敏感材料和附件不跨实例复制；历史可审计不等于私人数据永不可删，必须支持纠正、撤回、tombstone 与法律要求的删除边界。
+
+### R17. 把劳工情绪榜写成事实榜/黑名单
+
+规则：`WORKER_PERSPECTIVE_SIGNAL`、`GENERAL_COMMUNITY_SIGNAL` 与具体 `labour_claim` 证据始终分开。劳工愤怒/支持、社区关注只说明本实例的自报情绪/参与，不验证雇佣身份、不证明违法/优良雇主，也不构成产品质量结论、黑名单或平台强制购买/抵制指令。
+
+### R18. 运行中的 FileStore 被离线 federation importer 直接改写
+
+历史：第一版 federation integration 中，导入进程已经写盘，但正在运行的 B 实例仍持有旧内存状态，API 看到 0 条导入记录；继续并发写还可能覆盖导入结果。
+规则：FileStore federation import 属于离线 mutation，必须显式 `--service-stopped`；不要为“热同步”绕过这个门或增加任意文件写后门。将来若需要在线导入，必须走同一运行进程的受权 domain transaction，而不是第二个 FileStore writer。
+
+### R19. 把“公开来源/公开内容”自动等同于“可以联邦再分发”
+
+规则：v1 federation 只复用现有 `publicDataset` 独立再分发审批；社区/worker ballots、owner/session、私有 feedback/advisory、imported federation data，以及尚未逐来源复核再分发条款的 official/machine/provider lanes 都不能自动进入 snapshot。Imported data 也不得默认再出口形成无控制多跳复制。撤回/tombstone 只保留 hash/version/root/history proof，不继续公开旧正文。
+
+### R20. 把镜像 index / URL / 仓库数量当成证据权威
+
+规则：mirror 只是公开签名快照的分发副本。`index.json`、manifest、DNS、Git 仓库和 URL 都只能帮助定位；真实可信度仍必须回到 source instance 公钥、snapshotRoot/contentRoot、精确文件 hash 与原始 Ed25519 签名。多个镜像重复同一说法不能提高证据等级，也不能替代来源本身。
+
+### R21. 把本地多目录容灾测试写成“全球去中心化网络已上线”
+
+规则：当前 multi-mirror 只证明 content-addressed package/复制/校验/恢复契约。没有真实外部 Git mirror/object storage/IPFS 节点、availability monitoring、自动 peer discovery/fetch 或公开运营网络时，必须继续写作本地验证 candidate，不能声称互联网级持久性或抗审查可用性已建立。
+
+### R22. 把 peer descriptor / DNS / URL 当成自动可信身份
+
+规则：peer 必须由 operator 显式 `--trust`；首次信任 pin source key，之后同 ID 换钥匙、descriptor 回滚/冲突失败关闭。URL/DNS/mirror 数量只负责定位，不证明主体更可信、更真实，也不提高任何 evidence level。不得建立一个“中心 registry 说可信，所以所有实例自动信任”的捷径。
+
+### R23. 为了自动 pull 放宽网络或离线写入边界
+
+规则：非 loopback 网络访问必须显式授权；非 loopback plaintext HTTP、redirect、URL credentials/query/fragment、无限响应体都拒绝。FileStore pull/import 继续需要 `--service-stopped`，不能因为 peer 同步需要频繁运行就引入第二个并发 FileStore writer 或任意远程 mutation endpoint。
+
+### R24. GitHub 治理文档 / 静态副本漂移
+
+历史：README 重排后曾丢失强制 cold-start 入口；`public-site/CONTRIBUTING.md` 也曾保留“本地合成环境”的旧文案。
+规则：公开治理/README 重构必须跑 `scripts/public_project_governance.test.mjs` 与 `scripts/public_release_readiness.mjs`；根 `LICENSE` / `LICENSE-DATA.md` / `CONTRIBUTING.md` 与 `public-site` 对应副本必须保持一致。不得为了版面精简删除 `AGENTS.md -> PROJECT_CONTINUITY.md` 接管路由。
+
+### R25. 把 source release / main 分支更新写成 production deploy
+
+规则：GitHub 源码更新、tag/release、self-host code release 与 Reference Instance production acceptance 是不同状态。Phase O 未完成单独 release -> deploy -> production smoke/acceptance 前，必须保持 `phaseOCandidateProductionAccepted=false`，不能因为 main/Release 已公开就宣称 Reference Instance 已运行该 candidate。
+
 ## 9. 当前真实 blockers / gaps / next gate
 
 ### 当前没有的 blocker
 
-- 没有一个已知核心生产流程阻塞当前产品使用；
+- 没有一个已知核心生产流程阻塞当前已接受 v0.8.8 reference instance；
 - 没有必须用户立刻补充的云账号/付款/实名步骤；
-- v0.8.8 没有待完成 release gate。
+- v0.8.8 没有待完成 release gate；
+- Phase O 本地 candidate 已具备可继续推进的明确路径，不需要用生产部署来证明本地实现存在。
 
 ### 仍然存在但不是当前 blocker 的 gap
 
@@ -341,18 +417,23 @@ Queue 失败
 - BSE listing/disclosure 仍缺，但只有在官方、可复现、无 CAPTCHA/login/反自动化绕过的公共接口存在时才值得实现；
 - GSXT、CNIPA、部分政府采购仍是明确人工/导航/verification gaps；
 - 中国及全球劳动执法、法院、仲裁、完整产品/工厂/供应链覆盖仍然部分；
-- credential/license-gated 来源保持关闭直到合法条件满足。
+- credential/license-gated 来源保持关闭直到合法条件满足；
+- self-host release contract 已本地验证：独立实例可使用外置持久目录、code-only release、Host/Origin/CSRF、真实 Caddy reverse proxy、health/preflight、停服 backup/restore 与 release replacement；Dockerfile/Compose/Caddy 配置已解析验证，但本机 Docker Hub base-image 拉取超时导致真实 container build/run 尚未完成；FileStore runtime 仍不包含 reference production 的 Queue/Cron 自动研究；
+- signed public-evidence full snapshot + explicit delta、import idempotency、key pinning、chain continuity、correction/retraction/tombstone 已在两个本地独立实例间验证；content-addressed multi-mirror package/publish/verify/resolve 与 signed peer descriptor + explicit trust/pull 也已本地通过，但尚未连接真实外部 Git/object-storage/IPFS 镜像，没有 availability monitoring、自动周期 peer crawler、key rotation/recovery 或公网运营网络；
+- federation v1 只同步现有独立再分发批准的 contribution；official reference/relation/event、machine/provider/source lanes 仍需逐来源确认公开再分发条款后才能进入跨实例快照；
+- 跨实例 community/worker signal 聚合尚未设计为可抵抗重复身份/Sybil 的可靠统计，因此当前不得生成“全网好评率/愤怒率”。
 
 ### 当前 NEXT_GATE
 
-优先级固定为：
+在任何真实用户反馈、纠错、隐私/安全事件或生产故障仍拥有最高抢占优先级的前提下，用户当前已明确授权的结构性主线是 Phase O：
 
-1. 真实用户反馈、纠错、隐私/安全事件或核心路径故障；
-2. 真实生产健康/日常运营暴露出的具体问题；
-3. 能明显提升劳动者实际效用、且有可靠来源/合法接口的验证过的 coverage gap；
-4. 只有前面没有更高价值工作时，才做普通产品深化。
+1. 保持 accepted Reference Instance production `v0.8.8-rc.1` 不动；Phase O 仍是本地验证/source candidate，公开 GitHub 源码或 release 不能自动改变 production acceptance；
+2. 下一独立 milestone 是 **CLEAN_SOURCE_RELEASE_CANDIDATE**：做精确 Git staging，排除 `.ltp-instance`/backup/Secret/其他 direct-conversation logs，生成可审计 release note/manifest，运行 governance/privacy/license/CI 决定性检查，并准备/发布一个明确标注“source candidate / production not deployed”的 GitHub source revision；
+3. source candidate 必须保留当前 README/治理状态表与 Docker Hub 外部 container-E2E gap，不得为了“stable”字样把未验证项改写成通过；如果创建 tag/GitHub Release，release note 必须按 `RELEASE_POLICY.md` 区分 Reference production、self-host/local candidate 与 known gaps；
+4. source 发布后先看 GitHub CI/public-smoke 真实结果。只有 source CI 成功并且用户/项目另行选择 Reference Instance 升级，才进入独立的 **REFERENCE_PRODUCTION_RELEASE_GATE**（version/release -> deploy -> post-deploy smoke/E2E/cleanup/acceptance）；
+5. 真实外部 Git/object-storage/IPFS mirrors、自动 peer availability、Docker registry/build 仍可后续补，但不能为了制造“去中心化完成度”抢占真实用户反馈/安全/生产故障。跨实例 community/worker aggregate 继续等待 anti-Sybil 设计。
 
-如果以上都没有，不要为了“Agent 必须继续干活”制造低价值任务。可以维持稳定运行并等待真实信号。
+不要因为长期联邦方向已经确定就大爆炸重构目录、创建第二套数据模型或提前实现无人使用的服务。每一阶段必须先证明独立用户价值和边界。
 
 ## 10. 任意 Agent 的强制接管流程
 

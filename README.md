@@ -1,20 +1,171 @@
-# 劳动透明计划 · 当前生产基线 v0.8.8-rc.1
+# Worker Manifest Fellowship / 劳动透明计划
 
-**公开源码：** https://github.com/HiddenFeng/labor-transparency-ai
+**非商业公益 · Source-Available · 独立实例 · 公共证据协作网络**
 
-**公开站点：** https://workermanifestfellowship.dpdns.org
+本项目用于降低劳动信息不对称：帮助人们查看公司与产品、区分社区/劳动者情绪与具体证据、发现资料缺口，并找到下一步公共帮助路径。它**不是**一个中心化“全球公司好坏评分平台”，也不是 OSI Open Source；源码按项目非商业公益许可公开。
 
-**平台回退：** https://workermanifestfellowship.vercel.app
+- 公开源码：<https://github.com/HiddenFeng/labor-transparency-ai>
+- Reference Instance：<https://workermanifestfellowship.dpdns.org>
+- 平台回退：<https://workermanifestfellowship.vercel.app>
+- 当前生产 API：<https://labor-transparency-api.labor-transparency-public.workers.dev>
+- License：`LICENSE` / `LICENSE-DATA.md`
+- Mission：`MISSION.md`
+- 公开运营模型：`OPERATING_MODEL.md`
 
-**Cloudflare API：** https://labor-transparency-api.labor-transparency-public.workers.dev
+## 当前状态
 
-**运营方式：** AI 制作、AI Agent 日常管理；非商业公益用途。
+| 层级 | 当前状态 |
+| --- | --- |
+| **Reference production** | `v0.8.8-rc.1`，当前 accepted production baseline；以 `PROJECT_CONTINUITY.md` + `qa/v0_8/verification.json` 最新接受证据为准 |
+| **Phase O local candidate** | 产品与劳工信号、独立实例 bootstrap、signed public-evidence federation、content-addressed mirrors、显式 peer trust/pull、self-host release contract 均已本地验证，**尚未进入 Reference Instance production acceptance** |
+| **Self-host code release** | code-only release、外置持久实例目录、Caddy、health/preflight、停服 backup/restore、release replacement 已验证 |
+| **Docker/Compose** | 配置可解析；本机真实 image build/run **尚未完成**，因为 Docker Hub base-image 拉取路径超时 |
+| **Public federation network** | 协议/本地运行链已验证；没有声称真实公网自治网络、公共 peer registry 或 IPFS 网络已经上线 |
+| **Mainland China SLA** | 不声明稳定直连 SLA；腾讯云/EdgeOne 不是当前必需生产门 |
 
-当前生产已经从早期本地/只读原型演进为 **Vercel 静态前端 + Cloudflare Worker/D1 + Cloudflare Queue/Cron + 项目 DNS** 的独立公网系统。`v0.8.8-rc.1` 已通过核心用户流程浏览器验收、发布 CI、部署后自动公司研究 E2E、精确 QA 清理和公开语义 smoke，作为当前审计过的可用基线。中国大陆稳定访问 SLA 仍不声明；腾讯云/EdgeOne 仅保留历史 PoC，不是当前完成条件。
+详细状态词与 release 规则见 `RELEASE_POLICY.md`。本地 candidate 不能因为“代码已经写完”就冒充 production/stable release。
 
-平台始终遵循：E0讨论可正常传播；热度与证据等级分离；公司资料不完整不阻止已开放的社区或匿名帮助能力；社区贡献、官方来源引用/关系/事件和自动研究输出属于不同证据 lane。缺失或零结果保持未知/范围受限，不能被写成“没有问题”或“没有关系”。
+## 项目模型
 
-新 Agent / 新对话接管时，**先读 `AGENTS.md` 与 `PROJECT_CONTINUITY.md`**，再验证当前 Git、版本、`qa/v0_8/verification.json` 最新接受证据和必要的真实运行状态。不要从旧 README 段落、历史白皮书、旧 QA 或旧 handoff 推断当前 NEXT_GATE。
+```text
+              Worker Manifest Fellowship
+                     Upstream
+          Software / Standards / Governance
+                     │
+        Public Evidence Contract / Protocol
+                     │
+       ┌─────────────┼─────────────┐
+       ▼             ▼             ▼
+ Reference       Instance A     Instance B
+ Instance        local users    local users
+   │             local DB       local DB
+   │                 │             │
+   └──────── signed public evidence ────────┘
+
+× 不自动共享用户身份
+× 不自动共享社区/劳动者投票身份关联
+× 不共享私有 feedback/advisory/联系方式/IP/敏感材料
+```
+
+Reference Instance 是上游运行的参考实例，不是所有 Fork 的后台。Independent Instance 拥有自己的 `instance.id`、Ed25519 key、Secrets、用户、数据、日志、审核和部署责任。Fork 不应默认请求官方生产 API/数据库/Secret。
+
+更完整说明：`OPERATING_MODEL.md`、`INSTANCE_OPERATORS.md`、`docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md`。
+
+## 产品与劳工信号：三个 lane 不能混
+
+Phase O 本地 candidate 新增购物式产品/公司劳动上下文，但明确保持：
+
+1. **Worker Perspective**：参与者自报的在职/离职/求职/外包等劳动相关感受；不验证其劳动身份；
+2. **General Community**：普通社区对公司的整体印象/关注；
+3. **Concrete Labour Claims / Evidence**：具体劳动主张，按来源、范围、日期与 E-level/status 判断。
+
+“劳工愤怒榜”“劳工支持榜”只表达对应实例的情绪/感受视图，不是违法榜、好雇主认证、产品质量分或平台购买/抵制指令。社区热度不会自动升级证据等级。
+
+## 四种使用方式
+
+### 1. 使用 Reference Instance
+
+直接访问当前公开 reference site。它运行当前 accepted production baseline，而不是所有本地 Phase O candidate。
+
+### 2. 运行自己的 Independent Instance
+
+最小本地 bootstrap：
+
+```sh
+node scripts/instance/bootstrap.mjs \
+  --name "My Labor Transparency Instance" \
+  --operator "My Public-Interest Group"
+
+node scripts/instance/start.mjs --dir .ltp-instance
+```
+
+社区 self-host release：
+
+```sh
+node scripts/instance/build-self-host-release.mjs \
+  --out ./release/self-host \
+  --revision local
+```
+
+完整部署、Caddy、backup/restore、upgrade 边界见 `deploy/self-host/README.md`。
+
+### 3. 贡献代码/证据/文档
+
+阅读：
+
+- `CONTRIBUTING.md`
+- `CODE_OF_CONDUCT.md`
+- `PRIVACY.md`
+- `SECURITY.md`
+- `LICENSE` / `LICENSE-DATA.md`
+
+不要通过公共 GitHub Issue 上传真实工资单、身份证件、私人联系方式、账户 Token、敏感截图或可还原劳动者身份的材料。
+
+### 4. 交换公共证据
+
+只有通过现有独立再分发 gate 的公共 contribution 才进入 signed federation snapshot；公开可访问不自动等于可镜像/再分发。
+
+```sh
+# source: signed snapshot
+node scripts/federation/export.mjs \
+  --dir .ltp-instance \
+  --out ./public-evidence.snapshot.json
+
+# receiver: stopped-service import
+node scripts/federation/import.mjs \
+  --dir /path/to/receiver/.ltp-instance \
+  --file ./public-evidence.snapshot.json \
+  --service-stopped
+```
+
+进一步支持 content-addressed multi-mirror 与 signed peer descriptor/pull；mirror/index/URL 只负责定位，证据信任仍锚定 source key + signed snapshot。详见 `docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md`。
+
+## 公益、禁商用与官方身份
+
+本项目按 `LICENSE` 仅授权非商业公益用途；不是 OSI Open Source。解释见 `NON_COMMERCIAL_POLICY.md`。
+
+允许符合许可的 Fork/独立实例如实写：
+
+> Based on Worker Manifest Fellowship / Labor Transparency
+
+但代码可 Fork 不等于官方身份可冒用。未经明确授权不得自称“官方中国站/官方地区站/官方认证节点”。详见 `TRADEMARK.md`、`BRANDING.md`。
+
+## 上游治理与责任
+
+- Governance：`GOVERNANCE.md`
+- Mission：`MISSION.md`
+- Privacy：`PRIVACY.md`
+- Security：`SECURITY.md`
+- Independent operator：`INSTANCE_OPERATORS.md`
+- Authors / attribution：`AUTHORS.md`
+- Release status：`RELEASE_POLICY.md`
+- Agent contract / project continuity：`AGENTS.md` / `PROJECT_CONTINUITY.md`
+
+项目采用 AI-built / AI-managed 工作方式，但 Agent 不是法律主体、监管机构、法院或律师。当前公开仓库/基础设施由实际账号持有人持有；本项目不虚构已经成立的公司、基金会、工会或非营利组织。
+
+新 Agent / 新对话接管时，**先读 `AGENTS.md` 与 `PROJECT_CONTINUITY.md`**，再验证 Git/版本/最新 acceptance/runtime；不要从旧 README、旧 QA、旧聊天或历史 handoff 猜当前 NEXT_GATE。
+
+## 快速验证
+
+```sh
+# 主产品测试
+npm --prefix sites-app test
+npm --prefix cloudflare-backend test
+
+# Phase O 独立实例 / federation / mirror / peer / self-host
+node --test scripts/instance/instance.test.mjs
+node --test scripts/federation/federation.test.mjs
+node --test scripts/federation/mirror.test.mjs
+node --test scripts/federation/peer.test.mjs
+node --test scripts/instance/self-host.test.mjs
+
+# 当前 continuity / public smoke / privacy
+node --test scripts/project_continuity.test.mjs
+node --test scripts/deployment/public_smoke.test.mjs
+node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
+```
+
+当前生产仍以 `v0.8.8-rc.1` accepted evidence 为准；Phase O 进入 Reference Instance 前仍需单独 release -> deploy -> production smoke/acceptance。
 
 ## 当前 v0.8.8 核心能力
 
@@ -43,7 +194,8 @@
 ./scripts/deployment/verify_cloudflare_local.sh
 ./scripts/deployment/verify_cloudflare_research_live.sh
 npm --prefix sites-app test
-LTP_PUBLIC_API_BASE=http://127.0.0.1:8790 node deploy/frontend/build.mjs
+# Fork / independent instance P0 mode: same-origin only; remote upstream API/proxy is rejected.
+LTP_INDEPENDENT_INSTANCE=true LTP_DEPLOYMENT_LABEL=my-instance node deploy/frontend/build.mjs
 node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 ```
 
@@ -62,7 +214,9 @@ node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
 - `PROJECT_CONTINUITY.md`：当前唯一项目接管/连续性摘要；包含用户目标、需求演化、当前状态、反复错误、治理写回规则和 NEXT_GATE。
 - `AGENTS.md`：所有 Agent 的强制冷启动协议与不可破坏 invariants。
 - `docs/v0_8/CHANGE-v0.8.8-production-usability-hardening.md` + `qa/v0_8/verification.json` 最新接受段：当前生产接受证据。
-- `docs/v0_8/DEPLOYMENT_ARCHITECTURE.md`：v0.8 独立前后端架构与安全边界。
+- `docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md`：当前 Phase O 项目意图/架构/产品候选变更；尚未生产验收。
+- `docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md`：独立实例 P0、signed public-evidence snapshot/delta、content-addressed mirror、显式 peer trust/pull 与当前仍未实现的公网自动发现/真实外部镜像边界。
+- `docs/v0_8/DEPLOYMENT_ARCHITECTURE.md`：v0.8 当前 reference instance 前后端架构与安全边界。
 - `docs/v0_8/MAINLAND_CHINA_ACCESS.md`：中国大陆访问边界，以及不依赖中国云实名/支付信息的当前策略。
 - `docs/v0_8/PUBLIC_IDENTITY_PRIVACY.md`：公网开发者身份与部署隐私策略。
 - `docs/v0_8/ACCOUNT_MIGRATION_AND_PUBLICATION.md`：HiddenFeng GitHub/Vercel 迁移、公开仓库净化历史与部署隐私决策。

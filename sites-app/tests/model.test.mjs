@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   emptyState, addCompany, addContribution, setBallot, showcase, reviewContribution,
-  approveExport, publicDataset, flagContribution, updateContribution, safeText
+  approveExport, publicDataset, flagContribution, updateContribution, safeText, productMarket, publicLabourSignalSummary
 } from '../src/domain.mjs';
 
 function setup(){
@@ -30,6 +30,28 @@ test('community heat is independent from evidence grade',()=>{
   assert.equal(lane.items[0].positive,1);
   assert.equal(lane.items[0].participants,1);
   assert.equal(showcase(state,'evidence_positive').items.length,1);
+});
+
+test('worker perspective, general community and labour evidence remain independent product signals',()=>{
+  const {state,company}=setup();
+  const product=addContribution(state,{companyId:company.id,kind:'product',title:'示例产品',description:'公开产品线索',scope:'',periodStart:'',periodEnd:'',direction:'neutral',dimension:'other',productId:'',brandId:'',relationType:'',relation:'',category:'日用品',sources:[],public:true,consent:true,shareConsent:false,rights:'own_summary',rightsNote:'',creditName:''},'owner-product');
+  setBallot(state,company.id,'same-owner','positive','community');
+  setBallot(state,company.id,'same-owner','negative','worker');
+  const claim=addContribution(state,claimPayload(company.id,{title:'工资发放实践',description:'用于验证产品页上的独立劳动证据通道。',direction:'negative',dimension:'pay'}),'owner-worker');
+  reviewContribution(state,claim.id,{version:1,decision:'approve',evidence:'E3',rationale:'负向劳动主张的范围与来源均完成核对。',scopeChecked:true,authenticityChecked:true,sourceIds:['S1']});
+  const signals=publicLabourSignalSummary(state,company.id);
+  assert.deepEqual({positive:signals.community.positive,negative:signals.community.negative,participants:signals.community.participants},{positive:1,negative:0,participants:1});
+  assert.deepEqual({positive:signals.workerPerspective.positive,negative:signals.workerPerspective.negative,participants:signals.workerPerspective.participants},{positive:0,negative:1,participants:1});
+  assert.equal(signals.labourEvidence.verifiedNegativeClaims.length,1);
+  assert.equal(showcase(state,'community_positive').items.length,1,'worker negative signal must not overwrite community positive ballot');
+  const anger=productMarket(state,'worker_negative');
+  assert.equal(anger.items.length,1);
+  assert.equal(anger.items[0].product.id,product.id);
+  assert.equal(anger.items[0].workerPerspective.negative,1);
+  assert.equal(anger.items[0].community.positive,1);
+  assert.equal(anger.items[0].labourEvidence.strongestEvidence,'E3');
+  assert.match(anger.method,/情绪\/感受/);
+  assert.match(anger.items[0].boundary,/不构成产品质量/);
 });
 
 test('E3 cannot be granted without source, scope and authenticity checks',()=>{

@@ -49,8 +49,22 @@ jobs:
           node-version: '22'
       - run: node --test scripts/project_continuity.test.mjs
       - run: node --test scripts/deployment/public_smoke.test.mjs
+      - run: node --test scripts/instance/instance.test.mjs
+      - run: node --test scripts/federation/federation.test.mjs
+      - run: node --test scripts/federation/mirror.test.mjs
+      - run: node --test scripts/federation/peer.test.mjs
+      - run: node --test scripts/instance/self-host.test.mjs
+      - run: node --test scripts/public_project_governance.test.mjs
+      - run: node scripts/public_release_readiness.mjs
+      - run: LTP_INSTANCE_NAME='CI Self Host Config' docker compose -f deploy/self-host/compose.yml config >/dev/null
       - run: npm --prefix sites-app test
       - run: npm --prefix sites-app run build
+      - run: LTP_INDEPENDENT_INSTANCE=true LTP_DEPLOYMENT_LABEL=ci-independent node deploy/frontend/build.mjs
+      - run: |
+          if LTP_INDEPENDENT_INSTANCE=true LTP_PUBLIC_API_BASE=https://api.example.invalid LTP_DEPLOYMENT_LABEL=ci-independent-invalid node deploy/frontend/build.mjs; then
+            echo 'independent instance unexpectedly accepted a remote API' >&2
+            exit 1
+          fi
       - run: LTP_PUBLIC_API_BASE=https://api.example.invalid LTP_DEPLOYMENT_LABEL=ci-static node deploy/frontend/build.mjs
       - run: node scripts/deployment/privacy_audit.mjs deploy/frontend/dist
       - run: |

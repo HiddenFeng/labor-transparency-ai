@@ -1,0 +1,452 @@
+{
+  "schema": "LTP_SOURCE_RELEASE_CANDIDATE_MANIFEST",
+  "schemaVersion": 1,
+  "candidateId": "phase-o-source-candidate-2026-09-17",
+  "createdAt": "2026-09-17T11:58:00+08:00",
+  "baseHead": "0035b2e8a35f09a6014b14622e730847232235e7",
+  "branch": "main",
+  "packageVersion": "0.8.8-rc.1",
+  "acceptedReferenceProduction": "v0.8.8-rc.1",
+  "sourceCandidateStatus": "PRODUCTION_NOT_DEPLOYED",
+  "phaseOCandidateProductionAccepted": false,
+  "productionActionsInThisGate": {
+    "cloudflareDeploy": false,
+    "vercelDeploy": false,
+    "productionE2EManualDispatch": false,
+    "productionDataMutation": false
+  },
+  "scope": {
+    "productLaborSignals": true,
+    "independentInstances": true,
+    "signedPublicEvidenceFederation": true,
+    "contentAddressedMirrors": true,
+    "explicitPeerTrustPull": true,
+    "selfHostReleaseContract": true,
+    "publicGovernance": true
+  },
+  "knownGaps": [
+    "Docker image build/run not completed on this machine because Docker Hub base-image pull/auth path timed out/stalled before project build stages",
+    "No real external Git/object-storage/IPFS public mirror network established by this candidate",
+    "No autonomous global peer registry/crawler",
+    "No cross-instance community/worker aggregate or anti-Sybil global score",
+    "Reference Instance does not yet have Phase O production acceptance",
+    "FileStore self-host runtime does not include Reference Instance Cloudflare Queue/Cron automatic company-research runtime",
+    "No Mainland China availability SLA"
+  ],
+  "validation": {
+    "sitesApp": "31/31 PASS",
+    "cloudflareBackend": "24/24 PASS",
+    "publicSmokeContract": "9/9 PASS",
+    "projectContinuity": "3/3 PASS",
+    "independentInstance": "2/2 PASS",
+    "signedFederation": "2/2 PASS",
+    "multiMirror": "2/2 PASS",
+    "peerTrustPull": "2/2 PASS",
+    "selfHostLifecycle": "1/1 PASS",
+    "governanceReadiness": "4/4 PASS / PUBLIC_GOVERNANCE_READY_SOURCE_CANDIDATE",
+    "localWranglerD1": "PASS",
+    "realLocalCaddyProxy": "PASS",
+    "independentFrontendPrivacyAudit": "0 forbidden matches",
+    "githubYamlParse": "PASS",
+    "gitDiffCheck": "PASS",
+    "dockerContainerE2E": "BLOCKED_BY_EXTERNAL_DOCKER_HUB_PULL_PATH"
+  },
+  "excluded": [
+    "history/subagents/**",
+    ".ltp-instance/**",
+    "**/secrets.json",
+    "**/peers.json",
+    "**/state.json",
+    "deploy/self-host/.env",
+    "deploy/self-host/backups/**",
+    "generated ignored dist/build/runtime artifacts"
+  ],
+  "stagedPathCount": 77,
+  "stagedPaths": [
+    ".github/ISSUE_TEMPLATE/bug_report.yml",
+    ".github/ISSUE_TEMPLATE/config.yml",
+    ".github/ISSUE_TEMPLATE/feature_request.yml",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/workflows/ci.yml",
+    ".gitignore",
+    "AGENTS.md",
+    "AUTHORS.md",
+    "BRANDING.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "GOVERNANCE.md",
+    "INSTANCE_OPERATORS.md",
+    "MISSION.md",
+    "NON_COMMERCIAL_POLICY.md",
+    "NOTICE",
+    "OPERATING_MODEL.md",
+    "PRIVACY.md",
+    "PROJECT_CONTINUITY.md",
+    "README.md",
+    "RELEASE_POLICY.md",
+    "SECURITY.md",
+    "TRADEMARK.md",
+    "cloudflare-backend/scripts-smoke.mjs",
+    "cloudflare-backend/src/d1-store.mjs",
+    "cloudflare-backend/src/worker.mjs",
+    "deploy/frontend/build.mjs",
+    "deploy/self-host/.env.example",
+    "deploy/self-host/Caddyfile",
+    "deploy/self-host/Dockerfile",
+    "deploy/self-host/README.md",
+    "deploy/self-host/compose.yml",
+    "docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md",
+    "docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md",
+    "docs/v0_8/SOURCE-RELEASE-CANDIDATE-phase-o-2026-09-17.md",
+    "public-site/CONTRIBUTING.md",
+    "qa/v0_8/source-release-candidate-phase-o-2026-09-17.json",
+    "scripts/community_agent/d1_fallback.mjs",
+    "scripts/deployment/verify_cloudflare_local.sh",
+    "scripts/federation/descriptor.mjs",
+    "scripts/federation/export.mjs",
+    "scripts/federation/federation.test.mjs",
+    "scripts/federation/import.mjs",
+    "scripts/federation/mirror.test.mjs",
+    "scripts/federation/package.mjs",
+    "scripts/federation/peer-store.mjs",
+    "scripts/federation/peer.test.mjs",
+    "scripts/federation/publish-mirrors.mjs",
+    "scripts/federation/pull-peer.mjs",
+    "scripts/federation/resolve-mirrors.mjs",
+    "scripts/federation/trust-peer.mjs",
+    "scripts/federation/verify-mirror.mjs",
+    "scripts/instance/backup-lib.mjs",
+    "scripts/instance/backup.mjs",
+    "scripts/instance/bootstrap.mjs",
+    "scripts/instance/build-self-host-release.mjs",
+    "scripts/instance/healthcheck.mjs",
+    "scripts/instance/instance.test.mjs",
+    "scripts/instance/preflight.mjs",
+    "scripts/instance/restore.mjs",
+    "scripts/instance/self-host-server.mjs",
+    "scripts/instance/self-host.test.mjs",
+    "scripts/instance/start.mjs",
+    "scripts/public_project_governance.test.mjs",
+    "scripts/public_release_readiness.mjs",
+    "sites-app/public/app.js",
+    "sites-app/public/index.html",
+    "sites-app/public/styles.css",
+    "sites-app/src/company-dossier.mjs",
+    "sites-app/src/domain.mjs",
+    "sites-app/src/federation.mjs",
+    "sites-app/src/peer-discovery.mjs",
+    "sites-app/src/server.mjs",
+    "sites-app/src/snapshot-mirror.mjs",
+    "sites-app/tests/api.test.mjs",
+    "sites-app/tests/model.test.mjs",
+    "sites-app/tests/ui.test.mjs"
+  ],
+  "stagedBlobs": {
+    ".github/ISSUE_TEMPLATE/bug_report.yml": {
+      "gitBlob": "a6d147f19e7c4c8387f4aa981a4ea0e7dd4dd39c",
+      "status": "A"
+    },
+    ".github/ISSUE_TEMPLATE/config.yml": {
+      "gitBlob": "e0ee6c2363675f25e9bb1352e100eacb6fa66997",
+      "status": "A"
+    },
+    ".github/ISSUE_TEMPLATE/feature_request.yml": {
+      "gitBlob": "df84eb5fde4cb10b3184af0c3fa673ec62bc47a1",
+      "status": "A"
+    },
+    ".github/PULL_REQUEST_TEMPLATE.md": {
+      "gitBlob": "e8ed12b66462b32ec7d750d212dc4af3d0399993",
+      "status": "A"
+    },
+    ".github/workflows/ci.yml": {
+      "gitBlob": "49c057c50869e9ae4278a395595223d329767495",
+      "status": "M"
+    },
+    ".gitignore": {
+      "gitBlob": "9f69e02a420f54c6487bd211cf38fcdc1db25136",
+      "status": "M"
+    },
+    "AGENTS.md": {
+      "gitBlob": "34d26af8d0a9cf8d12b64e411d272270f1105677",
+      "status": "M"
+    },
+    "AUTHORS.md": {
+      "gitBlob": "5491b0470b8ffc09013811488c515a8414beac8b",
+      "status": "A"
+    },
+    "BRANDING.md": {
+      "gitBlob": "ad038825d3cc5c9fde41133f710807753a3c96f7",
+      "status": "A"
+    },
+    "CODE_OF_CONDUCT.md": {
+      "gitBlob": "36cedeaa65b314295489f1ac14c24f3d716e87fd",
+      "status": "A"
+    },
+    "CONTRIBUTING.md": {
+      "gitBlob": "19b06e5dbfb27c57700849be2928dd437fe3c365",
+      "status": "M"
+    },
+    "GOVERNANCE.md": {
+      "gitBlob": "4abb23eb758fb3589336210b275c4f595585ed9d",
+      "status": "A"
+    },
+    "INSTANCE_OPERATORS.md": {
+      "gitBlob": "c9a880897c0a1b1ad72620f6a08859e3b61c198a",
+      "status": "A"
+    },
+    "MISSION.md": {
+      "gitBlob": "b3ec9d920b2460f8f2adb9f96d91867012c253a5",
+      "status": "A"
+    },
+    "NON_COMMERCIAL_POLICY.md": {
+      "gitBlob": "62c4dfd5e376f85450ba3895dc34349f5f2ad01f",
+      "status": "A"
+    },
+    "NOTICE": {
+      "gitBlob": "0addcda978139296bae3f2aa8eea3e27447ee9ba",
+      "status": "A"
+    },
+    "OPERATING_MODEL.md": {
+      "gitBlob": "5e50717e770c0523c29a98f35a3da885d153a040",
+      "status": "A"
+    },
+    "PRIVACY.md": {
+      "gitBlob": "7180018e6509850b0f5d335d897e45bbcd2bc67b",
+      "status": "A"
+    },
+    "PROJECT_CONTINUITY.md": {
+      "gitBlob": "b1388a1c3ba58086d58c03abb555311815380b36",
+      "status": "M"
+    },
+    "README.md": {
+      "gitBlob": "ea4bc4098c89ea474745bf37752c7a17c8a33d43",
+      "status": "M"
+    },
+    "RELEASE_POLICY.md": {
+      "gitBlob": "ce6e54f4e8f0f93cc292fb5f0b094890b4216715",
+      "status": "A"
+    },
+    "SECURITY.md": {
+      "gitBlob": "891bb1f9ce1e7ddd08ae94a9ded45349ca2db201",
+      "status": "A"
+    },
+    "TRADEMARK.md": {
+      "gitBlob": "eda3761539b8f04fdb9b3ddaa7b352e995dadd0c",
+      "status": "A"
+    },
+    "cloudflare-backend/scripts-smoke.mjs": {
+      "gitBlob": "858f33b73827132d57560c8736450e90412080c8",
+      "status": "M"
+    },
+    "cloudflare-backend/src/d1-store.mjs": {
+      "gitBlob": "e5d0587e249f9cc59e7e28ae6c0d4733b3f1bc80",
+      "status": "M"
+    },
+    "cloudflare-backend/src/worker.mjs": {
+      "gitBlob": "1174492e634332f5375f1f93d35bdccdbde7aa06",
+      "status": "M"
+    },
+    "deploy/frontend/build.mjs": {
+      "gitBlob": "44ee87cd6a1864508fadfacb21435afaae4d9030",
+      "status": "M"
+    },
+    "deploy/self-host/.env.example": {
+      "gitBlob": "b10deba378b5d04a5bf38867b1d7b99ad03a9b72",
+      "status": "A"
+    },
+    "deploy/self-host/Caddyfile": {
+      "gitBlob": "6f94df6af6f4d2f3bb581a5899674bf0e6b7c7e7",
+      "status": "A"
+    },
+    "deploy/self-host/Dockerfile": {
+      "gitBlob": "a9f0b7b3778a33ca3c5ca106412c5baf1098cb2e",
+      "status": "A"
+    },
+    "deploy/self-host/README.md": {
+      "gitBlob": "2a765fb40593c172bf841033bf9dcdec54e11ecb",
+      "status": "A"
+    },
+    "deploy/self-host/compose.yml": {
+      "gitBlob": "fce4e5b2a23ad059e3c7b19acf67b5e9dc5d7dfa",
+      "status": "A"
+    },
+    "docs/v0_8/CHANGE-federated-public-interest-network-and-product-labor-signals.md": {
+      "gitBlob": "a6eaf4db97c44d128c0cac3955c9dd5f573bf85e",
+      "status": "A"
+    },
+    "docs/v0_8/INDEPENDENT_INSTANCES_AND_FEDERATION.md": {
+      "gitBlob": "039a7d25984a6ef1632ac15555318a072a6084bd",
+      "status": "A"
+    },
+    "docs/v0_8/SOURCE-RELEASE-CANDIDATE-phase-o-2026-09-17.md": {
+      "gitBlob": "e02cd5d8a45491115578088bec586a58e8ae3d0c",
+      "status": "A"
+    },
+    "public-site/CONTRIBUTING.md": {
+      "gitBlob": "19b06e5dbfb27c57700849be2928dd437fe3c365",
+      "status": "M"
+    },
+    "scripts/community_agent/d1_fallback.mjs": {
+      "gitBlob": "88f827286d56640fcca00a2bbfd1e8ed0cd5388b",
+      "status": "M"
+    },
+    "scripts/deployment/verify_cloudflare_local.sh": {
+      "gitBlob": "d4c6f3a0ae439cf3a8cc98530010a46b1fa17d4a",
+      "status": "M"
+    },
+    "scripts/federation/descriptor.mjs": {
+      "gitBlob": "18ca1a057ee87b57a3c5bcaa420b8177d6260b61",
+      "status": "A"
+    },
+    "scripts/federation/export.mjs": {
+      "gitBlob": "ac27a8ed978ec4eb5648280e741d432ba4f23f57",
+      "status": "A"
+    },
+    "scripts/federation/federation.test.mjs": {
+      "gitBlob": "f89de4591193e00e7cc78c5938e34b1d75385d84",
+      "status": "A"
+    },
+    "scripts/federation/import.mjs": {
+      "gitBlob": "cd99716423d2fe1c4f8070ce9bec50d4cb1fb5db",
+      "status": "A"
+    },
+    "scripts/federation/mirror.test.mjs": {
+      "gitBlob": "9adb782b3bce15a701322370d76e9012a778d8ca",
+      "status": "A"
+    },
+    "scripts/federation/package.mjs": {
+      "gitBlob": "b97f855133ca0e80ff4e49168cae72e4337329ea",
+      "status": "A"
+    },
+    "scripts/federation/peer-store.mjs": {
+      "gitBlob": "e9c5de5fc68ba7c409569b0cc672256070e1979e",
+      "status": "A"
+    },
+    "scripts/federation/peer.test.mjs": {
+      "gitBlob": "ac3f9df4a414a9529fcdf83f86d780c457c6881e",
+      "status": "A"
+    },
+    "scripts/federation/publish-mirrors.mjs": {
+      "gitBlob": "4b3f8e33f697ed144b85fad18e1fa162f8c5a40c",
+      "status": "A"
+    },
+    "scripts/federation/pull-peer.mjs": {
+      "gitBlob": "cfc8417221165e50bceacbd33d18c60ceeee82b7",
+      "status": "A"
+    },
+    "scripts/federation/resolve-mirrors.mjs": {
+      "gitBlob": "d1f2f90bdcb3d1bf94235efd68d664e0f6193eac",
+      "status": "A"
+    },
+    "scripts/federation/trust-peer.mjs": {
+      "gitBlob": "4b2dc2c56399cd3666753fb8e87bfc3c35966916",
+      "status": "A"
+    },
+    "scripts/federation/verify-mirror.mjs": {
+      "gitBlob": "f448bf95131bfd8efb417c78a8dda856e11f85ee",
+      "status": "A"
+    },
+    "scripts/instance/backup-lib.mjs": {
+      "gitBlob": "9ada5f46dc510b1f3e14c17efc61c0532e16b714",
+      "status": "A"
+    },
+    "scripts/instance/backup.mjs": {
+      "gitBlob": "7764f0621c66a68c34e9b060d654f98d024b5335",
+      "status": "A"
+    },
+    "scripts/instance/bootstrap.mjs": {
+      "gitBlob": "0c7aca7723e39b8e5c29c5716346875a30232fc3",
+      "status": "A"
+    },
+    "scripts/instance/build-self-host-release.mjs": {
+      "gitBlob": "169910704d493669cec12c81e3ef790ebc429132",
+      "status": "A"
+    },
+    "scripts/instance/healthcheck.mjs": {
+      "gitBlob": "f5c78221c3fe6694a4af7639abc7d0700a25557e",
+      "status": "A"
+    },
+    "scripts/instance/instance.test.mjs": {
+      "gitBlob": "80ab6353667cae3a0db661bcf74b50b8e45cb98a",
+      "status": "A"
+    },
+    "scripts/instance/preflight.mjs": {
+      "gitBlob": "0e379d07d9f4ae1471885c4dcd31d20b516dc411",
+      "status": "A"
+    },
+    "scripts/instance/restore.mjs": {
+      "gitBlob": "0873e09ed03cd75f5e145a113cf62c654b98ceca",
+      "status": "A"
+    },
+    "scripts/instance/self-host-server.mjs": {
+      "gitBlob": "0a794b54066e1ad99a9fedcd7028b466bf86ac8c",
+      "status": "A"
+    },
+    "scripts/instance/self-host.test.mjs": {
+      "gitBlob": "0f5d39889e11cab063d3b9948f7a101deb738c07",
+      "status": "A"
+    },
+    "scripts/instance/start.mjs": {
+      "gitBlob": "3597797f89a7b42891ebf731ba064f8624e1f747",
+      "status": "A"
+    },
+    "scripts/public_project_governance.test.mjs": {
+      "gitBlob": "0b5fccbf47e99fce4c00be87e7f4e256e2949bff",
+      "status": "A"
+    },
+    "scripts/public_release_readiness.mjs": {
+      "gitBlob": "bb2576896f90755965c4789d4f6ca051d79183e8",
+      "status": "A"
+    },
+    "sites-app/public/app.js": {
+      "gitBlob": "6793fadbf624c39adf466a6fad18bcf98cae24f3",
+      "status": "M"
+    },
+    "sites-app/public/index.html": {
+      "gitBlob": "68375e563bd85139a62ea065cf1e8948f7de2da2",
+      "status": "M"
+    },
+    "sites-app/public/styles.css": {
+      "gitBlob": "9902f00464187898acfadf962cd96608ca071457",
+      "status": "M"
+    },
+    "sites-app/src/company-dossier.mjs": {
+      "gitBlob": "a39e4cf41893f68e6e30f51cdd31e968df783cb6",
+      "status": "M"
+    },
+    "sites-app/src/domain.mjs": {
+      "gitBlob": "7fcba0d06eaaa2ab5c3711795985cb93628ffd3c",
+      "status": "M"
+    },
+    "sites-app/src/federation.mjs": {
+      "gitBlob": "608fc7855201a825c137744cc973caa2a2dedac1",
+      "status": "A"
+    },
+    "sites-app/src/peer-discovery.mjs": {
+      "gitBlob": "5deb4207fe86c33b70581d5328be565bf233f5cc",
+      "status": "A"
+    },
+    "sites-app/src/server.mjs": {
+      "gitBlob": "d5be70c68b6022173573b035180fbcd986f092af",
+      "status": "M"
+    },
+    "sites-app/src/snapshot-mirror.mjs": {
+      "gitBlob": "68dfdd039c7f694aa6dcd1680a9d01f1a01d1585",
+      "status": "A"
+    },
+    "sites-app/tests/api.test.mjs": {
+      "gitBlob": "f046f8c7fa108bd049f7a7220755b36182d725c0",
+      "status": "M"
+    },
+    "sites-app/tests/model.test.mjs": {
+      "gitBlob": "8ddef61dd105b8402e5c8a269e8d4cda849809fe",
+      "status": "M"
+    },
+    "sites-app/tests/ui.test.mjs": {
+      "gitBlob": "0a8e64d4991e1c4cdb3a67d256eb4a1eeaf70f4d",
+      "status": "M"
+    }
+  },
+  "stagedPathListSha256": "1dc833d346a256bded356fa4c1d0e1a8278426628bc7c242bd9e714aa7ef556c",
+  "note": "This manifest describes a GitHub source candidate. It is not Reference Instance deployment/production acceptance."
+}

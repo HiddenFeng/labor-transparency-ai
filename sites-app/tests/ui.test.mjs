@@ -15,6 +15,10 @@ test('public UI is worker-facing, preserves privacy/evidence boundaries, and has
   assert.match(html,/AI 管理不是 AI 裁决/);
   assert.match(html,/资源与帮助/);
   assert.match(html,/真实世界里的劳动事件/);
+  assert.match(html,/产品与劳工信号/);
+  assert.match(html,/劳工愤怒榜/);
+  assert.match(html,/劳动者视角 = 自报感受/);
+  assert.match(html,/平台要求任何人抵制或购买/);
   assert.match(html,/<link rel="icon" href="\/favicon\.svg" type="image\/svg\+xml">/);
   assert.doesNotMatch(html,/\son(?:click|submit|change|input)=/i);
   assert.doesNotMatch(html,/type=["']file["']/i);
@@ -29,6 +33,9 @@ test('responsive/reduced-motion CSS is present for public-facing interactions',a
   assert.match(css,/\.story-rail/);
   assert.match(css,/\.company-detail-dialog/);
   assert.match(css,/\.company-detail-top\{grid-template-columns:1fr\}/);
+  assert.match(css,/\.product-grid/);
+  assert.match(css,/\.product-signals/);
+  assert.match(css,/\.audience-entry-grid/);
 });
 
 test('company UI exposes usable dossier detail while keeping evidence tiers separate',async()=>{
@@ -41,7 +48,8 @@ test('company UI exposes usable dossier detail while keeping evidence tiers sepa
   assert.match(js,/自动资料已更新/);
   assert.match(js,/查看完整资料/);
   assert.match(js,/当前资料概览/);
-  assert.match(js,/社区声音/);
+  assert.match(js,/社区总体印象/);
+  assert.match(js,/劳动者视角与实际劳动主张/);
   assert.match(js,/机器可验证的窄范围参考事实/);
   assert.match(js,/开放知识上下文（不是工商登记）/);
   assert.match(js,/来源信号（不是公司结论）/);
@@ -80,6 +88,7 @@ test('contribution UI is low-friction with progressive disclosure and daily feed
   assert.match(js,/const current=select\.value;select\.replaceChildren\(\)/);assert.match(js,/if\(current&&\[\.\.\.select\.options\]\.some\(x=>x\.value===current\)\)select\.value=current/);
   assert.match(js,/dataset\.companyContribute/);assert.match(js,/补充这家公司资料/);assert.match(js,/openContributionForCompany/);
   assert.match(js,/companyShareUrl\(companyId\)/);assert.match(js,/#company\/\$\{encodeURIComponent\(companyId\)\}/);assert.match(js,/复制资料链接/);
+  assert.match(js,/\/api\/product-market/);assert.match(js,/signalType:'worker'/);assert.match(js,/劳动者视角信号已更新/);assert.match(js,/workerPerspective/);assert.match(js,/labourEvidence/);
   assert.doesNotMatch(js,/companyShareUrl[\s\S]{0,300}(csrf|session|cookie|searchParams)/i,'share URL must not include private/session state');
   assert.match(css,/\.progressive-details/);assert.match(css,/\.feedback-quick-grid/);assert.match(css,/\.official-relation-card/);
 });

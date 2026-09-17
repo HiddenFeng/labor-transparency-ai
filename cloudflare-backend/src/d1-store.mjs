@@ -3,13 +3,15 @@ import {VERSION, emptyState, seedState, upgradeState, nowIso} from '../../sites-
 const COLLECTIONS = [
   'companies','contributions','reviews','exportReviews','ballots','flags',
   'advisoryCases','advisoryAdvice','advisoryDailyReports','companyResearch',
-  'officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns'
+  'officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns',
+  'federatedEvidence','federationImports'
 ];
 
 function sleep(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
 function recordKey(collection,item){
   if(collection==='ballots'){
     if(!item?.companyId||!item?.owner) throw new Error('ballot record missing compound identity');
+    if(item?.signalType==='worker') return `${item.companyId}:worker:${item.owner}`;
     return `${item.companyId}:${item.owner}`;
   }
   if(!item?.id) throw new Error(`${collection} record missing id`);

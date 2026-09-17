@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Privacy / security boundaries
+    url: https://github.com/HiddenFeng/labor-transparency-ai/blob/main/SECURITY.md
+    about: Read this before reporting anything that could contain secrets, exploit details or personal worker data.
+  - name: Contribution guide
+    url: https://github.com/HiddenFeng/labor-transparency-ai/blob/main/CONTRIBUTING.md
+    about: Evidence, code, federation and public-data contribution rules.

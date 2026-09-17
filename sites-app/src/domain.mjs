@@ -22,6 +22,7 @@ const ADVISORY_SENSITIVE_RE = /(真实姓名|姓名[:：]|身份证|护照|银�
 export function nowIso(){ return new Date().toISOString(); }
 export function id(prefix){ return `${prefix}_${crypto.randomBytes(9).toString('hex')}`; }
 export function evidenceNumber(value){ return EVIDENCE_LEVELS.has(value) ? Number(value.slice(1)) : -1; }
+export function ballotSignalType(item){ return item?.signalType === 'worker' ? 'worker' : 'community'; }
 
 export function safeText(value, {min=0,max=2000,field='字段'}={}){
   if (value === undefined || value === null) value = '';
@@ -85,14 +86,16 @@ export function emptyState(){
     communityFeedback: [],
     communityFeedbackResponses: [],
     publicAnnouncements: [],
-    agentDailyRuns: []
+    agentDailyRuns: [],
+    federatedEvidence: [],
+    federationImports: []
   };
 }
 
 export function upgradeState(state){
   if (!state || typeof state !== 'object' || Array.isArray(state)) throw new Error('状态文件无效');
   for (const key of ['companies','contributions','reviews','exportReviews','ballots','flags']) if (!Array.isArray(state[key])) state[key]=[];
-  for (const key of ['advisoryCases','advisoryAdvice','advisoryDailyReports','officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns']) if (!Array.isArray(state[key])) state[key]=[];
+  for (const key of ['advisoryCases','advisoryAdvice','advisoryDailyReports','officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns','federatedEvidence','federationImports']) if (!Array.isArray(state[key])) state[key]=[];
   if (!Array.isArray(state.companyResearch)) state.companyResearch=[];
   state.schemaVersion = '0.8';
   state.version = VERSION;
@@ -240,12 +243,17 @@ export function withdrawContribution(state, contributionId, owner){
   return item;
 }
 
-export function setBallot(state, companyId, owner, direction){
+export function setBallot(state, companyId, owner, direction, signalType='community'){
   if (!state.companies.some(x => x.id === companyId)) throw new Error('公司不存在');
   if (![null,'positive','negative'].includes(direction)) throw new Error('社区评价只能是正向、负向或撤回');
-  state.ballots = state.ballots.filter(x => !(x.companyId === companyId && x.owner === owner));
-  if (direction) state.ballots.push({companyId,owner,direction,updatedAt:nowIso()});
-  return {companyId,direction};
+  if (!['community','worker'].includes(signalType)) throw new Error('社区信号类型无效');
+  state.ballots = state.ballots.filter(x => !(x.companyId === companyId && x.owner === owner && ballotSignalType(x) === signalType));
+  if (direction) {
+    const item={companyId,owner,direction,updatedAt:nowIso()};
+    if(signalType==='worker') item.signalType='worker';
+    state.ballots.push(item);
+  }
+  return {companyId,direction,signalType};
 }
 
 export function flagContribution(state, contributionId, owner, reason){
@@ -347,7 +355,7 @@ export function showcase(state,lane='community_positive'){
   const today = new Date().toISOString().slice(0,10);
   const items=[];
   for (const company of state.companies) {
-    const ballots = state.ballots.filter(x=>x.companyId===company.id);
+    const ballots = state.ballots.filter(x=>x.companyId===company.id&&ballotSignalType(x)==='community');
     const positive = ballots.filter(x=>x.direction==='positive').length;
     const negative = ballots.filter(x=>x.direction==='negative').length;
     const facts = state.contributions.filter(x=>x.companyId===company.id && x.public && x.status!=='WITHDRAWN' && x.status!=='REJECTED');
@@ -360,6 +368,84 @@ export function showcase(state,lane='community_positive'){
   }
   items.sort((a,b)=> lane==='evidence_positive' ? b.verifiedPositiveClaims.length-a.verifiedPositiveClaims.length || a.company.name.localeCompare(b.company.name) : b.participants-a.participants || a.company.name.localeCompare(b.company.name));
   return {lane,items,method:'社区正负只由去重公司评价票决定；证据分区只认当前有效E3+具体正向劳动主张。'};
+}
+
+export function publicLabourSignalSummary(state,companyId){
+  const communityBallots=(state.ballots||[]).filter(x=>x.companyId===companyId&&ballotSignalType(x)==='community');
+  const workerBallots=(state.ballots||[]).filter(x=>x.companyId===companyId&&ballotSignalType(x)==='worker');
+  const claims=(state.contributions||[])
+    .filter(x=>x.companyId===companyId&&x.kind==='labour_claim'&&x.public&&x.status!=='WITHDRAWN'&&x.status!=='REJECTED');
+  const strong=claims.filter(x=>x.status==='VERIFIED'&&evidenceNumber(x.evidence)>=3&&!state.flags.some(f=>f.contributionId===x.id&&f.status==='OPEN'));
+  const strongest=strong.reduce((max,x)=>Math.max(max,evidenceNumber(x.evidence)),-1);
+  const publicStrong=strong.map(x=>publicContribution(x));
+  return {
+    workerPerspective:{
+      positive:workerBallots.filter(x=>x.direction==='positive').length,
+      negative:workerBallots.filter(x=>x.direction==='negative').length,
+      participants:workerBallots.length,
+      boundary:'劳动者视角为参与者自报的在职/离职/求职/外包等劳动相关感受，不验证其劳动身份，也不自动证明具体事实。'
+    },
+    community:{
+      positive:communityBallots.filter(x=>x.direction==='positive').length,
+      negative:communityBallots.filter(x=>x.direction==='negative').length,
+      participants:communityBallots.length,
+      boundary:'社区总体评价表示参与者对公司的整体印象，不等于劳动事实、违法认定或产品质量评价。'
+    },
+    labourEvidence:{
+      claimCount:claims.length,
+      positiveClaims:claims.filter(x=>x.direction==='positive').length,
+      negativeClaims:claims.filter(x=>x.direction==='negative').length,
+      strongestEvidence:strongest>=0?`E${strongest}`:'',
+      verifiedPositiveClaims:publicStrong.filter(x=>x.direction==='positive'),
+      verifiedNegativeClaims:publicStrong.filter(x=>x.direction==='negative'),
+      boundary:'证据等级只描述具体劳动主张在其来源、时间和范围内的支持强度；不会合成为企业道德总分。'
+    }
+  };
+}
+
+export function productMarket(state,lane='all'){
+  const allowed=new Set(['all','worker_negative','worker_positive','evidence','community_attention']);
+  if(!allowed.has(lane))throw new Error('产品展示分区无效');
+  const items=[];
+  for(const product of state.contributions||[]){
+    if(product.kind!=='product'||!product.public||['WITHDRAWN','REJECTED'].includes(product.status))continue;
+    const company=(state.companies||[]).find(x=>x.id===product.companyId);
+    if(!company)continue;
+    const signals=publicLabourSignalSummary(state,company.id);
+    const strongCount=signals.labourEvidence.verifiedPositiveClaims.length+signals.labourEvidence.verifiedNegativeClaims.length;
+    const include=lane==='all'
+      ||(lane==='worker_negative'&&signals.workerPerspective.negative>0)
+      ||(lane==='worker_positive'&&signals.workerPerspective.positive>0)
+      ||(lane==='evidence'&&strongCount>0)
+      ||(lane==='community_attention'&&signals.community.participants>0);
+    if(!include)continue;
+    items.push({
+      product:{id:product.id,title:product.title,description:product.description,category:product.category||'',evidence:product.evidence,status:product.status},
+      company:{id:company.id,name:company.name,region:company.region,website:company.website||'',synthetic:Boolean(company.synthetic)},
+      ...signals,
+      boundary:'产品卡片展示的是所属公司当前可见的劳动/社区上下文，供消费者自行判断；这些信号不构成产品质量、安全、违法或企业整体好坏结论。'
+    });
+  }
+  const strongScore=x=>Math.max(evidenceNumber(x.labourEvidence.strongestEvidence),-1);
+  items.sort((a,b)=>{
+    if(lane==='worker_negative')return b.workerPerspective.negative-a.workerPerspective.negative||b.workerPerspective.participants-a.workerPerspective.participants||a.company.name.localeCompare(b.company.name)||a.product.title.localeCompare(b.product.title);
+    if(lane==='worker_positive')return b.workerPerspective.positive-a.workerPerspective.positive||b.workerPerspective.participants-a.workerPerspective.participants||a.company.name.localeCompare(b.company.name)||a.product.title.localeCompare(b.product.title);
+    if(lane==='evidence'){
+      const aCount=a.labourEvidence.verifiedPositiveClaims.length+a.labourEvidence.verifiedNegativeClaims.length;
+      const bCount=b.labourEvidence.verifiedPositiveClaims.length+b.labourEvidence.verifiedNegativeClaims.length;
+      return strongScore(b)-strongScore(a)||bCount-aCount||a.company.name.localeCompare(b.company.name)||a.product.title.localeCompare(b.product.title);
+    }
+    if(lane==='community_attention')return b.community.participants-a.community.participants||a.company.name.localeCompare(b.company.name)||a.product.title.localeCompare(b.product.title);
+    return a.company.name.localeCompare(b.company.name)||a.product.title.localeCompare(b.product.title);
+  });
+  const methods={
+    all:'展示所有公开产品线索；公司劳动与社区信号只作为独立上下文。',
+    worker_negative:'“劳工愤怒榜”只按自报劳动者视角的负向信号排序；它表达情绪/感受，不是事实认定或抵制指令。',
+    worker_positive:'“劳工支持榜”只按自报劳动者视角的正向信号排序；它表达情绪/感受，不是企业认证。',
+    evidence:'只展示存在当前有效 E3+ 具体劳动主张的产品所属公司，并按最强证据层级与已验证主张数量排序；正负方向仍分别展示。',
+    community_attention:'按普通社区对公司的去重参与数量排序，表示关注度而不是劳动待遇或产品质量。'
+  };
+  return {lane,items,method:methods[lane],boundary:'劳动者视角、普通社区印象、具体劳动主张证据是三条独立通道；任何榜单都不能把情绪或热度升级成事实。'};
 }
 
 export function publicDataset(state){

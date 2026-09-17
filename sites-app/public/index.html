@@ -24,6 +24,7 @@
   <nav aria-label="主导航">
     <button data-tab="home" class="nav-active">首页</button>
     <button data-tab="discover">公司与记录</button>
+    <button data-tab="products">产品与劳工信号</button>
     <button data-tab="advisory">匿名求助</button>
     <button data-tab="rights">权益指南</button>
     <button data-tab="resources">资源与帮助</button>
@@ -160,6 +161,28 @@
     <div id="showcase" class="cards feature-cards" aria-live="polite"></div>
     <div class="section-head compact"><div><h2>全部公司空间</h2><p>你可以留下社区评价；它不会改变任何资料的证据等级。</p></div></div>
     <div id="companies" class="cards company-cards"></div>
+  </section>
+
+  <section class="tab-panel hidden" data-panel="products">
+    <div class="page-hero product-market-hero">
+      <div><p class="section-kicker">产品与劳工信号</p><h1>买什么，也可以先看看<br>是谁在生产、劳动者怎么说。</h1><p>这里像产品列表，但不做“好公司 / 坏公司”裁决。产品所属公司的劳动者视角、普通社区印象、具体劳动主张与证据分别展示，让你自己决定是否支持、观望或避开。</p></div>
+      <div class="product-market-promise"><strong>三条通道绝不混在一起</strong><span>劳动者视角 = 自报感受 · 社区讨论 = 整体印象 · 实际诉求/证据 = 具体主张的支持强度</span></div>
+    </div>
+    <div class="audience-entry-grid" aria-label="不同人群入口">
+      <article><span class="signal opinion">劳动者视角</span><h3>我在这里工作过 / 正在工作</h3><p>可以留下对劳动待遇的正向或负向感受。这个身份是自报，不做实名或雇佣关系验证，也不会自动变成事实。</p></article>
+      <article><span class="signal opinion">普通社区</span><h3>我只是关注这家公司</h3><p>普通社区评价继续影响公司整体形象与关注度，但不影响证据等级，也不会混入劳动者视角榜。</p><button class="secondary" data-tab="discover">去公司讨论</button></article>
+      <article><span class="signal evidence">具体主张与证据</span><h3>我有实际诉求、经历或公开来源</h3><p>把具体劳动实践作为独立主张提交；来源、时间、范围和复核只决定这条主张能证明到哪里。</p><button class="secondary" data-tab="contribute">提交具体线索</button></article>
+    </div>
+    <div class="product-market-tabs" role="group" aria-label="产品榜单">
+      <button data-product-lane="all" class="lane-active">全部产品</button>
+      <button data-product-lane="worker_negative">劳工愤怒榜</button>
+      <button data-product-lane="worker_positive">劳工支持榜</button>
+      <button data-product-lane="evidence">证据较强的劳动实践</button>
+      <button data-product-lane="community_attention">社区关注</button>
+    </div>
+    <p class="method-note" id="product-market-method"></p>
+    <div id="product-market" class="product-grid" aria-live="polite"></div>
+    <div class="detail-boundary product-market-boundary">“劳工愤怒榜 / 支持榜”只表达本实例中自报劳动者视角的去重情绪信号，不是违法认定、雇主评级、产品质量评级，也不是平台要求任何人抵制或购买。具体事实请看独立的劳动主张与证据。</div>
   </section>
 
   <section class="tab-panel hidden" data-panel="advisory">

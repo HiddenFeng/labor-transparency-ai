@@ -19,6 +19,7 @@ release/
 *.zip
 .DS_Store
 .ltp-backups/
+.ltp-instance/
 
 sites-app/.local/
 sites-app/dist/
@@ -31,6 +32,7 @@ cloudflare-backend/wrangler.production.jsonc
 cloudflare-backend/.wrangler/
 .wrangler/
 deploy/frontend/dist/
+deploy/self-host/backups/
 .vercel/
 .edgeone/
 deploy/edgeone/dist/

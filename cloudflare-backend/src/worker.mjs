@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import {
   VERSION as DOMAIN_VERSION, addCompany, addContribution, updateContribution, withdrawContribution, setBallot,
-  flagContribution, reviewContribution, approveExport, listContributions, showcase, publicDataset,
+  flagContribution, reviewContribution, approveExport, listContributions, showcase, productMarket, publicLabourSignalSummary, publicDataset,
   reviewQueue, createReceiptCode, hashReceiptCode, addAdvisoryCase, listOwnAdvisory, accessAdvisoryByReceipt,
   advisoryAgentQueue, addAdvisoryAdvice, runAdvisoryAgent, publicAdvisoryReports, withdrawAdvisoryCase,
   addCommunityFeedback, listOwnCommunityFeedback, communityAgentQueue, respondCommunityFeedback,
@@ -9,6 +9,7 @@ import {
 } from '../../sites-app/src/domain.mjs';
 import {companyResearchCoverage,publicCompanyResearch,publicResearchStatus,publicResearchHealth} from '../../sites-app/src/research-status.mjs';
 import {publicCompanyDetail} from '../../sites-app/src/company-dossier.mjs';
+import {publicFederatedEvidence} from '../../sites-app/src/federation.mjs';
 import {D1StateStore} from './d1-store.mjs';
 import {collectCompanyResearch,selectResearchCompanies,mergeCompanyResearch,queueCompanyResearch,markCompanyResearchStarted,markCompanyResearchFailed,markCompanyResearchDeadLettered} from './company-research.mjs';
 
@@ -69,13 +70,14 @@ async function bodyJson(request){
 function publicCompanyList(state){
   const researchByCompany=new Map((state.companyResearch||[]).map(x=>[x.companyId,x]));
   return state.companies.map(company=>{
-    const ballots=state.ballots.filter(x=>x.companyId===company.id);
+    const signals=publicLabourSignalSummary(state,company.id);
     const products=state.contributions.filter(x=>x.companyId===company.id&&x.kind==='product'&&x.public&&x.status!=='WITHDRAWN'&&x.status!=='REJECTED');
     const research=researchByCompany.get(company.id);
     return {id:company.id,name:company.name,region:company.region,website:company.website,synthetic:company.synthetic,
-      positive:ballots.filter(x=>x.direction==='positive').length,
-      negative:ballots.filter(x=>x.direction==='negative').length,
-      participants:ballots.length,
+      positive:signals.community.positive,
+      negative:signals.community.negative,
+      participants:signals.community.participants,
+      workerPerspective:signals.workerPerspective,
       research:publicCompanyResearch(research),
       products:products.map(x=>({id:x.id,title:x.title,evidence:x.evidence,status:x.status,description:x.description}))};
   });
@@ -247,7 +249,7 @@ async function handleApi(request,env){
   if(!mutationAuthorized(request,url,env,ctx))return responseWithSession(json(request,env,403,{error:'跨站请求或请求校验未获允许'}),ctx,env);
 
   let response;
-  if(request.method==='GET'&&url.pathname==='/api/config') response=json(request,env,200,{version:BACKEND_VERSION,domainVersion:DOMAIN_VERSION,mode:'CLOUDFLARE_WORKER_D1',csrfToken:ctx.csrf,cookieSecure:String(env.LTP_COOKIE_SECURE||'true')!=='false',capabilities:{companies:true,ballots:true,contributions:true,brandContributions:true,officialReferences:true,officialRelations:true,officialEvents:true,communityFeedback:true,publicAnnouncements:true,review:true,publicData:true,anonymousAdvisory:true,advisoryDailyReports:true,scheduledAdvisory:true,automaticCompanyResearch:researchQueueEnabled(env),unattendedCompanyIntelligence:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导与社区意见仅接收非敏感结构化内容；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
+  if(request.method==='GET'&&url.pathname==='/api/config') response=json(request,env,200,{version:BACKEND_VERSION,domainVersion:DOMAIN_VERSION,mode:'CLOUDFLARE_WORKER_D1',csrfToken:ctx.csrf,cookieSecure:String(env.LTP_COOKIE_SECURE||'true')!=='false',capabilities:{companies:true,ballots:true,workerPerspectiveSignals:true,productMarket:true,contributions:true,brandContributions:true,officialReferences:true,officialRelations:true,officialEvents:true,communityFeedback:true,publicAnnouncements:true,review:true,publicData:true,federatedPublicEvidence:true,anonymousAdvisory:true,advisoryDailyReports:true,scheduledAdvisory:true,automaticCompanyResearch:researchQueueEnabled(env),unattendedCompanyIntelligence:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,privateSensitiveInfo:false},privacy:'匿名辅导与社区意见仅接收非敏感结构化内容；不接收真实姓名、私人联系方式、身份证明、健康/支付信息或敏感附件'});
   else if(request.method==='GET'&&url.pathname==='/api/health') response=json(request,env,200,{status:'ok',version:BACKEND_VERSION,storage:'cloudflare-d1',scheduledAdvisory:true,companyResearchQueue:researchQueueEnabled(env),scheduledCompanyResearch:String(env.LTP_RESEARCH_SCHEDULED||'false')==='true',attachments:false,anonymousAdvisory:true});
   else if(request.method==='GET'&&url.pathname==='/api/companies') response=json(request,env,200,{items:publicCompanyList(await store.read())});
   else if(request.method==='GET'&&/^\/api\/companies\/[^/]+$/.test(url.pathname)){
@@ -280,13 +282,15 @@ async function handleApi(request,env){
     const review=url.pathname.match(/^\/api\/contributions\/([^/]+)\/review$/);
     const approve=url.pathname.match(/^\/api\/contributions\/([^/]+)\/approve-export$/);
     const feedbackResponse=url.pathname.match(/^\/api\/community-agent\/feedback\/([^/]+)\/respond$/);
-    if(request.method==='POST'&&ballot){const input=await bodyJson(request);response=json(request,env,200,await store.transaction(s=>setBallot(s,ballot[1],ctx.owner,input.direction??null)));}
+    if(request.method==='POST'&&ballot){const input=await bodyJson(request);response=json(request,env,200,await store.transaction(s=>setBallot(s,ballot[1],ctx.owner,input.direction??null,input.signalType||'community')));}
     else if(request.method==='GET'&&url.pathname==='/api/contributions') response=json(request,env,200,{items:listContributions(await store.read(),{owner:ctx.owner,mine:url.searchParams.get('mine')==='1',companyId:url.searchParams.get('companyId')||''})});
     else if(request.method==='POST'&&url.pathname==='/api/contributions'){const input=await bodyJson(request);const out=await store.transaction(s=>addContribution(s,input,ctx.owner));const item={...out};delete item.owner;response=json(request,env,200,{item});}
     else if(request.method==='PATCH'&&contribution){const input=await bodyJson(request);const out=await store.transaction(s=>updateContribution(s,contribution[1],input,ctx.owner));const item={...out};delete item.owner;response=json(request,env,200,{item});}
     else if(request.method==='POST'&&withdraw){const out=await store.transaction(s=>withdrawContribution(s,withdraw[1],ctx.owner));response=json(request,env,200,{id:out.id,status:out.status});}
     else if(request.method==='POST'&&flag){const input=await bodyJson(request);const out=await store.transaction(s=>flagContribution(s,flag[1],ctx.owner,input.reason));response=json(request,env,200,{id:out.id,status:out.status});}
     else if(request.method==='GET'&&url.pathname==='/api/showcase') response=json(request,env,200,showcase(await store.read(),url.searchParams.get('lane')||'community_positive'));
+    else if(request.method==='GET'&&url.pathname==='/api/product-market') response=json(request,env,200,productMarket(await store.read(),url.searchParams.get('lane')||'all'));
+    else if(request.method==='GET'&&url.pathname==='/api/federation/evidence') response=json(request,env,200,publicFederatedEvidence(await store.read(),{sourceInstanceId:url.searchParams.get('sourceInstanceId')||'',includeTombstones:url.searchParams.get('includeTombstones')!=='0'}));
     else if(request.method==='GET'&&url.pathname==='/api/public-data') response=json(request,env,200,publicDataset(await store.read()));
     else if(request.method==='POST'&&url.pathname==='/api/advisory'){
       const input=await bodyJson(request);const receiptCode=createReceiptCode();const receiptHash=hashReceiptCode(receiptCode);
