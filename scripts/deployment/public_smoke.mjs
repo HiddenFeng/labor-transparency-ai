@@ -31,14 +31,16 @@ export function validateHtml(label,response,body,{security=true}={}){
   if(security) validateSecurityHeaders(label,response,{csp:true});
 }
 
-export function validateHealth(label,response,data){
+export function validateHealth(label,response,data,{expectedVersion=null}={}){
   assert.equal(response.status,200,`${label}: HTTP status`);
   assert.match(header(response,'content-type'),/application\/json/i,`${label}: content-type`);
   assert.equal(data.status,'ok',`${label}: status`);
   assert.equal(data.storage,'cloudflare-d1',`${label}: storage`);
   assert.equal(data.attachments,false,`${label}: attachments privacy boundary`);
   assert.equal(data.anonymousAdvisory,true,`${label}: advisory capability`);
-  assert.match(String(data.version||''),/^0\.8\./,`${label}: backend version`);
+  const runtimeVersion=String(data.version||'');
+  if(expectedVersion) assert.equal(runtimeVersion,expectedVersion,`${label}: expected deployed backend version`);
+  else assert.match(runtimeVersion,/^0\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/,`${label}: backend version format`);
   validateSecurityHeaders(label,response);
 }
 
@@ -159,9 +161,11 @@ export async function runPublicSmoke(env=process.env){
   const vercelOrigin=normalizeOrigin(env.LTP_SMOKE_VERCEL_ORIGIN||DEFAULTS.vercelOrigin);
   const workerOrigin=normalizeOrigin(env.LTP_SMOKE_WORKER_ORIGIN||DEFAULTS.workerOrigin);
   const pagesUrl=env.LTP_SMOKE_PAGES_URL||DEFAULTS.pagesUrl;
+  const expectedVersion=String(env.LTP_SMOKE_EXPECTED_VERSION||'').trim()||null;
+  const healthValidator=(label,response,data)=>validateHealth(label,response,data,{expectedVersion});
 
   await getHtml('primary root',`${primaryOrigin}/`);
-  const primaryHealth=await getJson('primary health',`${primaryOrigin}/api/health`,validateHealth);
+  const primaryHealth=await getJson('primary health',`${primaryOrigin}/api/health`,healthValidator);
   await getJson('primary config',`${primaryOrigin}/api/config`,validateConfig);
   const primaryResearchHealth=await getJson('primary research health',`${primaryOrigin}/api/research/health`,validateResearchHealth);
   const primaryCompanies=await getJson('primary companies',`${primaryOrigin}/api/companies`,(label,response,data)=>{assert.equal(response.status,200,`${label}: HTTP status`);assert.ok(Array.isArray(data.items),`${label}: items`);validateSecurityHeaders(label,response);});
@@ -173,10 +177,10 @@ export async function runPublicSmoke(env=process.env){
   }
 
   await getHtml('vercel fallback root',`${vercelOrigin}/`);
-  const vercelHealth=await getJson('vercel fallback health',`${vercelOrigin}/api/health`,validateHealth);
+  const vercelHealth=await getJson('vercel fallback health',`${vercelOrigin}/api/health`,healthValidator);
   await getJson('vercel fallback config',`${vercelOrigin}/api/config`,validateConfig);
 
-  const workerHealth=await getJson('worker health',`${workerOrigin}/api/health`,validateHealth);
+  const workerHealth=await getJson('worker health',`${workerOrigin}/api/health`,healthValidator);
   await getJson('worker config',`${workerOrigin}/api/config`,validateConfig);
   const workerResearchHealth=await getJson('worker research health',`${workerOrigin}/api/research/health`,validateResearchHealth);
 

@@ -19,6 +19,8 @@ test('public UI is worker-facing, preserves privacy/evidence boundaries, and has
   assert.match(html,/劳工愤怒榜/);
   assert.match(html,/劳动者视角 = 自报感受/);
   assert.match(html,/平台要求任何人抵制或购买/);
+  assert.match(html,/独立实例与联邦能力不等于公共多节点网络已上线/);
+  assert.doesNotMatch(html,/当前 v0\.8\.8/);
   assert.match(html,/<link rel="icon" href="\/favicon\.svg" type="image\/svg\+xml">/);
   assert.doesNotMatch(html,/\son(?:click|submit|change|input)=/i);
   assert.doesNotMatch(html,/type=["']file["']/i);

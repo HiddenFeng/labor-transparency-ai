@@ -17,10 +17,14 @@ test('HTML validator requires product semantics and security headers',()=>{
   assert.throws(()=>validateHtml('wrong',response(200,security),'<title>unrelated</title>'),/product marker/);
 });
 
-test('health validator pins Worker D1 privacy contract',()=>{
+test('health validator pins Worker D1 privacy contract and supports exact post-deploy version checks',()=>{
   const r=response(200,{...security,'content-type':'application/json'});
-  validateHealth('health',r,{status:'ok',version:'0.8.0-rc.1',storage:'cloudflare-d1',attachments:false,anonymousAdvisory:true});
-  assert.throws(()=>validateHealth('health',r,{status:'ok',version:'0.8.0-rc.1',storage:'memory',attachments:false,anonymousAdvisory:true}),/storage/);
+  const base={status:'ok',version:'0.9.0-rc.1',storage:'cloudflare-d1',attachments:false,anonymousAdvisory:true};
+  validateHealth('health',r,base);
+  validateHealth('health',r,base,{expectedVersion:'0.9.0-rc.1'});
+  assert.throws(()=>validateHealth('health',r,base,{expectedVersion:'0.8.8-rc.1'}),/expected deployed backend version/);
+  assert.throws(()=>validateHealth('health',r,{...base,version:'not-a-release'}),/backend version format/);
+  assert.throws(()=>validateHealth('health',r,{...base,storage:'memory'}),/storage/);
 });
 
 test('config validator requires secure session and disabled sensitive-data capability',()=>{
