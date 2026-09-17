@@ -6,6 +6,7 @@ import crypto from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import {
   VERSION,emptyState,upgradeState,nowIso,
@@ -17,6 +18,8 @@ const HERE=path.dirname(fileURLToPath(import.meta.url));
 const ROOT=path.resolve(HERE,'../..');
 const CF=path.join(ROOT,'cloudflare-backend');
 const CONFIG='wrangler.production.jsonc';
+const WRANGLER_NPM_CACHE=path.join(os.homedir(),'.cache','labor-transparency','wrangler-npm');
+const WRANGLER_NPX_LOCK=path.join(os.tmpdir(),'labor-transparency-wrangler-npx.lock');
 const ALL_COLLECTIONS=[
   'companies','contributions','reviews','exportReviews','ballots','flags',
   'advisoryCases','advisoryAdvice','advisoryDailyReports','companyResearch',
@@ -26,10 +29,44 @@ const ALL_COLLECTIONS=[
 const MUTABLE=new Set(['officialReferences','officialRelations','officialEvents','communityFeedback','communityFeedbackResponses','publicAnnouncements','agentDailyRuns']);
 
 function quote(value){return `'${String(value??'').replaceAll('\0','').replaceAll("'","''")}'`;}
+function acquireWranglerNpxLock(){
+  const deadline=Date.now()+25000;
+  while(true){
+    try{
+      fs.mkdirSync(WRANGLER_NPX_LOCK);
+      return;
+    }catch(error){
+      if(error?.code!=='EEXIST')throw error;
+      try{
+        const stat=fs.statSync(WRANGLER_NPX_LOCK);
+        if(Date.now()-stat.mtimeMs>90000){
+          fs.rmSync(WRANGLER_NPX_LOCK,{recursive:true,force:true});
+          continue;
+        }
+      }catch(statError){
+        if(statError?.code!=='ENOENT')throw statError;
+        continue;
+      }
+      if(Date.now()>=deadline)throw new Error('Wrangler D1 fallback CLI lock timed out');
+      sleep(250+Math.floor(Math.random()*200));
+    }
+  }
+}
+function releaseWranglerNpxLock(){
+  fs.rmSync(WRANGLER_NPX_LOCK,{recursive:true,force:true});
+}
 function runD1(sql){
-  const out=execFileSync('npx',['wrangler','d1','execute','DB','--remote','--config',CONFIG,'--command',sql,'--json'],{
-    cwd:CF,encoding:'utf8',timeout:60000,maxBuffer:32*1024*1024,env:{...process.env,NO_COLOR:'1'}
-  });
+  fs.mkdirSync(WRANGLER_NPM_CACHE,{recursive:true});
+  acquireWranglerNpxLock();
+  let out;
+  try{
+    out=execFileSync('npx',['--yes','wrangler','d1','execute','DB','--remote','--config',CONFIG,'--command',sql,'--json'],{
+      cwd:CF,encoding:'utf8',timeout:60000,maxBuffer:32*1024*1024,
+      env:{...process.env,NO_COLOR:'1',npm_config_cache:WRANGLER_NPM_CACHE}
+    });
+  }finally{
+    releaseWranglerNpxLock();
+  }
   const parsed=JSON.parse(out);
   if(!Array.isArray(parsed)||parsed.some(x=>x?.success!==true))throw new Error('Wrangler D1 command did not return a successful JSON result set');
   return parsed;
