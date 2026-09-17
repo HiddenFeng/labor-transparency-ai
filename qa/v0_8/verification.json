@@ -779,8 +779,8 @@
     }
   },
   "remaining_human_only": [],
-  "next_gate": "Phase O v0.9.0-rc.1 versioned source candidate is published at canonical main@35dff048c1c89df4312335b62f9fedc95d5a527f and its decisive source CI/public smoke passed. Accepted Reference production remains v0.8.8-rc.1. The next gate is the separate REFERENCE_PRODUCTION_RELEASE_GATE: deploy -> production smoke -> manual post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance.",
-  "strongest_claim": "Accepted Reference production remains v0.8.8-rc.1 and current direct checks show no evidenced core outage: canonical /api/config still reports the accepted runtime with expected privacy/capability boundaries; trusted production state contains two real companies with no pending feedback; current 18:00/19:00 LocalAgentRuntime tasks are enabled and unblocked. Separately, Phase O v0.9.0-rc.1 is now a published versioned source candidate at main@35dff048c1c89df4312335b62f9fedc95d5a527f with source CI run 35185637735 and public smoke run 35185637750 both successful. This does not claim v0.9.0-rc.1 production deployment or production acceptance.",
+  "next_gate": "REAL_USER_OR_OPERATIONS_EVIDENCE_FIRST",
+  "strongest_claim": "Reference production v0.9.0-rc.1 is accepted for the currently implemented Reference Instance scope: the exact source head passed CI/public smoke, the corrected frontend was deployed, canonical browser smoke passed, manual post-deploy Queue E2E passed, exactly three QA rows were removed under the production write lock with residual=0, real data remained, and post-cleanup research health is HEALTHY. This does not claim a real public multi-node federation network, Docker container E2E, Mainland-China stable-access SLA, complete global coverage, official/legal adjudication authority, or sensitive private-case intake.",
   "non_china_cloud_revalidation": {
     "timestamp_local": "2026-09-15T23:39:00+08:00",
     "canonical_path": "GitHub -> Vercel/custom-domain -> same-origin /api rewrite -> Cloudflare Worker -> D1; DigitalPlat DNS",

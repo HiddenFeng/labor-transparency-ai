@@ -702,3 +702,16 @@ This local release-prep milestone does not authorize or claim production deploym
 - Result/evidence locations: this change record, `PROJECT_CONTINUITY.md`, `README.md`, `RELEASE_POLICY.md`, `docs/v0_8/RELEASE-CANDIDATE-v0.9.0-rc.1.md`, and `qa/v0_8/verification.json -> candidate_v090_phase_o_reference_release_prep`.
 - Current conclusion: `VERSIONED_SOURCE_CANDIDATE_PUBLISHED_CI_PASS / PRODUCTION_NOT_DEPLOYED`; accepted Reference production remains `v0.8.8-rc.1`.
 - Unresolved/next: `REFERENCE_PRODUCTION_RELEASE_GATE` only. Production deployment remains a separate high-impact action: deploy -> production smoke -> manual post-deploy auto-research E2E -> exact QA cleanup/residual=0 -> production acceptance.
+
+
+### QA CURRENT-ROUTE RECONCILIATION — dcnew_4c97b72bdf9b414499fa
+
+Impact: `IMPLEMENTATION_ONLY_GOVERNANCE_EVIDENCE_ROUTING_CORRECTION`; no product/runtime/data/evidence-lane behavior changed.
+
+- CURRENT: latest accepted production evidence `candidate_v090_phase_o_reference_production_acceptance` already records accepted `v0.9.0-rc.1` and `REAL_USER_OR_OPERATIONS_EVIDENCE_FIRST`, but the QA ledger top-level `next_gate` / `strongest_claim` still described the older v0.8.8 pre-release boundary. This conflicted with `PROJECT_CONTINUITY.md`, which explicitly routes cold-start recovery through those current-summary fields plus the latest accepted section.
+- PROPOSED: synchronize only those two current-route summary fields to the latest accepted production section and add one continuity regression that fails if they diverge again.
+- PRESERVE: all historical QA sections and failed evidence; production acceptance criteria; privacy/security and evidence-lane semantics; candidate/identity fail-closed rules; Queue/Cron roles; post-deploy manual E2E and exact QA cleanup contracts.
+- VALIDATION: `node scripts/project_continuity.test.mjs` -> `4/4 PASS`; `node scripts/public_release_readiness.mjs` -> `PUBLIC_GOVERNANCE_READY_ACCEPTED_PRODUCTION`, accepted `v0.9.0-rc.1`, failures `[]`, next gate `REAL_USER_OR_OPERATIONS_EVIDENCE_FIRST`; direct QA parse confirms top-level/current-acceptance `next_gate` and `strongest_claim` are equal; `git diff --check` PASS.
+- ROLLBACK / ABORT CONDITION: do not rewrite historical sections or weaken acceptance. Revert/abort the routing correction if the latest accepted-production section ceases to be the current acceptance authority.
+- Full cold-start/live-verification/repair log: `history/subagents/dcnew_4c97b72bdf9b414499fa.md`.
+- Current outcome: accepted Reference production remains healthy `v0.9.0-rc.1`; live production/research/community/scheduler checks show no higher-priority feedback/privacy/security/core-path/daily-operation blocker. No new version, collector, production deployment or production data mutation was created by this request.

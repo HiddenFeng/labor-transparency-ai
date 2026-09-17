@@ -28,6 +28,14 @@ test('single live continuity route distinguishes source candidate from accepted 
   }
 });
 
+test('current QA summary routes to the latest accepted production evidence',()=>{
+  const qa=json('qa/v0_8/verification.json');
+  const accepted=qa.candidate_v090_phase_o_reference_production_acceptance;
+  assert.equal(accepted?.status,'PASS_DEPLOYED_BROWSER_SMOKE_MANUAL_E2E_EXACT_CLEANUP_V090');
+  assert.equal(qa.next_gate,accepted.next_gate,'top-level QA next_gate drifted from latest accepted production evidence');
+  assert.equal(qa.strongest_claim,accepted.strongest_claim,'top-level QA strongest_claim drifted from latest accepted production evidence');
+});
+
 test('optional local handoff cannot compete with canonical continuity',()=>{
   const handoffPath=path.join(root,'HANDOFF_MANIFEST.json');
   if(!fs.existsSync(handoffPath)) return;
